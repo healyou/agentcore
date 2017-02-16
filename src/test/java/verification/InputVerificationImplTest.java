@@ -32,10 +32,10 @@ public class InputVerificationImplTest extends Assert {
     }
 
     @Test
-    public void testCheckDatabase() {
+    public void testGetJdbcTemplate() {
         try {
             JdbcTemplate jdbcTemplate =
-                    dataVerification.checkDatabaseConnection(getClass().getResource("testdb.properties").toURI().getPath());
+                    dataVerification.getJdbcTemplate(getClass().getResource("testdb.properties").toURI().getPath());
             /*String str = (String) jdbcTemplate.queryForObject("select * from intsedent where id = ?", new Object[]{5}, new RowMapper<Object>() {
                 @Override
                 public Object mapRow(ResultSet resultSet, int i) throws SQLException {
