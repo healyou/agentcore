@@ -24,8 +24,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
             dbprop.load(new FileInputStream(filePath));
 
             String driverClassName = dbprop.getProperty("driverClassName");
-            String url = "jdbc:sqlite:" + getClass().getResource("testDB.s3db").toURI().getPath();
-            //dbprop.getProperty("url");
+            String url = dbprop.getProperty("url");
             String username = dbprop.getProperty("username");
             String password = dbprop.getProperty("password");
 

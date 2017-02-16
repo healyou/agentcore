@@ -1,0 +1,1 @@
+INSERT INTO intsedent (shortinfo, info, extrainfo) VALUES  ('1','1','1')
