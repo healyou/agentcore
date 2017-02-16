@@ -125,7 +125,7 @@
                                 </transformer>
                             </transformers>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>helpApp-${version}-mnshadepl</finalName>
+                            <finalName>agetn-core-${version}-mnshadepl</finalName>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                         </configuration>
                     </execution>

@@ -5,6 +5,7 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import verification.base.InputDataVerification;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,12 +17,12 @@ import java.util.Properties;
 public class InputDataVerificationImpl implements InputDataVerification {
 
     @Override
-    public JdbcTemplate checkDatabaseConnection(String filePath) throws Exception {
+    public JdbcTemplate getJdbcTemplate(String propPath) throws Exception {
         DriverManagerDataSource ds = new DriverManagerDataSource();
 
         Properties dbprop = new Properties();
         try {
-            dbprop.load(new FileInputStream(filePath));
+            dbprop.load(new FileInputStream(propPath));
 
             String driverClassName = dbprop.getProperty("driverClassName");
             String url = dbprop.getProperty("url");
@@ -32,15 +33,17 @@ public class InputDataVerificationImpl implements InputDataVerification {
             ds.setUrl(url);
             ds.setUsername(username);
             ds.setPassword(password);
+        } catch (FileNotFoundException e) {
+            throw new FileNotFoundException(e.toString());
         } catch (IOException e) {
-            throw new IOException(e);
+            throw new IOException(e.toString());
         }
 
         return new JdbcTemplate(ds);
     }
 
     @Override
-    public void checkDatabaseData(String filePath) {
+    public void checkDatabaseTables() {
 
     }
 

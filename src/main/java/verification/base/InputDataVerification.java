@@ -2,6 +2,8 @@ package verification.base;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -9,7 +11,7 @@ import java.io.IOException;
  */
 public interface InputDataVerification {
 
-    public JdbcTemplate checkDatabaseConnection(String filePath) throws IOException, Exception;
-    public void checkDatabaseData(String filePath);
+    public JdbcTemplate getJdbcTemplate(String propPath) throws Exception;
+    public void checkDatabaseTables();
 
 }
