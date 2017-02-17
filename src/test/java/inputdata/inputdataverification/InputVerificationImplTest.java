@@ -70,7 +70,7 @@ public class InputVerificationImplTest extends Assert {
     private void clearAndCloseDatabase() {
         try {
             // remove db data
-            statmt.execute("drop table intsedent;");
+            //statmt.execute("drop table intsedent;");
 
             statmt.close();
             dbConnection.close();

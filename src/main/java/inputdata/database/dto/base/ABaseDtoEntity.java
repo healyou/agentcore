@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @autor Nikita Gorodilov
  */
-public abstract class ADtoEntity implements Serializable {
+public abstract class ABaseDtoEntity implements Serializable {
 
     public abstract Collection<String> getColumnTypes();
     public abstract Set<String> getColumnNames();

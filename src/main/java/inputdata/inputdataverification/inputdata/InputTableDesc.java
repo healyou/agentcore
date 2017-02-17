@@ -2,6 +2,8 @@ package inputdata.inputdataverification.inputdata;
 
 import com.google.common.collect.ImmutableList;
 
+import java.util.List;
+
 /**
  * Created on 17.02.2017 14:13
  *
@@ -43,7 +45,7 @@ public class InputTableDesc {
         return periodicityMS;
     }
 
-    public ImmutableList<TableColumn> getColumns() {
+    public List<TableColumn> getColumns() {
         return columns;
     }
 

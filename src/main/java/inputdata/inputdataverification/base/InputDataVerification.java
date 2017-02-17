@@ -10,6 +10,6 @@ public interface InputDataVerification {
 
     public JdbcTemplate getJdbcTemplate(String propPath) throws Exception;
     public InputTableDesc getDatabaseTables(String descFileName) throws Exception;
-    public void testReadDbData(InputTableDesc tableDesc, String dbPath) throws Exception;
+    public void testReadDbData(JdbcTemplate jdbcTemplate, InputTableDesc tableDesc) throws Exception;
 
 }

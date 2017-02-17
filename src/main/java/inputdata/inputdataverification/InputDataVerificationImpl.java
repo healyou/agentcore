@@ -1,6 +1,8 @@
 package inputdata.inputdataverification;
 
 import com.google.common.collect.ImmutableList;
+import inputdata.database.dao.DaoEntityImpl;
+import inputdata.database.dto.DtoEntityImpl;
 import inputdata.inputdataverification.inputdata.InputTableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,10 +10,11 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import inputdata.inputdataverification.base.InputDataVerification;
 import org.w3c.dom.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
@@ -78,11 +81,19 @@ public class InputDataVerificationImpl implements InputDataVerification {
     }
 
     @Override
-    public void testReadDbData(InputTableDesc tableDesc, String dbPath) throws Exception {
+    public void testReadDbData(JdbcTemplate jdbcTemplate, InputTableDesc tableDesc) throws Exception {
         if (tableDesc == null)
             throw new IOException();
 
-
+        try {
+            DaoEntityImpl daoEntity = new DaoEntityImpl(jdbcTemplate, tableDesc);
+            DtoEntityImpl dtoEntity = daoEntity.getFirst("id", tableDesc.getTableName());
+            if (dtoEntity == null)
+                throw new SQLException();
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+            throw new Exception(e.toString());
+        }
     }
 
     private InputTableDesc parseTableNode(Node tableNode) {

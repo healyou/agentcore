@@ -1,6 +1,6 @@
 package inputdata.database.dto;
 
-import inputdata.database.dto.base.ADtoEntity;
+import inputdata.database.dto.base.ABaseDtoEntity;
 
 import java.util.*;
 
@@ -9,7 +9,7 @@ import java.util.*;
  *
  * @autor Nikita Gorodilov
  */
-public class DtoEntityImpl extends ADtoEntity {
+public class DtoEntityImpl extends ABaseDtoEntity {
 
     private HashMap<String, Object> paramValue;
     private HashMap<String, String> paramType;
