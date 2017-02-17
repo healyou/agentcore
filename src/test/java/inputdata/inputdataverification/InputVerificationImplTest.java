@@ -1,11 +1,10 @@
-package verification;
+package inputdata.inputdataverification;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
 import java.io.*;
 import java.sql.*;
