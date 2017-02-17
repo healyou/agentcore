@@ -18,7 +18,7 @@ public abstract class ABaseDao<T extends ABaseDtoEntity> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public abstract T getFirst(String columnIdName, String tableName) throws SQLException;
-    public abstract void delete(T entity, String columnIdName, String tableName) throws SQLException;
+    public abstract T getFirst(String columnIdName) throws SQLException;
+    public abstract void delete(T entity, String columnIdName) throws SQLException;
 
 }

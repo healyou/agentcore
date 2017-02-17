@@ -16,28 +16,30 @@ import java.sql.SQLException;
 public class DaoEntityImpl extends ABaseDao<DtoEntityImpl> {
 
     //"select * from intsedent ORDER BY id limit 1"
-    private static final String SELECT_FIRST_SQL = "select * from ? order by ? limit 1";
-    private static final String DELETE_SQL = "delete from ? where id = ?";
+    private static String SELECT_FIRST_SQL;
+    private static  String DELETE_SQL;
 
     private InputTableDesc inputTableDesc;
 
     public DaoEntityImpl(JdbcTemplate jdbcTemplate, InputTableDesc inputTableDesc) {
         super(jdbcTemplate);
 
+        SELECT_FIRST_SQL = "select * from " + inputTableDesc.getTableName() + " order by ? limit 1";
+        DELETE_SQL = "delete from " + inputTableDesc.getTableName() + " where id = ?";
         this.inputTableDesc = inputTableDesc;
     }
 
     @Override
-    public DtoEntityImpl getFirst(String columnIdName, String tableName) throws SQLException {
+    public DtoEntityImpl getFirst(String columnIdName) throws SQLException {
         return jdbcTemplate.queryForObject(
-                SELECT_FIRST_SQL, new Object[] { tableName, columnIdName },
+                SELECT_FIRST_SQL, new Object[] { columnIdName },
                 new DtoEntityImplRowMapper(inputTableDesc));
     }
 
     @Override
-    public void delete(DtoEntityImpl entity, String columnIdName, String tableName) throws SQLException {
+    public void delete(DtoEntityImpl entity, String columnIdName) throws SQLException {
         jdbcTemplate.query(DELETE_SQL, new Object[] {
-                tableName, entity.getValueByColumnName(columnIdName) },
+                entity.getValueByColumnName(columnIdName) },
                 new DtoEntityImplRowMapper(inputTableDesc));
     }
 

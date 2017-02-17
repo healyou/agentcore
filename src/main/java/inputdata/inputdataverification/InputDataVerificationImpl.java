@@ -87,7 +87,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
 
         try {
             DaoEntityImpl daoEntity = new DaoEntityImpl(jdbcTemplate, tableDesc);
-            DtoEntityImpl dtoEntity = daoEntity.getFirst("id", tableDesc.getTableName());
+            DtoEntityImpl dtoEntity = daoEntity.getFirst("id");
             if (dtoEntity == null)
                 throw new SQLException();
         } catch (SQLException e) {
