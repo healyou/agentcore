@@ -35,13 +35,7 @@ public class InputVerificationImplTest extends Assert {
         try {
             JdbcTemplate jdbcTemplate =
                     dataVerification.getJdbcTemplate(getClass().getResource("testdb.properties").toURI().getPath());
-            /*String str = (String) jdbcTemplate.queryForObject("select * from intsedent where id = ?", new Object[]{5}, new RowMapper<Object>() {
-                @Override
-                public Object mapRow(ResultSet resultSet, int i) throws SQLException {
-                    return resultSet.getString("info");
-                }
-            });
-            throw new Exception(str);*/
+            assertNotNull(jdbcTemplate);
         } catch (Exception e) {
             fail(e.toString());
         }
