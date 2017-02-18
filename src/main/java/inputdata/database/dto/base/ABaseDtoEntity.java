@@ -9,15 +9,36 @@ import java.util.Set;
 
 /**
  * Created on 17.02.2017 16:25
+ * Класс даёт методы для работы с объектов бд
+ * о таблице которой мы пока ничего не знаем
  *
  * @autor Nikita Gorodilov
  */
 public abstract class ABaseDtoEntity implements Serializable {
 
+    /**
+     * @return типы данных столбцов
+     */
     public abstract Collection<String> getColumnTypes();
+
+    /**
+     * @return имена столбцов
+     */
     public abstract Set<String> getColumnNames();
+
+    /**
+     * @return значения столбцов
+     */
     public abstract Set<String> getColumnValues();
+
+    /**
+     * @return тип данных столбца по его имени
+     */
     public abstract String getTypeByColumnName(String columnName);
+
+    /**
+     * @return значение столбца по его имени
+     */
     public abstract Object getValueByColumnName(String columnName);
 
     @SuppressWarnings("RedundantIfStatement")

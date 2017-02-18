@@ -1,5 +1,7 @@
 package inputdata.inputdataverification;
 
+import inputdata.inputdataverification.inputdata.InputTableDesc;
+import inputdata.inputdataverification.inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +17,7 @@ import java.sql.*;
 public class InputVerificationImplTest extends Assert {
 
     private InputDataVerificationImpl dataVerification;
+    private JdbcTemplate jdbcTemplate;
 
     private Connection dbConnection;
     private Statement statmt;
@@ -41,6 +44,104 @@ public class InputVerificationImplTest extends Assert {
         }
     }
 
+    @Test
+    public void testTableDesc() {
+        try {
+            String propFilePath = getClass().getResource("testdb.properties").toURI().getPath();
+            String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
+
+            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
+            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+
+            assertNotNull(tableDesc);
+            assertNotNull(jdbcTemplate);
+            assertEquals("intsedent", tableDesc.getTableName());
+            assertEquals(1000, tableDesc.getPeriodicityMS());
+            assertNotNull(tableDesc.getColumns());
+            // смотрим на обязательную колонку в таблице
+            assertTrue(isTableColumn(tableDesc, InputTableDesc.ID_COLUMN_NAME, InputTableDesc.ID_COLUMN_TYPE));
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void testReadDbData() {
+        try {
+            String propFilePath = getClass().getResource("testdb.properties").toURI().getPath();
+            String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
+
+            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
+            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+
+            assertNotNull(tableDesc);
+            assertNotNull(jdbcTemplate);
+
+            dataVerification.testReadDbData(jdbcTemplate, tableDesc);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test(expected=AssertionError.class)
+    public void testErrorTableDesc() {
+        try {
+            String propFilePath = getClass().getResource("testdb.properties").toURI().getPath();
+            String tableDescFileName = getClass().getResource("errorTestData/errorTD.xml").toURI().getPath();
+
+            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
+            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+
+            assertNotNull(tableDesc);
+            assertNotNull(jdbcTemplate);
+            assertEquals("intsedent", tableDesc.getTableName());
+            assertEquals(1000, tableDesc.getPeriodicityMS());
+            assertNotNull(tableDesc.getColumns());
+            // смотрим на обязательную колонку в таблице
+            assertTrue(isTableColumn(tableDesc, InputTableDesc.ID_COLUMN_NAME, InputTableDesc.ID_COLUMN_TYPE));
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test(expected=AssertionError.class)
+    public void testErrorReadDbData() {
+        try {
+            String propFilePath = getClass().getResource("errorTestData/errordb.properties").toURI().getPath();
+            String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
+
+            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
+            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+
+            assertNotNull(tableDesc);
+            assertNotNull(jdbcTemplate);
+
+            dataVerification.testReadDbData(jdbcTemplate, tableDesc);
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    /**
+     * Проверяет есть ли такой столбец в таблице
+     * @param tableDesc описание таблицы
+     * @param idColumnName название столбца
+     * @param idColumnType тип данных столбца
+     * @return да, если такой столбец есть
+     */
+    private boolean isTableColumn(InputTableDesc tableDesc, String idColumnName, String idColumnType) {
+        for (TableColumn column : tableDesc.getColumns()) {
+            if (column.getColumnName().equals(idColumnName) &&
+                    column.getColumnType().equals(idColumnType))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Создаём бд и заполняем её тестовыми данными
+     */
     private void createDatabase() {
         try {
             String dbPath = getClass().getResource("testDatabase.s3db").toURI().getPath();
@@ -67,6 +168,9 @@ public class InputVerificationImplTest extends Assert {
         }
     }
 
+    /**
+     * Очищаем бд
+     */
     private void clearAndCloseDatabase() {
         try {
             // remove db data

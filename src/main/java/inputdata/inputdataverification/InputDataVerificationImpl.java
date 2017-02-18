@@ -11,10 +11,7 @@ import inputdata.inputdataverification.base.InputDataVerification;
 import org.w3c.dom.*;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
@@ -68,6 +65,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
             if (doc.hasChildNodes()) {
                 // пока реализована лишь 1 таблица - для входных данных
                 NodeList tablesNL = doc.getElementsByTagName("Table");
+                // читаем первую таблицу в файле
                 Node node = tablesNL.item(0);
                 tableDesc = parseTableNode(node);
             }
@@ -87,15 +85,21 @@ public class InputDataVerificationImpl implements InputDataVerification {
 
         try {
             DaoEntityImpl daoEntity = new DaoEntityImpl(jdbcTemplate, tableDesc);
-            DtoEntityImpl dtoEntity = daoEntity.getFirst("id");
+            DtoEntityImpl dtoEntity = daoEntity.getFirst(InputTableDesc.ID_COLUMN_NAME);
             if (dtoEntity == null)
                 throw new SQLException();
         } catch (SQLException e) {
-            System.out.println(e.toString());
             throw new Exception(e.toString());
         }
     }
 
+
+    /**
+     * Парсим таблицу из xml
+     * <Table>
+     *     ...
+     * </Table>
+     */
     private InputTableDesc parseTableNode(Node tableNode) {
         String tableName = "";
         int periodicityMs = -1;
@@ -120,6 +124,12 @@ public class InputDataVerificationImpl implements InputDataVerification {
         return new InputTableDesc(tableName, periodicityMs, columns);
     }
 
+    /**
+     * Парсим столбцы из таблицы в xml
+     * <ColumnDescription>
+     *     ...
+     * </ColumnDescription>
+     */
     private ImmutableList<TableColumn> parseColumns(Node columnsNode) {
         ArrayList<TableColumn> columns = new ArrayList<>();
 
@@ -134,6 +144,12 @@ public class InputDataVerificationImpl implements InputDataVerification {
         return ImmutableList.copyOf(columns);
     }
 
+    /**
+     * Парсим столбец из столбцов в xml
+     * <Column>
+     *     ...
+     * </Column>
+     */
     private TableColumn parseColumnNode(Node columnNode) {
         String columnName = "";
         String columnType = "";

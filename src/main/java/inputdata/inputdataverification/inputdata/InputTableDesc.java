@@ -6,15 +6,32 @@ import java.util.List;
 
 /**
  * Created on 17.02.2017 14:13
+ * Данные о структуре таблицы для входных данных агента
  *
  * @autor Nikita Gorodilov
  */
 public class InputTableDesc {
 
+    /**
+     * Колонка id должна быть именно такой
+     * тк надо получить доступ к уникальному ключу таблицы
+     */
+    public final static String ID_COLUMN_NAME = "id";
+
+    /**
+     * Тип данных колонки id должнен быть именно такой
+     */
+    public final static String ID_COLUMN_TYPE = "int";
+
     private String tableName;
     private int periodicityMS;
     private ImmutableList<TableColumn> columns;
 
+    /**
+     * @param tableName имя таблицы
+     * @param periodicityMS периодичность просмотра таблицы(берём 1 запись и удаляем её)
+     * @param columns имена колонок и типы данных
+     */
     public InputTableDesc(String tableName, int periodicityMS, ImmutableList<TableColumn> columns) {
         this.tableName = tableName;
         this.periodicityMS = periodicityMS;
@@ -24,8 +41,7 @@ public class InputTableDesc {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[tableName = " + tableName + ", periodicityMS = " + periodicityMS +
-                ", columns = \n");
+        sb.append("[tableName = " + tableName + ", periodicityMS = " + periodicityMS + ", columns = \n");
 
         for (int i = 0; i < columns.size(); i++) {
             TableColumn tableColumn = columns.get(i);

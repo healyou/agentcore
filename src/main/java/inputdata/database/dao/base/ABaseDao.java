@@ -7,6 +7,8 @@ import java.sql.SQLException;
 
 /**
  * Created on 17.02.2017 20:46
+ * Нужен для чтение объектов из базы данных,
+ * таблица которой будет известна во время исполнения
  *
  * @autor Nikita Gorodilov
  */

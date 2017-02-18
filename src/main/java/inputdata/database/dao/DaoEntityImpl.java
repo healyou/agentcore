@@ -15,12 +15,16 @@ import java.sql.SQLException;
  */
 public class DaoEntityImpl extends ABaseDao<DtoEntityImpl> {
 
-    //"select * from intsedent ORDER BY id limit 1"
     private static String SELECT_FIRST_SQL;
-    private static  String DELETE_SQL;
+    private static String DELETE_SQL;
 
     private InputTableDesc inputTableDesc;
 
+    /**
+     * Осущ. чтение базы данных
+     * @param jdbcTemplate чтение бд
+     * @param inputTableDesc данные о таблице бд
+     */
     public DaoEntityImpl(JdbcTemplate jdbcTemplate, InputTableDesc inputTableDesc) {
         super(jdbcTemplate);
 

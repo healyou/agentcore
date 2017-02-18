@@ -18,6 +18,10 @@ public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
 
     private InputTableDesc inputTableDesc;
 
+    /**
+     * Класс, необходимый для чтения данных из бд
+     * @param inputTableDesc данные о неизвестной заранее структуре таблицы
+     */
     public DtoEntityImplRowMapper(InputTableDesc inputTableDesc) {
         this.inputTableDesc = inputTableDesc;
     }
@@ -25,13 +29,17 @@ public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
     @SuppressWarnings("UnnecessaryLocalVariable")
     @Override
     public DtoEntityImpl mapRow(ResultSet rs, int i) throws SQLException {
+        // данные, необходимые для создания объекта
         HashMap<String, String> paramType = new HashMap<>();
         HashMap<String, Object> paramValue = new HashMap<>();
+        // значения столбцов таблицы пользователя
         List<TableColumn> columns = inputTableDesc.getColumns();
 
+        // получаем тип данных параметров
         for (TableColumn column : columns)
             paramType.put(column.getColumnName(), column.getColumnType());
 
+        // получаем значение считываемой строки таблицы
         for (String key : paramType.keySet()) {
             if (paramType.get(key).equals("int")) {
                 String columnName = key;
@@ -43,6 +51,7 @@ public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
             }
         }
 
+        // создание объекта строки таблицы бд
         DtoEntityImpl dtoEntity = null;
         if (paramType.size() == paramValue.size())
             dtoEntity = new DtoEntityImpl(paramType, paramValue);
