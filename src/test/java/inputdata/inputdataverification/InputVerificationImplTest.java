@@ -73,7 +73,7 @@ public class InputVerificationImplTest extends Assert {
             String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
 
             JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
-            ATableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+            InputDataTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
 
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);

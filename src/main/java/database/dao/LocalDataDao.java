@@ -30,7 +30,7 @@ public class LocalDataDao extends ABaseDao<DtoEntityImpl> implements ILocalDataD
     public LocalDataDao(JdbcTemplate jdbcTemplate, LocalDataTableDesc localdbTableDesc) {
         super(jdbcTemplate);
 
-        SELECT_BYID_SQL = "select * from " + tableDesc.getTableName() + " where " +
+        SELECT_BYID_SQL = "select * from " + localdbTableDesc.getTableName() + " where " +
                 ATableDesc.ID_COLUMN_NAME + " = ?";
         this.tableDesc = localdbTableDesc;
     }
@@ -45,28 +45,47 @@ public class LocalDataDao extends ABaseDao<DtoEntityImpl> implements ILocalDataD
 
     @Override
     @Transactional
-    public DtoEntityImpl create() throws SQLException {
-        return null;
+    public void create(DtoEntityImpl entity) throws SQLException {
+        INSERT_SQL = configureInsertSql(entity, tableDesc);
+        jdbcTemplate.update(INSERT_SQL);
     }
 
     @Override
     @Transactional
     public void update(DtoEntityImpl entity) throws SQLException {
         UPDATE_SQL = configureUpdateSql(entity, tableDesc);
-        int entityID = (int) entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME);
-
-        jdbcTemplate.update(UPDATE_SQL, entityID);
+        jdbcTemplate.update(UPDATE_SQL);
     }
 
-    private String configureUpdateSql(DtoEntityImpl entity, ATableDesc tableDesc) {
+    private String configureUpdateSql(DtoEntityImpl entity, LocalDataTableDesc tableDesc) {
         StringBuilder updateSql = new StringBuilder();
 
         updateSql.append("update " + tableDesc.getTableName() + " set ");
         for (String columnName : entity.getColumnNames())
-            updateSql.append(columnName + " = " + entity.getValueByColumnName(columnName) + ",");
+            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
+                updateSql.append(columnName + " = " + entity.getValueByColumnName(columnName) + ",");
         // замена последней запятой
-        updateSql.replace(updateSql.length() - 1, updateSql.length() - 1, " where " +
+        updateSql.replace(updateSql.length() - 1, updateSql.length(), " where " +
                 ATableDesc.ID_COLUMN_NAME + " = " + entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME));
+
+        return updateSql.toString();
+    }
+
+    private String configureInsertSql(DtoEntityImpl entity, LocalDataTableDesc tableDesc) {
+        StringBuilder updateSql = new StringBuilder();
+
+        updateSql.append("insert into " + tableDesc.getTableName() + " (");
+        for (String columnName : entity.getColumnNames())
+            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
+                updateSql.append(columnName + ",");
+        // замена последней запятой
+        updateSql.replace(updateSql.length() - 1, updateSql.length(), ") values (");
+
+        for (String columnName : entity.getColumnNames())
+            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
+                updateSql.append(entity.getValueByColumnName(columnName) + ",");
+        // замена последней запятой
+        updateSql.replace(updateSql.length() - 1, updateSql.length(), ")");
 
         return updateSql.toString();
     }

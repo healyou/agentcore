@@ -3,6 +3,7 @@ package inputdata.inputdataverification.inputdata.base;
 import com.google.common.collect.ImmutableList;
 import inputdata.inputdataverification.inputdata.TableColumn;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -45,6 +46,15 @@ public abstract class ATableDesc {
 
     public List<TableColumn> getColumns() {
         return columns;
+    }
+
+    public static String translateToSqlType(String type) {
+        if (type.equals("int"))
+            return "INTEGER";
+        if (type.equals("String"))
+            return "TEXT";
+
+        return null;
     }
 
 }

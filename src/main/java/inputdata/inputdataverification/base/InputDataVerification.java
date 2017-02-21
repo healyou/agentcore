@@ -32,6 +32,6 @@ public interface InputDataVerification {
      * @param tableDesc описание таблицы в бд
      * @throws Exception если не смогли считать запись
      */
-    public void testReadDbData(JdbcTemplate jdbcTemplate, ATableDesc tableDesc) throws Exception;
+    public void testReadDbData(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc) throws Exception;
 
 }

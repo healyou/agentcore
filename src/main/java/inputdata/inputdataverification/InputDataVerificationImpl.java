@@ -80,7 +80,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
     }
 
     @Override
-    public void testReadDbData(JdbcTemplate jdbcTemplate, ATableDesc tableDesc) throws Exception {
+    public void testReadDbData(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc) throws Exception {
         if (tableDesc == null)
             throw new IOException();
 

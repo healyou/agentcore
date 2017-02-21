@@ -4,6 +4,7 @@ import agentfoundation.localdatabase.base.IAgentDatabase;
 import com.google.common.collect.ImmutableList;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
+import inputdata.inputdataverification.inputdata.InputDataTableDesc;
 import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
 import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
@@ -27,7 +28,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private final static String DB_PROPERTIES_PATH = "localsqlitedb.properties";
     private final static String TABLE_NAME = "localdata";
 
-    // TEXT
+    // TEXT - String type for table value
     private final static String ANSWER_COLUMN_NAME = "answer";
     private final static String COLLECTIVEANSWER_COLUMN_NAME = "collectiveanswer";
 
@@ -35,7 +36,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private LocalDataTableDesc localdbTableDesc;
     private LocalDataDao localDataDao;
 
-    public AgentDatabaseImpl(ATableDesc inputDataTD) {
+    public AgentDatabaseImpl(InputDataTableDesc inputDataTD) {
         jdbcTemplate = getJdbcTemplate();
         createOrOpenDatabase(jdbcTemplate, inputDataTD);
         localdbTableDesc = createLocalDbDesc(inputDataTD);
@@ -44,12 +45,12 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
     @Override
     public void addSolution(DtoEntityImpl dtoEntity) throws SQLException {
-        localDataDao.
+        localDataDao.create(dtoEntity);
     }
 
     @Override
     public void updateSolution(DtoEntityImpl dtoEntity) throws SQLException {
-        // стоит ли использовать старый класс и надо ли новый создавать для доступа к 2 полям отдельно?
+        localDataDao.update(dtoEntity);
     }
 
     @Override
@@ -80,11 +81,14 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
         sql.append("    (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,");
 
         for (TableColumn tableColumn : inputDataTD.getColumns()) {
-            String columnName = tableColumn.getColumnName();
-            String columnType = tableColumn.getColumnType();
+            if (tableColumn.getColumnName().equals(InputDataTableDesc.ID_COLUMN_NAME))
+                continue;
 
+            String columnName = tableColumn.getColumnName();
+            String columnType = ATableDesc.translateToSqlType(tableColumn.getColumnType());
             sql.append(columnName + ' ' + columnType + ',');
         }
+
         sql.append(ANSWER_COLUMN_NAME + " TEXT,");
         sql.append(COLLECTIVEANSWER_COLUMN_NAME + " TEXT);");
 
