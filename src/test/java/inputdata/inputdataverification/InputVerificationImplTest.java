@@ -1,6 +1,6 @@
 package inputdata.inputdataverification;
 
-import inputdata.inputdataverification.inputdata.InputTableDesc;
+import inputdata.inputdataverification.inputdata.TableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;
@@ -51,7 +51,7 @@ public class InputVerificationImplTest extends Assert {
             String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
 
             JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
-            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+            TableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
 
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
@@ -59,7 +59,7 @@ public class InputVerificationImplTest extends Assert {
             assertEquals(1000, tableDesc.getPeriodicityMS());
             assertNotNull(tableDesc.getColumns());
             // смотрим на обязательную колонку в таблице
-            assertTrue(isTableColumn(tableDesc, InputTableDesc.ID_COLUMN_NAME, InputTableDesc.ID_COLUMN_TYPE));
+            assertTrue(isTableColumn(tableDesc, TableDesc.ID_COLUMN_NAME, TableDesc.ID_COLUMN_TYPE));
         } catch (Exception e) {
             fail(e.toString());
         }
@@ -72,7 +72,7 @@ public class InputVerificationImplTest extends Assert {
             String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
 
             JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
-            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+            TableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
 
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
@@ -90,7 +90,7 @@ public class InputVerificationImplTest extends Assert {
             String tableDescFileName = getClass().getResource("errorTestData/errorTD.xml").toURI().getPath();
 
             JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
-            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+            TableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
 
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
@@ -98,7 +98,7 @@ public class InputVerificationImplTest extends Assert {
             assertEquals(1000, tableDesc.getPeriodicityMS());
             assertNotNull(tableDesc.getColumns());
             // смотрим на обязательную колонку в таблице
-            assertTrue(isTableColumn(tableDesc, InputTableDesc.ID_COLUMN_NAME, InputTableDesc.ID_COLUMN_TYPE));
+            assertTrue(isTableColumn(tableDesc, TableDesc.ID_COLUMN_NAME, TableDesc.ID_COLUMN_TYPE));
         } catch (Exception e) {
             fail(e.toString());
         }
@@ -111,7 +111,7 @@ public class InputVerificationImplTest extends Assert {
             String tableDescFileName = getClass().getResource("tableDescription.xml").toURI().getPath();
 
             JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
-            InputTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
+            TableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
 
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
@@ -129,7 +129,7 @@ public class InputVerificationImplTest extends Assert {
      * @param idColumnType тип данных столбца
      * @return да, если такой столбец есть
      */
-    private boolean isTableColumn(InputTableDesc tableDesc, String idColumnName, String idColumnType) {
+    private boolean isTableColumn(TableDesc tableDesc, String idColumnName, String idColumnType) {
         for (TableColumn column : tableDesc.getColumns()) {
             if (column.getColumnName().equals(idColumnName) &&
                     column.getColumnType().equals(idColumnType))

@@ -1,4 +1,4 @@
-package agentfoundation.database.base;
+package agentfoundation.localdatabase.base;
 
 import java.sql.SQLException;
 

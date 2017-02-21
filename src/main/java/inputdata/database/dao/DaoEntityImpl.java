@@ -3,7 +3,7 @@ package inputdata.database.dao;
 import inputdata.database.dao.base.ABaseDao;
 import inputdata.database.dto.DtoEntityImpl;
 import inputdata.database.dto.DtoEntityImplRowMapper;
-import inputdata.inputdataverification.inputdata.InputTableDesc;
+import inputdata.inputdataverification.inputdata.TableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.SQLException;
@@ -18,33 +18,33 @@ public class DaoEntityImpl extends ABaseDao<DtoEntityImpl> {
     private static String SELECT_FIRST_SQL;
     private static String DELETE_SQL;
 
-    private InputTableDesc inputTableDesc;
+    private TableDesc tableDesc;
 
     /**
      * Осущ. чтение базы данных
      * @param jdbcTemplate чтение бд
-     * @param inputTableDesc данные о таблице бд
+     * @param tableDesc данные о таблице бд
      */
-    public DaoEntityImpl(JdbcTemplate jdbcTemplate, InputTableDesc inputTableDesc) {
+    public DaoEntityImpl(JdbcTemplate jdbcTemplate, TableDesc tableDesc) {
         super(jdbcTemplate);
 
-        SELECT_FIRST_SQL = "select * from " + inputTableDesc.getTableName() + " order by ? limit 1";
-        DELETE_SQL = "delete from " + inputTableDesc.getTableName() + " where id = ?";
-        this.inputTableDesc = inputTableDesc;
+        SELECT_FIRST_SQL = "select * from " + tableDesc.getTableName() + " order by ? limit 1";
+        DELETE_SQL = "delete from " + tableDesc.getTableName() + " where id = ?";
+        this.tableDesc = tableDesc;
     }
 
     @Override
     public DtoEntityImpl getFirst(String columnIdName) throws SQLException {
         return jdbcTemplate.queryForObject(
                 SELECT_FIRST_SQL, new Object[] { columnIdName },
-                new DtoEntityImplRowMapper(inputTableDesc));
+                new DtoEntityImplRowMapper(tableDesc));
     }
 
     @Override
     public void delete(DtoEntityImpl entity, String columnIdName) throws SQLException {
         jdbcTemplate.query(DELETE_SQL, new Object[] {
                 entity.getValueByColumnName(columnIdName) },
-                new DtoEntityImplRowMapper(inputTableDesc));
+                new DtoEntityImplRowMapper(tableDesc));
     }
 
 }

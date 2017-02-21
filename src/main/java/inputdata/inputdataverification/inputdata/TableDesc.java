@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @autor Nikita Gorodilov
  */
-public class InputTableDesc {
+public class TableDesc {
 
     /**
      * Колонка id должна быть именно такой
@@ -32,7 +32,7 @@ public class InputTableDesc {
      * @param periodicityMS периодичность просмотра таблицы(берём 1 запись и удаляем её)
      * @param columns имена колонок и типы данных
      */
-    public InputTableDesc(String tableName, int periodicityMS, ImmutableList<TableColumn> columns) {
+    public TableDesc(String tableName, int periodicityMS, ImmutableList<TableColumn> columns) {
         this.tableName = tableName;
         this.periodicityMS = periodicityMS;
         this.columns = columns;

@@ -1,6 +1,6 @@
 package inputdata.database.dto;
 
-import inputdata.inputdataverification.inputdata.InputTableDesc;
+import inputdata.inputdataverification.inputdata.TableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -16,14 +16,14 @@ import java.util.List;
  */
 public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
 
-    private InputTableDesc inputTableDesc;
+    private TableDesc tableDesc;
 
     /**
      * Класс, необходимый для чтения данных из бд
-     * @param inputTableDesc данные о неизвестной заранее структуре таблицы
+     * @param tableDesc данные о неизвестной заранее структуре таблицы
      */
-    public DtoEntityImplRowMapper(InputTableDesc inputTableDesc) {
-        this.inputTableDesc = inputTableDesc;
+    public DtoEntityImplRowMapper(TableDesc tableDesc) {
+        this.tableDesc = tableDesc;
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
@@ -33,7 +33,7 @@ public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
         HashMap<String, String> paramType = new HashMap<>();
         HashMap<String, Object> paramValue = new HashMap<>();
         // значения столбцов таблицы пользователя
-        List<TableColumn> columns = inputTableDesc.getColumns();
+        List<TableColumn> columns = tableDesc.getColumns();
 
         // получаем тип данных параметров
         for (TableColumn column : columns)
