@@ -1,6 +1,7 @@
 package inputdata.inputdataverification.base;
 
-import inputdata.inputdataverification.inputdata.TableDesc;
+import inputdata.inputdataverification.inputdata.InputDataTableDesc;
+import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
@@ -24,13 +25,13 @@ public interface InputDataVerification {
      * @return все данные о таблице в базе данных
      * @throws Exception если при чтении была какая то ошибка
      */
-    public TableDesc getDatabaseTables(String descFileName) throws Exception;
+    public InputDataTableDesc getDatabaseTables(String descFileName) throws Exception;
 
     /**
      * @param jdbcTemplate класс, для работы с jdbc бд
      * @param tableDesc описание таблицы в бд
      * @throws Exception если не смогли считать запись
      */
-    public void testReadDbData(JdbcTemplate jdbcTemplate, TableDesc tableDesc) throws Exception;
+    public void testReadDbData(JdbcTemplate jdbcTemplate, ATableDesc tableDesc) throws Exception;
 
 }

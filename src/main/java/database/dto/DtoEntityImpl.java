@@ -1,6 +1,6 @@
-package inputdata.database.dto;
+package database.dto;
 
-import inputdata.database.dto.base.ABaseDtoEntity;
+import database.dto.base.ABaseDtoEntity;
 
 import java.util.*;
 

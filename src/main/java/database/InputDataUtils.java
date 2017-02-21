@@ -1,4 +1,4 @@
-package inputdata.database;
+package database;
 
 /**
  * Created on 17.02.2017 17:18

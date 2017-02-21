@@ -1,6 +1,7 @@
-package inputdata.inputdataverification.inputdata;
+package inputdata.inputdataverification.inputdata.base;
 
 import com.google.common.collect.ImmutableList;
+import inputdata.inputdataverification.inputdata.TableColumn;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
  *
  * @autor Nikita Gorodilov
  */
-public class TableDesc {
+public abstract class ATableDesc {
 
     /**
      * Колонка id должна быть именно такой
@@ -23,42 +24,23 @@ public class TableDesc {
      */
     public final static String ID_COLUMN_TYPE = "int";
 
-    private String tableName;
-    private int periodicityMS;
-    private ImmutableList<TableColumn> columns;
+    protected String tableName;
+    protected ImmutableList<TableColumn> columns;
 
     /**
      * @param tableName имя таблицы
-     * @param periodicityMS периодичность просмотра таблицы(берём 1 запись и удаляем её)
      * @param columns имена колонок и типы данных
      */
-    public TableDesc(String tableName, int periodicityMS, ImmutableList<TableColumn> columns) {
+    public ATableDesc(String tableName, ImmutableList<TableColumn> columns) {
         this.tableName = tableName;
-        this.periodicityMS = periodicityMS;
         this.columns = columns;
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("[tableName = " + tableName + ", periodicityMS = " + periodicityMS + ", columns = \n");
-
-        for (int i = 0; i < columns.size(); i++) {
-            TableColumn tableColumn = columns.get(i);
-            sb.append('(' + tableColumn.getColumnName() + " - ");
-            sb.append(tableColumn.getColumnType() + ")\n");
-        }
-
-        sb.append("]");
-        return sb.toString();
-    }
+    public abstract String toString();
 
     public String getTableName() {
         return tableName;
-    }
-
-    public int getPeriodicityMS() {
-        return periodicityMS;
     }
 
     public List<TableColumn> getColumns() {

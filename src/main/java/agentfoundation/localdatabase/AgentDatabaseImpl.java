@@ -1,7 +1,11 @@
 package agentfoundation.localdatabase;
 
 import agentfoundation.localdatabase.base.IAgentDatabase;
-import inputdata.inputdataverification.inputdata.TableDesc;
+import com.google.common.collect.ImmutableList;
+import database.dao.LocalDataDao;
+import database.dto.DtoEntityImpl;
+import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
+import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -10,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Properties;
 
@@ -21,66 +27,80 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private final static String DB_PROPERTIES_PATH = "localsqlitedb.properties";
     private final static String TABLE_NAME = "localdata";
 
+    // TEXT
+    private final static String ANSWER_COLUMN_NAME = "answer";
+    private final static String COLLECTIVEANSWER_COLUMN_NAME = "collectiveanswer";
+
     private JdbcTemplate jdbcTemplate;
-    private TableDesc localdbTableDesc;
+    private LocalDataTableDesc localdbTableDesc;
+    private LocalDataDao localDataDao;
 
-    public AgentDatabaseImpl(TableDesc tableDesc) {
+    public AgentDatabaseImpl(ATableDesc inputDataTD) {
         jdbcTemplate = getJdbcTemplate();
-        createOrOpenDatabase(jdbcTemplate, tableDesc);
+        createOrOpenDatabase(jdbcTemplate, inputDataTD);
+        localdbTableDesc = createLocalDbDesc(inputDataTD);
+        localDataDao = new LocalDataDao(jdbcTemplate, localdbTableDesc);/*как сделать dao для 2 бд*/
     }
 
     @Override
-    public void addSolution() throws SQLException {
-
+    public void addSolution(DtoEntityImpl dtoEntity) throws SQLException {
+        localDataDao.
     }
 
     @Override
-    public void addCollectiveSolution() throws SQLException {
+    public void updateSolution(DtoEntityImpl dtoEntity) throws SQLException {
         // стоит ли использовать старый класс и надо ли новый создавать для доступа к 2 полям отдельно?
+    }
+
+    @Override
+    public LocalDataTableDesc getLocalDbTableDesc() {
+        return localdbTableDesc;
     }
 
     /**
      * Создаём таблицы в локальной бд, если их ещё нет
-     * @param tableDesc структура таблицы входных данных
+     * @param jdbcTemplate работа с бд
+     * @param inputDataTD структура таблицы входных данных
      */
-    private void createOrOpenDatabase(JdbcTemplate jdbcTemplate, TableDesc tableDesc) {
+    private void createOrOpenDatabase(JdbcTemplate jdbcTemplate, ATableDesc inputDataTD) {
         try {
             Statement statement = jdbcTemplate.getDataSource().getConnection().createStatement();
 
             // создание таблицы в локальной бд
-            StringBuilder sql = new StringBuilder();
-            sql.append("CREATE TABLE if not exists " + TABLE_NAME);
-            sql.append("    (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,");
-
-            sql.append(getInputTableColumnSql(tableDesc));
-            sql.append(getNewColumnSql());
-            // замена последней запятой
-            sql.replace(sql.length() - 1, sql.length() - 1, ");");
-
-            statement.execute(sql.toString());
+            statement.execute(createSqlQuery(inputDataTD));
         } catch (SQLException e) {
             System.out.println(e.toString());
         }
 
     }
 
-    private String getInputTableColumnSql(TableDesc tableDesc) {
-        StringBuilder ret = new StringBuilder();
+    private String createSqlQuery(ATableDesc inputDataTD) {
+        StringBuilder sql = new StringBuilder();
+        sql.append("CREATE TABLE if not exists " + TABLE_NAME);
+        sql.append("    (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,");
 
-        for (TableColumn tableColumn : tableDesc.getColumns()) {
+        for (TableColumn tableColumn : inputDataTD.getColumns()) {
             String columnName = tableColumn.getColumnName();
             String columnType = tableColumn.getColumnType();
 
-            ret.append(columnName + ' ' + columnType + ',');
+            sql.append(columnName + ' ' + columnType + ',');
         }
+        sql.append(ANSWER_COLUMN_NAME + " TEXT,");
+        sql.append(COLLECTIVEANSWER_COLUMN_NAME + " TEXT);");
 
-        return ret.toString();
+        return sql.toString();
     }
 
-    private String getNewColumnSql() {
-        // доделать
-        // новые поля добавляем какие - они тут указаны будут
-        return "";
+    private LocalDataTableDesc createLocalDbDesc(ATableDesc inputDataTD) {
+        List<TableColumn> columns = new ArrayList<>();
+
+        for (TableColumn tableColumn : inputDataTD.getColumns())
+            columns.add(new TableColumn(tableColumn.getColumnName(), tableColumn.getColumnType()));
+
+        columns.add(new TableColumn(ANSWER_COLUMN_NAME, "String"));
+        columns.add(new TableColumn(COLLECTIVEANSWER_COLUMN_NAME, "String"));
+
+        return new LocalDataTableDesc(TABLE_NAME, ImmutableList.copyOf(columns));
     }
 
     private JdbcTemplate getJdbcTemplate() {

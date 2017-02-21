@@ -1,6 +1,6 @@
-package inputdata.database.dto;
+package database.dto;
 
-import inputdata.inputdataverification.inputdata.TableDesc;
+import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -16,13 +16,13 @@ import java.util.List;
  */
 public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
 
-    private TableDesc tableDesc;
+    private ATableDesc tableDesc;
 
     /**
      * Класс, необходимый для чтения данных из бд
      * @param tableDesc данные о неизвестной заранее структуре таблицы
      */
-    public DtoEntityImplRowMapper(TableDesc tableDesc) {
+    public DtoEntityImplRowMapper(ATableDesc tableDesc) {
         this.tableDesc = tableDesc;
     }
 

@@ -1,6 +1,6 @@
-package inputdata.database.dao.base;
+package database.dao.base;
 
-import inputdata.database.dto.base.ABaseDtoEntity;
+import database.dto.base.ABaseDtoEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.SQLException;
@@ -19,8 +19,5 @@ public abstract class ABaseDao<T extends ABaseDtoEntity> {
     public ABaseDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
-    public abstract T getFirst(String columnIdName) throws SQLException;
-    public abstract void delete(T entity, String columnIdName) throws SQLException;
 
 }

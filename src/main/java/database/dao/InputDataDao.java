@@ -1,10 +1,13 @@
-package inputdata.database.dao;
+package database.dao;
 
-import inputdata.database.dao.base.ABaseDao;
-import inputdata.database.dto.DtoEntityImpl;
-import inputdata.database.dto.DtoEntityImplRowMapper;
-import inputdata.inputdataverification.inputdata.TableDesc;
+import database.dao.base.ABaseDao;
+import database.dao.base.IInputDataDao;
+import database.dto.DtoEntityImpl;
+import database.dto.DtoEntityImplRowMapper;
+import inputdata.inputdataverification.inputdata.InputDataTableDesc;
+import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 
@@ -13,19 +16,19 @@ import java.sql.SQLException;
  *
  * @autor Nikita Gorodilov
  */
-public class DaoEntityImpl extends ABaseDao<DtoEntityImpl> {
+public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataDao<DtoEntityImpl> {
 
     private static String SELECT_FIRST_SQL;
     private static String DELETE_SQL;
 
-    private TableDesc tableDesc;
+    private InputDataTableDesc tableDesc;
 
     /**
      * Осущ. чтение базы данных
      * @param jdbcTemplate чтение бд
      * @param tableDesc данные о таблице бд
      */
-    public DaoEntityImpl(JdbcTemplate jdbcTemplate, TableDesc tableDesc) {
+    public InputDataDao(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc) {
         super(jdbcTemplate);
 
         SELECT_FIRST_SQL = "select * from " + tableDesc.getTableName() + " order by ? limit 1";
@@ -34,6 +37,7 @@ public class DaoEntityImpl extends ABaseDao<DtoEntityImpl> {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DtoEntityImpl getFirst(String columnIdName) throws SQLException {
         return jdbcTemplate.queryForObject(
                 SELECT_FIRST_SQL, new Object[] { columnIdName },
@@ -41,6 +45,7 @@ public class DaoEntityImpl extends ABaseDao<DtoEntityImpl> {
     }
 
     @Override
+    @Transactional
     public void delete(DtoEntityImpl entity, String columnIdName) throws SQLException {
         jdbcTemplate.query(DELETE_SQL, new Object[] {
                 entity.getValueByColumnName(columnIdName) },

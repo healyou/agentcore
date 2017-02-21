@@ -1,7 +1,7 @@
-package inputdata.database.dto.base;
+package database.dto.base;
 
-import inputdata.database.dto.DtoEntityImpl;
-import inputdata.database.InputDataUtils;
+import database.dto.DtoEntityImpl;
+import database.InputDataUtils;
 
 import java.io.Serializable;
 import java.util.Collection;

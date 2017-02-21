@@ -1,9 +1,10 @@
 package inputdata.inputdataverification;
 
 import com.google.common.collect.ImmutableList;
-import inputdata.database.dao.DaoEntityImpl;
-import inputdata.database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.TableDesc;
+import database.dao.InputDataDao;
+import database.dto.DtoEntityImpl;
+import inputdata.inputdataverification.inputdata.InputDataTableDesc;
+import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -51,8 +52,8 @@ public class InputDataVerificationImpl implements InputDataVerification {
     }
 
     @Override
-    public TableDesc getDatabaseTables(String descFilePath) throws Exception {
-        TableDesc tableDesc = null;
+    public InputDataTableDesc getDatabaseTables(String descFilePath) throws Exception {
+        InputDataTableDesc tableDesc = null;
 
         try {
             final File xmlFile = new File(descFilePath);
@@ -79,13 +80,13 @@ public class InputDataVerificationImpl implements InputDataVerification {
     }
 
     @Override
-    public void testReadDbData(JdbcTemplate jdbcTemplate, TableDesc tableDesc) throws Exception {
+    public void testReadDbData(JdbcTemplate jdbcTemplate, ATableDesc tableDesc) throws Exception {
         if (tableDesc == null)
             throw new IOException();
 
         try {
-            DaoEntityImpl daoEntity = new DaoEntityImpl(jdbcTemplate, tableDesc);
-            DtoEntityImpl dtoEntity = daoEntity.getFirst(TableDesc.ID_COLUMN_NAME);
+            InputDataDao daoEntity = new InputDataDao(jdbcTemplate, tableDesc);
+            DtoEntityImpl dtoEntity = daoEntity.getFirst(ATableDesc.ID_COLUMN_NAME);
             if (dtoEntity == null)
                 throw new SQLException();
         } catch (SQLException e) {
@@ -100,7 +101,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
      *     ...
      * </Table>
      */
-    private TableDesc parseTableNode(Node tableNode) {
+    private InputDataTableDesc parseTableNode(Node tableNode) {
         String tableName = "";
         int periodicityMs = -1;
         ImmutableList<TableColumn> columns = null;
@@ -121,7 +122,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
             }
         }
 
-        return new TableDesc(tableName, periodicityMs, columns);
+        return new InputDataTableDesc(tableName, periodicityMs, columns);
     }
 
     /**
