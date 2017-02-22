@@ -1,3 +1,7 @@
+import agentcommunication.AgentCommunicationImpl;
+import agentcommunication.base.IAgentCommunication;
+import agentcommunication.message.ClientMessage;
+import agentcommunication.message.ServerMessage;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dto.DtoEntityImpl;
 import inputdata.inputdataverification.InputDataVerificationImpl;
@@ -6,6 +10,12 @@ import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 
 /**
@@ -16,11 +26,45 @@ import java.util.HashMap;
 public class main {
 
     public static void main(String[] args) {
-        agentlocaldatabase();
+        agentCommunication();
+        //agentlocaldatabase();
         //inputdataverif();
     }
 
-    public static void agentlocaldatabase() {
+    private static void agentCommunication() {
+        int port = 5678;
+        String host = "localhost";
+        ServerSocket serv = null;
+        try {
+            serv = new ServerSocket(port, 0, InetAddress.getByName(host));
+        } catch (IOException e) {
+            System.out.println("Порт занят: " + port);
+            System.exit(-1);
+        }
+
+        try {
+            IAgentCommunication agentCom = AgentCommunicationImpl.getInstance();
+            agentCom.connect("127.0.0.1", port);
+
+            Socket socket = serv.accept();
+            agentCom.sendMassege(new ClientMessage(new DtoEntityImpl(null, null)));
+
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+
+            //while (true) {
+            Object object = inputStream.readObject();
+            if (object instanceof ClientMessage) {
+                System.out.println("good message from client to server");
+                new ObjectOutputStream(socket.getOutputStream()).writeObject(new ServerMessage());
+            }
+
+            serv.close();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    private static void agentlocaldatabase() {
         InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
         try {
             InputDataTableDesc tableDesc = dataVerification.
@@ -54,7 +98,7 @@ public class main {
         }
     }
 
-    public static void inputdataverif() {
+    private static void inputdataverif() {
         InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
         try {
             InputDataTableDesc tableDesc = dataVerification.
