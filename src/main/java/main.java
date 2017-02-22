@@ -4,11 +4,9 @@ import inputdata.inputdataverification.InputDataVerificationImpl;
 import inputdata.inputdataverification.inputdata.InputDataTableDesc;
 import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * Created on 17.02.2017 12:03
@@ -28,7 +26,8 @@ public class main {
             InputDataTableDesc tableDesc = dataVerification.
                     getDatabaseTables("C:\\Users\\lappi\\IdeaProjects\\agentcore\\src\\test\\resources\\inputdata\\inputdataverification\\tableDescription.xml");
 
-            AgentDatabaseImpl agentDb = new AgentDatabaseImpl(tableDesc);
+            AgentDatabaseImpl agentDb = new AgentDatabaseImpl(tableDesc,
+                    AgentDatabaseImpl.class.getResource("localsqlitedb.properties").toURI().getPath());
             LocalDataTableDesc localDataTD = agentDb.getLocalDbTableDesc();
 
             HashMap<String, String> paramType = new HashMap<>();

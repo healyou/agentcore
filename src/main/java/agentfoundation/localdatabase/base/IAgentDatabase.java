@@ -12,6 +12,7 @@ public interface IAgentDatabase {
 
     public void addSolution(DtoEntityImpl dtoEntity) throws SQLException;
     public void updateSolution(DtoEntityImpl dtoEntity) throws SQLException;
+    public void clearDatabase() throws SQLException;
     public ATableDesc getLocalDbTableDesc();
 
 }

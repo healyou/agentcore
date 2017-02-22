@@ -11,6 +11,7 @@ import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -25,8 +26,8 @@ import java.util.Properties;
  */
 public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
-    private final static String DB_PROPERTIES_PATH = "localsqlitedb.properties";
     private final static String TABLE_NAME = "localdata";
+    private static String DB_PROPERTIES_PATH;
 
     // TEXT - String type for table value
     private final static String ANSWER_COLUMN_NAME = "answer";
@@ -36,7 +37,8 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private LocalDataTableDesc localdbTableDesc;
     private LocalDataDao localDataDao;
 
-    public AgentDatabaseImpl(InputDataTableDesc inputDataTD) {
+    public AgentDatabaseImpl(InputDataTableDesc inputDataTD, String dbPropPath) {
+        DB_PROPERTIES_PATH= dbPropPath;
         jdbcTemplate = getJdbcTemplate();
         createOrOpenDatabase(jdbcTemplate, inputDataTD);
         localdbTableDesc = createLocalDbDesc(inputDataTD);
@@ -51,6 +53,12 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     @Override
     public void updateSolution(DtoEntityImpl dtoEntity) throws SQLException {
         localDataDao.update(dtoEntity);
+    }
+
+    @Override
+    public void clearDatabase() throws SQLException {
+        Statement statmt = jdbcTemplate.getDataSource().getConnection().createStatement();
+        statmt.execute("drop table " + TABLE_NAME + ";");
     }
 
     @Override
@@ -112,7 +120,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
         Properties dbprop = new Properties();
         try {
-            dbprop.load(getClass().getResource(DB_PROPERTIES_PATH).openStream());
+            dbprop.load(new FileInputStream(DB_PROPERTIES_PATH));
 
             String driverClassName = dbprop.getProperty("driverClassName");
             String url = dbprop.getProperty("url");
