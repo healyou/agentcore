@@ -49,14 +49,12 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
         }
 
         // получаем потоки ввода вывода
-        OutputStream out = null;
-        InputStream in = null;
         try {
-            in = socket.getInputStream();
-            out = socket.getOutputStream();
+            InputStream in = socket.getInputStream();
+            OutputStream out = socket.getOutputStream();
             outputStream = new ObjectOutputStream(out);
-            //inputStream = new ObjectInputStream(in);
-        } catch (IOException e) {
+            inputStream = new ObjectInputStream(in);
+        } catch (Exception e) {
             throw new IOException(e.toString() + "Не удалось получить поток вывода.");
         }
 
@@ -84,7 +82,6 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
     public void run() {
         // наследоваться от потока + сделать чтение нормальным(чтобы читать данные, когда они есть)
         try {
-            inputStream = new ObjectInputStream(socket.getInputStream());
             while (!interrupted()) {
                 Object object = inputStream.readObject();
                 checkServerObject(object);
@@ -100,10 +97,10 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
      */
     private void checkServerObject(Object object) {
         if (object instanceof ServerMessage) {
-            System.out.println("get message from server");
             // уведомить о новом сообщении
         }
 
+        setChanged();
         notifyObservers(object);
     }
 
