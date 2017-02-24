@@ -1,9 +1,10 @@
 package agentfoundation.agentcomandanalizer;
 
 import agentcommunication.AgentCommunicationImpl;
+import agentcommunication.base.IAgentCommunication;
 import agentcommunication.message.ClientMessage;
 import agentcommunication.message.ServerMessage;
-import agentfoundation.agentbrain.AgentBrainImpl;
+import agentfoundation.agentbrain.base.IAgentBrain;
 import agentfoundation.agentcomandanalizer.base.IComAnalizer;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
@@ -40,12 +41,12 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (!(arg instanceof DtoEntityImpl))
-            return;
+        System.out.println("Пришло сообщение в ComAnalizerImpl" +
+            o.getClass() + " " + arg.getClass());
 
-        if (o instanceof AgentCommunicationImpl && arg instanceof ServerMessage)
+        if (o instanceof IAgentCommunication && arg instanceof ServerMessage)
             updateAgentCommunication((ServerMessage) arg);
-        if (o instanceof AgentBrainImpl && arg instanceof DtoEntityImpl)
+        if (o instanceof IAgentBrain && arg instanceof DtoEntityImpl)
             updateAgentOutput((DtoEntityImpl) arg);
     }
 
@@ -59,7 +60,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
             DtoEntityImpl dtoEntity = message.getDtoEntity();
             dao.update(dtoEntity);
         } catch (SQLException e) {
-            System.out.println(e.toString());
+            System.out.println(e.toString() + " ошибка обновления данных локальной бд");
         }
     }
 
@@ -84,7 +85,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
         Pattern pattern = tableDesc.getComRegExp();
         Matcher matcher = pattern.matcher(value.toString());
 
-        return matcher.matches();
+        return !matcher.matches();
     }
 
     /**

@@ -57,7 +57,7 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
             outputStream = new ObjectOutputStream(out);
             inputStream = new ObjectInputStream(in);
         } catch (Exception e) {
-            throw new IOException(e.toString() + "Не удалось получить поток вывода.");
+            throw new IOException(e.toString() + " Не удалось получить поток вывода.");
         }
 
         isConnect = true;
@@ -108,10 +108,10 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
     private void checkServerObject(Object object) {
         if (object instanceof ServerMessage) {
             // уведомить о новом сообщении
+            System.out.println("Пришло сообщение с сервера AgentCommunicationImpl");
+            setChanged();
+            notifyObservers(object);
         }
-
-        setChanged();
-        notifyObservers(object);
     }
 
     /**
