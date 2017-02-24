@@ -43,7 +43,7 @@ public class AgentCommunicationImplTest extends Assert {
             serverThread.setDaemon(true);
             serverThread.start();
 
-            agentCom = AgentCommunicationImpl.getInstance();
+            agentCom = new AgentCommunicationImpl();
             agentCom.connect(HOST_ADDRESS, PORT);
 
             clientObserver = new TestClientObserver();

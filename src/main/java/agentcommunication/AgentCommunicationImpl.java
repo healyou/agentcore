@@ -15,19 +15,13 @@ import static java.lang.Thread.interrupted;
  */
 public class AgentCommunicationImpl extends Observable implements IAgentCommunication, Runnable {
 
-    private final static AgentCommunicationImpl instance = new AgentCommunicationImpl();
-
     private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     private Socket socket;
     private boolean isConnect = false;
     private Thread thread;
 
-    private AgentCommunicationImpl() { }
-
-    public static AgentCommunicationImpl getInstance() {
-        return instance;
-    }
+    public AgentCommunicationImpl() { }
 
     @Override
     public void sendMassege(ClientMessage message) throws IOException {

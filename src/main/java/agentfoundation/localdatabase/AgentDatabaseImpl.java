@@ -37,8 +37,8 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private LocalDataTableDesc localdbTableDesc;
     private LocalDataDao localDataDao;
 
-    public AgentDatabaseImpl(InputDataTableDesc inputDataTD, String dbPropPath) {
-        DB_PROPERTIES_PATH= dbPropPath;
+    public AgentDatabaseImpl(InputDataTableDesc inputDataTD, String localdbPropPath) {
+        DB_PROPERTIES_PATH = localdbPropPath;
         jdbcTemplate = getJdbcTemplate();
         createOrOpenDatabase(jdbcTemplate, inputDataTD);
         localdbTableDesc = createLocalDbDesc(inputDataTD);

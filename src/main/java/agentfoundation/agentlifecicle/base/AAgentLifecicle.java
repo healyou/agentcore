@@ -5,7 +5,7 @@ package agentfoundation.agentlifecicle.base;
  */
 public abstract class AAgentLifecicle {
 
-    protected abstract void onInit();
+    protected abstract void onInit() throws Exception;
     protected abstract void onStart();
     protected abstract void onPause();
     protected abstract void onResume();

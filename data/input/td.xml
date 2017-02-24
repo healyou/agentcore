@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableDescription>
+    <Table>
+        <TableName>intsedent</TableName>
+        <PeriodicityMS>1000</PeriodicityMS>
+        <OutputDataType>int</OutputDataType>
+        <CommunRegularExp>^\d?\d?\d$</CommunRegularExp>
+        <ColumnDescription>
+            <Column>
+                <ColumnName>id</ColumnName>
+                <ColumnType>int</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>shortinfo</ColumnName>
+                <ColumnType>String</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>info</ColumnName>
+                <ColumnType>String</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>extrainfo</ColumnName>
+                <ColumnType>String</ColumnType>
+            </Column>
+        </ColumnDescription>
+    </Table>
+</TableDescription>
