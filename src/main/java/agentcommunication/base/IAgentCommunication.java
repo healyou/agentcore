@@ -12,5 +12,6 @@ public interface IAgentCommunication {
     public void sendMassege(ClientMessage message)  throws IOException;
     public void connect(String host, int port) throws IOException;
     public void disconnect() throws IOException;
+    public boolean isConnect();
 
 }

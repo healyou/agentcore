@@ -1,10 +1,8 @@
 package agentcommunication;
 
-import agentcommunication.base.IAgentCommunication;
 import agentcommunication.message.ClientMessage;
 import agentcommunication.message.ServerMessage;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.InputDataVerificationImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -124,7 +122,8 @@ public class AgentCommunicationImplTest extends Assert {
                     Object object = inputStream.readObject();
                     if (object instanceof ClientMessage) {
                         isGetMessage = true;
-                        outputStream.writeObject(new ServerMessage());
+                        outputStream.writeObject(
+                                new ServerMessage(((ClientMessage) object).getDtoEntity()));
                     }
                 }
 

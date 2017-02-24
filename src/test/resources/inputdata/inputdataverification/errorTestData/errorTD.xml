@@ -3,6 +3,8 @@
     <Table>
         <TableName> </TableName>
         <PeriodicityMS>1000</PeriodicityMS>
+        <OutputDataType>int</OutputDataType>
+        <CommunRegularExp>^\d?\d$</CommunRegularExp>
         <ColumnDescription>
 
         </ColumnDescription>

@@ -1,5 +1,7 @@
 package agentcommunication.message;
 
+import database.dto.DtoEntityImpl;
+
 import java.io.Serializable;
 
 /**
@@ -7,8 +9,14 @@ import java.io.Serializable;
  */
 public class ServerMessage implements Serializable {
 
-    public ServerMessage() {
+    private DtoEntityImpl dtoEntity;
 
+    public ServerMessage(DtoEntityImpl dtoEntity) {
+        this.dtoEntity = dtoEntity;
+    }
+
+    public DtoEntityImpl getDtoEntity() {
+        return dtoEntity;
     }
 
 }

@@ -15,6 +15,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,7 +63,6 @@ public class InputDataVerificationImpl implements InputDataVerification {
             Document doc = db.parse(xmlFile);
 
             doc.getDocumentElement().normalize();
-
             if (doc.hasChildNodes()) {
                 // пока реализована лишь 1 таблица - для входных данных
                 NodeList tablesNL = doc.getElementsByTagName("Table");
@@ -105,24 +105,27 @@ public class InputDataVerificationImpl implements InputDataVerification {
         String tableName = "";
         int periodicityMs = -1;
         ImmutableList<TableColumn> columns = null;
+        String outputType = "";
+        Pattern pattern = null;
 
         NodeList children = tableNode.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE) {
-                if (node.getNodeName().equals("TableName")) {
+                if (node.getNodeName().equals("TableName"))
                     tableName = node.getTextContent();
-                }
-                if (node.getNodeName().equals("PeriodicityMS")) {
+                if (node.getNodeName().equals("PeriodicityMS"))
                     periodicityMs = Integer.valueOf(node.getTextContent());
-                }
-                if (node.getNodeName().equals("ColumnDescription")) {
+                if (node.getNodeName().equals("ColumnDescription"))
                     columns = parseColumns(node);
-                }
+                if (node.getNodeName().equals("OutputDataType"))
+                    outputType = node.getTextContent();
+                if (node.getNodeName().equals("CommunRegularExp"))
+                    pattern = Pattern.compile(node.getTextContent());
             }
         }
 
-        return new InputDataTableDesc(tableName, periodicityMs, columns);
+        return new InputDataTableDesc(tableName, periodicityMs, columns, outputType, pattern);
     }
 
     /**

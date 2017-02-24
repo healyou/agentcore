@@ -47,7 +47,8 @@ public class main {
             agentCom.connect("127.0.0.1", port);
 
             Socket socket = serv.accept();
-            agentCom.sendMassege(new ClientMessage(new DtoEntityImpl(null, null)));
+            DtoEntityImpl dtoEntity = new DtoEntityImpl(null, null);
+            agentCom.sendMassege(new ClientMessage(dtoEntity));
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
@@ -55,7 +56,7 @@ public class main {
             Object object = inputStream.readObject();
             if (object instanceof ClientMessage) {
                 System.out.println("good message from client to server");
-                new ObjectOutputStream(socket.getOutputStream()).writeObject(new ServerMessage());
+                new ObjectOutputStream(socket.getOutputStream()).writeObject(new ServerMessage(dtoEntity));
             }
 
             serv.close();

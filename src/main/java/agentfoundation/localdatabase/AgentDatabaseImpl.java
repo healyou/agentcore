@@ -26,12 +26,12 @@ import java.util.Properties;
  */
 public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
-    private final static String TABLE_NAME = "localdata";
-    private static String DB_PROPERTIES_PATH;
-
     // TEXT - String type for table value
-    private final static String ANSWER_COLUMN_NAME = "answer";
-    private final static String COLLECTIVEANSWER_COLUMN_NAME = "collectiveanswer";
+    public final static String ANSWER_COLUMN_NAME = "answer";
+    public final static String COLLECTIVEANSWER_COLUMN_NAME = "collectiveanswer";
+    public final static String TABLE_NAME = "localdata";
+
+    private static String DB_PROPERTIES_PATH;
 
     private JdbcTemplate jdbcTemplate;
     private LocalDataTableDesc localdbTableDesc;

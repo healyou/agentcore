@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.util.Observable;
 
 import static java.lang.Thread.interrupted;
-import static java.lang.Thread.sleep;
 
 /**
  * Created by user on 21.02.2017.
@@ -41,6 +40,9 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
 
     @Override
     public void connect(String host, int port) throws IOException {
+        if (isConnect)
+            return;
+
         // создаём подключение
         try {
             socket = new Socket(host, port);
@@ -64,6 +66,9 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
 
     @Override
     public void disconnect() throws IOException {
+        if (!isConnect)
+            return;
+
         try {
             isConnect = false;
             thread.interrupt();
@@ -73,6 +78,11 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
         } catch (IOException e) {
             throw new IOException(e.toString());
         }
+    }
+
+    @Override
+    public boolean isConnect() {
+        return isConnect;
     }
 
     /**

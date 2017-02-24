@@ -57,6 +57,8 @@ public class InputVerificationImplTest extends Assert {
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
             assertEquals("intsedent", tableDesc.getTableName());
+            assertEquals("int", tableDesc.getOutputType());
+            assertEquals("^\\d?\\d?\\d$", tableDesc.getComRegExp().toString());
             assertEquals(1000, tableDesc.getPeriodicityMS());
             assertNotNull(tableDesc.getColumns());
             // смотрим на обязательную колонку в таблице
@@ -96,6 +98,8 @@ public class InputVerificationImplTest extends Assert {
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
             assertEquals("intsedent", tableDesc.getTableName());
+            assertEquals("int", tableDesc.getOutputType());
+            assertEquals("^\\d?\\d?\\d$", tableDesc.getComRegExp().toString());
             assertEquals(1000, tableDesc.getPeriodicityMS());
             assertNotNull(tableDesc.getColumns());
             // смотрим на обязательную колонку в таблице
