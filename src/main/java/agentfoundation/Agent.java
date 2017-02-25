@@ -3,8 +3,7 @@ package agentfoundation;
 import agentcommunication.AgentCommunicationImpl;
 import agentfoundation.agentbrain.AgentBrainImpl;
 import agentfoundation.agentcomandanalizer.ComAnalizerImpl;
-import agentfoundation.agentcommand.base.IAgentCommand;
-import agentfoundation.agentlifecicle.base.AAgentLifecicle;
+import agentfoundation.agentlifecicle.base.AAgentCommand;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
 import inputdata.inputdataverification.InputDataVerificationImpl;
@@ -14,10 +13,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.io.FileInputStream;
 import java.util.Properties;
 
+import static java.lang.Thread.interrupted;
+import static java.lang.Thread.sleep;
+
 /**
  * Created by user on 21.02.2017.
  */
-public class Agent extends AAgentLifecicle implements IAgentCommand {
+public class Agent extends AAgentCommand implements Runnable {
 
     private final static String USER_DB_PROP_PATH = "data/input/db.properties";
     private final static String TABLE_DESC_PATH = "data/input/td.xml";
@@ -25,30 +27,36 @@ public class Agent extends AAgentLifecicle implements IAgentCommand {
 
     private AgentBrainImpl brain;
     private ComAnalizerImpl comAnalizer;
+    private AgentCommunicationImpl ac;
     private int updateMs;
+
+    private Thread thread = new Thread(this);
 
     public Agent() throws Exception {
         onInit();
     }
 
     @Override
-    public void start() {
+    public void run() {
+        try {
+            while (!interrupted()) {
+                brain.takeInputData();
+                brain.calculateOutput();
+                sleep(updateMs);
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString() + " прекращение выполнения потока агента");
+        }
+    }
 
+    @Override
+    public void start() {
+        onStart();
     }
 
     @Override
     public void stop() {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
+        onStop();
     }
 
     @Override
@@ -68,22 +76,13 @@ public class Agent extends AAgentLifecicle implements IAgentCommand {
 
     @Override
     protected void onStart() {
-
-    }
-
-    @Override
-    protected void onPause() {
-
-    }
-
-    @Override
-    protected void onResume() {
-
+        thread.setDaemon(true);
+        thread.start();
     }
 
     @Override
     protected void onStop() {
-
+        thread.interrupt();
     }
 
     /**
@@ -96,7 +95,7 @@ public class Agent extends AAgentLifecicle implements IAgentCommand {
     private void initCoreData(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc,
                               String localDbPropPath) throws Exception {
         brain = new AgentBrainImpl();
-        AgentCommunicationImpl ac = new AgentCommunicationImpl();
+        ac = new AgentCommunicationImpl();
         AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc, localDbPropPath);
         LocalDataDao dataDao = new LocalDataDao(jdbcTemplate, localdb.getLocalDbTableDesc());
         comAnalizer = new ComAnalizerImpl(tableDesc, ac, dataDao);

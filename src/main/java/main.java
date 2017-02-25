@@ -2,6 +2,8 @@ import agentcommunication.AgentCommunicationImpl;
 import agentcommunication.base.IAgentCommunication;
 import agentcommunication.message.ClientMessage;
 import agentcommunication.message.ServerMessage;
+import agentcommunication.message.ClientMessage.ClientMessageType;
+import agentcommunication.message.ServerMessage.ServerMessageType;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dto.DtoEntityImpl;
 import inputdata.inputdataverification.InputDataVerificationImpl;
@@ -43,12 +45,12 @@ public class main {
         }
 
         try {
-            IAgentCommunication agentCom = AgentCommunicationImpl.getInstance();
+            IAgentCommunication agentCom = new AgentCommunicationImpl();
             agentCom.connect("127.0.0.1", port);
 
             Socket socket = serv.accept();
             DtoEntityImpl dtoEntity = new DtoEntityImpl(null, null);
-            agentCom.sendMassege(new ClientMessage(dtoEntity));
+            agentCom.sendMassege(new ClientMessage(dtoEntity, ClientMessageType.SEARCH_SOLUTION));
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
 
@@ -56,7 +58,8 @@ public class main {
             Object object = inputStream.readObject();
             if (object instanceof ClientMessage) {
                 System.out.println("good message from client to server");
-                new ObjectOutputStream(socket.getOutputStream()).writeObject(new ServerMessage(dtoEntity));
+                new ObjectOutputStream(socket.getOutputStream()).writeObject(new ServerMessage(dtoEntity,
+                        ServerMessageType.GET_COLLECTIVE_SOLUTION));
             }
 
             serv.close();

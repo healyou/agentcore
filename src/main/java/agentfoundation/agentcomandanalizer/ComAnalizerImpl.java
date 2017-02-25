@@ -4,6 +4,8 @@ import agentcommunication.AgentCommunicationImpl;
 import agentcommunication.base.IAgentCommunication;
 import agentcommunication.message.ClientMessage;
 import agentcommunication.message.ServerMessage;
+import agentcommunication.message.ClientMessage.ClientMessageType;
+import agentcommunication.message.ServerMessage.ServerMessageType;
 import agentfoundation.agentbrain.base.IAgentBrain;
 import agentfoundation.agentcomandanalizer.base.IComAnalizer;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
@@ -57,20 +59,46 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      */
     private void updateAgentCommunication(ServerMessage message) {
         try {
-            DtoEntityImpl dtoEntity = message.getDtoEntity();
-            dao.update(dtoEntity);
+            ServerMessageType type = message.getMessageType();
+
+            switch (type) {
+                case SEARCH_COLLECTIVE_SOLUTION:
+                    // ищем своё решение по входным данным
+                    DtoEntityImpl dtoEntity = message.getDtoEntity();
+                    //updateSolution(dtoEntity);
+                    sendComMassage(dtoEntity, ClientMessageType.GET_SOLUTION);
+                    break;
+
+                case GET_COLLECTIVE_SOLUTION:
+                    // обновляем бд по общему решени.
+                    dao.update(message.getDtoEntity());
+                    break;
+
+                default:
+                    System.out.println("неизвестное сообщение от сервера");
+                    break;
+            }
+
         } catch (SQLException e) {
             System.out.println(e.toString() + " ошибка обновления данных локальной бд");
         }
     }
 
     /**
-     * Сигнал пришёлот мозга агента
+     * Агент вносит свой ответ в collective_answer и отправляет на сервер
+     * @param dtoEntity данные, которые надо пересмотреть агенту
+     */
+    private void updateSolution(DtoEntityImpl dtoEntity) {
+        throw new UnsupportedOperationException("Операция обновления данных для коллективного решения не поддерживается");
+    }
+
+    /**
+     * Сигнал пришёл от мозга агента
      * @param entity данные решения мозга агента
      */
     private void updateAgentOutput(DtoEntityImpl entity) {
         if (isSendComMessage(entity))
-            sendComMassage(entity);
+            sendComMassage(entity, ClientMessageType.SEARCH_SOLUTION);
     }
 
     /**
@@ -91,12 +119,12 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
     /**
      * отправка сигнала на модуль вз-ия с сервером
      */
-    private void sendComMassage(DtoEntityImpl entity) {
+    private void sendComMassage(DtoEntityImpl entity, ClientMessageType messageType) {
         if (!agentCom.isConnect())
             return;
 
         try {
-            ClientMessage clientMessage = new ClientMessage(entity);
+            ClientMessage clientMessage = new ClientMessage(entity, messageType);
             agentCom.sendMassege(clientMessage);
         } catch (IOException e) {
             System.out.println(e.toString());
