@@ -11,9 +11,9 @@ import database.dto.DtoEntityImpl;
 public class MCollectiveSolution extends AMessage {
 
     private DtoEntityImpl dtoEntity;
-    private Object solutionId;
+    private Integer solutionId;
 
-    public MCollectiveSolution(DtoEntityImpl dtoEntity, Object solutionId) {
+    public MCollectiveSolution(DtoEntityImpl dtoEntity, Integer solutionId) {
         this.dtoEntity = dtoEntity;
         this.solutionId = solutionId;
     }
@@ -22,7 +22,7 @@ public class MCollectiveSolution extends AMessage {
         return dtoEntity;
     }
 
-    public Object getSolutionId() {
+    public Integer getSolutionId() {
         return solutionId;
     }
 
