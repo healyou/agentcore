@@ -1,6 +1,6 @@
-package database.dao.base;
+package database.dao;
 
-import database.dto.base.ABaseDtoEntity;
+import database.dto.ABaseDtoEntity;
 
 import java.sql.SQLException;
 

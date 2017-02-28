@@ -1,11 +1,8 @@
 package database.dao;
 
-import database.dao.base.ABaseDao;
-import database.dao.base.IInputDataDao;
 import database.dto.DtoEntityImpl;
 import database.dto.DtoEntityImplRowMapper;
 import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 

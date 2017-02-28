@@ -1,6 +1,6 @@
 package database.dto;
 
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
+import inputdata.inputdataverification.inputdata.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.RowMapper;
 

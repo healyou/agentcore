@@ -1,7 +1,7 @@
 package inputdata.inputdataverification;
 
 import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
+import inputdata.inputdataverification.inputdata.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;

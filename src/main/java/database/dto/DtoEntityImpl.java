@@ -1,7 +1,5 @@
 package database.dto;
 
-import database.dto.base.ABaseDtoEntity;
-
 import java.util.*;
 
 /**

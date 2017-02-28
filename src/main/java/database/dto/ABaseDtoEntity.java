@@ -1,4 +1,4 @@
-package database.dto.base;
+package database.dto;
 
 import database.dto.DtoEntityImpl;
 import database.InputDataUtils;

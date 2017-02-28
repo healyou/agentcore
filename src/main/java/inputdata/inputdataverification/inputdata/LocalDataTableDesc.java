@@ -1,7 +1,6 @@
 package inputdata.inputdataverification.inputdata;
 
 import com.google.common.collect.ImmutableList;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
 
 /**
  * Created by user on 21.02.2017.

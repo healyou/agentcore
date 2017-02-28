@@ -1,7 +1,6 @@
-package inputdata.inputdataverification.base;
+package inputdata.inputdataverification;
 
 import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 /**

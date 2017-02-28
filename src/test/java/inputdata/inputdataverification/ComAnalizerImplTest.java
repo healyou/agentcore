@@ -1,11 +1,10 @@
 package inputdata.inputdataverification;
 
 import agentcommunication.AgentCommunicationImpl;
-import agentcommunication.message.ClientMessage;
-import agentcommunication.message.ServerMessage;
-import agentcommunication.message.ClientMessage.ClientMessageType;
-import agentcommunication.message.ServerMessage.ServerMessageType;
-import agentfoundation.agentbrain.base.IAgentBrain;
+import agentcommunication.message.AMessage;
+import agentcommunication.message.MCollectiveSolution;
+import agentcommunication.message.MSearchSolution;
+import agentfoundation.agentbrain.IAgentBrain;
 import agentfoundation.agentcomandanalizer.ComAnalizerImpl;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
@@ -227,24 +226,19 @@ public class ComAnalizerImplTest  extends Assert {
 
                 while (!interrupted()) {
                     Object object = inputStream.readObject();
-                    if (object instanceof ClientMessage) {
+                    if (object instanceof AMessage) {
                         isGetMessage = true;
-                        ClientMessage message = ((ClientMessage) object);
-                        DtoEntityImpl dtoEntity = message.getDtoEntity();
-                        // создаём с изменёнными параметрами
-                        DtoEntityImpl updateDto = createDtoEntity();
-                        switch (message.getMessageType()) {
-                            case SEARCH_SOLUTION:
+                        if (object instanceof MSearchSolution) {
+                            DtoEntityImpl dtoEntity = ((MSearchSolution) object).getDtoEntity();
+                            outputStream.writeObject(new MCollectiveSolution(dtoEntity, 1));
+                        }
+                        if (object instanceof MCollectiveSolution) {
+                            // создаём с изменёнными параметрами
+                            DtoEntityImpl updateDto = createDtoEntity();
+                            if (((MCollectiveSolution) object).getSolutionId().equals(1)) {
                                 outputStream.writeObject(
-                                        new ServerMessage(dtoEntity, ServerMessageType.SEARCH_COLLECTIVE_SOLUTION));
-                                break;
-                            case GET_SOLUTION:
-                                outputStream.writeObject(
-                                        new ServerMessage(updateDto, ServerMessageType.GET_COLLECTIVE_SOLUTION));
-                                break;
-                            default:
-
-                                break;
+                                        new MSearchSolution(updateDto));
+                            }
                         }
                     }
                 }

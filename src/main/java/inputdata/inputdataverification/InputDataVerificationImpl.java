@@ -4,11 +4,10 @@ import com.google.common.collect.ImmutableList;
 import database.dao.InputDataDao;
 import database.dto.DtoEntityImpl;
 import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
+import inputdata.inputdataverification.inputdata.ATableDesc;
 import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import inputdata.inputdataverification.base.InputDataVerification;
 import org.w3c.dom.*;
 
 import java.io.*;

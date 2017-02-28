@@ -1,13 +1,11 @@
 package agentfoundation.agentcomandanalizer;
 
 import agentcommunication.AgentCommunicationImpl;
-import agentcommunication.base.IAgentCommunication;
-import agentcommunication.message.ClientMessage;
-import agentcommunication.message.ServerMessage;
-import agentcommunication.message.ClientMessage.ClientMessageType;
-import agentcommunication.message.ServerMessage.ServerMessageType;
-import agentfoundation.agentbrain.base.IAgentBrain;
-import agentfoundation.agentcomandanalizer.base.IComAnalizer;
+import agentcommunication.IAgentCommunication;
+import agentcommunication.message.AMessage;
+import agentcommunication.message.MCollectiveSolution;
+import agentcommunication.message.MSearchSolution;
+import agentfoundation.agentbrain.IAgentBrain;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
@@ -46,8 +44,8 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
         System.out.println("Пришло сообщение в ComAnalizerImpl" +
             o.getClass() + " " + arg.getClass());
 
-        if (o instanceof IAgentCommunication && arg instanceof ServerMessage)
-            updateAgentCommunication((ServerMessage) arg);
+        if (o instanceof IAgentCommunication && arg instanceof AMessage)
+            updateAgentCommunication((AMessage) arg);
         if (o instanceof IAgentBrain && arg instanceof DtoEntityImpl)
             updateAgentOutput((DtoEntityImpl) arg);
     }
@@ -57,30 +55,21 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      * сохраняем данные в локальной бд
      * @param message данные с сервера
      */
-    private void updateAgentCommunication(ServerMessage message) {
-        try {
-            ServerMessageType type = message.getMessageType();
-
-            switch (type) {
-                case SEARCH_COLLECTIVE_SOLUTION:
-                    // ищем своё решение по входным данным
-                    DtoEntityImpl dtoEntity = message.getDtoEntity();
-                    //updateSolution(dtoEntity);
-                    sendComMassage(dtoEntity, ClientMessageType.GET_SOLUTION);
-                    break;
-
-                case GET_COLLECTIVE_SOLUTION:
-                    // обновляем бд по общему решени.
-                    dao.update(message.getDtoEntity());
-                    break;
-
-                default:
-                    System.out.println("неизвестное сообщение от сервера");
-                    break;
+    private void updateAgentCommunication(AMessage message) {
+        if (message instanceof MSearchSolution) {
+            try {
+                dao.update(((MSearchSolution) message).getDtoEntity());
+            } catch (SQLException e) {
+                System.out.println(e.toString() + " ошибка обновления данных локальной бд");
             }
+        }
 
-        } catch (SQLException e) {
-            System.out.println(e.toString() + " ошибка обновления данных локальной бд");
+        if (message instanceof MCollectiveSolution) {
+            // ищем своё решение по входным данным
+            DtoEntityImpl dtoEntity = ((MCollectiveSolution) message).getDtoEntity();
+            //updateSolution(dtoEntity);
+            sendComMassage(new MCollectiveSolution(dtoEntity,
+                    ((MCollectiveSolution) message).getSolutionId()));
         }
     }
 
@@ -98,7 +87,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      */
     private void updateAgentOutput(DtoEntityImpl entity) {
         if (isSendComMessage(entity))
-            sendComMassage(entity, ClientMessageType.SEARCH_SOLUTION);
+            sendComMassage(new MSearchSolution(entity));
     }
 
     /**
@@ -119,13 +108,12 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
     /**
      * отправка сигнала на модуль вз-ия с сервером
      */
-    private void sendComMassage(DtoEntityImpl entity, ClientMessageType messageType) {
+    private void sendComMassage(AMessage message) {
         if (!agentCom.isConnect())
             return;
 
         try {
-            ClientMessage clientMessage = new ClientMessage(entity, messageType);
-            agentCom.sendMassege(clientMessage);
+            agentCom.sendMassege(message);
         } catch (IOException e) {
             System.out.println(e.toString());
         }

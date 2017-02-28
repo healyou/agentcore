@@ -1,9 +1,7 @@
-package database.dao.base;
+package database.dao;
 
-import database.dto.base.ABaseDtoEntity;
+import database.dto.ABaseDtoEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.sql.SQLException;
 
 /**
  * Created on 17.02.2017 20:46

@@ -1,7 +1,5 @@
 package agentfoundation.agentbrain;
 
-import agentfoundation.agentbrain.base.IAgentBrain;
-
 import java.util.Observable;
 
 /**

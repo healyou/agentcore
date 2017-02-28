@@ -1,8 +1,6 @@
 package agentcommunication;
 
-import agentcommunication.base.IAgentCommunication;
-import agentcommunication.message.ClientMessage;
-import agentcommunication.message.ServerMessage;
+import agentcommunication.message.AMessage;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,7 +22,7 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
     public AgentCommunicationImpl() { }
 
     @Override
-    public void sendMassege(ClientMessage message) throws IOException {
+    public void sendMassege(AMessage message) throws IOException {
         if (!isConnect)
             return;
 
@@ -100,8 +98,7 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
      * @param object присланный объект
      */
     private void checkServerObject(Object object) {
-        if (object instanceof ServerMessage) {
-            // уведомить о новом сообщении
+        if (object instanceof AMessage) {
             System.out.println("Пришло сообщение с сервера AgentCommunicationImpl");
             setChanged();
             notifyObservers(object);

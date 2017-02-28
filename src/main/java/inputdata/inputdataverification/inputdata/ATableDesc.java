@@ -1,4 +1,4 @@
-package inputdata.inputdataverification.inputdata.base;
+package inputdata.inputdataverification.inputdata;
 
 import com.google.common.collect.ImmutableList;
 import inputdata.inputdataverification.inputdata.TableColumn;

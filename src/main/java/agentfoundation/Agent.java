@@ -3,7 +3,6 @@ package agentfoundation;
 import agentcommunication.AgentCommunicationImpl;
 import agentfoundation.agentbrain.AgentBrainImpl;
 import agentfoundation.agentcomandanalizer.ComAnalizerImpl;
-import agentfoundation.agentlifecicle.base.AAgentCommand;
 import agentfoundation.localdatabase.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
 import inputdata.inputdataverification.InputDataVerificationImpl;

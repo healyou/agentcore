@@ -1,4 +1,4 @@
-package agentfoundation.agentlifecicle.base;
+package agentfoundation;
 
 /**
  * Created by user on 21.02.2017.

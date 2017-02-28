@@ -1,7 +1,7 @@
-package agentfoundation.localdatabase.base;
+package agentfoundation.localdatabase;
 
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
+import inputdata.inputdataverification.inputdata.ATableDesc;
 
 import java.sql.SQLException;
 

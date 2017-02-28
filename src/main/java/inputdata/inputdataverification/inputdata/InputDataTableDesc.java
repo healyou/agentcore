@@ -1,7 +1,6 @@
 package inputdata.inputdataverification.inputdata;
 
 import com.google.common.collect.ImmutableList;
-import inputdata.inputdataverification.inputdata.base.ATableDesc;
 
 import java.util.regex.Pattern;
 
