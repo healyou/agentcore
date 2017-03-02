@@ -12,10 +12,4 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public abstract class ABaseDao<T extends ABaseDtoEntity> {
 
-    protected JdbcTemplate jdbcTemplate;
-
-    public ABaseDao(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
 }

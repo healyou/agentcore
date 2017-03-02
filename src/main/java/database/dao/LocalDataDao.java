@@ -19,6 +19,7 @@ public class LocalDataDao extends ABaseDao<DtoEntityImpl> implements ILocalDataD
     private static String UPDATE_SQL;
 
     private LocalDataTableDesc tableDesc;
+    private JdbcTemplate jdbcTemplate;
 
     /**
      * Осущ. чтение базы данных
@@ -26,11 +27,10 @@ public class LocalDataDao extends ABaseDao<DtoEntityImpl> implements ILocalDataD
      * @param localdbTableDesc данные о таблице бд
      */
     public LocalDataDao(JdbcTemplate jdbcTemplate, LocalDataTableDesc localdbTableDesc) {
-        super(jdbcTemplate);
-
         SELECT_BYID_SQL = "select * from " + localdbTableDesc.getTableName() + " where " +
                 ATableDesc.ID_COLUMN_NAME + " = ?";
         this.tableDesc = localdbTableDesc;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override

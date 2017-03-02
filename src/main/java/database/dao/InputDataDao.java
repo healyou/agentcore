@@ -19,6 +19,7 @@ public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataD
     private static String DELETE_SQL;
 
     private InputDataTableDesc tableDesc;
+    private JdbcTemplate jdbcTemplate;
 
     /**
      * Осущ. чтение базы данных
@@ -26,11 +27,10 @@ public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataD
      * @param tableDesc данные о таблице бд
      */
     public InputDataDao(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc) {
-        super(jdbcTemplate);
-
         SELECT_FIRST_SQL = "select * from " + tableDesc.getTableName() + " order by ? limit 1";
         DELETE_SQL = "delete from " + tableDesc.getTableName() + " where id = ?";
         this.tableDesc = tableDesc;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
