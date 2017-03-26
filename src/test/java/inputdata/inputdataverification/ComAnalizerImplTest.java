@@ -72,7 +72,7 @@ public class ComAnalizerImplTest  extends Assert {
             LocalDataTableDesc localTableDesc = agentDb.getLocalDbTableDesc();
             dataDao = new LocalDataDao(jdbcTemplate, localTableDesc);
 
-            comAnalizer = new ComAnalizerImpl(tableDesc, agentCom, dataDao);
+            comAnalizer = new ComAnalizerImpl(tableDesc, agentCom, agentDb);
             agentBrain = new TestAgentBrain();
 
             agentCom.addObserver(comAnalizer);

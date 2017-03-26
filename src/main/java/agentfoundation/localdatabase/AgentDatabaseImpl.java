@@ -10,6 +10,7 @@ import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.annotation.Nonnull;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private LocalDataTableDesc localdbTableDesc;
     private LocalDataDao localDataDao;
 
-    public AgentDatabaseImpl(InputDataTableDesc inputDataTD, String localdbPropPath) {
+    public AgentDatabaseImpl(@Nonnull InputDataTableDesc inputDataTD, @Nonnull String localdbPropPath) {
         DB_PROPERTIES_PATH = localdbPropPath;
         jdbcTemplate = getJdbcTemplate();
         createOrOpenDatabase(jdbcTemplate, inputDataTD);
@@ -45,12 +46,12 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     }
 
     @Override
-    public void addSolution(DtoEntityImpl dtoEntity) throws SQLException {
+    public void addSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException {
         localDataDao.create(dtoEntity);
     }
 
     @Override
-    public void updateSolution(DtoEntityImpl dtoEntity) throws SQLException {
+    public void updateSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException {
         localDataDao.update(dtoEntity);
     }
 
@@ -61,7 +62,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     }
 
     @Override
-    public LocalDataTableDesc getLocalDbTableDesc() {
+    public @Nonnull LocalDataTableDesc getLocalDbTableDesc() {
         return localdbTableDesc;
     }
 

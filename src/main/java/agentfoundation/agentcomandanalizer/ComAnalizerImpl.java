@@ -23,15 +23,15 @@ import java.util.regex.Pattern;
  */
 public class ComAnalizerImpl implements IComAnalizer, Observer {
 
-    private AgentCommunicationImpl agentCom;
-    private InputDataTableDesc tableDesc;
-    private LocalDataDao dao;
+    private AgentCommunicationImpl mAgentCom;
+    private InputDataTableDesc mTableDesc;
+    private AgentDatabaseImpl mAgentDatabase;
 
     public ComAnalizerImpl(InputDataTableDesc tableDesc, AgentCommunicationImpl agentCom,
-                           LocalDataDao dao) {
-        this.tableDesc = tableDesc;
-        this.agentCom = agentCom;
-        this.dao = dao;
+                           AgentDatabaseImpl agentDatabase) {
+        this.mTableDesc = tableDesc;
+        this.mAgentCom = agentCom;
+        this.mAgentDatabase = agentDatabase;
     }
 
     /**
@@ -58,7 +58,10 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
     private void updateAgentCommunication(AMessage message) {
         if (message instanceof MSearchSolution) {
             try {
-                dao.update(((MSearchSolution) message).getDtoEntity());
+                MSearchSolution solution = (MSearchSolution) message;
+                DtoEntityImpl entity = solution.getDtoEntity();
+                if (entity != null)
+                    mAgentDatabase.updateSolution(entity);
             } catch (SQLException e) {
                 System.out.println(e.toString() + " ошибка обновления данных локальной бд");
             }
@@ -99,7 +102,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
         // находим выходное значение и проверяем его с регулярным выражением
         Object value = entity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
 
-        Pattern pattern = tableDesc.getComRegExp();
+        Pattern pattern = mTableDesc.getComRegExp();
         Matcher matcher = pattern.matcher(value.toString());
 
         return !matcher.matches();
@@ -109,11 +112,11 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      * отправка сигнала на модуль вз-ия с сервером
      */
     private void sendComMassage(AMessage message) {
-        if (!agentCom.isConnect())
+        if (!mAgentCom.isConnect())
             return;
 
         try {
-            agentCom.sendMassege(message);
+            mAgentCom.sendMassege(message);
         } catch (IOException e) {
             System.out.println(e.toString());
         }

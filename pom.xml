@@ -29,6 +29,13 @@
 
     <dependencies>
 
+        <!-- notnull nullable annotations-->
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
         <!-- SPRING JDBC FOR DATABASE-->
         <dependency>
             <groupId>org.springframework</groupId>

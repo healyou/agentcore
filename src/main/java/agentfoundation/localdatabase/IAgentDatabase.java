@@ -3,6 +3,7 @@ package agentfoundation.localdatabase;
 import database.dto.DtoEntityImpl;
 import inputdata.inputdataverification.inputdata.ATableDesc;
 
+import javax.annotation.Nonnull;
 import java.sql.SQLException;
 
 /**
@@ -10,9 +11,9 @@ import java.sql.SQLException;
  */
 public interface IAgentDatabase {
 
-    public void addSolution(DtoEntityImpl dtoEntity) throws SQLException;
-    public void updateSolution(DtoEntityImpl dtoEntity) throws SQLException;
+    public void addSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException;
+    public void updateSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException;
     public void clearDatabase() throws SQLException;
-    public ATableDesc getLocalDbTableDesc();
+    public @Nonnull ATableDesc getLocalDbTableDesc();
 
 }

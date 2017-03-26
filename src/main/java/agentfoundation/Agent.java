@@ -97,7 +97,7 @@ public class Agent extends AAgentCommand implements Runnable {
         ac = new AgentCommunicationImpl();
         AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc, localDbPropPath);
         LocalDataDao dataDao = new LocalDataDao(jdbcTemplate, localdb.getLocalDbTableDesc());
-        comAnalizer = new ComAnalizerImpl(tableDesc, ac, dataDao);
+        comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
         // слушает выходные сигналы с мозга агента и от мод. вз-ия с серваком
         brain.addObserver(comAnalizer);
         ac.addObserver(comAnalizer);
