@@ -1,4 +1,4 @@
-package inputdata.inputdataverification.inputdata;
+package inputdata;
 
 /**
  * Created on 17.02.2017 14:20

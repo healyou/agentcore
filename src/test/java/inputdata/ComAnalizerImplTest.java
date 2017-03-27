@@ -1,17 +1,18 @@
-package inputdata.inputdataverification;
+package inputdata;
 
 import agentcommunication.AgentCommunicationImpl;
-import agentcommunication.message.AMessage;
-import agentcommunication.message.MCollectiveSolution;
-import agentcommunication.message.MSearchSolution;
-import agentfoundation.agentbrain.IAgentBrain;
-import agentfoundation.agentcomandanalizer.ComAnalizerImpl;
-import agentfoundation.localdatabase.AgentDatabaseImpl;
+import agentcommunication.AMessage;
+import agentcommunication.MCollectiveSolution;
+import agentcommunication.MSearchSolution;
+import agentfoundation.IAgentBrain;
+import agentfoundation.ComAnalizerImpl;
+import agentfoundation.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
+import inputdata.InputDataTableDesc;
+import inputdata.InputDataVerificationImpl;
+import inputdata.LocalDataTableDesc;
+import inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +27,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Observable;
 
 import static java.lang.Thread.interrupted;
 import static java.lang.Thread.sleep;
@@ -185,7 +185,7 @@ public class ComAnalizerImplTest  extends Assert {
     /**
      * Класс для тестирования выдачи выходного сигнала
      */
-    private class TestAgentBrain extends Observable implements IAgentBrain {
+    private class TestAgentBrain extends IAgentBrain {
         private DtoEntityImpl dtoEntity;
         @Override
         public void takeInputData() {

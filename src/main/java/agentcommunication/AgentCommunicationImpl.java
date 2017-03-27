@@ -1,7 +1,5 @@
 package agentcommunication;
 
-import agentcommunication.message.AMessage;
-
 import java.io.*;
 import java.net.Socket;
 import java.util.Observable;
@@ -39,7 +37,8 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
         try {
             socket = new Socket(host, port);
         } catch (IOException e) {
-            throw new IOException(e.toString());
+            System.out.println(e.toString());
+            return;
         }
 
         // получаем потоки ввода вывода

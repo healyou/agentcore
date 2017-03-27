@@ -1,7 +1,5 @@
 package agentcommunication;
 
-import agentcommunication.message.AMessage;
-
 import java.io.IOException;
 
 /**

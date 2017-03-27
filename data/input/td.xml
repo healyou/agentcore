@@ -18,10 +18,6 @@
                 <ColumnName>info</ColumnName>
                 <ColumnType>String</ColumnType>
             </Column>
-            <Column>
-                <ColumnName>extrainfo</ColumnName>
-                <ColumnType>String</ColumnType>
-            </Column>
         </ColumnDescription>
     </Table>
 </TableDescription>

@@ -1,4 +1,4 @@
-package agentcommunication.message;
+package agentcommunication;
 
 import database.dto.DtoEntityImpl;
 

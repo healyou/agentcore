@@ -1,12 +1,12 @@
-package agentfoundation.localdatabase;
+package agentfoundation;
 
 import com.google.common.collect.ImmutableList;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
-import inputdata.inputdataverification.inputdata.ATableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
+import inputdata.InputDataTableDesc;
+import inputdata.LocalDataTableDesc;
+import inputdata.ATableDesc;
+import inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 

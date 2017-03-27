@@ -9,7 +9,7 @@ import java.sql.SQLException;
  */
 public interface IInputDataDao<T extends ABaseDtoEntity> {
 
-    public abstract T getFirst(String columnIdName) throws SQLException;
-    public abstract void delete(T entity, String columnIdName) throws SQLException;
+    public abstract T getFirst() throws SQLException;
+    public abstract void delete(T entity) throws SQLException;
 
 }

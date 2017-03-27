@@ -1,17 +1,13 @@
 import agentcommunication.AgentCommunicationImpl;
 import agentcommunication.IAgentCommunication;
-import agentcommunication.message.MCollectiveSolution;
-import agentcommunication.message.MSearchSolution;
-import agentfoundation.localdatabase.AgentDatabaseImpl;
-import com.mongodb.*;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
+import agentcommunication.MCollectiveSolution;
+import agentcommunication.MSearchSolution;
+import agentfoundation.AgentDatabaseImpl;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.InputDataVerificationImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
-import org.bson.*;
+import inputdata.InputDataVerificationImpl;
+import inputdata.InputDataTableDesc;
+import inputdata.LocalDataTableDesc;
+import inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
@@ -20,8 +16,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -32,37 +26,9 @@ import java.util.HashMap;
 public class main {
 
     public static void main(String[] args) {
-        mongodb();
         //agentCommunication();
         //agentlocaldatabase();
         //inputdataverif();
-    }
-
-    private static void mongodb() {
-        // Since 2.10.0, uses MongoClient
-        try {
-            MongoCredential mongoCredential = MongoCredential.createScramSha1Credential("admin", "inputdata",
-                    "admin".toCharArray());
-
-            MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", 27017), Arrays.asList(mongoCredential));
-            MongoDatabase db = mongoClient.getDatabase("inputdata");
-
-            MongoCollection<Document> table = db.getCollection("datacollection");
-
-            Document document = new Document();
-            document.append("name", new BsonString("mkyong"));
-            document.append("age", new BsonInt32(30));
-            document.append("createdDate", new BsonDateTime(new Date().getTime()));
-            table.insertOne(document);
-
-            System.out.println();
-
-            Object object = table.find().first().get("_id");
-            System.out.println(object);
-            table.deleteOne(table.find().first());
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
     }
 
     private static void agentCommunication() {

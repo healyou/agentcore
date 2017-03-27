@@ -1,8 +1,9 @@
-package inputdata.inputdataverification;
+package inputdata;
 
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.ATableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
+import inputdata.ATableDesc;
+import inputdata.InputDataTableDesc;
+import inputdata.InputDataVerificationImpl;
+import inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

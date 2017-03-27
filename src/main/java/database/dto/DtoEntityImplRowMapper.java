@@ -1,7 +1,7 @@
 package database.dto;
 
-import inputdata.inputdataverification.inputdata.ATableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
+import inputdata.ATableDesc;
+import inputdata.TableColumn;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

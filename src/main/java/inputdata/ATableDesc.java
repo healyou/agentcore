@@ -1,9 +1,7 @@
-package inputdata.inputdataverification.inputdata;
+package inputdata;
 
 import com.google.common.collect.ImmutableList;
-import inputdata.inputdataverification.inputdata.TableColumn;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**

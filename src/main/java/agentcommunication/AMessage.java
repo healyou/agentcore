@@ -1,4 +1,4 @@
-package agentcommunication.message;
+package agentcommunication;
 
 import java.io.Serializable;
 

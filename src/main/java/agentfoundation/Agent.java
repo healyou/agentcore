@@ -1,12 +1,10 @@
 package agentfoundation;
 
 import agentcommunication.AgentCommunicationImpl;
-import agentfoundation.agentbrain.AgentBrainImpl;
-import agentfoundation.agentcomandanalizer.ComAnalizerImpl;
-import agentfoundation.localdatabase.AgentDatabaseImpl;
-import database.dao.LocalDataDao;
-import inputdata.inputdataverification.InputDataVerificationImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
+import database.dao.InputDataDao;
+import gui.GuiController;
+import inputdata.InputDataVerificationImpl;
+import inputdata.InputDataTableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.FileInputStream;
@@ -24,15 +22,15 @@ public class Agent extends AAgentCommand implements Runnable {
     private final static String TABLE_DESC_PATH = "data/input/td.xml";
     private final static String CONNECT_PROP_PATH = "data/input/connect.properties";
 
-    private AgentBrainImpl brain;
+    private TestAgentBrainImpl brain;
     private ComAnalizerImpl comAnalizer;
     private AgentCommunicationImpl ac;
     private int updateMs;
 
     private Thread thread = new Thread(this);
 
-    public Agent() throws Exception {
-        onInit();
+    public Agent(GuiController gui) throws Exception {
+        onInit(gui);
     }
 
     @Override
@@ -58,8 +56,7 @@ public class Agent extends AAgentCommand implements Runnable {
         onStop();
     }
 
-    @Override
-    protected void onInit() throws Exception {
+    protected void onInit(GuiController gui) throws Exception {
         // проверка корректности описания входных данных
         InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
         JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(USER_DB_PROP_PATH);
@@ -70,11 +67,12 @@ public class Agent extends AAgentCommand implements Runnable {
         String localDbPropPath = AgentDatabaseImpl.class.
                 getResource("localsqlitedb.properties").toURI().getPath();
         // инициализация основных переменных
-        initCoreData(jdbcTemplate, tableDesc, localDbPropPath);
+        initCoreData(jdbcTemplate, tableDesc, localDbPropPath, gui);
     }
 
     @Override
     protected void onStart() {
+        thread = new Thread(this);
         thread.setDaemon(true);
         thread.start();
     }
@@ -92,13 +90,14 @@ public class Agent extends AAgentCommand implements Runnable {
      * @throws Exception если была ошибка при инициализации
      */
     private void initCoreData(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc,
-                              String localDbPropPath) throws Exception {
-        brain = new AgentBrainImpl();
+                              String localDbPropPath, GuiController gui) throws Exception {
+        InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
+        brain = new TestAgentBrainImpl(inputDataDao);
         ac = new AgentCommunicationImpl();
         AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc, localDbPropPath);
-        LocalDataDao dataDao = new LocalDataDao(jdbcTemplate, localdb.getLocalDbTableDesc());
         comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
         // слушает выходные сигналы с мозга агента и от мод. вз-ия с серваком
+        brain.addObserver(gui);
         brain.addObserver(comAnalizer);
         ac.addObserver(comAnalizer);
 

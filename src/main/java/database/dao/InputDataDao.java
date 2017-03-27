@@ -2,7 +2,10 @@ package database.dao;
 
 import database.dto.DtoEntityImpl;
 import database.dto.DtoEntityImplRowMapper;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
+import inputdata.ATableDesc;
+import inputdata.InputDataTableDesc;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,26 +29,26 @@ public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataD
      * @param jdbcTemplate чтение бд
      * @param tableDesc данные о таблице бд
      */
-    public InputDataDao(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc) {
+    public InputDataDao(@NotNull JdbcTemplate jdbcTemplate, @NotNull InputDataTableDesc tableDesc) {
         SELECT_FIRST_SQL = "select * from " + tableDesc.getTableName() + " order by ? limit 1";
-        DELETE_SQL = "delete from " + tableDesc.getTableName() + " where id = ?";
+        DELETE_SQL = "delete from " + tableDesc.getTableName() + " where id=?";
         this.tableDesc = tableDesc;
         this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public DtoEntityImpl getFirst(String columnIdName) throws SQLException {
+    @Nullable
+    public DtoEntityImpl getFirst() throws SQLException {
         return jdbcTemplate.queryForObject(
-                SELECT_FIRST_SQL, new Object[] { columnIdName },
+                SELECT_FIRST_SQL, new Object[] { ATableDesc.ID_COLUMN_NAME },
                 new DtoEntityImplRowMapper(tableDesc));
     }
 
     @Override
     @Transactional
-    public void delete(DtoEntityImpl entity, String columnIdName) throws SQLException {
-        jdbcTemplate.query(DELETE_SQL, new Object[] {
-                entity.getValueByColumnName(columnIdName) },
+    public void delete(@NotNull DtoEntityImpl entity) throws SQLException {
+        jdbcTemplate.query(DELETE_SQL, new Object[] { entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME) },
                 new DtoEntityImplRowMapper(tableDesc));
     }
 

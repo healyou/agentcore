@@ -1,15 +1,12 @@
-package agentfoundation.agentcomandanalizer;
+package agentfoundation;
 
 import agentcommunication.AgentCommunicationImpl;
 import agentcommunication.IAgentCommunication;
-import agentcommunication.message.AMessage;
-import agentcommunication.message.MCollectiveSolution;
-import agentcommunication.message.MSearchSolution;
-import agentfoundation.agentbrain.IAgentBrain;
-import agentfoundation.localdatabase.AgentDatabaseImpl;
-import database.dao.LocalDataDao;
+import agentcommunication.AMessage;
+import agentcommunication.MCollectiveSolution;
+import agentcommunication.MSearchSolution;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
+import inputdata.InputDataTableDesc;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,13 +33,12 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
 
     /**
      * Получение выходного сигнала с мозга агента
-     * @param o от кого получен(AgentCommunicationImpl or AgentBrainImpl)
+     * @param o от кого получен(AgentCommunicationImpl or TestAgentBrainImpl)
      * @param arg аргемент(DtoEntityImpl)
      */
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("Пришло сообщение в ComAnalizerImpl" +
-            o.getClass() + " " + arg.getClass());
+        System.out.println("Пришло сообщение в ComAnalizerImpl");
 
         if (o instanceof IAgentCommunication && arg instanceof AMessage)
             updateAgentCommunication((AMessage) arg);

@@ -1,8 +1,5 @@
 package agentcommunication;
 
-import agentcommunication.message.AMessage;
-import agentcommunication.message.MCollectiveSolution;
-import agentcommunication.message.MSearchSolution;
 import database.dto.DtoEntityImpl;
 import org.junit.After;
 import org.junit.Assert;

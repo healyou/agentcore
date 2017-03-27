@@ -1,10 +1,11 @@
-package inputdata.inputdataverification;
+package inputdata;
 
-import agentfoundation.localdatabase.AgentDatabaseImpl;
+import agentfoundation.AgentDatabaseImpl;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.LocalDataTableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
+import inputdata.InputDataTableDesc;
+import inputdata.InputDataVerificationImpl;
+import inputdata.LocalDataTableDesc;
+import inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

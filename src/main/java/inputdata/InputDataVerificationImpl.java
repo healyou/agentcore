@@ -1,11 +1,8 @@
-package inputdata.inputdataverification;
+package inputdata;
 
 import com.google.common.collect.ImmutableList;
 import database.dao.InputDataDao;
 import database.dto.DtoEntityImpl;
-import inputdata.inputdataverification.inputdata.InputDataTableDesc;
-import inputdata.inputdataverification.inputdata.ATableDesc;
-import inputdata.inputdataverification.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.w3c.dom.*;
@@ -85,7 +82,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
 
         try {
             InputDataDao daoEntity = new InputDataDao(jdbcTemplate, tableDesc);
-            DtoEntityImpl dtoEntity = daoEntity.getFirst(ATableDesc.ID_COLUMN_NAME);
+            DtoEntityImpl dtoEntity = daoEntity.getFirst();
             if (dtoEntity == null)
                 throw new SQLException();
         } catch (SQLException e) {
