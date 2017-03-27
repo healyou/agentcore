@@ -23,9 +23,10 @@ public class TestAgentBrainImpl extends IAgentBrain {
     public void takeInputData() {
         try {
             mEntity = mDao.getFirst();
-            //if (mEntity != null)
-            //    mDao.delete(mEntity);
-        } catch (SQLException e) {
+            if (mEntity != null)
+                mDao.delete(mEntity);
+        } catch (Exception e) {
+            mEntity = null;
             System.out.println(e.toString());
             setChanged();
             notifyObservers(new AgentObserverArg("Ошибка при чтении данных", ObserverArgType.MESSAGE));
@@ -34,12 +35,12 @@ public class TestAgentBrainImpl extends IAgentBrain {
 
     @Override
     public void calculateOutput() {
+        if (mEntity == null)
+            return;
+
         Random random = new Random();
         if (random.nextInt(5) == 1) {
-            if (mEntity != null)
-                mOutputValue = "1 - id=" + mEntity.getValueByColumnName("id");
-            else
-                mOutputValue = "1";
+            mOutputValue = "1 - id=" + mEntity.getValueByColumnName("id");
         }
         else
             mOutputValue = "0";

@@ -48,8 +48,7 @@ public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataD
     @Override
     @Transactional
     public void delete(@NotNull DtoEntityImpl entity) throws SQLException {
-        jdbcTemplate.query(DELETE_SQL, new Object[] { entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME) },
-                new DtoEntityImplRowMapper(tableDesc));
+        jdbcTemplate.update(DELETE_SQL, entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME));
     }
 
 }
