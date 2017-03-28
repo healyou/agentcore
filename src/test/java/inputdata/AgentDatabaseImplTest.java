@@ -2,6 +2,7 @@ package inputdata;
 
 import agentfoundation.AgentDatabaseImpl;
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 import inputdata.InputDataTableDesc;
 import inputdata.InputDataVerificationImpl;
 import inputdata.LocalDataTableDesc;
@@ -88,7 +89,7 @@ public class AgentDatabaseImplTest extends Assert {
                     paramValue.put(column.getColumnName(), "");
             }
 
-            DtoEntityImpl entity = new DtoEntityImpl(paramType, paramValue);
+            LocalDataDto entity = new LocalDataDto(paramType, paramValue);
             agentDb.addSolution(entity);
         } catch (SQLException e) {
             fail(e.toString());
@@ -112,7 +113,7 @@ public class AgentDatabaseImplTest extends Assert {
                     paramValue.put(column.getColumnName(), "");
             }
 
-            DtoEntityImpl entity = new DtoEntityImpl(paramType, paramValue);
+            LocalDataDto entity = new LocalDataDto(paramType, paramValue);
             agentDb.addSolution(entity);
 
             if (!paramValue.containsKey("info"))
@@ -120,7 +121,7 @@ public class AgentDatabaseImplTest extends Assert {
 
             paramValue.put("id", 1);
             paramValue.put("info", 2);
-            DtoEntityImpl updateEntity = new DtoEntityImpl(paramType, paramValue);
+            LocalDataDto updateEntity = new LocalDataDto(paramType, paramValue);
             agentDb.updateSolution(updateEntity);
         } catch (SQLException e) {
             fail(e.toString());

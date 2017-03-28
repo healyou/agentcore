@@ -9,6 +9,7 @@ import agentfoundation.ComAnalizerImpl;
 import agentfoundation.AgentDatabaseImpl;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 import inputdata.InputDataTableDesc;
 import inputdata.InputDataVerificationImpl;
 import inputdata.LocalDataTableDesc;
@@ -119,7 +120,7 @@ public class ComAnalizerImplTest  extends Assert {
      */
     private void testUpdateRecordFromServer() {
         try {
-            sleep(150);
+            sleep(550);
 
             DtoEntityImpl dtoEntity = dataDao.get(1);
             Object collectiveValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME);
@@ -174,7 +175,7 @@ public class ComAnalizerImplTest  extends Assert {
                 paramValue.put(column.getColumnName(), "");
         }
 
-        DtoEntityImpl entity = new DtoEntityImpl(paramType, paramValue);
+        LocalDataDto entity = new LocalDataDto(paramType, paramValue);
         try {
             agentDb.addSolution(entity);
         } catch (SQLException e) {
@@ -229,12 +230,12 @@ public class ComAnalizerImplTest  extends Assert {
                     if (object instanceof AMessage) {
                         isGetMessage = true;
                         if (object instanceof MSearchSolution) {
-                            DtoEntityImpl dtoEntity = ((MSearchSolution) object).getDtoEntity();
+                            LocalDataDto dtoEntity = ((MSearchSolution) object).getDtoEntity();
                             outputStream.writeObject(new MCollectiveSolution(dtoEntity, 1));
                         }
                         if (object instanceof MCollectiveSolution) {
                             // создаём с изменёнными параметрами
-                            DtoEntityImpl updateDto = createDtoEntity();
+                            LocalDataDto updateDto = createDtoEntity();
                             if (((MCollectiveSolution) object).getSolutionId().equals(1)) {
                                 outputStream.writeObject(
                                         new MSearchSolution(updateDto));
@@ -251,7 +252,7 @@ public class ComAnalizerImplTest  extends Assert {
             return isGetMessage;
         }
 
-        private DtoEntityImpl createDtoEntity() {
+        private LocalDataDto createDtoEntity() {
             LocalDataTableDesc localDataTD = agentDatabase.getLocalDbTableDesc();
             HashMap<String, String> paramType = new HashMap<>();
             for (TableColumn column : localDataTD.getColumns()) {
@@ -270,7 +271,7 @@ public class ComAnalizerImplTest  extends Assert {
                     paramValue.put(column.getColumnName(), "1");
             }
 
-            return new DtoEntityImpl(paramType, paramValue);
+            return new LocalDataDto(paramType, paramValue);
         }
     }
 

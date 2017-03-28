@@ -1,6 +1,7 @@
 package agentfoundation;
 
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 import inputdata.ATableDesc;
 
 import javax.annotation.Nonnull;
@@ -11,8 +12,8 @@ import java.sql.SQLException;
  */
 public interface IAgentDatabase {
 
-    public void addSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException;
-    public void updateSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException;
+    public void addSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException;
+    public void updateSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException;
     public void clearDatabase() throws SQLException;
     public @Nonnull ATableDesc getLocalDbTableDesc();
 

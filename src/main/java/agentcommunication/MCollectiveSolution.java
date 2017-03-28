@@ -1,6 +1,7 @@
 package agentcommunication;
 
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 
 /**
  * Created on 28.02.2017 19:13
@@ -10,16 +11,16 @@ import database.dto.DtoEntityImpl;
  */
 public class MCollectiveSolution extends AMessage {
 
-    private DtoEntityImpl dtoEntity;
+    private LocalDataDto dataDto;
     private Integer solutionId;
 
-    public MCollectiveSolution(DtoEntityImpl dtoEntity, Integer solutionId) {
-        this.dtoEntity = dtoEntity;
+    public MCollectiveSolution(LocalDataDto dtoEntity, Integer solutionId) {
+        this.dataDto = dtoEntity;
         this.solutionId = solutionId;
     }
 
-    public DtoEntityImpl getDtoEntity() {
-        return dtoEntity;
+    public LocalDataDto getDtoEntity() {
+        return dataDto;
     }
 
     public Integer getSolutionId() {

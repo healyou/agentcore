@@ -69,7 +69,7 @@ class GuiController: Observer {
             ObserverArgType.MESSAGE -> {
                 logTextArea.appendText("\n" + arg.arg)
             }
-            ObserverArgType.DEFAUL -> {
+            ObserverArgType.DEFAUL_VALUE -> {
                 logTextArea.appendText("\nDEFAUL message")
             }
             else -> {
@@ -93,7 +93,7 @@ class GuiController: Observer {
         val st = ds.connection.createStatement()
         st.execute("drop table intsedent")
         st.execute("CREATE TABLE if not exists intsedent (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,shortinfo TEXT,info TEXT);")
-        for (i in 1..10)
+        for (i in 1..100)
             st.execute("insert into intsedent (shortinfo, info) values ('$i', '$i')")
     }
 }

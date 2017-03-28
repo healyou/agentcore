@@ -1,6 +1,7 @@
 package agentcommunication;
 
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 
 /**
  * Created on 28.02.2017 19:12
@@ -10,14 +11,14 @@ import database.dto.DtoEntityImpl;
  */
 public class MSearchSolution extends AMessage {
 
-    private DtoEntityImpl dtoEntity;
+    private LocalDataDto dataDto;
 
-    public MSearchSolution(DtoEntityImpl dtoEntity) {
-        this.dtoEntity = dtoEntity;
+    public MSearchSolution(LocalDataDto dataDto) {
+        this.dataDto = dataDto;
     }
 
-    public DtoEntityImpl getDtoEntity() {
-        return dtoEntity;
+    public LocalDataDto getDtoEntity() {
+        return dataDto;
     }
 
 }

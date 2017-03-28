@@ -3,6 +3,7 @@ package agentfoundation;
 import com.google.common.collect.ImmutableList;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 import inputdata.InputDataTableDesc;
 import inputdata.LocalDataTableDesc;
 import inputdata.ATableDesc;
@@ -46,12 +47,12 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     }
 
     @Override
-    public void addSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException {
+    public void addSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException {
         localDataDao.create(dtoEntity);
     }
 
     @Override
-    public void updateSolution(@Nonnull DtoEntityImpl dtoEntity) throws SQLException {
+    public void updateSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException {
         localDataDao.update(dtoEntity);
     }
 

@@ -9,8 +9,8 @@ import java.util.*;
  */
 public class DtoEntityImpl extends ABaseDtoEntity {
 
-    private HashMap<String, Object> paramValue;
-    private HashMap<String, String> paramType;
+    protected HashMap<String, Object> paramValue;
+    protected HashMap<String, String> paramType;
 
     public DtoEntityImpl(HashMap<String, String> paramType, HashMap<String, Object> paramValue) {
         super();
@@ -34,7 +34,7 @@ public class DtoEntityImpl extends ABaseDtoEntity {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("DtoEntityImpl[");
+        StringBuilder sb = new StringBuilder("Entity[");
 
         for (String columnName : getColumnNames()) {
             Object value = getValueByColumnName(columnName);

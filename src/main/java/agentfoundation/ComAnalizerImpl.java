@@ -6,6 +6,7 @@ import agentcommunication.AMessage;
 import agentcommunication.MCollectiveSolution;
 import agentcommunication.MSearchSolution;
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 import inputdata.InputDataTableDesc;
 
 import java.io.IOException;
@@ -38,12 +39,12 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        System.out.println("Пришло сообщение в ComAnalizerImpl");
-
         if (o instanceof IAgentCommunication && arg instanceof AMessage)
             updateAgentCommunication((AMessage) arg);
-        if (o instanceof IAgentBrain && arg instanceof DtoEntityImpl)
-            updateAgentOutput((DtoEntityImpl) arg);
+        if (o instanceof IAgentBrain && arg instanceof AgentObserverArg) {
+            AgentObserverArg a = (AgentObserverArg) arg;
+            updateAgentOutput((LocalDataDto) a.getArg());
+        }
     }
 
     /**
@@ -55,7 +56,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
         if (message instanceof MSearchSolution) {
             try {
                 MSearchSolution solution = (MSearchSolution) message;
-                DtoEntityImpl entity = solution.getDtoEntity();
+                LocalDataDto entity = solution.getDtoEntity();
                 if (entity != null)
                     mAgentDatabase.updateSolution(entity);
             } catch (SQLException e) {
@@ -65,7 +66,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
 
         if (message instanceof MCollectiveSolution) {
             // ищем своё решение по входным данным
-            DtoEntityImpl dtoEntity = ((MCollectiveSolution) message).getDtoEntity();
+            LocalDataDto dtoEntity = ((MCollectiveSolution) message).getDtoEntity();
             //updateSolution(dtoEntity);
             sendComMassage(new MCollectiveSolution(dtoEntity,
                     ((MCollectiveSolution) message).getSolutionId()));
@@ -84,9 +85,11 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      * Сигнал пришёл от мозга агента
      * @param entity данные решения мозга агента
      */
-    private void updateAgentOutput(DtoEntityImpl entity) {
-        if (isSendComMessage(entity))
+    private void updateAgentOutput(LocalDataDto entity) {
+        if (isSendComMessage(entity)) {
+            System.out.println("отправка на сервак смс");
             sendComMassage(new MSearchSolution(entity));
+        }
     }
 
     /**
@@ -94,14 +97,14 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      * @param entity данные для отправки
      * @return true - отправляем за помощью - найдём общее решение
      */
-    private boolean isSendComMessage(DtoEntityImpl entity) {
+    private boolean isSendComMessage(LocalDataDto entity) {
         // находим выходное значение и проверяем его с регулярным выражением
         Object value = entity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
 
         Pattern pattern = mTableDesc.getComRegExp();
         Matcher matcher = pattern.matcher(value.toString());
 
-        return !matcher.matches();
+        return matcher.matches();
     }
 
     /**

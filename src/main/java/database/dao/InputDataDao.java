@@ -2,6 +2,8 @@ package database.dao;
 
 import database.dto.DtoEntityImpl;
 import database.dto.DtoEntityImplRowMapper;
+import database.dto.InputDataDto;
+import database.dto.InputRowMapper;
 import inputdata.ATableDesc;
 import inputdata.InputDataTableDesc;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +18,7 @@ import java.sql.SQLException;
  *
  * @autor Nikita Gorodilov
  */
-public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataDao<DtoEntityImpl> {
+public class InputDataDao extends ABaseDao<InputDataDto> implements IInputDataDao<InputDataDto> {
 
     private static String SELECT_FIRST_SQL;
     private static String DELETE_SQL;
@@ -39,15 +41,15 @@ public class InputDataDao extends ABaseDao<DtoEntityImpl> implements IInputDataD
     @Override
     @Transactional(readOnly = true)
     @Nullable
-    public DtoEntityImpl getFirst() throws SQLException {
+    public InputDataDto getFirst() throws SQLException {
         return jdbcTemplate.queryForObject(
                 SELECT_FIRST_SQL, new Object[] { ATableDesc.ID_COLUMN_NAME },
-                new DtoEntityImplRowMapper(tableDesc));
+                new InputRowMapper(tableDesc));
     }
 
     @Override
     @Transactional
-    public void delete(@NotNull DtoEntityImpl entity) throws SQLException {
+    public void delete(@NotNull InputDataDto entity) throws SQLException {
         jdbcTemplate.update(DELETE_SQL, entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME));
     }
 

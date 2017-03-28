@@ -2,6 +2,8 @@ package database.dao;
 
 import database.dto.DtoEntityImpl;
 import database.dto.DtoEntityImplRowMapper;
+import database.dto.LocalDataDto;
+import database.dto.LocalRowMapper;
 import inputdata.LocalDataTableDesc;
 import inputdata.ATableDesc;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -12,7 +14,7 @@ import java.sql.SQLException;
 /**
  * Created by user on 21.02.2017.
  */
-public class LocalDataDao extends ABaseDao<DtoEntityImpl> implements ILocalDataDao<DtoEntityImpl> {
+public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDao<LocalDataDto> {
 
     private static String INSERT_SQL;
     private static String SELECT_BYID_SQL;
@@ -35,22 +37,22 @@ public class LocalDataDao extends ABaseDao<DtoEntityImpl> implements ILocalDataD
 
     @Override
     @Transactional(readOnly = true)
-    public DtoEntityImpl get(int id) throws SQLException {
+    public LocalDataDto get(int id) throws SQLException {
         return jdbcTemplate.queryForObject(
                 SELECT_BYID_SQL, new Object[] { id },
-                new DtoEntityImplRowMapper(tableDesc));
+                new LocalRowMapper(tableDesc));
     }
 
     @Override
     @Transactional
-    public void create(DtoEntityImpl entity) throws SQLException {
+    public void create(LocalDataDto entity) throws SQLException {
         INSERT_SQL = configureInsertSql(entity, tableDesc);
         jdbcTemplate.update(INSERT_SQL);
     }
 
     @Override
     @Transactional
-    public void update(DtoEntityImpl entity) throws SQLException {
+    public void update(LocalDataDto entity) throws SQLException {
         UPDATE_SQL = configureUpdateSql(entity, tableDesc);
         jdbcTemplate.update(UPDATE_SQL);
     }

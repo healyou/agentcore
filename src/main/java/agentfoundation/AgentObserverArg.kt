@@ -6,11 +6,11 @@ package agentfoundation
  */
 data class AgentObserverArg(
         open var arg: Any? = null,
-        open var type: ObserverArgType = ObserverArgType.DEFAUL
+        open var type: ObserverArgType = ObserverArgType.DEFAUL_VALUE
 )
 
 enum class ObserverArgType {
-    DEFAUL,
+    DEFAUL_VALUE,
     OUTPUT_DATA,
     MESSAGE
 }

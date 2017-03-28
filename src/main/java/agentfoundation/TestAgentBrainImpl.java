@@ -2,6 +2,10 @@ package agentfoundation;
 
 import database.dao.InputDataDao;
 import database.dto.DtoEntityImpl;
+import database.dto.InputDataDto;
+import database.dto.LocalDataDto;
+import inputdata.ATableDesc;
+import inputdata.InputDataTableDesc;
 
 import java.sql.SQLException;
 import java.util.Random;
@@ -12,8 +16,8 @@ import java.util.Random;
 public class TestAgentBrainImpl extends IAgentBrain {
 
     private InputDataDao mDao;
-    private DtoEntityImpl mEntity;
-    private String mOutputValue;
+    private InputDataDto mInputData;
+    private LocalDataDto mLocalData;
 
     public TestAgentBrainImpl(InputDataDao dao) {
         mDao = dao;
@@ -22,11 +26,11 @@ public class TestAgentBrainImpl extends IAgentBrain {
     @Override
     public void takeInputData() {
         try {
-            mEntity = mDao.getFirst();
-            if (mEntity != null)
-                mDao.delete(mEntity);
+            mInputData = mDao.getFirst();
+            if (mInputData != null)
+                mDao.delete(mInputData);
         } catch (Exception e) {
-            mEntity = null;
+            mInputData = null;
             System.out.println(e.toString());
             setChanged();
             notifyObservers(new AgentObserverArg("Ошибка при чтении данных", ObserverArgType.MESSAGE));
@@ -35,17 +39,21 @@ public class TestAgentBrainImpl extends IAgentBrain {
 
     @Override
     public void calculateOutput() {
-        if (mEntity == null)
+        if (mInputData == null)
             return;
 
+        String outValue = "";
         Random random = new Random();
         if (random.nextInt(5) == 1) {
-            mOutputValue = "1 - id=" + mEntity.getValueByColumnName("id");
+            outValue = "1";
         }
         else
-            mOutputValue = "0";
+            outValue = "0";
+
+        LocalDataDto localDataDto = LocalDataDto.Companion.valueOf(mInputData);
+        localDataDto.setAnswerValue(outValue);
 
         setChanged();
-        notifyObservers(new AgentObserverArg(mOutputValue, ObserverArgType.OUTPUT_DATA));
+        notifyObservers(new AgentObserverArg(localDataDto, ObserverArgType.OUTPUT_DATA));
     }
 }

@@ -4,6 +4,7 @@ import agentcommunication.MCollectiveSolution;
 import agentcommunication.MSearchSolution;
 import agentfoundation.AgentDatabaseImpl;
 import database.dto.DtoEntityImpl;
+import database.dto.LocalDataDto;
 import inputdata.InputDataVerificationImpl;
 import inputdata.InputDataTableDesc;
 import inputdata.LocalDataTableDesc;
@@ -47,7 +48,7 @@ public class main {
             agentCom.connect("127.0.0.1", port);
 
             Socket socket = serv.accept();
-            DtoEntityImpl dtoEntity = new DtoEntityImpl(null, null);
+            LocalDataDto dtoEntity = new LocalDataDto(null, null);
             agentCom.sendMassege(new MSearchSolution(dtoEntity));
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
@@ -87,12 +88,12 @@ public class main {
                     paramValue.put(column.getColumnName(), "");
             }
 
-            DtoEntityImpl entity = new DtoEntityImpl(paramType, paramValue);
+            LocalDataDto entity = new LocalDataDto(paramType, paramValue);
             agentDb.addSolution(entity);
 
             paramValue.put("id", 2);
             paramValue.put("info", 2);
-            DtoEntityImpl updateEntity = new DtoEntityImpl(paramType, paramValue);
+            LocalDataDto updateEntity = new LocalDataDto(paramType, paramValue);
             agentDb.updateSolution(updateEntity);
         } catch (Exception e) {
             System.out.println(e.toString());
