@@ -5,6 +5,7 @@ import agentcommunication.IAgentCommunication;
 import agentcommunication.AMessage;
 import agentcommunication.MCollectiveSolution;
 import agentcommunication.MSearchSolution;
+import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
 import database.dto.LocalDataDto;
 import inputdata.InputDataTableDesc;
@@ -67,7 +68,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
         if (message instanceof MCollectiveSolution) {
             // ищем своё решение по входным данным
             LocalDataDto dtoEntity = ((MCollectiveSolution) message).getDtoEntity();
-            //updateSolution(dtoEntity);
+            updateSolution(dtoEntity);
             sendComMassage(new MCollectiveSolution(dtoEntity,
                     ((MCollectiveSolution) message).getSolutionId()));
         }
@@ -77,8 +78,9 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      * Агент вносит свой ответ в collective_answer и отправляет на сервер
      * @param dtoEntity данные, которые надо пересмотреть агенту
      */
-    private void updateSolution(DtoEntityImpl dtoEntity) {
-        throw new UnsupportedOperationException("Операция обновления данных для коллективного решения не поддерживается");
+    private void updateSolution(LocalDataDto dtoEntity) {
+        dtoEntity.setColAnswerValue("1");
+        //throw new UnsupportedOperationException("Операция обновления данных для коллективного решения не поддерживается");
     }
 
     /**

@@ -91,10 +91,10 @@ public class Agent extends AAgentCommand implements Runnable {
      */
     private void initCoreData(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc,
                               String localDbPropPath, GuiController gui) throws Exception {
-        InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
-        brain = new TestAgentBrainImpl(inputDataDao);
         ac = new AgentCommunicationImpl();
         AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc, localDbPropPath);
+        InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
+        brain = new TestAgentBrainImpl(inputDataDao, localdb);
         comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
         // слушает выходные сигналы с мозга агента и от мод. вз-ия с серваком
         brain.addObserver(gui);

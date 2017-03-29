@@ -87,7 +87,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private String createSqlQuery(ATableDesc inputDataTD) {
         StringBuilder sql = new StringBuilder();
         sql.append("CREATE TABLE if not exists " + TABLE_NAME);
-        sql.append("    (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,");
+        sql.append("    (id INTEGER PRIMARY KEY NOT NULL,");
 
         for (TableColumn tableColumn : inputDataTD.getColumns()) {
             if (tableColumn.getColumnName().equals(InputDataTableDesc.ID_COLUMN_NAME))

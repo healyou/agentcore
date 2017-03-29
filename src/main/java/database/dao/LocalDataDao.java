@@ -62,8 +62,7 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
 
         updateSql.append("update " + tableDesc.getTableName() + " set ");
         for (String columnName : entity.getColumnNames())
-            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
-                updateSql.append(columnName + " = " + entity.getValueByColumnName(columnName) + ",");
+            updateSql.append(columnName + " = " + entity.getValueByColumnName(columnName) + ",");
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), " where " +
                 ATableDesc.ID_COLUMN_NAME + " = " + entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME));
@@ -82,8 +81,17 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ") values (");
 
         for (String columnName : entity.getColumnNames())
-            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
-                updateSql.append(entity.getValueByColumnName(columnName) + ",");
+            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME)) {
+                if (entity.getTypeByColumnName(columnName).equals("String")) {
+                    updateSql.append('\'');
+                    updateSql.append(entity.getValueByColumnName(columnName));
+                    updateSql.append("',");
+                }
+                else {
+                    updateSql.append(entity.getValueByColumnName(columnName));
+                    updateSql.append(',');
+                }
+            }
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ")");
 

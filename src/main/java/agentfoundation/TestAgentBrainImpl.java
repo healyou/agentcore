@@ -16,11 +16,12 @@ import java.util.Random;
 public class TestAgentBrainImpl extends IAgentBrain {
 
     private InputDataDao mDao;
+    private AgentDatabaseImpl mDb;
     private InputDataDto mInputData;
-    private LocalDataDto mLocalData;
 
-    public TestAgentBrainImpl(InputDataDao dao) {
+    public TestAgentBrainImpl(InputDataDao dao, AgentDatabaseImpl db) {
         mDao = dao;
+        mDb = db;
     }
 
     @Override
@@ -52,6 +53,12 @@ public class TestAgentBrainImpl extends IAgentBrain {
 
         LocalDataDto localDataDto = LocalDataDto.Companion.valueOf(mInputData);
         localDataDto.setAnswerValue(outValue);
+
+        try {
+            mDb.addSolution(localDataDto);
+        } catch (SQLException e) {
+            System.out.println("ошибка добавления записи при решении задачи в лок бд");
+        }
 
         setChanged();
         notifyObservers(new AgentObserverArg(localDataDto, ObserverArgType.OUTPUT_DATA));

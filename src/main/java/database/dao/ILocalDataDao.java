@@ -9,8 +9,8 @@ import java.sql.SQLException;
  */
 public interface ILocalDataDao<T extends ABaseDtoEntity> {
 
-    public abstract T get(int id) throws SQLException;
-    public abstract void create(T entity) throws SQLException;
-    public abstract void update(T entity) throws SQLException;
+    T get(int id) throws SQLException;
+    void create(T entity) throws SQLException;
+    void update(T entity) throws SQLException;
 
 }

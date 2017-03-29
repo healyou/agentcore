@@ -1,9 +1,6 @@
 package gui
 
-import agentfoundation.Agent
-import agentfoundation.IAgentBrain
-import agentfoundation.AgentObserverArg
-import agentfoundation.ObserverArgType
+import agentfoundation.*
 import inputdata.InputDataVerificationImpl
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -31,7 +28,10 @@ class GuiController: Observer {
     private var agent: Agent? = null
 
     fun initialize() {
-        updateDbData()
+        // при первом запуске без бд, надо удалить
+        // st.execute("drop table intsedent") and st.execute("DELETE FROM " + AgentDatabaseImpl.TABLE_NAME)
+        updateInputDbData()
+        updateLocalDbData()
 
         startButton.setOnAction {
             agent?.start()
@@ -78,7 +78,7 @@ class GuiController: Observer {
         }
     }
 
-    private fun updateDbData() {
+    private fun updateInputDbData() {
         val ds = DriverManagerDataSource()
 
         val dbprop = Properties()
@@ -95,5 +95,16 @@ class GuiController: Observer {
         st.execute("CREATE TABLE if not exists intsedent (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,shortinfo TEXT,info TEXT);")
         for (i in 1..100)
             st.execute("insert into intsedent (shortinfo, info) values ('$i', '$i')")
+        st.close()
+    }
+
+    private fun updateLocalDbData() {
+        val ds = DriverManagerDataSource()
+        ds.setDriverClassName("org.sqlite.JDBC")
+        ds.url = "jdbc:sqlite:data/localdb/localdb.s3db"
+
+        val st = ds.connection.createStatement()
+        st.execute("DELETE FROM " + AgentDatabaseImpl.TABLE_NAME)
+        st.close()
     }
 }
