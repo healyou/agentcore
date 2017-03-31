@@ -44,7 +44,9 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
             updateAgentCommunication((AMessage) arg);
         if (o instanceof IAgentBrain && arg instanceof AgentObserverArg) {
             AgentObserverArg a = (AgentObserverArg) arg;
-            updateAgentOutput((LocalDataDto) a.getArg());
+
+            if (a.getArg() instanceof LocalDataDto)
+                updateAgentOutput((LocalDataDto) a.getArg());
         }
     }
 

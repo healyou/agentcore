@@ -2,6 +2,7 @@ package gui
 
 import agentfoundation.*
 import inputdata.InputDataVerificationImpl
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -59,21 +60,23 @@ class GuiController: Observer {
     }
 
     private fun onAgentUpdate(arg: Any?) {
-        if (arg !is AgentObserverArg)
-            return
+        Platform.runLater {
+            if (arg !is AgentObserverArg)
+                return@runLater
 
-        when (arg.type) {
-            ObserverArgType.OUTPUT_DATA -> {
-                logTextArea.appendText("\nвыходные данные - " + arg.arg)
-            }
-            ObserverArgType.MESSAGE -> {
-                logTextArea.appendText("\n" + arg.arg)
-            }
-            ObserverArgType.DEFAUL_VALUE -> {
-                logTextArea.appendText("\nDEFAUL message")
-            }
-            else -> {
-                logTextArea.appendText("\nnot message")
+            when (arg.type) {
+                ObserverArgType.OUTPUT_DATA -> {
+                    logTextArea.appendText("\nвыходные данные - " + arg.arg)
+                }
+                ObserverArgType.MESSAGE -> {
+                    logTextArea.appendText("\n" + arg.arg)
+                }
+                ObserverArgType.DEFAUL_VALUE -> {
+                    logTextArea.appendText("\nDEFAUL message")
+                }
+                else -> {
+                    logTextArea.appendText("\nnot message")
+                }
             }
         }
     }
@@ -93,7 +96,7 @@ class GuiController: Observer {
         val st = ds.connection.createStatement()
         st.execute("drop table intsedent")
         st.execute("CREATE TABLE if not exists intsedent (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,shortinfo TEXT,info TEXT);")
-        for (i in 1..100)
+        for (i in 1..10)
             st.execute("insert into intsedent (shortinfo, info) values ('$i', '$i')")
         st.close()
     }
