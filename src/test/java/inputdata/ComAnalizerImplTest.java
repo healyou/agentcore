@@ -4,16 +4,10 @@ import agentcommunication.AgentCommunicationImpl;
 import agentcommunication.AMessage;
 import agentcommunication.MCollectiveSolution;
 import agentcommunication.MSearchSolution;
-import agentfoundation.IAgentBrain;
-import agentfoundation.ComAnalizerImpl;
-import agentfoundation.AgentDatabaseImpl;
+import agentfoundation.*;
 import database.dao.LocalDataDao;
 import database.dto.DtoEntityImpl;
 import database.dto.LocalDataDto;
-import inputdata.InputDataTableDesc;
-import inputdata.InputDataVerificationImpl;
-import inputdata.LocalDataTableDesc;
-import inputdata.TableColumn;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -128,7 +122,7 @@ public class ComAnalizerImplTest  extends Assert {
 
             assertTrue(server.isGetClientMessage());
             assertEquals("1", answerValue);
-            assertEquals("123", collectiveValue);
+            assertEquals("1234", collectiveValue);
         } catch (Exception e) {
             System.out.println(e.toString());
             fail(e.toString());
@@ -142,7 +136,7 @@ public class ComAnalizerImplTest  extends Assert {
         try {
             DtoEntityImpl dtoEntity = dataDao.get(1);
             Object value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
-            assertEquals("1234", value);
+            assertEquals("123", value);
 
             value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME);
             assertEquals("1", value);
@@ -166,8 +160,8 @@ public class ComAnalizerImplTest  extends Assert {
         for (TableColumn column : localDataTD.getColumns()) {
             if (!column.getColumnName().equals("id")) {
                 if (column.getColumnName().equals(AgentDatabaseImpl.ANSWER_COLUMN_NAME))
-                    // 4 значение - общее решение будет
-                    paramValue.put(column.getColumnName(), "1234");
+                    // 3 значение - общее решение будет
+                    paramValue.put(column.getColumnName(), "123");
                 else
                     paramValue.put(column.getColumnName(), "1");
             }
@@ -187,7 +181,7 @@ public class ComAnalizerImplTest  extends Assert {
      * Класс для тестирования выдачи выходного сигнала
      */
     private class TestAgentBrain extends IAgentBrain {
-        private DtoEntityImpl dtoEntity;
+        private LocalDataDto dtoEntity;
         @Override
         public void takeInputData() {
             try {
@@ -199,7 +193,7 @@ public class ComAnalizerImplTest  extends Assert {
         @Override
         public void calculateOutput() {
             setChanged();
-            notifyObservers(dtoEntity);
+            notifyObservers(new AgentObserverArg(dtoEntity, ObserverArgType.OUTPUT_DATA));
         }
     }
 
@@ -263,7 +257,7 @@ public class ComAnalizerImplTest  extends Assert {
                 if (!column.getColumnName().equals("id")) {
                     if (column.getColumnName().equals(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME))
                         // 4 значение - общее решение будет
-                        paramValue.put(column.getColumnName(), "123");
+                        paramValue.put(column.getColumnName(), "1234");
                     else
                         paramValue.put(column.getColumnName(), "1");
                 }

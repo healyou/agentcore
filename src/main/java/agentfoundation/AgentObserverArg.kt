@@ -5,8 +5,8 @@ package agentfoundation
  * @autor Nikita Gorodilov
  */
 data class AgentObserverArg(
-        open var arg: Any? = null,
-        open var type: ObserverArgType = ObserverArgType.DEFAUL_VALUE
+        var arg: Any? = null,
+        var type: ObserverArgType = ObserverArgType.DEFAUL_VALUE
 )
 
 enum class ObserverArgType {

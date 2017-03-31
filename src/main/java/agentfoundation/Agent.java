@@ -22,7 +22,7 @@ public class Agent extends AAgentCommand implements Runnable {
     private final static String TABLE_DESC_PATH = "data/input/td.xml";
     private final static String CONNECT_PROP_PATH = "data/input/connect.properties";
 
-    private TestAgentBrainImpl brain;
+    private IAgentBrain brain;
     private ComAnalizerImpl comAnalizer;
     private AgentCommunicationImpl ac;
     private int updateMs;
@@ -94,7 +94,7 @@ public class Agent extends AAgentCommand implements Runnable {
         ac = new AgentCommunicationImpl();
         AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc, localDbPropPath);
         InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
-        brain = new TestAgentBrainImpl(inputDataDao, localdb);
+        brain = new TestAgentBrain(inputDataDao, localdb);
         comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
         // слушает выходные сигналы с мозга агента и от мод. вз-ия с серваком
         brain.addObserver(gui);
