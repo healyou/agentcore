@@ -13,8 +13,7 @@ import javafx.stage.Stage
 class Gui : Application() {
 
     override fun start(primaryStage: Stage?) {
-        System.setProperty("prism.lcdtext", "false") // for beautiful fonts on linux
-        val root = load<Parent?>(Gui.javaClass.getResource("gui.fxml"))
+        val root = load<Parent?>(Gui::class.java.getResource("gui.fxml"))
         primaryStage?.title = "Agent core"
         primaryStage?.scene = Scene(root, 800.0, 600.0)
         primaryStage?.show()

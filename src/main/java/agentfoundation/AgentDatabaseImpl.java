@@ -15,6 +15,7 @@ import javax.annotation.Nonnull;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.rmi.server.ExportException;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -38,8 +39,8 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     private LocalDataTableDesc localdbTableDesc;
     private LocalDataDao localDataDao;
 
-    public AgentDatabaseImpl(@Nonnull InputDataTableDesc inputDataTD, @Nonnull String localdbPropPath) {
-        DB_PROPERTIES_PATH = localdbPropPath;
+    public AgentDatabaseImpl(@Nonnull InputDataTableDesc inputDataTD, @Nonnull String localdbResPath) {
+        DB_PROPERTIES_PATH = localdbResPath;
         jdbcTemplate = getJdbcTemplate();
         createOrOpenDatabase(jdbcTemplate, inputDataTD);
         localdbTableDesc = createLocalDbDesc(inputDataTD);
@@ -121,16 +122,14 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
         Properties dbprop = new Properties();
         try {
-            dbprop.load(new FileInputStream(DB_PROPERTIES_PATH));
+            dbprop.load(getClass().getClassLoader().getResource(DB_PROPERTIES_PATH).openStream());
 
             String driverClassName = dbprop.getProperty("driverClassName");
             String url = dbprop.getProperty("url");
 
             ds.setDriverClassName(driverClassName);
             ds.setUrl(url);
-        } catch (FileNotFoundException e) {
-            System.out.println(e.toString());
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println(e.toString());
         }
 

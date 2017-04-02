@@ -54,7 +54,7 @@ public class ComAnalizerImplTest  extends Assert {
 
             JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(propFilePath);
             InputDataTableDesc tableDesc = dataVerification.getDatabaseTables(tableDescFileName);
-            agentDb = new AgentDatabaseImpl(tableDesc, propFilePath);
+            agentDb = new AgentDatabaseImpl(tableDesc, "inputdata/testdb.properties");
 
             server = new TestServer(PORT, 0, InetAddress.getByName(HOST), agentDb);
             serverThread = new Thread(server);

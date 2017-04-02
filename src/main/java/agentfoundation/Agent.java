@@ -64,10 +64,8 @@ public class Agent extends AAgentCommand implements Runnable {
         dataVerification.testReadDbData(jdbcTemplate, tableDesc);
         updateMs = tableDesc.getPeriodicityMS();
 
-        String localDbPropPath = AgentDatabaseImpl.class.
-                getResource("localsqlitedb.properties").toURI().getPath();
         // инициализация основных переменных
-        initCoreData(jdbcTemplate, tableDesc, localDbPropPath, gui);
+        initCoreData(jdbcTemplate, tableDesc, gui);
     }
 
     @Override
@@ -86,13 +84,13 @@ public class Agent extends AAgentCommand implements Runnable {
      * инициализация основных переменных
      * @param jdbcTemplate вз-ие с бд
      * @param tableDesc описание входной таблицы
-     * @param localDbPropPath файл описания jdbc для лок бд
      * @throws Exception если была ошибка при инициализации
      */
-    private void initCoreData(JdbcTemplate jdbcTemplate, InputDataTableDesc tableDesc,
-                              String localDbPropPath, GuiController gui) throws Exception {
+    private void initCoreData(JdbcTemplate jdbcTemplate,
+                              InputDataTableDesc tableDesc, GuiController gui) throws Exception {
         ac = new AgentCommunicationImpl();
-        AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc, localDbPropPath);
+        AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc,
+                "agentfoundation/localsqlitedb.properties");
         InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
         brain = new TestAgentBrain(inputDataDao, localdb);
         comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);

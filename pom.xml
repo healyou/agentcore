@@ -195,7 +195,7 @@
                                 </transformer>
                             </transformers>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <finalName>agetn-core-${version}-mnshadepl</finalName>
+                            <finalName>agent-core-mnshadepl</finalName>
                             <shadedArtifactAttached>false</shadedArtifactAttached>
                         </configuration>
                     </execution>

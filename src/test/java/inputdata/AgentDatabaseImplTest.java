@@ -31,8 +31,7 @@ public class AgentDatabaseImplTest extends Assert {
             InputDataTableDesc tableDesc = dataVerification.getDatabaseTables(
                     InputDataVerificationImpl.class.getResource("tableDescription.xml").toURI().getPath());
 
-            agentDb = new AgentDatabaseImpl(tableDesc,
-                    InputDataVerificationImpl.class.getResource("testdb.properties").toURI().getPath());
+            agentDb = new AgentDatabaseImpl(tableDesc, "inputdata/testdb.properties");
         } catch (Exception e) {
             fail(e.toString());
         }

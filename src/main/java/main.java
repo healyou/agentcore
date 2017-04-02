@@ -73,7 +73,7 @@ public class main {
                     getDatabaseTables("C:\\Users\\lappi\\IdeaProjects\\agentcore\\src\\test\\resources\\inputdata\\inputdataverification\\tableDescription.xml");
 
             AgentDatabaseImpl agentDb = new AgentDatabaseImpl(tableDesc,
-                    AgentDatabaseImpl.class.getResource("localsqlitedb.properties").toURI().getPath());
+                    "../agentfoundation/localsqlitedb.properties");
             LocalDataTableDesc localDataTD = agentDb.getLocalDbTableDesc();
 
             HashMap<String, String> paramType = new HashMap<>();
