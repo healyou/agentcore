@@ -3,6 +3,7 @@
     <Table>
         <TableName>intsedent</TableName>
         <PeriodicityMS>1000</PeriodicityMS>
+        <AgentID>AgentID</AgentID>
         <OutputDataType>int</OutputDataType>
         <CommunRegularExp>[1]$</CommunRegularExp>
         <ColumnDescription>

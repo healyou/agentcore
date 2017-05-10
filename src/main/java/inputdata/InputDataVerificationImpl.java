@@ -97,17 +97,20 @@ public class InputDataVerificationImpl implements InputDataVerification {
      *     ...
      * </Table>
      */
-    private InputDataTableDesc parseTableNode(Node tableNode) {
-        String tableName = "";
-        int periodicityMs = -1;
+    private InputDataTableDesc parseTableNode(Node tableNode) throws Exception {
+        String tableName = null;
+        Integer periodicityMs = null;
         ImmutableList<TableColumn> columns = null;
-        String outputType = "";
+        String outputType = null;
         Pattern pattern = null;
+        String agentID = null;
 
         NodeList children = tableNode.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);
             if(node.getNodeType() == Node.ELEMENT_NODE) {
+                if (node.getNodeName().equals("AgentID"))
+                    agentID = node.getTextContent();
                 if (node.getNodeName().equals("TableName"))
                     tableName = node.getTextContent();
                 if (node.getNodeName().equals("PeriodicityMS"))
@@ -121,7 +124,11 @@ public class InputDataVerificationImpl implements InputDataVerification {
             }
         }
 
-        return new InputDataTableDesc(tableName, periodicityMs, columns, outputType, pattern);
+        if (columns == null || pattern == null || periodicityMs == null ||
+                tableName == null || outputType == null || agentID == null)
+            throw new Exception("Аргументы не могут быть null");
+
+        return new InputDataTableDesc(tableName, periodicityMs, columns, outputType, pattern, agentID);
     }
 
     /**

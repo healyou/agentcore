@@ -1,6 +1,7 @@
 package inputdata;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -9,7 +10,8 @@ import java.util.regex.Pattern;
  */
 public class InputDataTableDesc extends ATableDesc {
 
-    private int periodicityMS;
+    private String agentID;
+    private Integer periodicityMS;
     private String outputType;
     private Pattern comRegExp;
 
@@ -20,13 +22,18 @@ public class InputDataTableDesc extends ATableDesc {
      * @param outputType тип данных выходного значения
      * @param comRegExp проверка, надо ли делать общее решение
      */
-    public InputDataTableDesc(String tableName, int periodicityMS, ImmutableList<TableColumn> columns,
-                              String outputType, Pattern comRegExp) {
+    public InputDataTableDesc(@NotNull String tableName,
+                              @NotNull Integer periodicityMS,
+                              @NotNull ImmutableList<TableColumn> columns,
+                              @NotNull String outputType,
+                              @NotNull Pattern comRegExp,
+                              @NotNull String agentID) {
         super(tableName, columns);
 
         this.periodicityMS = periodicityMS;
         this.outputType = outputType;
         this.comRegExp = comRegExp;
+        this.agentID = agentID;
     }
 
     @Override
@@ -44,16 +51,22 @@ public class InputDataTableDesc extends ATableDesc {
         return sb.toString();
     }
 
+    @NotNull
     public String getOutputType() {
         return outputType;
     }
 
+    @NotNull
     public Pattern getComRegExp() {
         return comRegExp;
     }
 
-    public int getPeriodicityMS() {
-        return this.periodicityMS;
+    @NotNull
+    public Integer getPeriodicityMS() {
+        return periodicityMS;
     }
+
+    @NotNull
+    public String getAgentID() { return agentID; }
 
 }

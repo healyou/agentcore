@@ -58,9 +58,10 @@ public class InputVerificationImplTest extends Assert {
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
             assertEquals("intsedent", tableDesc.getTableName());
+            assertEquals("AgentID", tableDesc.getAgentID());
             assertEquals("int", tableDesc.getOutputType());
             assertEquals("^\\d?\\d?\\d$", tableDesc.getComRegExp().toString());
-            assertEquals(1000, tableDesc.getPeriodicityMS());
+            assertEquals(new Integer(1000), tableDesc.getPeriodicityMS());
             assertNotNull(tableDesc.getColumns());
             // смотрим на обязательную колонку в таблице
             assertTrue(isTableColumn(tableDesc, ATableDesc.ID_COLUMN_NAME, ATableDesc.ID_COLUMN_TYPE));
@@ -99,9 +100,10 @@ public class InputVerificationImplTest extends Assert {
             assertNotNull(tableDesc);
             assertNotNull(jdbcTemplate);
             assertEquals("intsedent", tableDesc.getTableName());
+            assertEquals("AgentID", tableDesc.getAgentID());
             assertEquals("int", tableDesc.getOutputType());
             assertEquals("^\\d?\\d?\\d$", tableDesc.getComRegExp().toString());
-            assertEquals(1000, tableDesc.getPeriodicityMS());
+            assertEquals(new Integer(1000), tableDesc.getPeriodicityMS());
             assertNotNull(tableDesc.getColumns());
             // смотрим на обязательную колонку в таблице
             assertTrue(isTableColumn(tableDesc, ATableDesc.ID_COLUMN_NAME, ATableDesc.ID_COLUMN_TYPE));
