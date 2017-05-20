@@ -1,14 +1,13 @@
-import agentcommunication.AgentCommunicationImpl;
-import agentcommunication.IAgentCommunication;
-import agentcommunication.MCollectiveSolution;
-import agentcommunication.MSearchSolution;
-import agentfoundation.AgentDatabaseImpl;
-import database.dto.DtoEntityImpl;
-import database.dto.LocalDataDto;
-import inputdata.InputDataVerificationImpl;
-import inputdata.InputDataTableDesc;
-import inputdata.LocalDataTableDesc;
-import inputdata.TableColumn;
+import agentcore.agentcommunication.AgentCommunicationImpl;
+import agentcore.agentcommunication.IAgentCommunication;
+import agentcore.agentcommunication.MCollectiveSolution;
+import agentcore.agentcommunication.MSearchSolution;
+import agentcore.agentfoundation.AgentDatabaseImpl;
+import agentcore.database.dto.LocalDataDto;
+import agentcore.inputdata.InputDataVerificationImpl;
+import agentcore.inputdata.InputDataTableDesc;
+import agentcore.inputdata.LocalDataTableDesc;
+import agentcore.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
@@ -70,10 +69,10 @@ public class main {
         InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
         try {
             InputDataTableDesc tableDesc = dataVerification.
-                    getDatabaseTables("C:\\Users\\lappi\\IdeaProjects\\agentcore\\src\\test\\resources\\inputdata\\inputdataverification\\tableDescription.xml");
+                    getDatabaseTables("C:\\Users\\lappi\\IdeaProjects\\agentcore\\src\\test\\resources\\agentcore.inputdata\\inputdataverification\\tableDescription.xml");
 
             AgentDatabaseImpl agentDb = new AgentDatabaseImpl(tableDesc,
-                    "../agentfoundation/localsqlitedb.properties");
+                    "../agentcore.agentfoundation/localsqlitedb.properties");
             LocalDataTableDesc localDataTD = agentDb.getLocalDbTableDesc();
 
             HashMap<String, String> paramType = new HashMap<>();
@@ -104,8 +103,8 @@ public class main {
         InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
         try {
             InputDataTableDesc tableDesc = dataVerification.
-                    getDatabaseTables("C:\\Users\\lappi\\Intellij IDEA\\Projects\\agentcore\\src\\test\\resources\\inputdata\\inputdataverification\\tableDescription.xml");
-            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate("src\\test\\resources\\inputdata\\inputdataverification\\testdb.properties");
+                    getDatabaseTables("C:\\Users\\lappi\\Intellij IDEA\\Projects\\agentcore\\src\\test\\resources\\agentcore.inputdata\\inputdataverification\\tableDescription.xml");
+            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate("src\\test\\resources\\agentcore.inputdata\\inputdataverification\\testdb.properties");
             dataVerification.testReadDbData(jdbcTemplate, tableDesc);
         } catch (Exception e) {
             System.out.println(e.toString());
