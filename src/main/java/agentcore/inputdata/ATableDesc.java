@@ -51,6 +51,8 @@ public abstract class ATableDesc {
             return "INTEGER";
         if (type.equals("String"))
             return "TEXT";
+        if (type.equals("double"))
+            return "DOUBLE";
 
         return null;
     }

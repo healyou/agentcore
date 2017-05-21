@@ -5,7 +5,7 @@
         <PeriodicityMS>1000</PeriodicityMS>
         <AgentID>AgentID</AgentID>
         <OutputDataType>int</OutputDataType>
-        <CommunRegularExp>[1]$</CommunRegularExp>
+        <CommunRegularExp>\d$</CommunRegularExp>
         <ColumnDescription>
             <Column>
                 <ColumnName>id</ColumnName>

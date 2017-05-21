@@ -5,8 +5,12 @@
         <PeriodicityMS>5000</PeriodicityMS>
         <AgentID>agentA</AgentID>
         <OutputDataType>int</OutputDataType>
-        <CommunRegularExp>\W$</CommunRegularExp>
+        <CommunRegularExp>\d$</CommunRegularExp>
         <ColumnDescription>
+            <Column>
+                <ColumnName>id</ColumnName>
+                <ColumnType>int</ColumnType>
+            </Column>
             <Column>
                 <ColumnName>occupancyA</ColumnName>
                 <ColumnType>double</ColumnType>

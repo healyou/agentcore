@@ -79,6 +79,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
             statement.execute(createSqlQuery(inputDataTD));
         } catch (SQLException e) {
             System.out.println(e.toString());
+            System.exit(2);
         }
 
     }
@@ -94,7 +95,11 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
             String columnName = tableColumn.getColumnName();
             String columnType = ATableDesc.translateToSqlType(tableColumn.getColumnType());
-            sql.append(columnName + ' ' + columnType + ',');
+            checkNotNull(columnName, "columnName is not null");
+            checkNotNull(columnType, "columnType is not null");
+
+            String temp = columnName + ' ' + columnType + ',';
+            sql.append(temp);
         }
 
         sql.append(ANSWER_COLUMN_NAME + " TEXT,");

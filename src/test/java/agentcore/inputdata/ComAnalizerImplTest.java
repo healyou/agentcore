@@ -166,7 +166,7 @@ public class ComAnalizerImplTest  extends Assert {
                     paramValue.put(column.getColumnName(), "1");
             }
             else
-                paramValue.put(column.getColumnName(), "");
+                paramValue.put(column.getColumnName(), "1");
         }
 
         LocalDataDto entity = new LocalDataDto(paramType, paramValue);

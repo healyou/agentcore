@@ -1,1 +1,1 @@
-DELETE FROM intsedent;
+DELETE FROM inputdataA;

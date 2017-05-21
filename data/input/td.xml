@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TableDescription>
     <Table>
-        <TableName>intsedent</TableName>
-        <PeriodicityMS>1000</PeriodicityMS>
-        <AgentID>AgentID</AgentID>
+        <TableName>inputdataA</TableName>
+        <PeriodicityMS>5000</PeriodicityMS>
+        <AgentID>agentA</AgentID>
         <OutputDataType>int</OutputDataType>
-        <CommunRegularExp>[1]$</CommunRegularExp>
+        <CommunRegularExp>\d$</CommunRegularExp>
         <ColumnDescription>
             <Column>
                 <ColumnName>id</ColumnName>
                 <ColumnType>int</ColumnType>
             </Column>
             <Column>
-                <ColumnName>shortinfo</ColumnName>
-                <ColumnType>String</ColumnType>
+                <ColumnName>occupancyA</ColumnName>
+                <ColumnType>double</ColumnType>
             </Column>
             <Column>
-                <ColumnName>info</ColumnName>
-                <ColumnType>String</ColumnType>
+                <ColumnName>conditionA</ColumnName>
+                <ColumnType>double</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>condition_d1</ColumnName>
+                <ColumnType>double</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>occupancy_d1</ColumnName>
+                <ColumnType>double</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>condition_d2</ColumnName>
+                <ColumnType>double</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>occupancy_d2</ColumnName>
+                <ColumnType>double</ColumnType>
             </Column>
         </ColumnDescription>
     </Table>

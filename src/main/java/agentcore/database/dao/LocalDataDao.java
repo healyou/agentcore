@@ -69,28 +69,31 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
         return updateSql.toString();
     }
 
+    /**
+     * запись создаётся с тем id, который будет указан в entity
+     */
     private String configureInsertSql(DtoEntityImpl entity, LocalDataTableDesc tableDesc) {
         StringBuilder updateSql = new StringBuilder();
 
         updateSql.append("insert into " + tableDesc.getTableName() + " (");
         for (String columnName : entity.getColumnNames())
-            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
-                updateSql.append(columnName + ",");
+            //if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
+            updateSql.append(columnName + ",");
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ") values (");
 
         for (String columnName : entity.getColumnNames())
-            if (!columnName.equals(ATableDesc.ID_COLUMN_NAME)) {
-                if (entity.getTypeByColumnName(columnName).equals("String")) {
-                    updateSql.append('\'');
-                    updateSql.append(entity.getValueByColumnName(columnName));
-                    updateSql.append("',");
-                }
-                else {
-                    updateSql.append(entity.getValueByColumnName(columnName));
-                    updateSql.append(',');
-                }
+            //if (!columnName.equals(ATableDesc.ID_COLUMN_NAME)) {
+            if (entity.getTypeByColumnName(columnName).equals("String")) {
+                updateSql.append('\'');
+                updateSql.append(entity.getValueByColumnName(columnName));
+                updateSql.append("',");
             }
+            else {
+                updateSql.append(entity.getValueByColumnName(columnName));
+                updateSql.append(',');
+            }
+            //}
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ")");
 

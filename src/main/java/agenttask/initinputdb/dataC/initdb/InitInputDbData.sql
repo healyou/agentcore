@@ -1,4 +1,4 @@
-INSERT INTO inputdataC (occupancyA, conditionA, condition_d3, occupancy_d3) VALUES
+INSERT INTO inputdataC (occupancyC, conditionC, condition_d3, occupancy_d3) VALUES
     (0.1, 0.0, 0.21, 0.5),
     (0.2, 0.9, 0.22, 0.5),
     (0.3, 0.8, 0.23, 0.5),

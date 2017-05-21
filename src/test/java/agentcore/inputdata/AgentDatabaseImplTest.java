@@ -80,7 +80,7 @@ public class AgentDatabaseImplTest extends Assert {
                 if (!column.getColumnName().equals("id"))
                     paramValue.put(column.getColumnName(), "1");
                 else
-                    paramValue.put(column.getColumnName(), "");
+                    paramValue.put(column.getColumnName(), "1");
             }
 
             LocalDataDto entity = new LocalDataDto(paramType, paramValue);
@@ -104,7 +104,7 @@ public class AgentDatabaseImplTest extends Assert {
                 if (!column.getColumnName().equals("id"))
                     paramValue.put(column.getColumnName(), "1");
                 else
-                    paramValue.put(column.getColumnName(), "");
+                    paramValue.put(column.getColumnName(), "2");
             }
 
             LocalDataDto entity = new LocalDataDto(paramType, paramValue);

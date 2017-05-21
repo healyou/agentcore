@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TableDescription>
     <Table>
-        <TableName>inputdataA</TableName>
+        <TableName>inputdataC</TableName>
         <PeriodicityMS>5000</PeriodicityMS>
-        <AgentID>agentA</AgentID>
+        <AgentID>agentC</AgentID>
         <OutputDataType>int</OutputDataType>
-        <CommunRegularExp>\W$</CommunRegularExp>
+        <CommunRegularExp>\d$</CommunRegularExp>
         <ColumnDescription>
             <Column>
-                <ColumnName>occupancyA</ColumnName>
+                <ColumnName>id</ColumnName>
+                <ColumnType>int</ColumnType>
+            </Column>
+            <Column>
+                <ColumnName>occupancyC</ColumnName>
                 <ColumnType>double</ColumnType>
             </Column>
             <Column>
-                <ColumnName>conditionA</ColumnName>
+                <ColumnName>conditionC</ColumnName>
                 <ColumnType>double</ColumnType>
             </Column>
             <Column>
