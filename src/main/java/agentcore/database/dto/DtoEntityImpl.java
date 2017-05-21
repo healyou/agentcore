@@ -1,6 +1,10 @@
 package agentcore.database.dto;
 
+import com.google.common.base.MoreObjects.ToStringHelper;
+
 import java.util.*;
+
+import static com.google.common.base.MoreObjects.toStringHelper;
 
 /**
  * Created on 17.02.2017 16:26
@@ -34,16 +38,11 @@ public class DtoEntityImpl extends ABaseDtoEntity {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("Entity[");
+        ToStringHelper stringHelper = toStringHelper(this);
+        for (String columnName : getColumnNames())
+            stringHelper.add(columnName, getValueByColumnName(columnName).toString());
 
-        for (String columnName : getColumnNames()) {
-            Object value = getValueByColumnName(columnName);
-            sb.append(value.toString());
-            sb.append(" ");
-        }
-
-        sb.append("]");
-        return sb.toString();
+        return stringHelper.toString();
     }
 
     @Override
@@ -81,5 +80,4 @@ public class DtoEntityImpl extends ABaseDtoEntity {
             this.paramType = new HashMap<>();
         }
     }
-
 }

@@ -7,7 +7,9 @@ import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
 import org.springframework.jdbc.datasource.DriverManagerDataSource
+import java.io.BufferedReader
 import java.io.FileReader
+import java.sql.SQLException
 import java.util.*
 
 /**
@@ -28,8 +30,7 @@ class GuiController: Observer {
     private var agent: Agent? = null
 
     fun initialize() {
-        // при первом запуске без бд, надо удалить
-        // st.execute("drop table intsedent") and st.execute("DELETE FROM " + AgentDatabaseImpl.TABLE_NAME)
+        // создание и инициализация inputdb
         updateInputDbData()
         updateLocalDbData()
 
@@ -93,10 +94,31 @@ class GuiController: Observer {
         ds.url = url
 
         val st = ds.connection.createStatement()
-        st.execute("drop table intsedent")
-        st.execute("CREATE TABLE if not exists intsedent (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,shortinfo TEXT,info TEXT);")
-        for (i in 1..100)
-            st.execute("insert into intsedent (shortinfo, info) values ('$i', '$i')")
+
+        // create table
+        var filePath = "data/input/initdb/CreateInputDb.sql"
+        var br = BufferedReader(FileReader(filePath))
+        val sql = StringBuilder()
+        while (br.ready())
+            sql.append(br.readLine())
+        st.execute(sql.toString())
+
+        // clear table
+        sql.setLength(0)
+        filePath = "data/input/initdb/ClearTableData.sql"
+        br = BufferedReader(FileReader(filePath))
+        while (br.ready())
+            sql.append(br.readLine())
+        st.execute(sql.toString())
+
+        // setup data
+        sql.setLength(0)
+        filePath = "data/input/initdb/InitInputDbData.sql"
+        br = BufferedReader(FileReader(filePath))
+        while (br.ready())
+            sql.append(br.readLine())
+        st.execute(sql.toString())
+
         st.close()
     }
 
@@ -106,7 +128,11 @@ class GuiController: Observer {
         ds.url = "jdbc:sqlite:data/localdb/localdb.s3db"
 
         val st = ds.connection.createStatement()
-        st.execute("DELETE FROM " + AgentDatabaseImpl.TABLE_NAME)
-        st.close()
+        try {
+            st.execute("DELETE FROM " + AgentDatabaseImpl.TABLE_NAME)
+        } catch (e: SQLException) {
+        } finally {
+            st.close()
+        }
     }
 }
