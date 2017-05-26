@@ -8,7 +8,7 @@ import net.sourceforge.evoj.handlers.MultithreadedHandler
  * Created on 22.05.2017 20:39
  * @autor Nikita Gorodilov
  */
-class Main {
+class main {
 
     companion object {
 
