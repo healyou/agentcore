@@ -84,6 +84,7 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
 
         for (String columnName : entity.getColumnNames())
             //if (!columnName.equals(ATableDesc.ID_COLUMN_NAME)) {
+            // todo переписать работу с типами данных(на константы)
             if (entity.getTypeByColumnName(columnName).equals("String")) {
                 updateSql.append('\'');
                 updateSql.append(entity.getValueByColumnName(columnName));

@@ -41,6 +41,7 @@ public class DtoEntityImplRowMapper implements RowMapper<DtoEntityImpl> {
 
         // получаем значение считываемой строки таблицы
         for (String key : paramType.keySet()) {
+            // todo переписать работу с типами данных(на константы)
             if (paramType.get(key).equals("int")) {
                 String columnName = key;
                 paramValue.put(key, rs.getInt(columnName));

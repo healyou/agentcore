@@ -29,6 +29,7 @@ class InputRowMapper(private val tableDesc: ATableDesc) : RowMapper<InputDataDto
 
         // получаем значение считываемой строки таблицы
         for (key in paramType.keys) {
+            // todo переписать работу с типами данных(на константы)
             when (paramType[key]) {
                 "int" -> {
                     val columnName = key

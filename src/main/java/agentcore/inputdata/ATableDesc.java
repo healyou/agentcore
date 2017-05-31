@@ -47,6 +47,7 @@ public abstract class ATableDesc {
     }
 
     public static String translateToSqlType(String type) {
+        // todo переписать работу с типами данных(на константы)
         if (type.equals("int"))
             return "INTEGER";
         if (type.equals("String"))
