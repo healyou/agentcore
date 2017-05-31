@@ -10,6 +10,7 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 
 /**
  * Created by user on 26.05.2017.
+ * @autor Nikita Gorodilov
  */
 class main {
 
