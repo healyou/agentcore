@@ -1,13 +1,12 @@
 package agenttask.evoj
 
 import net.sourceforge.evoj.core.DefaultPoolFactory
-import net.sourceforge.evoj.core.RandomValueFactory
 import net.sourceforge.evoj.handlers.DefaultHandler
 import net.sourceforge.evoj.handlers.MultithreadedHandler
 
 /**
  * Created on 22.05.2017 20:39
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class main {
 
@@ -15,10 +14,13 @@ class main {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            evojExample()
+        }
+
+        private fun evojExample() {
             //val factory = RandomValueFactory<InputDataModel>(InputDataModel(InputDataModel::class.java, null));
             //val testpf = DefaultPoolFactory()
             //val testpool = testpf.createPool(800, factory)
-
             var startTime = System.currentTimeMillis()
             var pf = DefaultPoolFactory()
             var pool = pf.createPool(800, Solution::class.java, null)

@@ -4,7 +4,7 @@ import net.sourceforge.evoj.core.annotation.Range
 
 /**
  * Created on 20.05.2017 19:12
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 interface Solution {
 

@@ -4,7 +4,7 @@ import net.sourceforge.evoj.strategies.sorting.AbstractSimpleRating
 
 /**
  * Created on 22.05.2017 20:38
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class Rating : AbstractSimpleRating<Solution, Double>() {
 
