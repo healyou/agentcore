@@ -7,6 +7,8 @@ import org.encog.ml.data.basic.BasicMLDataSet
 import org.encog.neural.networks.BasicNetwork
 import org.encog.neural.networks.layers.BasicLayer
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation
+import org.encog.util.csv.CSVFormat
+import org.encog.util.simple.TrainingSetUtil
 
 /**
  * Created by user on 26.05.2017.
@@ -32,7 +34,21 @@ class main {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            testLoadCsvData()
+            defineTestNetwork()
+        }
 
+        private fun testLoadCsvData() {
+            val currentDir = System.getProperty("user.dir")
+            val inputFilePath = "$currentDir\\data\\neural\\xor.csv"
+
+            val trainingSet = TrainingSetUtil.loadCSVTOMemory(
+                    CSVFormat.DECIMAL_POINT, inputFilePath/*"C:\\Users\\user\\IdeaProjects\\agentcore\\data\\neural\\xor.csv"*/, false, 2, 1)
+
+            trainingSet.forEach { println(it) }
+        }
+
+        private fun defineTestNetwork() {
             val network = BasicNetwork()
 
             network.addLayer(BasicLayer(null, true, 2))
