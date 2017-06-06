@@ -16,6 +16,31 @@ class main {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            testAgentGenetics()
+            //testGenetics()
+        }
+
+        private fun testAgentGenetics() {
+            val iterations = 100
+            val size = 1000
+            val chooses = 0.4
+            val mutates = 0.02
+            val choosing = ChoosingRandom()
+            val selecting = SelectingMax()
+            val stopping = StoppingIterations(iterations)
+            val cross = SimpleCrossOnePoint()
+            val mutation = SimpleMutationOneBit()
+            val inputData = arrayListOf<Int>(0, 1, 2, 3, 4, 5).toIntArray()
+            val creature = AgentCreature(inputData, AgentCreature.FromValue.OTHER_AGENT, inputData.size * 4 - 1, cross, mutation)
+
+            val population = Population(size, chooses, mutates, creature, choosing, selecting, stopping)
+            population.run()
+
+            val outCreature = population.answerCreature as AgentCreature
+            println(outCreature.fit())
+        }
+
+        private fun testGenetics() {
             /*n - Число особей в популяции.
            chooses - Доля скрещиваемых особей.
            mutates - Доля мутирующих особей.
@@ -23,7 +48,7 @@ class main {
            ch - Объект-наследник класса Choosing, в котором реализована функция выбора особей для скрещивания crossing.
            sel - Объект-наследник класса Selecting, в котором реализована функция отбора особей select.
            st - Объект-наследник класса Stopping, в котором реализована функция проверки условия остановки алгоритма isEnding.*/
-            val iterations = 10000
+            val iterations = 100
 
             val size = 1000
             val chooses = 0.4
@@ -33,7 +58,16 @@ class main {
             val stopping = StoppingIterations(iterations)
             val cross = SimpleCrossOnePoint()
             val mutation = SimpleMutationOneBit()
-            val creature = MyCreature(31, cross, mutation);
+            val creature = MyCreature(31, cross, mutation)
+
+//            var temp = creature.get()
+//            println("${creature.getbytes()}")
+//            println("$temp")
+//            println("${creature.generate()}")
+//            temp = creature.get()
+//            println("${creature.generate()}")
+//            temp = creature.get()
+//            println("${creature.get()}")
 
             val population = Population(size, chooses, mutates, creature, choosing, selecting, stopping)
             population.run()
