@@ -7,13 +7,17 @@ import genetics.simplecreature.SimpleMutationFunction
 /**
  * @author Nikita Gorodilov
  * @param inputData входные параметры задачи(размер равен bytes) (от 0 до 15 8 чисел максимум - 0-31 байт)
+ * @param inputDataParamName имена переменных в базе данных - для поиска фактов в clips
  * @param fromValue от кого идёт сигнал - текущий агент или другие агенты
+ * @param clipsEnvironment загрузка clips
  * @param bytes число используемых байт - 4 байта(1 число)
  * @param cross кроссинговер особи
  * @param mutation мутация особи
  */
-class AgentCreature(private val inputData: IntArray,
+class AgentCreature(private val inputData: ArrayList<Int>,
+                    private val inputDataParamName: ArrayList<String>,
                     private val fromValue: FromValue,
+                    private val clipsEnvironment: ClipsEnvironment,
                     bytes: Int,
                     cross: SimpleCrossFunction,
                     mutation: SimpleMutationFunction):
@@ -37,6 +41,7 @@ class AgentCreature(private val inputData: IntArray,
         // Количество байт должно быть кратно INPUT_DATA_BYTE_SIZE
         // Размер в байтах / INPUT_DATA_BYTE_SIZE должен быть равен числу вхордных параметров
         if (inputData.size > MAX_INPUT_DATA_SIZE ||
+                inputDataParamName.size != inputData.size ||
                 (bytes + 1) % INPUT_DATA_BYTE_SIZE != 0 ||
                 (bytes + 1) / INPUT_DATA_BYTE_SIZE != inputData.size)
             throw IllegalArgumentException(INPUT_DATA_EXCEPTION_TEXT)
