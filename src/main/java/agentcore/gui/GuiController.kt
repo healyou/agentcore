@@ -29,6 +29,10 @@ class GuiController: Observer {
 
     private var agent: Agent? = null
 
+    // todo maven после install не работает с кастомными либами(надо их как то вручную туда добавлять)
+
+    // todo не видит clips dll в папке libs
+
     fun initialize() {
         // создание и инициализация inputdb
         updateInputDbData()

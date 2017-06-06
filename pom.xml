@@ -43,6 +43,23 @@
 
     <dependencies>
 
+        <!-- add local maven libs -> libs/maven_add_jar.txt -->
+        <!-- CLIPSJNI - экспертные системы -->
+        <dependency>
+            <groupId>org.genetics</groupId>
+            <artifactId>genetics</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- GenAlgorithms - генетические алгоритмы -->
+        <dependency>
+            <groupId>org.clipsjni</groupId>
+            <artifactId>clipsjni</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <!-- add local maven libs -> libs/maven_add_jar.txt -->
+
+
         <!-- нейронные сети -->
         <dependency>
             <groupId>org.encog</groupId>
