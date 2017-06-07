@@ -9,6 +9,9 @@ import genetics.stopping.StoppingIterations
 import net.sf.clipsrules.jni.Environment
 import net.sf.clipsrules.jni.FactAddressValue
 import net.sf.clipsrules.jni.MultifieldValue
+import java.math.BigInteger
+import kotlin.experimental.and
+import kotlin.experimental.or
 
 /**
  * @author Nikita Gorodilov
@@ -30,7 +33,7 @@ class main {
         }
 
         private fun testGeneticsWithClipsEnvironment() {
-            val iterations = 100
+            val iterations = 10
             val size = 1000
             val chooses = 0.4
             val mutates = 0.02
@@ -59,6 +62,8 @@ class main {
                     val outputClipsData = parseOutputClipsData(bigVal)
 
                     // todo надо из outputClipsData получить число типа int(32 байта) и посчитать fit функцию
+                    // todo надо вынести всё это в отдельный класс
+                    // todo надо делать что-то с ошибками - если были ошибки, то выдавать просто ответ какой нибудь(0.0)
 
                     return super.fitCurrentAgent()
                 }
@@ -103,16 +108,29 @@ class main {
                 }
 
                 /**
-                 * Из int 32 байта получаем наши n чисел по 4 байта
+                 * Из int 32 байта получаем наши inputData.size чисел по INPUT_DATA_BYTE_SIZE байт
                  */
                 private fun parseClipsInputData(): ArrayList<Int> {
-                    val x = get()
+                    var x = get()
                     val inputDataArray = arrayListOf<Int>()
 
-                    for (i in 0..inputDataArray.size) {
-                        // todo из x надо достать inputDataArray.size элементов по 4 байта
-                        inputDataArray.add(i)
+                    // сюда положим наши числа по 4 бита
+                    val byteDataArray = Array<Int>(inputData.size) { 0 }
+                    val mask = 1
+                    for (i in inputData.indices) {
+                        var byte = 0
+                        for (j in 0..INPUT_DATA_BYTE_SIZE - 1) {
+                            byte = byte.shr(1)
+                            if (x.and(mask) == 1)
+                                byte = byte.or(mask.shl(INPUT_DATA_BYTE_SIZE - 1))
+                            x = x.shr(1)
+                        }
+
+                        byteDataArray[i] = byte
                     }
+
+                    for (i in 0..byteDataArray.size - 1)
+                        inputDataArray.add(byteDataArray[i])
 
                     return inputDataArray
                 }
@@ -121,7 +139,7 @@ class main {
 
             val creature = AgentCreature(inputData, inputDataParamName, AgentCreature.FromValue.OTHER_AGENT, ClipsEnvironment(), inputData.size * 4 - 1, cross, mutation)
 
-            val population = Population(size, chooses, mutates, creature, choosing, selecting, stopping)
+            val population = Population(size, chooses, mutates, agentCreature, choosing, selecting, stopping)
             population.run()
 
             val outCreature = population.answerCreature as AgentCreature

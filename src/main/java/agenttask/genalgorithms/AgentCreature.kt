@@ -31,7 +31,8 @@ open class AgentCreature(protected val inputData: ArrayList<Int>,
     companion object {
         private val MAX_INPUT_DATA_VALUE = 15
         private val MAX_INPUT_DATA_SIZE = 8
-        private val INPUT_DATA_BYTE_SIZE = 4
+        @JvmStatic
+        protected val INPUT_DATA_BYTE_SIZE = 4
 
         private val INPUT_DATA_EXCEPTION_TEXT = "Неверный формат входных данных"
         private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clips.CLP"
