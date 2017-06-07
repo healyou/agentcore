@@ -23,7 +23,10 @@ class main {
         @JvmStatic
         fun main(args: Array<String>) {
 
+            val startTime = System.currentTimeMillis()
             testGeneticsWithClipsEnvironment()
+            val endTime = System.currentTimeMillis() - startTime
+            println(endTime)
 
 //            testClipsForAgentC()
 
@@ -33,7 +36,7 @@ class main {
         }
 
         private fun testGeneticsWithClipsEnvironment() {
-            val iterations = 10
+            val iterations = 100
             val size = 1000
             val chooses = 0.4
             val mutates = 0.02
@@ -50,10 +53,10 @@ class main {
 
             val creature = AgentCreature(inputData, inputDataParamName, AgentCreature.FromValue.OTHER_AGENT, ClipsEnvironment(), inputData.size * 4 - 1, cross, mutation)
 
-            val population = Population(size, chooses, mutates, agentCreature, choosing, selecting, stopping)
+            val population = AgentPopulation(size, chooses, mutates, agentCreature, choosing, selecting, stopping)
             population.run()
 
-            val outCreature = population.answerCreature as AgentCreature
+            val outCreature = population.answerCreature
             println(outCreature.fit())
         }
 

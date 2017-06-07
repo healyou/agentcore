@@ -73,7 +73,7 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
         }
     }
 
-    // todo clips сделать для агента
+    // todo clips файл допилить для агента
     /**
      * Вычисляем для текущего агента
      */
@@ -90,8 +90,6 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
         val evaluar = "(find-all-facts ((?f outputdata)) TRUE)"
         val bigVal = clips.eval(evaluar) as MultifieldValue
         val outputClipsValue = parseOutputClipsValue(bigVal)
-
-        // todo надо вынести всё это в отдельный класс
 
         return outputClipsValue
     }
