@@ -14,10 +14,10 @@ import genetics.simplecreature.SimpleMutationFunction
  * @param cross кроссинговер особи
  * @param mutation мутация особи
  */
-class AgentCreature(private val inputData: ArrayList<Int>,
-                    private val inputDataParamName: ArrayList<String>,
-                    private val fromValue: FromValue,
-                    private val clipsEnvironment: ClipsEnvironment,
+open class AgentCreature(protected val inputData: ArrayList<Int>,
+                         protected val inputDataParamName: ArrayList<String>,
+                         protected val fromValue: FromValue,
+                         protected val clips: ClipsEnvironment,
                     bytes: Int,
                     cross: SimpleCrossFunction,
                     mutation: SimpleMutationFunction):
@@ -34,6 +34,7 @@ class AgentCreature(private val inputData: ArrayList<Int>,
         private val INPUT_DATA_BYTE_SIZE = 4
 
         private val INPUT_DATA_EXCEPTION_TEXT = "Неверный формат входных данных"
+        private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clips.CLP"
     }
 
     init {
@@ -51,6 +52,8 @@ class AgentCreature(private val inputData: ArrayList<Int>,
             if (it < 0 || it > MAX_INPUT_DATA_VALUE)
                 throw IllegalArgumentException(INPUT_DATA_EXCEPTION_TEXT)
         }
+
+        clips.load(CLIPS_FILE_PATH)
     }
 
     override fun fit(): Double {
@@ -72,7 +75,7 @@ class AgentCreature(private val inputData: ArrayList<Int>,
     /**
      * Вычисляем для текущего агента
      */
-    private fun fitCurrentAgent(): Double {
+    open protected fun fitCurrentAgent(): Double {
         val f = (super.q * super.q + super.q * 2 + 1).toDouble()
         return f
     }

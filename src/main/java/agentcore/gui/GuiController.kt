@@ -33,6 +33,8 @@ class GuiController: Observer {
 
     // todo не видит clips dll в папке libs
 
+    // todo переделать входные данные с double на int
+
     fun initialize() {
         // создание и инициализация inputdb
         updateInputDbData()
