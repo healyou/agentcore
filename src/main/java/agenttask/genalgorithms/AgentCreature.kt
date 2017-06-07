@@ -3,6 +3,8 @@ package agenttask.genalgorithms
 import genetics.simplecreature.SimpleCreature
 import genetics.simplecreature.SimpleCrossFunction
 import genetics.simplecreature.SimpleMutationFunction
+import net.sf.clipsrules.jni.FactAddressValue
+import net.sf.clipsrules.jni.MultifieldValue
 
 /**
  * @author Nikita Gorodilov
@@ -14,10 +16,10 @@ import genetics.simplecreature.SimpleMutationFunction
  * @param cross кроссинговер особи
  * @param mutation мутация особи
  */
-open class AgentCreature(protected val inputData: ArrayList<Int>,
-                         protected val inputDataParamName: ArrayList<String>,
-                         protected val fromValue: FromValue,
-                         protected val clips: ClipsEnvironment,
+open class AgentCreature(private val inputData: ArrayList<Int>,
+                         private val inputDataParamName: ArrayList<String>,
+                         private val fromValue: FromValue,
+                         private val clips: ClipsEnvironment,
                     bytes: Int,
                     cross: SimpleCrossFunction,
                     mutation: SimpleMutationFunction):
@@ -31,8 +33,7 @@ open class AgentCreature(protected val inputData: ArrayList<Int>,
     companion object {
         private val MAX_INPUT_DATA_VALUE = 15
         private val MAX_INPUT_DATA_SIZE = 8
-        @JvmStatic
-        protected val INPUT_DATA_BYTE_SIZE = 4
+        val INPUT_DATA_BYTE_SIZE = 4
 
         private val INPUT_DATA_EXCEPTION_TEXT = "Неверный формат входных данных"
         private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clips.CLP"
@@ -72,20 +73,100 @@ open class AgentCreature(protected val inputData: ArrayList<Int>,
         }
     }
 
-    // todo дописать fit функции для агентов
+    // todo clips сделать для агента
     /**
      * Вычисляем для текущего агента
      */
-    open protected fun fitCurrentAgent(): Double {
-        val f = (super.q * super.q + super.q * 2 + 1).toDouble()
-        return f
+    private fun fitCurrentAgent(): Double {
+        clips.reset()
+
+        val assertCommands = configureClipsAssertCommands()
+        assertCommands.forEach {
+            clips.eval(it)
+        }
+
+        clips.run()
+
+        val evaluar = "(find-all-facts ((?f outputdata)) TRUE)"
+        val bigVal = clips.eval(evaluar) as MultifieldValue
+        val outputClipsValue = parseOutputClipsValue(bigVal)
+
+        // todo надо вынести всё это в отдельный класс
+
+        return outputClipsValue
     }
 
+    // todo дописать fit функции для other агентов
     /**
      * Вычисляем для других агентов
      */
     private fun fitOtherAgent(): Double {
         val f = (super.q * super.q + super.q * 2 * 5 + 10).toDouble()
         return f
+    }
+
+    /**
+     * Получаем выходные данные из clips
+     */
+    private fun parseOutputClipsValue(value: MultifieldValue): Double {
+        val outputClipsData = arrayListOf<Double>()
+
+        for (i in 0..value.size() - 1) {
+            val fv = value.get(i) as FactAddressValue
+            var paramValue = 0.0
+            try {
+                paramValue = fv.getFactSlot("paramvalue").toString().toDouble()
+            } catch (e: Exception) {
+                println(e.toString())
+            } finally {
+                outputClipsData.add(paramValue)
+            }
+        }
+
+        return outputClipsData[0]
+    }
+
+    /**
+     * Запись входных данных в clips
+     */
+    private fun configureClipsAssertCommands(): ArrayList<String> {
+        val inputDataArray = parseClipsInputData()
+        val assertCommands = arrayListOf<String>()
+
+        for (i in inputDataArray.indices) {
+            val command = "(assert (inputdata (paramname " + inputDataParamName[i] + ") " +
+                    "(paramvalue " + inputDataArray[i] + ")))"
+            assertCommands.add(command)
+        }
+
+        return assertCommands
+    }
+
+    /**
+     * Из int 32 байта получаем наши inputData.size чисел по INPUT_DATA_BYTE_SIZE байт
+     */
+    private fun parseClipsInputData(): ArrayList<Int> {
+        var x = get()
+        val inputDataArray = arrayListOf<Int>()
+
+        // сюда положим наши числа по 4 бита
+        val byteDataArray = Array<Int>(inputData.size) { 0 }
+        val mask = 1
+        for (i in inputData.indices) {
+            var byte = 0
+            for (j in 0..INPUT_DATA_BYTE_SIZE - 1) {
+                byte = byte.shr(1)
+                if (x.and(mask) == 1)
+                    byte = byte.or(mask.shl(INPUT_DATA_BYTE_SIZE - 1))
+                x = x.shr(1)
+            }
+
+            byteDataArray[i] = byte
+        }
+
+        for (i in 0..byteDataArray.size - 1)
+            inputDataArray.add(byteDataArray[i])
+
+        return inputDataArray
     }
 }

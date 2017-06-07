@@ -4,15 +4,11 @@
 )
 
 (deftemplate outputdata
-    (slot paramname)
     (slot paramvalue)
 )
 
 
 ;для теста просто пропишем выходные данные
 (deffacts outputdatafacts
-	(outputdata (paramname occupancyC) (paramvalue 5))
-	(outputdata (paramname conditionC) (paramvalue 5))
-	(outputdata (paramname condition_d3) (paramvalue 5))
-	(outputdata (paramname occupancy_d3) (paramvalue 5))
+	(outputdata (paramvalue 25))
 )
