@@ -26,13 +26,22 @@ class LocalRowMapper(private val tableDesc: ATableDesc) : RowMapper<LocalDataDto
 
         // получаем значение считываемой строки таблицы
         for (key in paramType.keys) {
-            if (paramType[key] == "int") {
-                val columnName = key
-                paramValue.put(key, rs.getInt(columnName))
-            }
-            if (paramType[key] == "String") {
-                val columnName = key
-                paramValue.put(key, rs.getString(columnName))
+            when (InputDataType.getByName(paramType[key]!!)) {
+                InputDataType.STRING -> {
+                    val columnName = key
+                    paramValue.put(key, rs.getString(columnName))
+                }
+                InputDataType.INT -> {
+                    val columnName = key
+                    paramValue.put(key, rs.getInt(columnName))
+                }
+                InputDataType.DOUBLE -> {
+                    val columnName = key
+                    paramValue.put(key, rs.getDouble(columnName))
+                }
+                else -> {
+                    throw UnsupportedOperationException("Не известный тип данных")
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 package agentcore.database.dao;
 
 import agentcore.database.dto.DtoEntityImpl;
+import agentcore.database.dto.InputDataType;
 import agentcore.database.dto.LocalDataDto;
 import agentcore.database.dto.LocalRowMapper;
 import agentcore.inputdata.LocalDataTableDesc;
@@ -82,19 +83,31 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ") values (");
 
-        for (String columnName : entity.getColumnNames())
-            //if (!columnName.equals(ATableDesc.ID_COLUMN_NAME)) {
-            // todo переписать работу с типами данных(на константы)
-            if (entity.getTypeByColumnName(columnName).equals("String")) {
-                updateSql.append('\'');
-                updateSql.append(entity.getValueByColumnName(columnName));
-                updateSql.append("',");
+        for (String columnName : entity.getColumnNames()) {
+            String typeName = entity.getTypeByColumnName(columnName);
+            switch (InputDataType.getByName(typeName)) {
+                case STRING: {
+                    updateSql.append('\'');
+                    updateSql.append(entity.getValueByColumnName(columnName));
+                    updateSql.append("',");
+                    break;
+                }
+                case INT: {
+                    updateSql.append(entity.getValueByColumnName(columnName));
+                    updateSql.append(',');
+                    break;
+                }
+                case DOUBLE: {
+                    updateSql.append(entity.getValueByColumnName(columnName));
+                    updateSql.append(',');
+                    break;
+                }
+                default: {
+                    throw new UnsupportedOperationException("Не известный тип данных");
+                }
             }
-            else {
-                updateSql.append(entity.getValueByColumnName(columnName));
-                updateSql.append(',');
-            }
-            //}
+        }
+
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ")");
 

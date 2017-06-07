@@ -29,22 +29,21 @@ class InputRowMapper(private val tableDesc: ATableDesc) : RowMapper<InputDataDto
 
         // получаем значение считываемой строки таблицы
         for (key in paramType.keys) {
-            // todo переписать работу с типами данных(на константы)
-            when (paramType[key]) {
-                "int" -> {
-                    val columnName = key
-                    paramValue.put(key, rs.getInt(columnName))
-                }
-                "String" -> {
+            when (InputDataType.getByName(paramType[key]!!)) {
+                InputDataType.STRING -> {
                     val columnName = key
                     paramValue.put(key, rs.getString(columnName))
                 }
-                "double" -> {
+                InputDataType.INT -> {
+                    val columnName = key
+                    paramValue.put(key, rs.getInt(columnName))
+                }
+                InputDataType.DOUBLE -> {
                     val columnName = key
                     paramValue.put(key, rs.getDouble(columnName))
                 }
                 else -> {
-                    System.exit(3);
+                    throw UnsupportedOperationException("Не известный тип данных")
                 }
             }
         }

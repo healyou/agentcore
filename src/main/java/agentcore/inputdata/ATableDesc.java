@@ -1,5 +1,6 @@
 package agentcore.inputdata;
 
+import agentcore.database.dto.InputDataType;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -47,15 +48,19 @@ public abstract class ATableDesc {
     }
 
     public static String translateToSqlType(String type) {
-        // todo переписать работу с типами данных(на константы)
-        if (type.equals("int"))
-            return "INTEGER";
-        if (type.equals("String"))
-            return "TEXT";
-        if (type.equals("double"))
-            return "DOUBLE";
-
-        return null;
+        switch (InputDataType.getByName(type)) {
+            case STRING: {
+                return "TEXT";
+            }
+            case INT: {
+                return "INTEGER";
+            }
+            case DOUBLE: {
+                return "DOUBLE";
+            }
+            default: {
+                throw new UnsupportedOperationException("Не известный тип данных");
+            }
+        }
     }
-
 }
