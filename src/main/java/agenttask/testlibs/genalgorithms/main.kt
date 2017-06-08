@@ -1,5 +1,8 @@
-package agenttask.genalgorithms
+package agenttask.testlibs.genalgorithms
 
+import agenttask.agentbrain.AgentCreature
+import agenttask.agentbrain.AgentPopulation
+import agenttask.agentbrain.ClipsEnvironment
 import genetics.choosing.ChoosingRandom
 import genetics.population.Population
 import genetics.selecting.SelectingMax
@@ -9,9 +12,6 @@ import genetics.stopping.StoppingIterations
 import net.sf.clipsrules.jni.Environment
 import net.sf.clipsrules.jni.FactAddressValue
 import net.sf.clipsrules.jni.MultifieldValue
-import java.math.BigInteger
-import kotlin.experimental.and
-import kotlin.experimental.or
 
 /**
  * @author Nikita Gorodilov
@@ -36,7 +36,7 @@ class main {
         }
 
         private fun testGeneticsWithClipsEnvironment() {
-            val iterations = 100
+            val iterations = 10
             val size = 1000
             val chooses = 0.4
             val mutates = 0.02

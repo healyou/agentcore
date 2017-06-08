@@ -17,8 +17,10 @@ abstract class AAgentBrain(protected val mDao: InputDataDao, protected val mDb: 
         try {
             mInputData = mDao.first
             mDao.delete(mInputData!!)
+
         } catch (e: Exception) {
             mInputData = null
+
             setChanged()
             notifyObservers(AgentObserverArg("Ошибка при чтении данных", ObserverArgType.MESSAGE))
         }
@@ -31,8 +33,10 @@ abstract class AAgentBrain(protected val mDao: InputDataDao, protected val mDb: 
 
         try {
             mDb.addSolution(localDataDto)
+
             setChanged()
             notifyObservers(AgentObserverArg(localDataDto, ObserverArgType.OUTPUT_DATA))
+
         } catch (e: SQLException) {
             setChanged()
             notifyObservers(AgentObserverArg("ошибка добавления записи при решении задачи в лок бд",

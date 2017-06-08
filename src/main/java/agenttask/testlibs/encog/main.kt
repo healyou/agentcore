@@ -1,4 +1,4 @@
-package agenttask.encog
+package agenttask.testlibs.encog
 
 import org.encog.Encog
 import org.encog.engine.network.activation.ActivationSigmoid

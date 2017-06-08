@@ -1,4 +1,4 @@
-package agenttask.genalgorithms
+package agenttask.agentbrain
 
 import genetics.simplecreature.SimpleCreature
 import genetics.simplecreature.SimpleCrossFunction
@@ -18,11 +18,11 @@ import net.sf.clipsrules.jni.MultifieldValue
  */
 open class AgentCreature(private val inputData: ArrayList<Int>,
                          private val inputDataParamName: ArrayList<String>,
-                         private val fromValue: FromValue,
+                         private val fromValue: AgentCreature.FromValue,
                          private val clips: ClipsEnvironment,
-                    bytes: Int,
-                    cross: SimpleCrossFunction,
-                    mutation: SimpleMutationFunction):
+                         bytes: Int,
+                         cross: SimpleCrossFunction,
+                         mutation: SimpleMutationFunction):
         SimpleCreature(bytes, cross, mutation) {
 
     enum class FromValue {
@@ -33,7 +33,7 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
     companion object {
         private val MAX_INPUT_DATA_VALUE = 15
         private val MAX_INPUT_DATA_SIZE = 8
-        val INPUT_DATA_BYTE_SIZE = 4
+        private val INPUT_DATA_BYTE_SIZE = 4
 
         private val INPUT_DATA_EXCEPTION_TEXT = "Неверный формат входных данных"
         private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clips.CLP"
@@ -55,6 +55,7 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
                 throw IllegalArgumentException(INPUT_DATA_EXCEPTION_TEXT)
         }
 
+        clips.clear()
         clips.load(CLIPS_FILE_PATH)
     }
 
@@ -67,8 +68,7 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
                 return fitOtherAgent()
             }
             else -> {
-                UnsupportedOperationException()
-                return 0.0
+                throw UnsupportedOperationException()
             }
         }
     }

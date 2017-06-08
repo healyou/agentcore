@@ -1,4 +1,4 @@
-package agenttask.evoj
+package agenttask.testlibs.evoj
 
 import net.sourceforge.evoj.core.annotation.Range
 

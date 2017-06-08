@@ -1,4 +1,4 @@
-package agenttask.genalgorithms
+package agenttask.testlibs.genalgorithms
 
 import genetics.simplecreature.SimpleCreature
 import genetics.simplecreature.SimpleCrossFunction

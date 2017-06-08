@@ -1,4 +1,4 @@
-package agenttask.genalgorithms
+package agenttask.agentbrain
 
 import genetics.population.*
 
