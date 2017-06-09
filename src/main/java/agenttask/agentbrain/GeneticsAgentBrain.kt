@@ -30,6 +30,7 @@ class GeneticsAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
     val mutation = SimpleMutationOneBit()
 
     // todo написать тесты для агента этого мозга агента
+    // todo разобраться с выходным типом данных агента, что посылать и как считывать
 
     override fun calculateAnswerValue(): String {
         mInputData ?: return ""

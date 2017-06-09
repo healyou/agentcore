@@ -6,6 +6,7 @@ import agentcore.gui.GuiController;
 import agentcore.inputdata.InputDataVerificationImpl;
 import agentcore.inputdata.InputDataTableDesc;
 import agenttask.agentbrain.GeneticsAgentBrain;
+import agenttask.agentbrain.NeuralAgentBrain;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.io.FileInputStream;
@@ -95,6 +96,7 @@ public class Agent extends AAgentCommand implements Runnable {
         InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
         brain = new TestAgentBrain(inputDataDao, localdb);
         //brain = new GeneticsAgentBrain(inputDataDao, localdb);
+        //brain = new NeuralAgentBrain(inputDataDao, localdb);
         comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
         // слушает выходные сигналы с мозга агента и от мод. вз-ия с серваком
         brain.addObserver(gui);
