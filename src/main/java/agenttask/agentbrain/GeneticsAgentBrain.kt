@@ -17,17 +17,17 @@ import genetics.stopping.StoppingIterations
 class GeneticsAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
     : AAgentBrain(mDao, mDb) {
 
-    val iterations = 100
-    val size = 100
-    val chooses = 0.4
-    val mutates = 0.02
+    private val iterations = 100
+    private val size = 100
+    private val chooses = 0.4
+    private val mutates = 0.02
 
-    val clipsEnvironment = ClipsEnvironment()
-    val choosing = ChoosingRandom()
-    val selecting = SelectingMax()
-    val stopping = StoppingIterations(iterations)
-    val cross = SimpleCrossOnePoint()
-    val mutation = SimpleMutationOneBit()
+    private val clipsEnvironment = ClipsEnvironment()
+    private val choosing = ChoosingRandom()
+    private val selecting = SelectingMax()
+    private val stopping = StoppingIterations(iterations)
+    private val cross = SimpleCrossOnePoint()
+    private val mutation = SimpleMutationOneBit()
 
     // todo написать тесты для агента этого мозга агента
     // todo разобраться с выходным типом данных агента, что посылать и как считывать

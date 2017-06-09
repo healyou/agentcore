@@ -36,7 +36,7 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
         private val INPUT_DATA_BYTE_SIZE = 4
 
         private val INPUT_DATA_EXCEPTION_TEXT = "Неверный формат входных данных"
-        private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clips.CLP"
+        private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataA\\clipsfit.CLP"
     }
 
     init {

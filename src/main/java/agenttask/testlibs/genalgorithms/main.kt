@@ -62,7 +62,7 @@ class main {
 
         private fun testClipsForAgentC() {
             val clips = Environment()
-            clips.load("src\\main\\java\\agenttask\\initinputdb\\dataC\\clips.CLP")
+            clips.load("src\\main\\java\\agenttask\\initinputdb\\dataC\\clipsfit.CLP")
             clips.reset()
 
             val assertCommands = arrayListOf<String>(
