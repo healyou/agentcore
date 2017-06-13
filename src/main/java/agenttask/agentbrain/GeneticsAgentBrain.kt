@@ -14,7 +14,9 @@ import genetics.stopping.StoppingIterations
 /**
  * @author Nikita Gorodilov
  */
-class GeneticsAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
+class GeneticsAgentBrain(mDao: InputDataDao,
+                         mDb: AgentDatabaseImpl,
+                         private val clipsFilePath: String? = null)
     : AAgentBrain(mDao, mDb) {
 
     private val iterations = 100
@@ -50,7 +52,7 @@ class GeneticsAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
         if (inputData.size != inputDataParamName.size)
             throw IllegalArgumentException("Неверный формат данных")
 
-        val agentCreature = AgentCreature(inputData, inputDataParamName, AgentCreature.FromValue.CURRENT_AGENT, clipsEnvironment, inputData.size * 4 - 1, cross, mutation)
+        val agentCreature = AgentCreature(inputData, inputDataParamName, AgentCreature.FromValue.CURRENT_AGENT, clipsEnvironment, inputData.size * 4 - 1, cross, mutation, clipsFilePath)
         val population = AgentPopulation(size, chooses, mutates, agentCreature, choosing, selecting, stopping)
 
         return population

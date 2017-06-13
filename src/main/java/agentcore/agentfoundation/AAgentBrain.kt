@@ -44,5 +44,5 @@ abstract class AAgentBrain(protected val mDao: InputDataDao, protected val mDb: 
         }
     }
 
-    abstract fun calculateAnswerValue(): String
+    abstract protected fun calculateAnswerValue(): String
 }

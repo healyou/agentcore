@@ -22,7 +22,8 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
                          private val clips: ClipsEnvironment,
                          bytes: Int,
                          cross: SimpleCrossFunction,
-                         mutation: SimpleMutationFunction):
+                         mutation: SimpleMutationFunction,
+                         clipsFilePath: String? = null):
         SimpleCreature(bytes, cross, mutation) {
 
     enum class FromValue {
@@ -36,10 +37,13 @@ open class AgentCreature(private val inputData: ArrayList<Int>,
         private val INPUT_DATA_BYTE_SIZE = 4
 
         private val INPUT_DATA_EXCEPTION_TEXT = "Неверный формат входных данных"
-        private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataA\\clipsfit.CLP"
+        private var CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataA\\clipsfit.CLP"
     }
 
     init {
+        if (clipsFilePath != null)
+            CLIPS_FILE_PATH = clipsFilePath
+
         // Количество входых параметров не должно быть больше MAX_INPUT_DATA_SIZE
         // Количество байт должно быть кратно INPUT_DATA_BYTE_SIZE
         // Размер в байтах / INPUT_DATA_BYTE_SIZE должен быть равен числу вхордных параметров
