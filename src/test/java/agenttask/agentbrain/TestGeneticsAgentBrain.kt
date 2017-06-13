@@ -33,37 +33,17 @@ class TestGeneticsAgentBrain: Assert() {
         createDatabase()
         try {
             val tableDesc = dataVerification.getDatabaseTables(
-                    InputDataVerificationImpl::class.java.getResource("tableDescription.xml").toURI().path)
+                    GeneticsAgentBrain::class.java.getResource("brainTableDescription.xml").toURI().path)
 
             agentDb = AgentDatabaseImpl(tableDesc, "agentcore/inputdata/testdb.properties")
 
-            val localdb = AgentDatabaseImpl(tableDesc,
-                    "agentcore/agentfoundation/localsqlitedb.properties")
             val jdbcTemplate = dataVerification.getJdbcTemplate(InputDataVerificationImpl::class.java.getResource("testdb.properties").toURI().path)
             val inputDataDao = InputDataDao(jdbcTemplate, tableDesc)
             brain = GeneticsAgentBrain(
                     inputDataDao,
-                    localdb,
-                    GeneticsAgentBrain::class.java.getResource("testclipsfit.CLP").toURI().path
+                    agentDb,
+                    javaClass.getResource("testclipsfit.CLP").toURI().path.substring(1)
             )
-
-            // writedb data
-//            val localDataTD = agentDb.localDbTableDesc
-//
-//            val paramType = HashMap<String, String>()
-//            for (column in localDataTD.columns) {
-//                paramType.put(column.columnName, column.columnType)
-//            }
-//            val paramValue = HashMap<String, Any>()
-//            for (column in localDataTD.columns) {
-//                if (column.columnName != "id")
-//                    paramValue.put(column.columnName, "1")
-//                else
-//                    paramValue.put(column.columnName, "1")
-//            }
-//
-//            val entity = LocalDataDto(paramType, paramValue)
-//            agentDb.addSolution(entity)
 
             brain.addObserver { o, arg ->
                 agentObserverArg = arg
@@ -90,7 +70,10 @@ class TestGeneticsAgentBrain: Assert() {
         agentObserverArg ?: Assert.fail("agentObserverArg is null")
 
         val arg = agentObserverArg as AgentObserverArg
-        // пока приходит сообщение - ошибка чтения данных, а надо 25 чтобы было в ответе
+        val localData = arg.arg as LocalDataDto
+        val retValue = localData.getValueByColumnName(LocalDataDto.ANSWER_COLUMN_NAME)
+
+        assertEquals("25.0", retValue)
     }
 
     /**
@@ -98,7 +81,7 @@ class TestGeneticsAgentBrain: Assert() {
      */
     private fun createDatabase() {
         try {
-            val dbPath = GeneticsAgentBrain::class.java.getResource("testDatabase.s3db").toURI().path
+            val dbPath = InputVerificationImplTest::class.java.getResource("testDatabase.s3db").toURI().path
             val dbConnection = DriverManager.getConnection("jdbc:sqlite:" + dbPath)
             val statmt = dbConnection.createStatement()
 
@@ -112,7 +95,7 @@ class TestGeneticsAgentBrain: Assert() {
 
             // setupdata
             sql.setLength(0)
-            filePath = GeneticsAgentBrain::class.java.getResource("testBrainDbData.sql").toURI().path
+            filePath = GeneticsAgentBrain::class.java.getResource("createBrainDbData.sql").toURI().path
             br = BufferedReader(FileReader(filePath))
             while (br.ready())
                 sql.append(br.readLine())
@@ -120,6 +103,5 @@ class TestGeneticsAgentBrain: Assert() {
         } catch (e: Exception) {
             Assert.fail(e.toString())
         }
-
     }
 }

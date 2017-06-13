@@ -31,7 +31,6 @@ class GeneticsAgentBrain(mDao: InputDataDao,
     private val cross = SimpleCrossOnePoint()
     private val mutation = SimpleMutationOneBit()
 
-    // todo написать тесты для агента этого мозга агента
     // todo разобраться с выходным типом данных агента, что посылать и как считывать
 
     override fun calculateAnswerValue(): String {

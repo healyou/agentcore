@@ -27,6 +27,7 @@ class ExpertAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
     }
 
     // todo добавить тесты для этого агента
+    // todo определиться с выходными данными многоагентной системы
 
     override fun calculateAnswerValue(): String {
         clips.reset()
