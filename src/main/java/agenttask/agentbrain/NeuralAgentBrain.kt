@@ -15,24 +15,27 @@ import org.encog.util.simple.TrainingSetUtil
 /**
  * @author Nikita Gorodilov
  */
-class NeuralAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
+class NeuralAgentBrain(mDao: InputDataDao,
+                       mDb: AgentDatabaseImpl,
+                       trainingFilePath: String? = null)
     : AAgentBrain(mDao, mDb) {
 
     private val network: BasicNetwork = BasicNetwork()
     private val inputLayerSize = mDb.localDbTableDesc.columns.size - 1
     private val outputLayerSize = 1
-    private val trainError = 16.01
+    private val trainError = 20.6
 
+    // todo неправильно работает нейронная сеть - почему то неверно обучает
     init {
         network.addLayer(BasicLayer(null, true, inputLayerSize))
-        network.addLayer(BasicLayer(ActivationSigmoid(), true, inputLayerSize * 3))
+        network.addLayer(BasicLayer(ActivationSigmoid(), true, inputLayerSize))
         network.addLayer(BasicLayer(ActivationSigmoid(), false, outputLayerSize))
 
         network.structure.finalizeStructure()
         network.reset()
 
         val currentDir = System.getProperty("user.dir")
-        val inputFilePath = "$currentDir\\src\\main\\java\\agenttask\\initinputdb\\dataB\\neyraltraining.csv"
+        val inputFilePath = trainingFilePath ?: "$currentDir\\src\\main\\java\\agenttask\\initinputdb\\dataB\\neyraltraining.csv"
 
         val trainingSet = TrainingSetUtil.loadCSVTOMemory(
                 CSVFormat.DECIMAL_POINT, inputFilePath, false, inputLayerSize, outputLayerSize)

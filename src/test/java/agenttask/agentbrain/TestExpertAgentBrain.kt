@@ -14,15 +14,14 @@ import java.io.BufferedReader
 import java.io.FileReader
 import java.sql.DriverManager
 import java.sql.SQLException
-import java.util.*
 
 /**
  * @author Nikita Gorodilov
  */
-class TestGeneticsAgentBrain: Assert() {
+class TestExpertAgentBrain: Assert() {
 
     lateinit private var agentDb: AgentDatabaseImpl
-    lateinit private var brain: GeneticsAgentBrain
+    lateinit private var brain: ExpertAgentBrain
 
     var agentObserverArg: Any? = null
 
@@ -39,10 +38,10 @@ class TestGeneticsAgentBrain: Assert() {
 
             val jdbcTemplate = dataVerification.getJdbcTemplate(InputDataVerificationImpl::class.java.getResource("testdb.properties").toURI().path)
             val inputDataDao = InputDataDao(jdbcTemplate, tableDesc)
-            brain = GeneticsAgentBrain(
+            brain = ExpertAgentBrain(
                     inputDataDao,
                     agentDb,
-                    javaClass.getResource("testclipsfit.CLP").toURI().path.substring(1)
+                    javaClass.getResource("testclipsexpert.CLP").toURI().path.substring(1)
             )
 
             brain.addObserver { o, arg ->
@@ -73,7 +72,7 @@ class TestGeneticsAgentBrain: Assert() {
         val localData = arg.arg as LocalDataDto
         val retValue = localData.getValueByColumnName(LocalDataDto.ANSWER_COLUMN_NAME)
 
-        assertEquals("25.0", retValue)
+        assertEquals("25.025.025.025.0", retValue)
     }
 
     /**

@@ -11,17 +11,22 @@ import net.sf.clipsrules.jni.MultifieldValue
 /**
  * @author Nikita Gorodilov
  */
-class ExpertAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl)
+class ExpertAgentBrain(mDao: InputDataDao,
+                       mDb: AgentDatabaseImpl,
+                       clipsFilePath: String? = null)
     : AAgentBrain(mDao, mDb) {
 
     private val clips = ClipsEnvironment()
     private val inputDataColumns = mDb.localDbTableDesc.columns
 
     companion object {
-        private val CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clipsexpert.CLP"
+        private var CLIPS_FILE_PATH = "src\\main\\java\\agenttask\\initinputdb\\dataC\\clipsexpert.CLP"
     }
 
     init {
+        if (clipsFilePath != null)
+            CLIPS_FILE_PATH = clipsFilePath
+
         clips.clear()
         clips.load(CLIPS_FILE_PATH)
     }
