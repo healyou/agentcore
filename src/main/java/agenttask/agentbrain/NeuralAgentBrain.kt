@@ -52,8 +52,6 @@ class NeuralAgentBrain(mDao: InputDataDao,
 
     // todo точно определится с тем, по какой очерёдности должны идти входные параметры, тк это важно
 
-    // todo написать тесты для NeuralAgentBrain
-
     override fun calculateAnswerValue(): String {
         mInputData ?: return ""
 

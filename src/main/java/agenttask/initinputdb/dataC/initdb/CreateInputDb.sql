@@ -1,6 +1,6 @@
 CREATE TABLE if not exists inputdataC (
         id INTEGER PRIMARY KEY AUTOINCREMENT   NOT NULL,
-        occupancyC     DOUBLE                  NOT NULL,
-        conditionC     DOUBLE                  NOT NULL,
-        condition_d3   DOUBLE                  NOT NULL,
-        occupancy_d3   DOUBLE                  NOT NULL);
+        occupancyC     INTEGER                 NOT NULL,
+        conditionC     INTEGER                 NOT NULL,
+        condition_d3   INTEGER                 NOT NULL,
+        occupancy_d3   INTEGER                 NOT NULL);

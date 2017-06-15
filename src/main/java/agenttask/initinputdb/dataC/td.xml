@@ -13,19 +13,19 @@
             </Column>
             <Column>
                 <ColumnName>occupancyC</ColumnName>
-                <ColumnType>double</ColumnType>
+                <ColumnType>int</ColumnType>
             </Column>
             <Column>
                 <ColumnName>conditionC</ColumnName>
-                <ColumnType>double</ColumnType>
+                <ColumnType>int</ColumnType>
             </Column>
             <Column>
                 <ColumnName>condition_d3</ColumnName>
-                <ColumnType>double</ColumnType>
+                <ColumnType>int</ColumnType>
             </Column>
             <Column>
                 <ColumnName>occupancy_d3</ColumnName>
-                <ColumnType>double</ColumnType>
+                <ColumnType>int</ColumnType>
             </Column>
         </ColumnDescription>
     </Table>
