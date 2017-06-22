@@ -1,10 +1,11 @@
 import groovy.sql.Sql
 
-// --------------- Подключение за пользователя, выполняющего удаление старой БД ---------------
-sql = Sql.newInstance("jdbc:postgresql:" + addrDB + "postgres", postgresUser, postgresPassword, "org.postgresql.Driver")
+// --------------- Подключение к БД ---------------
+sql = Sql.newInstance("jdbc:sqlite:" + parentDir + addrDB + nameDB, "org.sqlite.JDBC")
 
+sql.close()
 // Выкидываются насильно все пользователи с БД. Юзер, выполняющий скрипт, должен иметь на это права.
-sql.execute("select pg_terminate_backend(pg_stat_activity.pid) from pg_stat_activity where pg_stat_activity.datname = '" + nameDB + "' and pid <> pg_backend_pid()")
+/*sql.execute("select pg_terminate_backend(pg_stat_activity.pid) from pg_stat_activity where pg_stat_activity.datname = '" + nameDB + "' and pid <> pg_backend_pid()")
 
 // Удаляются БД и её юзер
 sql.execute("drop database if exists " + nameDB)
@@ -40,4 +41,4 @@ pgScript += "grant all on schema " + schema + " to " + userDB + ";\n"
     }
 }
 
-sql.execute(pgScript)
+sql.execute(pgScript)*/

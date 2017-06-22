@@ -4,12 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.company</groupId>
     <artifactId>db</artifactId>
+    <parent>
+        <groupId>com.company</groupId>
+        <artifactId>root</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <name>db</name>
 
     <properties>
         <!-- первая папка прокта -->
+        <parent.project.basedir>${pom.parent.basedir}</parent.project.basedir>
         <db.source.basedir>${project.basedir}</db.source.basedir>
     </properties>
 
@@ -32,52 +39,37 @@
                     <properties>
                         <property>
                             <name>addrDB</name>
-                            <value>//presale-dev.fors-vyatka.ru:5432/</value>
-                        </property>
-
-                        <property>
-                            <name>postgresUser</name>
-                            <value>presale</value>
-                        </property>
-
-                        <property>
-                            <name>postgresPassword</name>
-                            <value>presale</value>
+                            <value>\data\inputdb\</value>
                         </property>
 
                         <property>
                             <name>nameDB</name>
-                            <value>rzdportal</value>
-                        </property>
-
-                        <property>
-                            <name>userDB</name>
-                            <value>rzdportal</value>
-                        </property>
-
-                        <property>
-                            <name>passDB</name>
-                            <value>rzdportal</value>
+                            <value>inputdb.s3db</value>
                         </property>
 
                         <property>
                             <name>sourceDir</name>
                             <value>${db.source.basedir}</value>
                         </property>
+
+                        <property>
+                            <name>parentDir</name>
+                            <value>${parent.project.basedir}</value>
+                        </property>
                     </properties>
                     <scripts>
                         <!-- TODO Отдельный параметр для сохранения сгенерированных скриптов в файл -->
 
                         <!-- Создание БД и юзера для неё (если БД и юзер уже есть - они дропнутся!) -->
-                        <script>file:///${db.source.basedir}/create_database.groovy</script>
+                        <script>file:///${db.source.basedir}/src/groovy/create_database.groovy</script>
 
                         <!-- Создание тестовых данных -->
-                        <script>file:///${db.source.basedir}/load_test_data.groovy</script>
+                        <!--<script>file:///${db.source.basedir}/load_test_data.groovy</script>-->
 
                         <!-- TODO Накатить аплдейты -->
 
                         <!-- Пересоздание вьюх, пакетов, функций -->
-                        <script>file:///${db.source.basedir}/update_objects.groovy</script>
+                        <!--<script>file:///${db.source.basedir}/update_objects.groovy</script>-->
                     </scripts>
                 </configuration>
                 <dependencies>
