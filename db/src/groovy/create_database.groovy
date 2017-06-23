@@ -1,44 +1,42 @@
 import groovy.sql.Sql
 
 // --------------- Подключение к БД ---------------
-sql = Sql.newInstance("jdbc:sqlite:" + parentDir + addrDB + nameDB, "org.sqlite.JDBC")
+def final sql = Sql.newInstance("jdbc:sqlite:" + parentDir + addrDB + nameDB, "org.sqlite.JDBC")
 
-sql.close()
-// Выкидываются насильно все пользователи с БД. Юзер, выполняющий скрипт, должен иметь на это права.
-/*sql.execute("select pg_terminate_backend(pg_stat_activity.pid) from pg_stat_activity where pg_stat_activity.datname = '" + nameDB + "' and pid <> pg_backend_pid()")
+// удаление таблиц
+//def tables = [
+//        "inputdataA",
+//        "inputdataB",
+//        "inputdataC"
+//]
+//def names = []
+//sql.eachRow("select name from sqlite_master where type is 'table';") { table ->
+//    println(table)
+//    names.add(table.name)
+//}
+//names.forEach() { tableName ->
+//    if (tables.contains(tableName)) {
+//        def sqlString = "drop table if exists ?"
+//        println(sqlString)
+//        sql.execute(sqlString, tableName)
+//    }
+//}
+//
+////sql.execute("drop table if exists inputdataA")
 
-// Удаляются БД и её юзер
-sql.execute("drop database if exists " + nameDB)
-sql.execute("drop user if exists " + userDB)
-
-// Создаются заново БД и её юзерп, юзеру даются права
-sql.execute("create database " + nameDB)
-sql.execute("create user " + userDB + " with password '" + passDB + "'")
-sql.execute("grant connect on database " + nameDB + " to " + userDB)
-sql.execute("grant create on database " + nameDB + " to " + userDB)
-
-// --------------- Подключение за созданного пользователя на созданную БД ---------------
-sql = Sql.newInstance("jdbc:postgresql:" + addrDB + nameDB, userDB, passDB, "org.postgresql.Driver")
-
-// Создается пустая data с таблицами
-def schema = "data"
-def pgScript = "drop schema if exists " + schema + " cascade;\n"
-pgScript += "create schema " + schema + " authorization " + userDB + ";\n"
-pgScript += "grant all on schema " + schema + " to " + userDB + ";\n"
-
-// Выполняется создание таблиц и заполнение начальных данных
+def sqlScript = ""
+// Создание таблиц и заполнение начальными данными
 [
-        "/src/install/create_data.sql",
-        "/src/install/create_news.sql",
-        "/src/install/logging_settings_data.sql",
-        "/src/install/create_user_messages.sql",
-        "/src/install/fill_initial_data.sql",
-        "/src/install/create_documents.sql",
-        "/src/install/test_data.sql"
+        "/src/sql/delete_tables.sql",
+        "/src/sql/create_tables.sql"
+        //"/src/install/create_data.sql"
 ].each {
     new File((String) sourceDir + it).eachLine {
-        pgScript += it + "\n"
+        sqlScript += it + "\n"
     }
 }
 
-sql.execute(pgScript)*/
+println(sqlScript)
+if (!sqlScript.equals(""))
+    sql.execute(sqlScript)
+sql.close()
