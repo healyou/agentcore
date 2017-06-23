@@ -32,10 +32,6 @@ class GuiController: Observer {
     // todo не видит clips dll в папке libs
 
     fun initialize() {
-        // создание и инициализация inputdb
-        updateInputDbData()
-        updateLocalDbData()
-
         startButton.setOnAction {
             agent?.start()
 
@@ -80,61 +76,6 @@ class GuiController: Observer {
                     logTextArea.appendText("\nnot message")
                 }
             }
-        }
-    }
-
-    private fun updateInputDbData() {
-        val ds = DriverManagerDataSource()
-
-        val dbprop = Properties()
-        dbprop.load(FileReader("data/input/db.properties"))
-
-        val driverClassName = dbprop.getProperty("driverClassName")
-        val url = dbprop.getProperty("url")
-
-        ds.setDriverClassName(driverClassName)
-        ds.url = url
-
-        val st = ds.connection.createStatement()
-
-        // create table
-        var filePath = "data/input/initdb/CreateInputDb.sql"
-        var br = BufferedReader(FileReader(filePath))
-        val sql = StringBuilder()
-        while (br.ready())
-            sql.append(br.readLine())
-        st.execute(sql.toString())
-
-        // clear table
-        sql.setLength(0)
-        filePath = "data/input/initdb/ClearTableData.sql"
-        br = BufferedReader(FileReader(filePath))
-        while (br.ready())
-            sql.append(br.readLine())
-        st.execute(sql.toString())
-
-        // setup data
-        sql.setLength(0)
-        filePath = "data/input/initdb/InitInputDbData.sql"
-        br = BufferedReader(FileReader(filePath))
-        while (br.ready())
-            sql.append(br.readLine())
-        st.execute(sql.toString())
-
-        st.close()
-    }
-
-    private fun updateLocalDbData() {
-        val ds = DriverManagerDataSource()
-        ds.setDriverClassName("org.sqlite.JDBC")
-        ds.url = "jdbc:sqlite:data/localdb/localdb.s3db"
-
-        val st = ds.connection.createStatement()
-        try {
-            st.execute("DELETE FROM " + AgentDatabaseImpl.TABLE_NAME)
-        } catch (e: SQLException) {
-        } finally {
-            st.close()
         }
     }
 }

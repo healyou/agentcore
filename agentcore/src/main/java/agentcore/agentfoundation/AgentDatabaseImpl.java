@@ -40,6 +40,11 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     public AgentDatabaseImpl(@Nonnull InputDataTableDesc inputDataTD, @Nonnull String localdbResPath) {
         DB_PROPERTIES_PATH = localdbResPath;
         jdbcTemplate = getJdbcTemplate();
+        try {
+            clearDatabase();
+        } catch (SQLException e) {
+            throw new RuntimeException("Невозможно очистить локальную базу данных");
+        }
         createOrOpenDatabase(jdbcTemplate, inputDataTD);
         localdbTableDesc = createLocalDbDesc(inputDataTD);
         localDataDao = new LocalDataDao(jdbcTemplate, localdbTableDesc);/*как сделать dao для 2 бд*/
@@ -58,7 +63,7 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
     @Override
     public void clearDatabase() throws SQLException {
         Statement statmt = jdbcTemplate.getDataSource().getConnection().createStatement();
-        statmt.execute("drop table " + TABLE_NAME + ";");
+        statmt.execute("drop table if exists " + TABLE_NAME + ";");
     }
 
     @Override
