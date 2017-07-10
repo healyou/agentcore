@@ -1,22 +1,23 @@
 package agentcore.gui
 
 import agentcore.agentfoundation.*
+import agentcore.database.dao.InputDataDao
+import agentcore.inputdata.InputDataVerificationImpl
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
-import org.springframework.jdbc.datasource.DriverManagerDataSource
-import java.io.BufferedReader
-import java.io.FileReader
-import java.sql.SQLException
+import org.springframework.context.annotation.Scope
+import org.springframework.stereotype.Component
 import java.util.*
 
 /**
- * Created on 27.03.2017 18:58
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
-class GuiController: Observer {
+@Component
+@Scope("prototype")
+open class GuiController: Observer {
 
     @FXML
     lateinit var startButton: Button
@@ -71,9 +72,6 @@ class GuiController: Observer {
                 }
                 ObserverArgType.DEFAUL_VALUE -> {
                     logTextArea.appendText("\nDEFAUL message")
-                }
-                else -> {
-                    logTextArea.appendText("\nnot message")
                 }
             }
         }

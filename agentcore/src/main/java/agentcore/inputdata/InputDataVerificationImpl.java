@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 
 /**
- * Created by user on 16.02.2017.
+ * @author Nikita Gorodilov
  */
 public class InputDataVerificationImpl implements InputDataVerification {
 

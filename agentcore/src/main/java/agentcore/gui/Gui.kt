@@ -2,18 +2,18 @@ package agentcore.gui
 
 import javafx.application.Application
 import javafx.scene.Scene
-import javafx.fxml.FXMLLoader.load
-import javafx.scene.Parent
 import javafx.stage.Stage
+import org.springframework.context.support.ClassPathXmlApplicationContext
 
 /**
- * Created on 27.03.2017 18:58
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class Gui : Application() {
 
     override fun start(primaryStage: Stage?) {
-        val root = load<Parent?>(Gui::class.java.getResource("gui.fxml"))
+        val applicationContext = ClassPathXmlApplicationContext("applicationContext.xml")
+        val loader = applicationContext.getBean(SpringFxmlLoader::class.java)
+        val root = loader.load(javaClass.getResourceAsStream("gui.fxml"))
         primaryStage?.title = "Agent core"
         primaryStage?.scene = Scene(root, 800.0, 600.0)
         primaryStage?.show()

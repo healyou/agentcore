@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * Класс необходим для проверки соединения с базой данных пользователя
  * где будут храниться входные данные агента
  *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public interface InputDataVerification {
 

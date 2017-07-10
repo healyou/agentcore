@@ -7,14 +7,13 @@ import agentcore.inputdata.InputDataTableDesc;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 
 /**
- * Created on 17.02.2017 20:50
- *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public class InputDataDao extends ABaseDao<InputDataDto> implements IInputDataDao<InputDataDto> {
 
