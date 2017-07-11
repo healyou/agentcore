@@ -9,13 +9,28 @@ import agentcore.inputdata.InputDataTableDesc;
 import agentcore.inputdata.LocalDataTableDesc;
 import agentcore.inputdata.TableColumn;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -26,89 +41,185 @@ import java.util.HashMap;
 public class main {
 
     public static void main(String[] args) {
-        //agentCommunication();
-        //agentlocaldatabase();
-        //inputdataverif();
-    }
-
-    private static void agentCommunication() {
-        int port = 5678;
-        String host = "localhost";
-        ServerSocket serv = null;
+//        File xml = new File("data/input/td.xml");
         try {
-            serv = new ServerSocket(port, 0, InetAddress.getByName(host));
+//            Path path = Paths.get("data/input/td.xml");
+//            byte[] data = Files.readAllBytes(path);
+//            System.out.println(Arrays.toString(data));
+
+
+
+            // content - то, что мы видим в файле при его просмотре
+            FileOutputStream fos = new FileOutputStream("data/input/gg.xml");
+            //fos.write(data);
+            //fos.write(configurePackageDescriptionFileContent());
+            fos.write(configureReportInfoFileContent());
+            fos.close();
         } catch (IOException e) {
-            System.out.println("Порт занят: " + port);
-            System.exit(-1);
-        }
-
-        try {
-            IAgentCommunication agentCom = new AgentCommunicationImpl();
-            agentCom.connect("127.0.0.1", port);
-
-            Socket socket = serv.accept();
-            LocalDataDto dtoEntity = new LocalDataDto(null, null);
-            agentCom.sendMassege(new MSearchSolution(dtoEntity));
-
-            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-
-            //while (true) {
-            Object object = inputStream.readObject();
-            if (object instanceof MSearchSolution) {
-                System.out.println("good message from client to server");
-                new ObjectOutputStream(socket.getOutputStream()).writeObject(new MCollectiveSolution(dtoEntity, 1));
-            }
-
-            serv.close();
-        } catch (Exception e) {
-            System.out.println(e.toString());
         }
     }
 
-    private static void agentlocaldatabase() {
-        InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
+    private static byte[] configureReportInfoFileContent() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
         try {
-            InputDataTableDesc tableDesc = dataVerification.
-                    getDatabaseTables("C:\\Users\\lappi\\IdeaProjects\\agentcore\\src\\test\\resources\\agentcore.inputdata\\inputdataverification\\tableDescription.xml");
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 
-            AgentDatabaseImpl agentDb = new AgentDatabaseImpl(tableDesc,
-                    "../agentcore.agentfoundation/localsqlitedb.properties");
-            LocalDataTableDesc localDataTD = agentDb.getLocalDbTableDesc();
+            // root element
+            Document doc = docBuilder.newDocument();
+            Element rootElement = doc.createElement("описаниеСведений");
+            doc.appendChild(rootElement);
 
-            HashMap<String, String> paramType = new HashMap<>();
-            for (TableColumn column : localDataTD.getColumns()) {
-                paramType.put(column.getColumnName(), column.getColumnType());
-            }
-            HashMap<String, Object> paramValue = new HashMap<>();
-            for (TableColumn column : localDataTD.getColumns()) {
-                if (!column.getColumnName().equals("id"))
-                    paramValue.put(column.getColumnName(), "1");
-                else
-                    paramValue.put(column.getColumnName(), "");
-            }
+            // датаВремяОтправки element
+            Element element = doc.createElement("датаВремяОтправки");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime dateTime = LocalDateTime.now();
+            dateTime = LocalDateTime.parse(dateTime.format(formatter), formatter);
+            element.setTextContent(dateTime.toString());
+            rootElement.appendChild(element);
 
-            LocalDataDto entity = new LocalDataDto(paramType, paramValue);
-            agentDb.addSolution(entity);
+            // регистрационныйНомерОрганизации element
+            element = doc.createElement("регистрационныйНомерОрганизации");
+            element.setTextContent("testрегистрационныйНомерОрганизации");
+            rootElement.appendChild(element);
 
-            paramValue.put("id", 2);
-            paramValue.put("info", 2);
-            LocalDataDto updateEntity = new LocalDataDto(paramType, paramValue);
-            agentDb.updateSolution(updateEntity);
-        } catch (Exception e) {
-            System.out.println(e.toString());
+            // описаниеПачек elements
+            Element infoElement = doc.createElement("описаниеПачек");
+            rootElement.appendChild(infoElement);
+
+            // пачка element
+            Element pack = doc.createElement("пачка");
+            infoElement.appendChild(pack);
+
+            // идентификаторДокумента element
+            element = doc.createElement("идентификаторДокумента");
+            element.setTextContent("testидентификаторДокумента");
+            pack.appendChild(element);
+
+            // имяФайла element
+            element = doc.createElement("имяФайла");
+            element.setTextContent("testимяФайла");
+            pack.appendChild(element);
+
+            // описаниеПриложений element
+            element = doc.createElement("описаниеПриложений");
+            rootElement.appendChild(element);
+
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(outputStream);
+            transformer.transform(source, result);
+
+        } catch (ParserConfigurationException | TransformerException pce) {
         }
+
+        return outputStream.toByteArray();
     }
 
-    private static void inputdataverif() {
-        InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
-        try {
-            InputDataTableDesc tableDesc = dataVerification.
-                    getDatabaseTables("C:\\Users\\lappi\\Intellij IDEA\\Projects\\agentcore\\src\\test\\resources\\agentcore.inputdata\\inputdataverification\\tableDescription.xml");
-            JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate("src\\test\\resources\\agentcore.inputdata\\inputdataverification\\testdb.properties");
-            dataVerification.testReadDbData(jdbcTemplate, tableDesc);
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-    }
+    private static byte[] configurePackageDescriptionFileContent() {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
+        try {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+            // root element
+            Document doc = docBuilder.newDocument();
+            Element rootElement = doc.createElement("пакет");
+            rootElement.setAttribute("версияФормата", "1.2");
+            rootElement.setAttribute("идентификаторДокументооборота", "testидентификаторДокументооборота");
+            rootElement.setAttribute("типДокументооборота", "СведенияПФР");
+            rootElement.setAttribute("типДокументооборота", "сведения");
+            doc.appendChild(rootElement);
+
+            // СКЗИ element
+            Element element = doc.createElement("СКЗИ");
+            element.setAttribute("типСКЗИ", "Крипто-Про");
+            rootElement.appendChild(element);
+
+            // отправитель element
+            element = doc.createElement("отправитель");
+            element.setAttribute("идентификаторСубъекта", "testидентификаторСубъекта");
+            element.setAttribute("типСубъекта", "АбонентСЭД");
+            rootElement.appendChild(element);
+
+            // получатель element
+            element = doc.createElement("отправитель");
+            element.setAttribute("идентификаторСубъекта", "testидентификаторСубъекта");
+            element.setAttribute("типСубъекта", "ОрганПФР");
+            rootElement.appendChild(element);
+
+            // системаОтправителя element
+            element = doc.createElement("отправитель");
+            element.setAttribute("идентификаторСубъекта", "Русь Телеком");
+            element.setAttribute("типСубъекта", "Провайдер");
+            rootElement.appendChild(element);
+
+			/*
+			 * документ elements
+			 */
+            // отчёт
+            Element reportDocElem = doc.createElement("документ");
+            reportDocElem.setAttribute("сжат", "true");
+            reportDocElem.setAttribute("идентификаторДокумента", "testидентификаторДокумента");
+            reportDocElem.setAttribute("типДокумента", "пачкаИС");
+            reportDocElem.setAttribute("типСодержимого", "xml");
+            reportDocElem.setAttribute("зашифрован", "true"); // todo так ли это?
+
+            // отчёт - содержимое element
+            element = doc.createElement("содержимое");
+            element.setAttribute("имяФайла", "testимяФайла");
+            reportDocElem.appendChild(element);
+
+            // отчёт - подпись element
+            element = doc.createElement("подпись");
+            element.setAttribute("имяФайла", "testимяФайла");
+            element.setAttribute("роль", "руководитель");
+            reportDocElem.appendChild(element);
+
+            rootElement.appendChild(reportDocElem);
+
+
+            // описание сведений
+            reportDocElem = doc.createElement("документ");
+            reportDocElem.setAttribute("сжат", "true");
+            reportDocElem.setAttribute("идентификаторДокумента", "testидентификаторДокумента");
+            reportDocElem.setAttribute("типДокумента", "описаниеСведений");
+            reportDocElem.setAttribute("типСодержимого", "xml");
+            reportDocElem.setAttribute("зашифрован", "true"); // todo так ли это?
+
+            // отчёт - содержимое element
+            element = doc.createElement("содержимое");
+            element.setAttribute("имяФайла", "testимяФайла");
+            reportDocElem.appendChild(element);
+
+            // отчёт - подпись element
+            element = doc.createElement("подпись");
+            element.setAttribute("имяФайла", "testимяФайла");
+            element.setAttribute("роль", "руководитель");
+            reportDocElem.appendChild(element);
+
+            rootElement.appendChild(reportDocElem);
+			/*
+			 * end документ elements
+			 */
+
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, "windows-1251");
+
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(outputStream);
+            transformer.transform(source, result);
+
+        } catch (ParserConfigurationException | TransformerException pce) {
+        }
+
+        return outputStream.toByteArray();
+    }
 }
