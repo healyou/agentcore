@@ -122,5 +122,4 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
             System.out.println(e.toString());
         }
     }
-
 }

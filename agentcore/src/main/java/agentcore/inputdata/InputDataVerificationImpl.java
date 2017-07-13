@@ -5,6 +5,7 @@ import agentcore.database.dao.InputDataDao;
 import agentcore.database.dto.DtoEntityImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.*;
 
 import java.io.*;
@@ -176,5 +177,4 @@ public class InputDataVerificationImpl implements InputDataVerification {
 
         return new TableColumn(columnName, columnType);
     }
-
 }

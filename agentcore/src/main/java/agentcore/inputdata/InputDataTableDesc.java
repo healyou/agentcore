@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.regex.Pattern;
 
 /**
- * Created by user on 21.02.2017.
+ * @author Nikita Gorodilov
  */
 public class InputDataTableDesc extends ATableDesc {
 
@@ -68,5 +68,4 @@ public class InputDataTableDesc extends ATableDesc {
 
     @NotNull
     public String getAgentID() { return agentID; }
-
 }

@@ -1,8 +1,7 @@
 package agentcore.agentfoundation
 
 /**
- * Created on 27.03.2017 19:31
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 data class AgentObserverArg(
         var arg: Any? = null,

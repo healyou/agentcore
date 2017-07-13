@@ -7,7 +7,7 @@ import agentcore.database.dto.ABaseDtoEntity;
  * Нужен для чтение объектов из базы данных,
  * таблица которой будет известна во время исполнения
  *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public abstract class ABaseDao<T extends ABaseDtoEntity> {
 

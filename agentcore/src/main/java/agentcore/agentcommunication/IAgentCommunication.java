@@ -7,9 +7,9 @@ import java.io.IOException;
  */
 public interface IAgentCommunication {
 
-    public void sendMassege(AMessage message)  throws IOException;
-    public void connect(String host, int port) throws IOException;
-    public void disconnect() throws IOException;
-    public boolean isConnect();
+    void sendMassege(AMessage message)  throws IOException;
+    void connect(String host, int port) throws IOException;
+    void disconnect() throws IOException;
+    boolean isConnect();
 
 }

@@ -3,10 +3,9 @@ package agentcore.agentcommunication;
 import agentcore.database.dto.LocalDataDto;
 
 /**
- * Created on 28.02.2017 19:13
  * Коллективное решение задачи
  *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public class MCollectiveSolution extends AMessage {
 
@@ -25,5 +24,4 @@ public class MCollectiveSolution extends AMessage {
     public Integer getSolutionId() {
         return solutionId;
     }
-
 }

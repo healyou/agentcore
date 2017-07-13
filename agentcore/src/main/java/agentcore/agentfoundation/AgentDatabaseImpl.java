@@ -22,7 +22,7 @@ import java.util.Properties;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Created by user on 21.02.2017.
+ * @author Nikita Gorodilov
  */
 public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
@@ -147,5 +147,4 @@ public class AgentDatabaseImpl extends Observable implements IAgentDatabase {
 
         return new JdbcTemplate(ds);
     }
-
 }

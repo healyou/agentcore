@@ -17,7 +17,7 @@ import static java.lang.Thread.interrupted;
 import static java.lang.Thread.sleep;
 
 /**
- * Created by user on 21.02.2017.
+ * @author Nikita Gorodilov
  */
 public class Agent extends AAgentCommand implements Runnable {
 
@@ -26,8 +26,6 @@ public class Agent extends AAgentCommand implements Runnable {
     private final static String CONNECT_PROP_PATH = "data/input/connect.properties";
 
     private IAgentBrain brain;
-    private ComAnalizerImpl comAnalizer;
-    private AgentCommunicationImpl ac;
     private int updateMs;
 
     private Thread thread = new Thread(this);
@@ -59,7 +57,7 @@ public class Agent extends AAgentCommand implements Runnable {
         onStop();
     }
 
-    protected void onInit(GuiController gui) throws Exception {
+    private void onInit(GuiController gui) throws Exception {
         // проверка корректности описания входных данных
         InputDataVerificationImpl dataVerification = new InputDataVerificationImpl();
         JdbcTemplate jdbcTemplate = dataVerification.getJdbcTemplate(USER_DB_PROP_PATH);
@@ -91,7 +89,7 @@ public class Agent extends AAgentCommand implements Runnable {
      */
     private void initCoreData(JdbcTemplate jdbcTemplate,
                               InputDataTableDesc tableDesc, GuiController gui) throws Exception {
-        ac = new AgentCommunicationImpl();
+        AgentCommunicationImpl ac = new AgentCommunicationImpl();
         AgentDatabaseImpl localdb = new AgentDatabaseImpl(tableDesc,
                 "agentcore/agentfoundation/localsqlitedb.properties");
         InputDataDao inputDataDao = new InputDataDao(jdbcTemplate, tableDesc);
@@ -99,7 +97,7 @@ public class Agent extends AAgentCommand implements Runnable {
         //brain = new GeneticsAgentBrain(inputDataDao, localdb);
         //brain = new NeuralAgentBrain(inputDataDao, localdb);
         //brain = new ExpertAgentBrain(inputDataDao, localdb);
-        comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
+        ComAnalizerImpl comAnalizer = new ComAnalizerImpl(tableDesc, ac, localdb);
         // слушает выходные сигналы с мозга агента и от мод. вз-ия с серваком
         brain.addObserver(gui);
         brain.addObserver(comAnalizer);
@@ -123,5 +121,4 @@ public class Agent extends AAgentCommand implements Runnable {
 
         ac.connect(hostAdress, port);
     }
-
 }

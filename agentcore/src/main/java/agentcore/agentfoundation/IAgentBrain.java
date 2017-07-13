@@ -8,7 +8,6 @@ import java.util.Observable;
 public abstract class IAgentBrain extends Observable {
 
     public abstract void takeInputData();
-
     public abstract void calculateOutput();
 
 }

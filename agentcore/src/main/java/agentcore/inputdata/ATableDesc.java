@@ -6,10 +6,9 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 
 /**
- * Created on 17.02.2017 14:13
  * Данные о структуре таблицы для входных данных агента
  *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public abstract class ATableDesc {
 

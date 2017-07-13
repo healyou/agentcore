@@ -18,7 +18,6 @@ import java.util.*
  * @author Nikita Gorodilov
  */
 @Component
-@Scope("prototype")
 open class GuiController: Observer {
 
     @FXML
@@ -30,18 +29,17 @@ open class GuiController: Observer {
     @FXML
     lateinit var logTextArea: TextArea
 
-    private var agent: Agent? = null
-
-    @Value("#{properties['testKey2']}")
-    lateinit var aValueForKey2: String
-    @Autowired
-    lateinit var testKey: String
+    lateinit var agent: Agent
+//    @Value("#{properties['testKey2']}")
+//    lateinit var aValueForKey2: String
+//    @Autowired
+//    lateinit var testKey: String
 
     // todo не видит clips dll в папке libs
 
     fun initialize() {
         startButton.setOnAction {
-            agent?.start()
+            agent.start()
 
             startButton.isDisable = true
             stopButton.isDisable = false
@@ -49,7 +47,7 @@ open class GuiController: Observer {
             logTextArea.text += "\nНачало работы агента"
         }
         stopButton.setOnAction {
-            agent?.stop()
+            agent.stop()
 
             startButton.isDisable = false
             stopButton.isDisable = true
@@ -58,9 +56,8 @@ open class GuiController: Observer {
         }
 
         agent = Agent(this)
-
-        println(aValueForKey2)
-        println(testKey)
+//        println(aValueForKey2)
+//        println(testKey)
     }
 
     override fun update(o: Observable?, arg: Any?) {

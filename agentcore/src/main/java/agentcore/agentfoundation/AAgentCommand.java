@@ -1,11 +1,11 @@
 package agentcore.agentfoundation;
 
 /**
- * Created by user on 21.02.2017.
+ * @author Nikita Gorodilov
  */
 public abstract class AAgentCommand {
 
-    public abstract void start();
+    public abstract void start() throws Exception;
     public abstract void stop();
 
     protected abstract void onStart();

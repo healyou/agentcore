@@ -112,5 +112,4 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
         thread.setDaemon(true);
         thread.start();
     }
-
 }

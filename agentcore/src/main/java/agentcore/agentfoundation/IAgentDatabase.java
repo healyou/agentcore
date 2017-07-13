@@ -11,9 +11,9 @@ import java.sql.SQLException;
  */
 public interface IAgentDatabase {
 
-    public void addSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException;
-    public void updateSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException;
-    public void clearDatabase() throws SQLException;
-    public @Nonnull ATableDesc getLocalDbTableDesc();
+    void addSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException;
+    void updateSolution(@Nonnull LocalDataDto dtoEntity) throws SQLException;
+    void clearDatabase() throws SQLException;
+    @Nonnull ATableDesc getLocalDbTableDesc();
 
 }
