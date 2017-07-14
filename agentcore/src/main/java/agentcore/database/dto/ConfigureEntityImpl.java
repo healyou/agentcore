@@ -10,13 +10,13 @@ import static com.google.common.base.MoreObjects.toStringHelper;
 /**
  * @author Nikita Gorodilov
  */
-public class DtoEntityImpl extends ConfigureDtoEntity {
+public class ConfigureEntityImpl extends ConfigureEntity {
 
     protected HashMap<String, Object> paramValue;
     protected HashMap<String, String> paramType;
 
-    public DtoEntityImpl(@NotNull HashMap<String, String> paramType,
-                         @NotNull HashMap<String, Object> paramValue) {
+    public ConfigureEntityImpl(@NotNull HashMap<String, String> paramType,
+                               @NotNull HashMap<String, Object> paramValue) {
         super();
         setUpData(paramType, paramValue);
     }

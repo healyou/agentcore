@@ -6,7 +6,7 @@ import agentcore.agentcommunication.MCollectiveSolution;
 import agentcore.agentcommunication.MSearchSolution;
 import agentcore.agentfoundation.*;
 import agentcore.database.dao.LocalDataDao;
-import agentcore.database.dto.DtoEntityImpl;
+import agentcore.database.dto.ConfigureEntityImpl;
 import agentcore.database.dto.LocalDataDto;
 import org.junit.After;
 import org.junit.Assert;
@@ -116,7 +116,7 @@ public class ComAnalizerImplTest  extends Assert {
         try {
             sleep(550);
 
-            DtoEntityImpl dtoEntity = dataDao.get(1);
+            ConfigureEntityImpl dtoEntity = dataDao.get(1);
             Object collectiveValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME);
             Object answerValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
 
@@ -134,7 +134,7 @@ public class ComAnalizerImplTest  extends Assert {
      */
     private void testAddRecordOnLocalDb() {
         try {
-            DtoEntityImpl dtoEntity = dataDao.get(1);
+            ConfigureEntityImpl dtoEntity = dataDao.get(1);
             Object value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
             assertEquals("123", value);
 

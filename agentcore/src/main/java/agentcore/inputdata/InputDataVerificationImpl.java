@@ -1,11 +1,10 @@
 package agentcore.inputdata;
 
+import agentcore.database.dto.ConfigureEntityImpl;
 import com.google.common.collect.ImmutableList;
 import agentcore.database.dao.InputDataDao;
-import agentcore.database.dto.DtoEntityImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.stereotype.Component;
 import org.w3c.dom.*;
 
 import java.io.*;
@@ -83,7 +82,7 @@ public class InputDataVerificationImpl implements InputDataVerification {
 
         try {
             InputDataDao daoEntity = new InputDataDao(jdbcTemplate, tableDesc);
-            DtoEntityImpl dtoEntity = daoEntity.getFirst();
+            ConfigureEntityImpl dtoEntity = daoEntity.getFirst();
             if (dtoEntity == null)
                 throw new SQLException();
         } catch (SQLException e) {

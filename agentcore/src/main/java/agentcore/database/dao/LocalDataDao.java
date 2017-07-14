@@ -1,6 +1,6 @@
 package agentcore.database.dao;
 
-import agentcore.database.dto.DtoEntityImpl;
+import agentcore.database.dto.ConfigureEntityImpl;
 import agentcore.database.dto.InputDataType;
 import agentcore.database.dto.LocalDataDto;
 import agentcore.database.dto.LocalRowMapper;
@@ -16,9 +16,7 @@ import java.sql.SQLException;
  */
 public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDao<LocalDataDto> {
 
-    private static String INSERT_SQL;
     private static String SELECT_BYID_SQL;
-    private static String UPDATE_SQL;
 
     private LocalDataTableDesc tableDesc;
     private JdbcTemplate jdbcTemplate;
@@ -46,23 +44,23 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
     @Override
     @Transactional
     public void create(LocalDataDto entity) throws SQLException {
-        INSERT_SQL = configureInsertSql(entity, tableDesc);
+        String INSERT_SQL = configureInsertSql(entity, tableDesc);
         jdbcTemplate.update(INSERT_SQL);
     }
 
     @Override
     @Transactional
     public void update(LocalDataDto entity) throws SQLException {
-        UPDATE_SQL = configureUpdateSql(entity, tableDesc);
+        String UPDATE_SQL = configureUpdateSql(entity, tableDesc);
         jdbcTemplate.update(UPDATE_SQL);
     }
 
-    private String configureUpdateSql(DtoEntityImpl entity, LocalDataTableDesc tableDesc) {
+    private String configureUpdateSql(ConfigureEntityImpl entity, LocalDataTableDesc tableDesc) {
         StringBuilder updateSql = new StringBuilder();
 
-        updateSql.append("update " + tableDesc.getTableName() + " set ");
+        updateSql.append("update ").append(tableDesc.getTableName()).append(" set ");
         for (String columnName : entity.getColumnNames())
-            updateSql.append(columnName + " = " + entity.getValueByColumnName(columnName) + ",");
+            updateSql.append(columnName).append(" = ").append(entity.getValueByColumnName(columnName)).append(",");
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), " where " +
                 ATableDesc.ID_COLUMN_NAME + " = " + entity.getValueByColumnName(ATableDesc.ID_COLUMN_NAME));
@@ -73,13 +71,13 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
     /**
      * запись создаётся с тем id, который будет указан в entity
      */
-    private String configureInsertSql(DtoEntityImpl entity, LocalDataTableDesc tableDesc) {
+    private String configureInsertSql(ConfigureEntityImpl entity, LocalDataTableDesc tableDesc) {
         StringBuilder updateSql = new StringBuilder();
 
-        updateSql.append("insert into " + tableDesc.getTableName() + " (");
+        updateSql.append("insert into ").append(tableDesc.getTableName()).append(" (");
         for (String columnName : entity.getColumnNames())
             //if (!columnName.equals(ATableDesc.ID_COLUMN_NAME))
-            updateSql.append(columnName + ",");
+            updateSql.append(columnName).append(",");
         // замена последней запятой
         updateSql.replace(updateSql.length() - 1, updateSql.length(), ") values (");
 

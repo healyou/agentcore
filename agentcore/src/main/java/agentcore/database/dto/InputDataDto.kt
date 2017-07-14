@@ -5,7 +5,7 @@ package agentcore.database.dto
  * @author Nikita Gorodilov
  */
 class InputDataDto(paramType: HashMap<String, String>,
-                   paramValue: HashMap<String, Any>) : DtoEntityImpl(paramType, paramValue) {
+                   paramValue: HashMap<String, Any>) : ConfigureEntityImpl(paramType, paramValue) {
     companion object {
         val ID_COLUMN_NAME = "id"
         val ID_COLUMN_TYPE = "int"

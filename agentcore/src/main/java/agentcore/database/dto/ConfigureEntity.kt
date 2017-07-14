@@ -8,7 +8,7 @@ import com.google.common.base.Objects
  *
  * @author Nikita Gorodilov
  */
-abstract class ConfigureDtoEntity: ABaseDtoEntity {
+abstract class ConfigureEntity : ABaseDtoEntity {
 
     /**
      * @return типы данных столбцов
@@ -39,7 +39,7 @@ abstract class ConfigureDtoEntity: ABaseDtoEntity {
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
 
-        val that = other as ConfigureDtoEntity
+        val that = other as ConfigureEntity
 
         return Objects.equal(getColumnNames(), that.getColumnNames())
                 && Objects.equal(getColumnValues(), that.getColumnValues())

@@ -34,7 +34,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
     /**
      * Получение выходного сигнала с мозга агента
      * @param o от кого получен(AgentCommunicationImpl or TestAgentBrainImpl)
-     * @param arg аргемент(DtoEntityImpl)
+     * @param arg аргемент(ConfigureEntityImpl)
      */
     @Override
     public void update(Observable o, Object arg) {
