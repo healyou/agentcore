@@ -72,7 +72,7 @@ class NeuralAgentBrain(mDao: InputDataDao,
     private fun getInputData(): DoubleArray {
         val inputData = ArrayList<Double>()
 
-        for (columnName in mInputData!!.columnNames) {
+        for (columnName in mInputData!!.getColumnNames()) {
             if (columnName == InputDataDto.ID_COLUMN_NAME) continue
 
             val columnType = mInputData!!.getTypeByColumnName(columnName)

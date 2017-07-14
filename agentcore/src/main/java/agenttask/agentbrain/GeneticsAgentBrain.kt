@@ -60,7 +60,7 @@ class GeneticsAgentBrain(mDao: InputDataDao,
     private fun getInputData(): ArrayList<Int> {
         val inputData = arrayListOf<Int>()
 
-        for (columnName in mInputData!!.columnNames) {
+        for (columnName in mInputData!!.getColumnNames()) {
             if (columnName == InputDataDto.ID_COLUMN_NAME) continue
 
             val columnType = mInputData!!.getTypeByColumnName(columnName)
@@ -88,7 +88,7 @@ class GeneticsAgentBrain(mDao: InputDataDao,
     private fun getInputDataParamName(): ArrayList<String> {
         val inputDataParamName = arrayListOf<String>()
 
-        mInputData!!.columnNames.forEach {
+        mInputData!!.getColumnNames().forEach {
             if (it != InputDataDto.ID_COLUMN_NAME)
                 inputDataParamName.add(it)
         }

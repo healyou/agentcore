@@ -12,7 +12,7 @@ import org.encog.util.simple.TrainingSetUtil
 
 /**
  * Created by user on 26.05.2017.
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class main {
 

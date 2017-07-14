@@ -36,7 +36,7 @@ import java.util.HashMap;
 /**
  * Created on 17.02.2017 12:03
  *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public class main {
 

@@ -2,7 +2,7 @@ package agentcore.database.dto
 
 /**
  * Created on 28.03.2017 19:35
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class LocalDataDto(paramType: HashMap<String, String>,
                    paramValue: HashMap<String, Any>) : DtoEntityImpl(paramType, paramValue) {
@@ -15,12 +15,12 @@ class LocalDataDto(paramType: HashMap<String, String>,
         val COLLECTIVEANSWER_COLUMN_TYPE = "String"
 
         fun valueOf(inputData: InputDataDto): LocalDataDto {
-            var paramType = HashMap<String, String>()
-            var paramValue = HashMap<String, Any>()
+            val paramType = HashMap<String, String>()
+            val paramValue = HashMap<String, Any>()
 
-            for (column in inputData.columnNames) {
-                paramType.put(column, inputData.getTypeByColumnName(column))
-                paramValue.put(column, inputData.getValueByColumnName(column))
+            for (column in inputData.getColumnNames()) {
+                paramType.put(column, inputData.getTypeByColumnName(column) ?: throw RuntimeException(""))
+                paramValue.put(column, inputData.getValueByColumnName(column) ?: throw RuntimeException(""))
             }
 
             paramType.put(ANSWER_COLUMN_NAME, ANSWER_COLUMN_TYPE)

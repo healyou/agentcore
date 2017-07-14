@@ -2,7 +2,7 @@ package agentcore.database.dto
 
 /**
  * Created on 28.03.2017 19:35
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class InputDataDto(paramType: HashMap<String, String>,
                    paramValue: HashMap<String, Any>) : DtoEntityImpl(paramType, paramValue) {

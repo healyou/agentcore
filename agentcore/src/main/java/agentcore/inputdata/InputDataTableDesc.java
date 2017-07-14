@@ -39,12 +39,12 @@ public class InputDataTableDesc extends ATableDesc {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("[tableName = " + tableName + ", periodicityMS = " + periodicityMS + ", columns = \n");
+        sb.append("[tableName = ").append(tableName).append(", periodicityMS = ").append(periodicityMS).append(", columns = \n");
 
         for (int i = 0; i < columns.size(); i++) {
             TableColumn tableColumn = columns.get(i);
-            sb.append('(' + tableColumn.getColumnName() + " - ");
-            sb.append(tableColumn.getColumnType() + ")\n");
+            sb.append('(').append(tableColumn.getColumnName()).append(" - ");
+            sb.append(tableColumn.getColumnType()).append(")\n");
         }
 
         sb.append("]");

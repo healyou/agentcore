@@ -5,7 +5,7 @@ import java.util.*
 
 /**
  * Created on 31.03.2017 20:36
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class TestAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl): AAgentBrain(mDao, mDb) {
 

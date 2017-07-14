@@ -8,7 +8,7 @@ import java.util.HashMap
 
 /**
  * Created on 28.03.2017 19:56
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 class LocalRowMapper(private val tableDesc: ATableDesc) : RowMapper<LocalDataDto> {
 

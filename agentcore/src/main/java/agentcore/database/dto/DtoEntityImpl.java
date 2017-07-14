@@ -1,22 +1,22 @@
 package agentcore.database.dto;
 
 import com.google.common.base.MoreObjects.ToStringHelper;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
 /**
- * Created on 17.02.2017 16:26
- *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
-public class DtoEntityImpl extends ABaseDtoEntity {
+public class DtoEntityImpl extends ConfigureDtoEntity {
 
     protected HashMap<String, Object> paramValue;
     protected HashMap<String, String> paramType;
 
-    public DtoEntityImpl(HashMap<String, String> paramType, HashMap<String, Object> paramValue) {
+    public DtoEntityImpl(@NotNull HashMap<String, String> paramType,
+                         @NotNull HashMap<String, Object> paramValue) {
         super();
         setUpData(paramType, paramValue);
     }
@@ -36,37 +36,43 @@ public class DtoEntityImpl extends ABaseDtoEntity {
         return super.hashCode();
     }
 
+    @NotNull
     @Override
     public String toString() {
         ToStringHelper stringHelper = toStringHelper(this);
-        for (String columnName : getColumnNames())
-            stringHelper.add(columnName, getValueByColumnName(columnName).toString());
+        for (String columnName : getColumnNames()) {
+            Object value = getValueByColumnName(columnName);
+            stringHelper.add(columnName, value == null ? "null" : value.toString());
+        }
 
         return stringHelper.toString();
     }
 
+    @NotNull
     @Override
     public Collection<String> getColumnTypes() {
         return paramType.values();
     }
 
+    @NotNull
     @Override
     public Set<String> getColumnNames() {
         return paramType.keySet();
     }
 
+    @NotNull
     @Override
     public Set<String> getColumnValues() {
         return paramValue.keySet();
     }
 
     @Override
-    public String getTypeByColumnName(String columnName) {
+    public String getTypeByColumnName(@NotNull String columnName) {
         return paramType.get(columnName);
     }
 
     @Override
-    public Object getValueByColumnName(String columnName) {
+    public Object getValueByColumnName(@NotNull String columnName) {
         return paramValue.get(columnName);
     }
 

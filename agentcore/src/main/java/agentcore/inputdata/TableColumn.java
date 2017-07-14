@@ -4,7 +4,7 @@ package agentcore.inputdata;
  * Created on 17.02.2017 14:20
  * Хранит имя столбца таблицы бд и тип данных
  *
- * @autor Nikita Gorodilov
+ * @author Nikita Gorodilov
  */
 public class TableColumn {
 
