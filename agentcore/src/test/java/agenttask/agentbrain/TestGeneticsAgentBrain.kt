@@ -3,6 +3,7 @@ package agenttask.agentbrain
 import agentcore.agentfoundation.AgentDatabaseImpl
 import agentcore.agentfoundation.AgentObserverArg
 import agentcore.database.dao.InputDataDao
+import agentcore.database.dto.ALocalDataDto
 import agentcore.database.dto.LocalDataDto
 import agentcore.inputdata.InputDataVerificationImpl
 import agentcore.inputdata.InputVerificationImplTest
@@ -71,7 +72,7 @@ class TestGeneticsAgentBrain: Assert() {
 
         val arg = agentObserverArg as AgentObserverArg
         val localData = arg.arg as LocalDataDto
-        val retValue = localData.getValueByColumnName(LocalDataDto.ANSWER_COLUMN_NAME)
+        val retValue = localData.getValueByColumnName(ALocalDataDto.ANSWER_COLUMN_NAME)
 
         assertEquals("25.0", retValue)
     }

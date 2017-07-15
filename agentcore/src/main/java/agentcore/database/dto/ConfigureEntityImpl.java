@@ -7,6 +7,9 @@ import java.util.*;
 
 import static com.google.common.base.MoreObjects.toStringHelper;
 
+// todo выделить новый объект для передачи по сети
+// todo сделать метод getId у основных объектов системы
+
 /**
  * @author Nikita Gorodilov
  */

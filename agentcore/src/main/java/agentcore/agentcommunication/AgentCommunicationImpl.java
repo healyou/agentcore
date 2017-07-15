@@ -20,7 +20,7 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
     public AgentCommunicationImpl() { }
 
     @Override
-    public void sendMassege(AMessage message) throws IOException {
+    public void sendMassege(Message message) throws IOException {
         if (!isConnect)
             return;
 
@@ -97,7 +97,7 @@ public class AgentCommunicationImpl extends Observable implements IAgentCommunic
      * @param object присланный объект
      */
     private void checkServerObject(Object object) {
-        if (object instanceof AMessage) {
+        if (object instanceof Message) {
             System.out.println("Пришло сообщение с сервера AgentCommunicationImpl");
             setChanged();
             notifyObservers(object);

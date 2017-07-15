@@ -1,6 +1,8 @@
 package agentcore.agentcommunication;
 
+import agentcore.database.dto.ALocalDataDto;
 import agentcore.database.dto.LocalDataDto;
+import agentcore.database.dto.MessageLocalDataDto;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -66,7 +68,7 @@ public class AgentCommunicationImplTest extends Assert {
     @Test
     public void testSendMessageToServer() {
         try {
-            agentCom.sendMassege(new MSearchSolution(new LocalDataDto(getParamType(), getParamValue())));
+            agentCom.sendMassege(new MSearchSolution(new MessageLocalDataDto(getParamType(), getParamValue())));
             sleep(100);
 
             assertTrue(server.isGetClientMessage());
@@ -78,7 +80,7 @@ public class AgentCommunicationImplTest extends Assert {
     @Test
     public void testGetMessageFromServer() {
         try {
-            agentCom.sendMassege(new MSearchSolution(new LocalDataDto(getParamType(), getParamValue())));
+            agentCom.sendMassege(new MSearchSolution(new MessageLocalDataDto(getParamType(), getParamValue())));
             sleep(100);
 
             assertTrue(clientObserver.isGetMessage());
@@ -90,7 +92,7 @@ public class AgentCommunicationImplTest extends Assert {
     @Test
     public void testGetSearchCollectiveSolution() {
         try {
-            agentCom.sendMassege(new MSearchSolution(new LocalDataDto(getParamType(), getParamValue())));
+            agentCom.sendMassege(new MSearchSolution(new MessageLocalDataDto(getParamType(), getParamValue())));
             sleep(100);
 
             assertTrue(clientObserver.isSearchCollectiveSolution());
@@ -102,7 +104,7 @@ public class AgentCommunicationImplTest extends Assert {
     @Test
     public void testGetCollectiveSolution() {
         try {
-            agentCom.sendMassege(new MSearchSolution(new LocalDataDto(getParamType(), getParamValue())));
+            agentCom.sendMassege(new MSearchSolution(new MessageLocalDataDto(getParamType(), getParamValue())));
             sleep(100);
 
             assertTrue(server.isGetClientMessage());
@@ -123,7 +125,7 @@ public class AgentCommunicationImplTest extends Assert {
         private boolean isGetMessage = false;
         @Override
         public void update(Observable o, Object arg) {
-            if (!(arg instanceof AMessage))
+            if (!(arg instanceof Message))
                 return;
 
             if (arg instanceof MSearchSolution) {
@@ -172,12 +174,12 @@ public class AgentCommunicationImplTest extends Assert {
 
                 while (!interrupted()) {
                     Object object = inputStream.readObject();
-                    if (object instanceof AMessage) {
+                    if (object instanceof Message) {
                         isGetMessage = true;
 
                         // отправим сразу оба для теста
                         if (object instanceof MSearchSolution) {
-                            LocalDataDto dtoEntity = ((MSearchSolution) object).getDtoEntity();
+                            MessageLocalDataDto dtoEntity = ((MSearchSolution) object).getDtoEntity();
                             outputStream.writeObject(new MCollectiveSolution(dtoEntity, 1));
                             outputStream.writeObject(new MSearchSolution(dtoEntity));
                         }
@@ -199,17 +201,17 @@ public class AgentCommunicationImplTest extends Assert {
 
     private HashMap<String, Object> getParamValue() {
         HashMap<String, Object> ret = new HashMap<>();
-        ret.put(LocalDataDto.Companion.getID_COLUMN_NAME(), 0);
-        ret.put(LocalDataDto.Companion.getANSWER_COLUMN_NAME(), 0);
-        ret.put(LocalDataDto.Companion.getCOLLECTIVEANSWER_COLUMN_NAME(), "");
+        ret.put(ALocalDataDto.Companion.getID_COLUMN_NAME(), 0);
+        ret.put(ALocalDataDto.Companion.getANSWER_COLUMN_NAME(), 0);
+        ret.put(ALocalDataDto.Companion.getCOLLECTIVEANSWER_COLUMN_NAME(), "");
         return ret;
     }
 
     private HashMap<String, String> getParamType() {
         HashMap<String, String> ret = new HashMap<>();
-        ret.put(LocalDataDto.Companion.getID_COLUMN_NAME(), LocalDataDto.Companion.getID_COLUMN_TYPE());
-        ret.put(LocalDataDto.Companion.getANSWER_COLUMN_NAME(), LocalDataDto.Companion.getANSWER_COLUMN_TYPE());
-        ret.put(LocalDataDto.Companion.getCOLLECTIVEANSWER_COLUMN_NAME(), LocalDataDto.Companion.getCOLLECTIVEANSWER_COLUMN_TYPE());
+        ret.put(ALocalDataDto.Companion.getID_COLUMN_NAME(), ALocalDataDto.Companion.getID_COLUMN_TYPE());
+        ret.put(ALocalDataDto.Companion.getANSWER_COLUMN_NAME(), ALocalDataDto.Companion.getANSWER_COLUMN_TYPE());
+        ret.put(ALocalDataDto.Companion.getCOLLECTIVEANSWER_COLUMN_NAME(), ALocalDataDto.Companion.getCOLLECTIVEANSWER_COLUMN_TYPE());
         return ret;
     }
 }

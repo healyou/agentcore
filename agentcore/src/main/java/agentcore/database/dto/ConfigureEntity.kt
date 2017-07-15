@@ -1,5 +1,7 @@
 package agentcore.database.dto
 
+import java.io.Serializable
+
 import com.google.common.base.Objects
 
 /**
@@ -8,7 +10,7 @@ import com.google.common.base.Objects
  *
  * @author Nikita Gorodilov
  */
-abstract class ConfigureEntity : ABaseDtoEntity {
+abstract class ConfigureEntity : Serializable {
 
     /**
      * @return типы данных столбцов

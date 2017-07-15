@@ -1,24 +1,19 @@
 package agentcore.agentcommunication;
 
-import agentcore.database.dto.LocalDataDto;
+import agentcore.database.dto.MessageLocalDataDto;
 
 /**
  * Коллективное решение задачи
  *
  * @author Nikita Gorodilov
  */
-public class MCollectiveSolution extends AMessage {
+public class MCollectiveSolution extends ASolutionMessage {
 
-    private LocalDataDto dataDto;
     private Integer solutionId;
 
-    public MCollectiveSolution(LocalDataDto dtoEntity, Integer solutionId) {
-        this.dataDto = dtoEntity;
+    public MCollectiveSolution(MessageLocalDataDto dtoEntity, Integer solutionId) {
+        super(dtoEntity);
         this.solutionId = solutionId;
-    }
-
-    public LocalDataDto getDtoEntity() {
-        return dataDto;
     }
 
     public Integer getSolutionId() {

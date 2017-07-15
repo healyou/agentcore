@@ -1,18 +1,17 @@
 package agentcore.database.dto
 
+import java.lang.Exception
+
 /**
- * Created on 28.03.2017 19:35
+ * Объект локальной базы данных агента
+ *
  * @author Nikita Gorodilov
  */
 class LocalDataDto(paramType: HashMap<String, String>,
-                   paramValue: HashMap<String, Any>) : ConfigureEntityImpl(paramType, paramValue) {
+                   paramValue: HashMap<String, Any>)
+    : ALocalDataDto(paramType, paramValue), ABaseDtoEntity {
+
     companion object {
-        val ID_COLUMN_NAME = "id"
-        val ID_COLUMN_TYPE = "int"
-        val ANSWER_COLUMN_NAME = "answer"
-        val ANSWER_COLUMN_TYPE = "String"
-        val COLLECTIVEANSWER_COLUMN_NAME = "collectiveanswer"
-        val COLLECTIVEANSWER_COLUMN_TYPE = "String"
 
         fun valueOf(inputData: InputDataDto): LocalDataDto {
             val paramType = HashMap<String, String>()
@@ -30,20 +29,23 @@ class LocalDataDto(paramType: HashMap<String, String>,
 
             return LocalDataDto(paramType, paramValue)
         }
+
+        /**
+         * todo ниже
+         * Нужно учитывать, что id объекта MessageLocalDataDto должен быть родным
+         * для данного агента
+         */
+        fun valueOf(messageDto: MessageLocalDataDto): LocalDataDto {
+            return LocalDataDto(messageDto.paramType, messageDto.paramValue)
+        }
     }
 
-    init {
-        if (!paramType.containsKey(ID_COLUMN_NAME) ||
-                !paramType.containsKey(ANSWER_COLUMN_NAME) ||
-                !paramType.containsKey(COLLECTIVEANSWER_COLUMN_NAME))
-            throw Exception()
-    }
+    override fun getId(): Long? {
+        try {
+            return paramValue[ID_COLUMN_NAME] as Long?
 
-    fun setAnswerValue(value: Any) {
-        paramValue.put(ANSWER_COLUMN_NAME, value)
-    }
-
-    fun setColAnswerValue(value: Any) {
-        paramValue.put(COLLECTIVEANSWER_COLUMN_NAME, value)
+        } catch (e : Exception) {
+            return null
+        }
     }
 }

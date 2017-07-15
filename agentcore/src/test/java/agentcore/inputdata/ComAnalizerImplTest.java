@@ -1,13 +1,14 @@
 package agentcore.inputdata;
 
 import agentcore.agentcommunication.AgentCommunicationImpl;
-import agentcore.agentcommunication.AMessage;
+import agentcore.agentcommunication.Message;
 import agentcore.agentcommunication.MCollectiveSolution;
 import agentcore.agentcommunication.MSearchSolution;
 import agentcore.agentfoundation.*;
 import agentcore.database.dao.LocalDataDao;
 import agentcore.database.dto.ConfigureEntityImpl;
 import agentcore.database.dto.LocalDataDto;
+import agentcore.database.dto.MessageLocalDataDto;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -221,10 +222,10 @@ public class ComAnalizerImplTest  extends Assert {
 
                 while (!interrupted()) {
                     Object object = inputStream.readObject();
-                    if (object instanceof AMessage) {
+                    if (object instanceof Message) {
                         isGetMessage = true;
                         if (object instanceof MSearchSolution) {
-                            LocalDataDto dtoEntity = ((MSearchSolution) object).getDtoEntity();
+                            MessageLocalDataDto dtoEntity = ((MSearchSolution) object).getDtoEntity();
                             outputStream.writeObject(new MCollectiveSolution(dtoEntity, 1));
                         }
                         if (object instanceof MCollectiveSolution) {
@@ -232,7 +233,7 @@ public class ComAnalizerImplTest  extends Assert {
                             LocalDataDto updateDto = createDtoEntity();
                             if (((MCollectiveSolution) object).getSolutionId().equals(1)) {
                                 outputStream.writeObject(
-                                        new MSearchSolution(updateDto));
+                                        new MSearchSolution(MessageLocalDataDto.Companion.valueOf(updateDto)));
                             }
                         }
                     }

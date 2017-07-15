@@ -2,10 +2,11 @@ package agentcore.agentfoundation;
 
 import agentcore.agentcommunication.AgentCommunicationImpl;
 import agentcore.agentcommunication.IAgentCommunication;
-import agentcore.agentcommunication.AMessage;
+import agentcore.agentcommunication.Message;
 import agentcore.agentcommunication.MCollectiveSolution;
 import agentcore.agentcommunication.MSearchSolution;
 import agentcore.database.dto.LocalDataDto;
+import agentcore.database.dto.MessageLocalDataDto;
 import agentcore.inputdata.InputDataTableDesc;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof IAgentCommunication && arg instanceof AMessage)
-            updateAgentCommunication((AMessage) arg);
+        if (o instanceof IAgentCommunication && arg instanceof Message)
+            updateAgentCommunication((Message) arg);
         if (o instanceof IAgentBrain && arg instanceof AgentObserverArg) {
             AgentObserverArg a = (AgentObserverArg) arg;
 
@@ -53,13 +54,13 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      * сохраняем данные в локальной бд
      * @param message данные с сервера
      */
-    private void updateAgentCommunication(AMessage message) {
+    private void updateAgentCommunication(Message message) {
         if (message instanceof MSearchSolution) {
+            // пришёл ответ на с сервера-общее решение
             try {
                 MSearchSolution solution = (MSearchSolution) message;
-                LocalDataDto entity = solution.getDtoEntity();
-                if (entity != null)
-                    mAgentDatabase.updateSolution(entity);
+                LocalDataDto entity = LocalDataDto.Companion.valueOf(solution.getDtoEntity());
+                mAgentDatabase.updateSolution(entity);
             } catch (SQLException e) {
                 System.out.println(e.toString() + " ошибка обновления данных локальной бд");
             }
@@ -67,9 +68,9 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
 
         if (message instanceof MCollectiveSolution) {
             // ищем своё решение по входным данным
-            LocalDataDto dtoEntity = ((MCollectiveSolution) message).getDtoEntity();
+            LocalDataDto dtoEntity = LocalDataDto.Companion.valueOf(((MCollectiveSolution) message).getDtoEntity());
             updateSolution(dtoEntity);
-            sendComMassage(new MCollectiveSolution(dtoEntity,
+            sendComMassage(new MCollectiveSolution(MessageLocalDataDto.Companion.valueOf(dtoEntity),
                     ((MCollectiveSolution) message).getSolutionId()));
         }
     }
@@ -90,7 +91,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
     private void updateAgentOutput(LocalDataDto entity) {
         if (isSendComMessage(entity)) {
             System.out.println("отправка на сервак смс");
-            sendComMassage(new MSearchSolution(entity));
+            sendComMassage(new MSearchSolution(MessageLocalDataDto.Companion.valueOf(entity)));
         }
     }
 
@@ -112,7 +113,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
     /**
      * отправка сигнала на модуль вз-ия с сервером
      */
-    private void sendComMassage(AMessage message) {
+    private void sendComMassage(Message message) {
         if (!mAgentCom.isConnect())
             return;
 
