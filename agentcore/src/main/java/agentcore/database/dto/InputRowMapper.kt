@@ -1,6 +1,7 @@
 package agentcore.database.dto
 
 import agentcore.inputdata.ATableDesc
+import agentcore.utils.Codable
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -29,7 +30,7 @@ class InputRowMapper(private val tableDesc: ATableDesc) : RowMapper<InputDataDto
 
         // получаем значение считываемой строки таблицы
         for (key in paramType.keys) {
-            when (InputDataType.getByName(paramType[key]!!)) {
+            when (Codable.find(InputDataType::class.java, paramType[key]!!)) {
                 InputDataType.STRING -> {
                     val columnName = key
                     paramValue.put(key, rs.getString(columnName))
@@ -41,9 +42,6 @@ class InputRowMapper(private val tableDesc: ATableDesc) : RowMapper<InputDataDto
                 InputDataType.DOUBLE -> {
                     val columnName = key
                     paramValue.put(key, rs.getDouble(columnName))
-                }
-                else -> {
-                    throw UnsupportedOperationException("Не известный тип данных")
                 }
             }
         }

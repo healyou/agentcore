@@ -1,6 +1,7 @@
 package agentcore.inputdata;
 
 import agentcore.database.dto.InputDataType;
+import agentcore.utils.Codable;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -47,7 +48,7 @@ public abstract class ATableDesc {
     }
 
     public static String translateToSqlType(String type) {
-        switch (InputDataType.getByName(type)) {
+        switch (Codable.Companion.find(InputDataType.class, type)) {
             case STRING: {
                 return "TEXT";
             }

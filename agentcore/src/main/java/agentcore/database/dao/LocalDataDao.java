@@ -6,6 +6,7 @@ import agentcore.database.dto.LocalDataDto;
 import agentcore.database.dto.LocalRowMapper;
 import agentcore.inputdata.LocalDataTableDesc;
 import agentcore.inputdata.ATableDesc;
+import agentcore.utils.Codable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,7 +84,8 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
 
         for (String columnName : entity.getColumnNames()) {
             String typeName = entity.getTypeByColumnName(columnName);
-            switch (InputDataType.getByName(typeName)) {
+            if (typeName == null) throw new NullPointerException("typeName is null");
+            switch (Codable.Companion.find(InputDataType.class, typeName)) {
                 case STRING: {
                     updateSql.append('\'');
                     updateSql.append(entity.getValueByColumnName(columnName));
@@ -99,9 +101,6 @@ public class LocalDataDao extends ABaseDao<LocalDataDto> implements ILocalDataDa
                     updateSql.append(entity.getValueByColumnName(columnName));
                     updateSql.append(',');
                     break;
-                }
-                default: {
-                    throw new UnsupportedOperationException("Не известный тип данных");
                 }
             }
         }

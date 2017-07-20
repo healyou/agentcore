@@ -1,35 +1,25 @@
 package agentcore.database.dto;
 
+import agentcore.utils.Codable;
+
 /**
+ * Типы данных
+ *
  * @author Nikita Gorodilov
  */
-public enum InputDataType {
+public enum InputDataType implements Codable<String> {
+    STRING("String"),
+    INT("int"),
+    DOUBLE("double");
 
-    STRING("String"), INT("int"), DOUBLE("double");
+    private String code;
 
-    InputDataType(String typeName) {
-        this.typeName = typeName;
+    InputDataType(String code) {
+        this.code = code;
     }
 
-    private String typeName;
-
-    public String getTypeName() {
-        return typeName;
+    @Override
+    public String getCode() {
+        return code;
     }
-
-    public static String getClassName() {
-        return InputDataType.class.getName();
-    }
-
-    public static InputDataType getByName(String typeName) {
-        if (typeName.equals(STRING.typeName))
-            return STRING;
-        else if (typeName.equals(INT.typeName))
-            return INT;
-        else if (typeName.equals(DOUBLE.typeName))
-            return DOUBLE;
-
-        throw new UnsupportedOperationException("Неизвестный тип данных");
-    }
-
 }

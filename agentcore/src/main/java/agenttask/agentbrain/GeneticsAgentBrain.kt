@@ -5,6 +5,7 @@ import agentcore.agentfoundation.AgentDatabaseImpl
 import agentcore.database.dao.InputDataDao
 import agentcore.database.dto.InputDataDto
 import agentcore.database.dto.InputDataType
+import agentcore.utils.Codable
 import genetics.choosing.ChoosingRandom
 import genetics.selecting.SelectingMax
 import genetics.simplecreature.SimpleCrossOnePoint
@@ -64,7 +65,7 @@ class GeneticsAgentBrain(mDao: InputDataDao,
             if (columnName == InputDataDto.ID_COLUMN_NAME) continue
 
             val columnType = mInputData!!.getTypeByColumnName(columnName)
-            when (InputDataType.getByName(columnType)) {
+            when (Codable.find(InputDataType::class.java, columnType!!)) {
                 InputDataType.STRING -> {
                     throw UnsupportedOperationException("Не известный тип данных")
                 }
@@ -75,9 +76,6 @@ class GeneticsAgentBrain(mDao: InputDataDao,
                 InputDataType.INT -> {
                     val value = mInputData!!.getValueByColumnName(columnName)
                     inputData.add(value.toString().toInt())
-                }
-                else -> {
-                    throw UnsupportedOperationException("Не известный тип данных")
                 }
             }
         }

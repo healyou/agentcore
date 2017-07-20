@@ -5,6 +5,7 @@ import agentcore.agentfoundation.AgentDatabaseImpl
 import agentcore.database.dao.InputDataDao
 import agentcore.database.dto.InputDataDto
 import agentcore.database.dto.InputDataType
+import agentcore.utils.Codable
 import org.encog.engine.network.activation.ActivationSigmoid
 import org.encog.neural.networks.BasicNetwork
 import org.encog.neural.networks.layers.BasicLayer
@@ -76,7 +77,7 @@ class NeuralAgentBrain(mDao: InputDataDao,
             if (columnName == InputDataDto.ID_COLUMN_NAME) continue
 
             val columnType = mInputData!!.getTypeByColumnName(columnName)
-            when (InputDataType.getByName(columnType)) {
+            when (Codable.find(InputDataType::class.java, columnType!!)) {
                 InputDataType.STRING -> {
                     throw UnsupportedOperationException("Не известный тип данных")
                 }
@@ -87,9 +88,6 @@ class NeuralAgentBrain(mDao: InputDataDao,
                 InputDataType.INT -> {
                     val value = mInputData!!.getValueByColumnName(columnName)
                     inputData.add(value.toString().toDouble())
-                }
-                else -> {
-                    throw UnsupportedOperationException("Не известный тип данных")
                 }
             }
         }
