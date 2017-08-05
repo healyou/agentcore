@@ -15,15 +15,13 @@ abstract class AbstractAgentService {
 
     /* Базовый адрес сервера */
     protected abstract val BASE_URL: String
-
-    /* Одни куки на все сервисы */
-    protected abstract val sessionManager: SessionManager
+    /* Загрузка параметров из бд */
     protected abstract val environment: Environment
 
     /**
      * Header одинаковый у всех сообщений
      */
-    protected fun createHttpHeaders(): HttpHeaders {
+    protected fun createHttpHeaders(sessionManager: SessionManager): HttpHeaders {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_FORM_URLENCODED
         if (!sessionManager.cookie.isEmpty()) {

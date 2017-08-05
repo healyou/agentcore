@@ -20,8 +20,7 @@ import java.nio.charset.Charset
  * @author Nikita Gorodilov
  */
 @Service
-class LoginServiceImpl(@Autowired override val sessionManager: SessionManager,
-                       @Autowired override val environment: Environment) : AbstractAgentService(), LoginService {
+class LoginServiceImpl(@Autowired override val environment: Environment) : AbstractAgentService(), LoginService {
 
     private var restTemplate: RestTemplate = RestTemplate()
 
@@ -39,7 +38,7 @@ class LoginServiceImpl(@Autowired override val sessionManager: SessionManager,
         restTemplate.messageConverters = list
     }
 
-    override fun registration(registrationData: RegistrationData): Agent? {
+    override fun registration(registrationData: RegistrationData, sessionManager: SessionManager): Agent? {
         try {
             val map = LinkedMultiValueMap<String, String>()
             map.add("masId", registrationData.masId)
@@ -47,7 +46,7 @@ class LoginServiceImpl(@Autowired override val sessionManager: SessionManager,
             map.add("type", registrationData.type)
             map.add("password", registrationData.password)
 
-            val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders())
+            val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
 
             val outLoginData = restTemplate.exchange(BASE_URL + REGISTRATION_URL, HttpMethod.POST, request, String::class.java)
             val jsonObject = outLoginData.body
@@ -64,13 +63,13 @@ class LoginServiceImpl(@Autowired override val sessionManager: SessionManager,
         }
     }
 
-    override fun login(loginData: LoginData): Agent? {
+    override fun login(loginData: LoginData, sessionManager: SessionManager): Agent? {
         try {
             val map = LinkedMultiValueMap<String, String>()
             map.add("masId", loginData.masId)
             map.add("password", loginData.password)
 
-            val request = HttpEntity(map, createHttpHeaders())
+            val request = HttpEntity(map, createHttpHeaders(sessionManager))
 
             val outLoginData = restTemplate.exchange(BASE_URL + LOGIN_URL, HttpMethod.POST, request, String::class.java)
             val jsonObject = outLoginData.body
@@ -87,9 +86,9 @@ class LoginServiceImpl(@Autowired override val sessionManager: SessionManager,
         }
     }
 
-    override fun logout(): Boolean {
+    override fun logout(sessionManager: SessionManager): Boolean {
         try {
-            val entity = HttpEntity<Any>(createHttpHeaders())
+            val entity = HttpEntity<Any>(createHttpHeaders(sessionManager))
 
             restTemplate.exchange(BASE_URL + LOGOUT_URL, HttpMethod.GET, entity, String::class.java)
             return true

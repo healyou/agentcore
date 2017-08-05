@@ -9,9 +9,9 @@ import service.objects.RegistrationData
  */
 interface LoginService {
 
-    fun registration(registrationData: RegistrationData): Agent?
+    fun registration(registrationData: RegistrationData, sessionManager: SessionManager): Agent?
 
-    fun login(loginData: LoginData): Agent?
+    fun login(loginData: LoginData, sessionManager: SessionManager): Agent?
 
-    fun logout(): Boolean
+    fun logout(sessionManager: SessionManager): Boolean
 }
