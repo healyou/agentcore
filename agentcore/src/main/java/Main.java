@@ -1,3 +1,6 @@
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import service.LoginService;
 import service.LoginServiceImpl;
 import service.SessionManager;
 import service.objects.Agent;
@@ -13,7 +16,9 @@ import java.util.UUID;
 public class Main {
 
     public static void main(String[] args) {
-        LoginServiceImpl loginService = new LoginServiceImpl(new SessionManager());
+        ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
+
+        LoginServiceImpl loginService = (LoginServiceImpl) context.getBean(LoginService.class);;
 
         String agentMasId = UUID.randomUUID().toString();
         Agent agent = loginService.registration(new RegistrationData(
@@ -23,7 +28,7 @@ public class Main {
                 "psw")
         );
         agent = loginService.login(new LoginData(
-                "masId5",
+                agentMasId,
                 "psw"
         ));
         loginService.logout();
@@ -36,7 +41,7 @@ public class Main {
                 "psw")
         );
         agent = loginService.login(new LoginData(
-                "masId5",
+                agentMasId,
                 "psw"
         ));
         loginService.logout();

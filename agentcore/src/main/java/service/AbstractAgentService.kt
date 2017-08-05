@@ -1,5 +1,6 @@
 package service
 
+import agentcore.database.base.Environment
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpHeaders
@@ -12,15 +13,12 @@ import java.util.stream.Collectors
  */
 abstract class AbstractAgentService {
 
-    /**
-     * Адрес сервиса
-     */
-    // todo засунуть в environment
-    companion object {
-        val BASE_URL = "http://127.0.0.1:9999/"
-    }
+    /* Базовый адрес сервера */
+    protected abstract val BASE_URL: String
+
     /* Одни куки на все сервисы */
     protected abstract val sessionManager: SessionManager
+    protected abstract val environment: Environment
 
     /**
      * Header одинаковый у всех сообщений

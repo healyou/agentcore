@@ -1,7 +1,7 @@
 package service
 
+import agentcore.database.base.Environment
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Scope
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.converter.FormHttpMessageConverter
@@ -17,21 +17,18 @@ import service.objects.RegistrationData
 import java.nio.charset.Charset
 
 /**
- * @Scope("prototype") -> тк для каждого объекта будут свои куки
- *
  * @author Nikita Gorodilov
  */
-@Service()
-@Scope("prototype")
-class LoginServiceImpl(@Autowired override val sessionManager: SessionManager) : AbstractAgentService(), LoginService {
-
-    companion object {
-        private val LOGIN_URL = "login/login"
-        private val REGISTRATION_URL = "login/registration"
-        private val LOGOUT_URL = "login/logout"
-    }
+@Service
+class LoginServiceImpl(@Autowired override val sessionManager: SessionManager,
+                       @Autowired override val environment: Environment) : AbstractAgentService(), LoginService {
 
     private var restTemplate: RestTemplate = RestTemplate()
+
+    override val BASE_URL: String = environment.getProperty("agent.service.base.url")
+    private val LOGIN_URL = environment.getProperty("agent.service.login.login.url")
+    private val REGISTRATION_URL = environment.getProperty("agent.service.login.registration.url")
+    private val LOGOUT_URL = environment.getProperty("agent.service.login.logout.url")
 
     init {
         val formHttpMessageConverter = FormHttpMessageConverter()

@@ -37,14 +37,24 @@
                 </executions>
                 <configuration>
                     <properties>
+                        <!-- input db -->
                         <property>
-                            <name>addrDB</name>
+                            <name>addrDB_input</name>
                             <value>\data\inputdb\</value>
                         </property>
-
                         <property>
-                            <name>nameDB</name>
+                            <name>nameDB_input</name>
                             <value>inputdb.s3db</value>
+                        </property>
+
+                        <!-- local db -->
+                        <property>
+                            <name>addrDB_local</name>
+                            <value>\data\localdb\</value>
+                        </property>
+                        <property>
+                            <name>nameDB_local</name>
+                            <value>localdb.s3db</value>
                         </property>
 
                         <property>
@@ -60,7 +70,8 @@
                     <scripts>
 
                         <!-- Создание БД  -->
-                        <script>file:///${db.source.basedir}/src/groovy/create_database.groovy</script>
+                        <script>file:///${db.source.basedir}/src/groovy/create_input_db.groovy</script>
+                        <script>file:///${db.source.basedir}/src/groovy/create_local_db.groovy</script>
 
                     </scripts>
                 </configuration>
