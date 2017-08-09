@@ -1,18 +1,17 @@
 package agentcore.gui
 
 import agentcore.agentfoundation.*
-import agentcore.database.dao.InputDataDao
-import agentcore.inputdata.InputDataVerificationImpl
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.Label
 import javafx.scene.control.TextArea
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Scope
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.run
+import kotlinx.coroutines.experimental.launch
 import org.springframework.stereotype.Component
 import java.util.*
+import kotlin.concurrent.thread
+import kotlinx.coroutines.experimental.javafx.JavaFx as UI
 
 /**
  * @author Nikita Gorodilov
@@ -30,34 +29,40 @@ open class GuiController: Observer {
     lateinit var logTextArea: TextArea
 
     lateinit var agent: Agent
-//    @Value("#{properties['testKey2']}")
-//    lateinit var aValueForKey2: String
-//    @Autowired
-//    lateinit var testKey: String
 
     // todo не видит clips dll в папке libs
 
     fun initialize() {
-        startButton.setOnAction {
-            agent.start()
+        /* onClick - максимум одно действие одновременно. выполняется в ui потоке */
+        startButton.onClick {
 
-            startButton.isDisable = true
-            stopButton.isDisable = false
-            statusLabel.text = "Агент работает"
-            logTextArea.text += "\nНачало работы агента"
+            /* run - выполнение без блокировки ui потока - тоесть новый поток */
+            run(CommonPool) {
+                agent.start()
+
+                /* run - выполнение без блокировки ui потока -> выполняется в ui потоке */
+                launch(UI) {
+                    startButton.isDisable = true
+                    stopButton.isDisable = false
+                    statusLabel.text = "Агент работает"
+                    logTextArea.text += "\nНачало работы агента"
+                }
+            }
         }
-        stopButton.setOnAction {
-            agent.stop()
+        stopButton.onClick {
+            run(CommonPool) {
+                agent.stop()
 
-            startButton.isDisable = false
-            stopButton.isDisable = true
-            statusLabel.text = "Агент не работает"
-            logTextArea.text += "\nКонец работы агента"
+                launch(UI) {
+                    startButton.isDisable = false
+                    stopButton.isDisable = true
+                    statusLabel.text = "Агент не работает"
+                    logTextArea.text += "\nКонец работы агента"
+                }
+            }
         }
 
         agent = Agent(this)
-//        println(aValueForKey2)
-//        println(testKey)
     }
 
     override fun update(o: Observable?, arg: Any?) {
@@ -66,10 +71,10 @@ open class GuiController: Observer {
     }
 
     private fun onAgentUpdate(arg: Any?) {
-        Platform.runLater {
-            if (arg !is AgentObserverArg)
-                return@runLater
+        if (arg !is AgentObserverArg)
+            return
 
+        launch(UI) {
             when (arg.type) {
                 ObserverArgType.OUTPUT_DATA -> {
                     logTextArea.appendText("\nвыходные данные - " + arg.arg)
