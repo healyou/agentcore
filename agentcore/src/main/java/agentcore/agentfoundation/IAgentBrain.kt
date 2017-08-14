@@ -3,7 +3,7 @@ package agentcore.agentfoundation
 import java.util.Observable
 
 /**
- * Created by user on 21.02.2017.
+ * @author Nikita Gorodilov
  */
 abstract class IAgentBrain : Observable() {
 

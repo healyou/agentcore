@@ -5,7 +5,7 @@ import agentcore.inputdata.ATableDesc
 import java.sql.SQLException
 
 /**
- * Created by user on 21.02.2017.
+ * @author Nikita Gorodilov
  */
 interface IAgentDatabase {
 

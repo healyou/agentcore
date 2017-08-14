@@ -6,7 +6,6 @@ import agentcore.database.dto.LocalDataDto
 import java.sql.SQLException
 
 /**
- * Created on 31.03.2017 20:02
  * @author Nikita Gorodilov
  */
 abstract class AAgentBrain(protected val mDao: InputDataDao, protected val mDb: AgentDatabaseImpl): IAgentBrain() {
@@ -15,7 +14,7 @@ abstract class AAgentBrain(protected val mDao: InputDataDao, protected val mDb: 
 
     override fun takeInputData() {
         try {
-            mInputData = mDao.first
+            mInputData = mDao.getFirst()
             mDao.delete(mInputData!!)
 
         } catch (e: Exception) {
