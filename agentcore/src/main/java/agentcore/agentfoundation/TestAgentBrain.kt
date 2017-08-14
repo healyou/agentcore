@@ -17,5 +17,4 @@ class TestAgentBrain(mDao: InputDataDao, mDb: AgentDatabaseImpl): AAgentBrain(mD
         } else
             return "0"
     }
-
 }

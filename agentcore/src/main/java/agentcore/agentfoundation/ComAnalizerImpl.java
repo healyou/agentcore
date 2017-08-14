@@ -102,7 +102,7 @@ public class ComAnalizerImpl implements IComAnalizer, Observer {
      */
     private boolean isSendComMessage(LocalDataDto entity) {
         // находим выходное значение и проверяем его с регулярным выражением
-        Object value = entity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
+        Object value = entity.getValueByColumnName(AgentDatabaseImpl.Companion.getANSWER_COLUMN_NAME());
 
         Pattern pattern = mTableDesc.getComRegExp();
         Matcher matcher = pattern.matcher(value.toString());

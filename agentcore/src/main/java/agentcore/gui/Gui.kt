@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext
 class Gui : Application() {
 
     override fun start(primaryStage: Stage?) {
-        val applicationContext = ClassPathXmlApplicationContext("applicationContext.xml")
+        val applicationContext = ClassPathXmlApplicationContext("context.xml")
         val loader = applicationContext.getBean(SpringFxmlLoader::class.java)
         val root = loader.load(javaClass.getResourceAsStream("gui.fxml"))
         primaryStage?.title = "Agent core"

@@ -118,8 +118,8 @@ public class ComAnalizerImplTest  extends Assert {
             sleep(550);
 
             ConfigureEntityImpl dtoEntity = dataDao.get(1);
-            Object collectiveValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME);
-            Object answerValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
+            Object collectiveValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.Companion.getCOLLECTIVEANSWER_COLUMN_NAME());
+            Object answerValue = dtoEntity.getValueByColumnName(AgentDatabaseImpl.Companion.getANSWER_COLUMN_NAME());
 
             assertTrue(server.isGetClientMessage());
             assertEquals("1", answerValue);
@@ -136,10 +136,10 @@ public class ComAnalizerImplTest  extends Assert {
     private void testAddRecordOnLocalDb() {
         try {
             ConfigureEntityImpl dtoEntity = dataDao.get(1);
-            Object value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.ANSWER_COLUMN_NAME);
+            Object value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.Companion.getANSWER_COLUMN_NAME());
             assertEquals("123", value);
 
-            value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME);
+            value = dtoEntity.getValueByColumnName(AgentDatabaseImpl.Companion.getCOLLECTIVEANSWER_COLUMN_NAME());
             assertEquals("1", value);
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -160,7 +160,7 @@ public class ComAnalizerImplTest  extends Assert {
         HashMap<String, Object> paramValue = new HashMap<>();
         for (TableColumn column : localDataTD.getColumns()) {
             if (!column.getColumnName().equals("id")) {
-                if (column.getColumnName().equals(AgentDatabaseImpl.ANSWER_COLUMN_NAME))
+                if (column.getColumnName().equals(AgentDatabaseImpl.Companion.getANSWER_COLUMN_NAME()))
                     // 3 значение - общее решение будет
                     paramValue.put(column.getColumnName(), "123");
                 else
@@ -256,7 +256,7 @@ public class ComAnalizerImplTest  extends Assert {
             HashMap<String, Object> paramValue = new HashMap<>();
             for (TableColumn column : localDataTD.getColumns()) {
                 if (!column.getColumnName().equals("id")) {
-                    if (column.getColumnName().equals(AgentDatabaseImpl.COLLECTIVEANSWER_COLUMN_NAME))
+                    if (column.getColumnName().equals(AgentDatabaseImpl.Companion.getCOLLECTIVEANSWER_COLUMN_NAME()))
                         // 4 значение - общее решение будет
                         paramValue.put(column.getColumnName(), "1234");
                     else

@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.converter.FormHttpMessageConverter
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.StringHttpMessageConverter
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
@@ -19,8 +20,8 @@ import java.nio.charset.Charset
 /**
  * @author Nikita Gorodilov
  */
-@Service
-class LoginServiceImpl(@Autowired override val environment: Environment) : AbstractAgentService(), LoginService {
+@Component
+open class LoginServiceImpl(@Autowired final override val environment: Environment) : AbstractAgentService(), LoginService {
 
     private var restTemplate: RestTemplate = RestTemplate()
 
