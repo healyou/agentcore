@@ -7,12 +7,8 @@ import agentcore.utils.Codable
  *
  * @author Nikita Gorodilov
  */
-enum class InputDataType constructor(private val code: String) : Codable<String> {
+enum class InputDataType constructor(override val code: String) : Codable<String> {
     STRING("String"),
     INT("int"),
     DOUBLE("double");
-
-    override fun getCode(): String {
-        return code
-    }
 }

@@ -1,20 +1,25 @@
 package service.objects
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
 /**
- * Объект агент в сервисе
+ * Агент
  *
  * @author Nikita Gorodilov
  */
-class Agent : Entity {
-
-    override var id: Long? = null
-    var masId: String? = null
-    var name: String? = null
-    var type: AgentType? = null
-    var createDate: Date? = null
-    @JsonProperty("deleted")
-    var isDeleted: Boolean? = null
-}
+class Agent @JsonCreator constructor (
+        @JsonProperty("id")
+        override var id: Long?,
+        @JsonProperty("masId")
+        var masId: String,
+        @JsonProperty("name")
+        var name: String,
+        @JsonProperty("type")
+        var type: AgentType,
+        @JsonProperty("createDate")
+        var createDate: Date,
+        @JsonProperty("deleted")
+        var isDeleted: Boolean
+): Entity

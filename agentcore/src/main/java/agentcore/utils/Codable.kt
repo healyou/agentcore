@@ -7,7 +7,8 @@ import java.util.*
  */
 interface Codable<S> {
 
-    fun getCode(): S
+    val code: S
+        get
 
     companion object {
         // todo что делают эти функции
@@ -20,7 +21,7 @@ interface Codable<S> {
         }
 
         fun <T, S> tryFind(codableSet: Class<T>, code: S): Optional<T> where T : Enum<T>, T : Codable<S> {
-            return Arrays.stream(codableSet.enumConstants).filter { codable -> (codable as Codable<*>).getCode() == code }.findFirst()
+            return Arrays.stream(codableSet.enumConstants).filter { codable -> (codable as Codable<*>).code == code }.findFirst()
         }
     }
 }

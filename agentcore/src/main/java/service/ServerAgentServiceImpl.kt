@@ -5,16 +5,11 @@ import com.fasterxml.jackson.core.type.TypeReference
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
-import org.springframework.http.converter.FormHttpMessageConverter
-import org.springframework.http.converter.HttpMessageConverter
-import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-import org.springframework.web.client.RestTemplate
 import service.objects.Agent
 import service.objects.GetAgentsData
-import java.nio.charset.Charset
 
 /**
  * @author Nikita Gorodilov

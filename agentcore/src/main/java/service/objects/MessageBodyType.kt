@@ -4,13 +4,12 @@ import agentcore.utils.Codable
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 
-
 /**
- * Тип агента
+ * Тип тела сообщения
  *
  * @author Nikita Gorodilov
  */
-class AgentType @JsonCreator constructor (
+class MessageBodyType @JsonCreator constructor (
         @JsonProperty("id")
         override var id: Long?,
         @JsonProperty("code")
@@ -21,9 +20,8 @@ class AgentType @JsonCreator constructor (
         var isDeleted: Boolean
 ): Entity {
 
-    /* Типы агентов */
+    /* Типы тела сообщения */
     enum class Code(override val code: String): Codable<String> {
-        WORKER("worker"),
-        SERVER("server");
+        JSON("json");
     }
 }
