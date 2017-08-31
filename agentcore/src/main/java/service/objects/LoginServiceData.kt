@@ -9,10 +9,14 @@ package service.objects
 /**
  * Данные для логина
  */
-class LoginData(val masId: String, val password: String)
+data class LoginData(val masId: String, val password: String)
 
 /**
  * Данные для регистрации
  */
-class RegistrationData(val masId: String, val name: String, val type: String,  val password: String)
+data class RegistrationData(val masId: String, val name: String, val type: String,  val password: String)
 
+/**
+ * Данные для поиска агента
+ */
+data class GetAgentsData(val type: String?, val isDeleted: Boolean?)

@@ -23,21 +23,10 @@ import java.nio.charset.Charset
 @Component
 open class LoginServiceImpl(@Autowired final override val environment: Environment) : AbstractAgentService(), LoginService {
 
-    private var restTemplate: RestTemplate = RestTemplate()
-
     override val BASE_URL: String = environment.getProperty("agent.service.base.url")
     private val LOGIN_URL = environment.getProperty("agent.service.login.login.url")
     private val REGISTRATION_URL = environment.getProperty("agent.service.login.registration.url")
     private val LOGOUT_URL = environment.getProperty("agent.service.login.logout.url")
-
-    init {
-        val formHttpMessageConverter = FormHttpMessageConverter()
-        val stringHttpMessageConverter = StringHttpMessageConverter(Charset.forName("UTF-8"))
-        val list = mutableListOf<HttpMessageConverter<*>>()
-        list.add(formHttpMessageConverter)
-        list.add(stringHttpMessageConverter)
-        restTemplate.messageConverters = list
-    }
 
     override fun registration(registrationData: RegistrationData, sessionManager: SessionManager): Agent? {
         try {

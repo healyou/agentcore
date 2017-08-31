@@ -10,7 +10,6 @@ import kotlinx.coroutines.experimental.run
 import kotlinx.coroutines.experimental.launch
 import org.springframework.stereotype.Component
 import java.util.*
-import kotlin.concurrent.thread
 import kotlinx.coroutines.experimental.javafx.JavaFx as UI
 
 /**
@@ -38,6 +37,11 @@ open class GuiController: Observer {
 
             /* run - выполнение без блокировки ui потока - тоесть новый поток */
             run(CommonPool) {
+                /* run - выполнение в потоке первого run -> берёт его контекст */
+                /*run {
+                    delay(2000)
+                }*/
+
                 agent.start()
 
                 /* run - выполнение без блокировки ui потока -> выполняется в ui потоке */
