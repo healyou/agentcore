@@ -46,6 +46,11 @@
             <name>EvoJ</name>
             <url>http://evoj-frmw.appspot.com/repository</url>
         </repository>
+        <repository>
+            <id>central</id>
+            <name>kotlin-coroutines</name>
+            <url>http://jcenter.bintray.com</url>
+        </repository>
     </repositories>
 
     <dependencies>
