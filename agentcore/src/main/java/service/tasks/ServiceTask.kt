@@ -24,7 +24,7 @@ class ServiceTask @Autowired constructor(private val messageService: ServerMessa
     /**
      * Получение сообщений с сервиса агентов
      */
-    @Scheduled(fixedDelay=10000)
+    @Scheduled(fixedDelay=1000)
     fun getMessages() {
         System.out.println("getMessages - ServiceTask")
     }
@@ -32,7 +32,7 @@ class ServiceTask @Autowired constructor(private val messageService: ServerMessa
     /**
      * Отправка сообщений на сервис агентов
      */
-    @Scheduled(fixedDelay=10000)
+    @Scheduled(fixedDelay=1000)
     fun sendMessages() {
         System.out.println("sendMessages - ServiceTask")
     }
