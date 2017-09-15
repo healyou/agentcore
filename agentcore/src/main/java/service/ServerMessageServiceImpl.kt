@@ -8,11 +8,9 @@ import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-import service.objects.Agent
 import service.objects.GetMessagesData
 import service.objects.Message
 import service.objects.SendMessageData
-import java.util.*
 
 /**
  * @author Nikita Gorodilov

@@ -9,3 +9,17 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.agent.get.agents.url', '/agent/getAgents'),
   ('agent.service.message.send.message.url', '/message/sendMessage'),
   ('agent.service.message.get.messages.url', '/message/getMessages');
+
+------------------ service_message_type data ------------------
+INSERT INTO service_message_type (code, name) VALUES
+  ('send', 'Отправка сообщения'),
+  ('get', 'Получение сообщения');
+
+------------------ agentType data ------------------
+INSERT INTO service_message_object_type (code, name) VALUES
+  ('message', 'Сообщение сервиса'),
+  ('send_message_data', 'Объект отправки сообщения в сервис');
+
+------------------ agentType data ------------------
+INSERT INTO service_message (json_object, object_type_id, message_type_id, use_date) VALUES
+  ('{test_json}', 1, 2, strftime('%Y-%m-%d %H:%M:%f'));

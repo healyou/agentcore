@@ -4,18 +4,12 @@ import agentcore.database.base.Environment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
-import org.springframework.http.converter.FormHttpMessageConverter
-import org.springframework.http.converter.HttpMessageConverter
-import org.springframework.http.converter.StringHttpMessageConverter
 import org.springframework.stereotype.Component
-import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-import org.springframework.web.client.RestTemplate
 import service.objects.Agent
 import service.objects.LoginData
 import service.objects.RegistrationData
-import java.nio.charset.Charset
 
 /**
  * @author Nikita Gorodilov
