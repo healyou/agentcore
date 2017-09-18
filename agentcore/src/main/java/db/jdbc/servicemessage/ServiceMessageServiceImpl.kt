@@ -14,12 +14,12 @@ open class ServiceMessageServiceImpl : ServiceMessageService {
     @Autowired
     private lateinit var dao: ServiceMessageDao
 
-    override fun save(message: ServiceMessage) {
+    override fun save(message: ServiceMessage) : Long {
         if (message.isNew) {
-            dao.create(message)
+            return dao.create(message)
 
         } else {
-            dao.update(message)
+            return dao.update(message)
         }
     }
 

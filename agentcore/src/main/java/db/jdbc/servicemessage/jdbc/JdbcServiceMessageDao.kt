@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 @Component
 open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
 
-    override fun create(message: ServiceMessage): Long {
+    override fun create(message: ServiceMessage) : Long {
         jdbcTemplate.update(
                 "insert into service_message (json_object, object_type_id, message_type_id) values (?, ?, ?)",
                 message.jsonObject,
@@ -23,7 +23,7 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
         return getSequence("service_message")
     }
 
-    override fun update(message: ServiceMessage) {
+    override fun update(message: ServiceMessage) : Long {
         jdbcTemplate.update(
                 "update service_message set json_object = ?, object_type_id = ?, message_type_id = ? where id = ?",
                 message.jsonObject,
@@ -31,6 +31,8 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
                 message.messageType.id!!,
                 message.id!!
         )
+
+        return message.id!!
     }
 
     override fun use(message: ServiceMessage) {
