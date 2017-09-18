@@ -1,5 +1,7 @@
 package db.core.servicemessage
 
+import db.core.sc.ServiceMessageSC
+
 /**
  * Работа с сообщениями
  *
@@ -16,5 +18,6 @@ interface ServiceMessageService {
      * Использование сообщения
      */
     fun use(message: ServiceMessage)
-    // TODO методы получения сообщений по его типу
+
+    fun get(sc: ServiceMessageSC) : List<ServiceMessage>
 }

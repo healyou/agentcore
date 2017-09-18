@@ -1,5 +1,6 @@
 package db.jdbc.servicemessage
 
+import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,15 +16,19 @@ open class ServiceMessageServiceImpl : ServiceMessageService {
     private lateinit var dao: ServiceMessageDao
 
     override fun save(message: ServiceMessage) : Long {
-        if (message.isNew) {
-            return dao.create(message)
+        return if (message.isNew) {
+            dao.create(message)
 
         } else {
-            return dao.update(message)
+            dao.update(message)
         }
     }
 
     override fun use(message: ServiceMessage) {
         dao.use(message)
+    }
+
+    override fun get(sc: ServiceMessageSC) : List<ServiceMessage> {
+        return dao.get(sc)
     }
 }

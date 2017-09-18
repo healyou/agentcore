@@ -22,4 +22,10 @@ class ServiceMessage(
     var createDate: Date? = null
     /* Дата использования(отправки или чтения агентом) */
     var useDate: Date? = null
+
+    /**
+     * Использовалось ли уже данные сообщение
+     */
+    val isUse
+        get() = useDate != null
 }
