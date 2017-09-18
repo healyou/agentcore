@@ -10,4 +10,13 @@ abstract class AbstractDao {
 
     @Autowired
     protected lateinit var jdbcTemplate: JdbcTemplate
+
+    /**
+     * Возвращает идентификатор последней введённой в таблицу записи
+     *
+     * @param tableName Имя таблицы в бд
+     */
+    protected fun getSequence(tableName: String) : Long {
+        return jdbcTemplate.queryForObject("select seq from sqlite_sequence where name='{$tableName}';", Long::class.java)
+    }
 }

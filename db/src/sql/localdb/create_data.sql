@@ -17,7 +17,7 @@ INSERT INTO service_message_type (code, name) VALUES
 
 ------------------ agentType data ------------------
 INSERT INTO service_message_object_type (code, name) VALUES
-  ('message', 'Сообщение сервиса'),
+  ('get_service_message', 'Сообщение сервиса'),
   ('send_message_data', 'Объект отправки сообщения в сервис');
 
 ------------------ agentType data ------------------

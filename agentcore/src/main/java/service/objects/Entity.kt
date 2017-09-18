@@ -6,4 +6,7 @@ package service.objects
 interface Entity {
 
     var id: Long?
+
+    val isNew
+        get() = id != null
 }
