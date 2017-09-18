@@ -8,5 +8,5 @@ interface Entity {
     var id: Long?
 
     val isNew
-        get() = id != null
+        get() = id == null
 }

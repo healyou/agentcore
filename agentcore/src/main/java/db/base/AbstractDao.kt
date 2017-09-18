@@ -17,6 +17,6 @@ abstract class AbstractDao {
      * @param tableName Имя таблицы в бд
      */
     protected fun getSequence(tableName: String) : Long {
-        return jdbcTemplate.queryForObject("select seq from sqlite_sequence where name='{$tableName}';", Long::class.java)
+        return jdbcTemplate.queryForObject("select seq from sqlite_sequence where name='$tableName'", Long::class.java)
     }
 }

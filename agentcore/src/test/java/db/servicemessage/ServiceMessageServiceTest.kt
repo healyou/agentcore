@@ -3,10 +3,7 @@ package db.servicemessage
 import AbstractServiceTest
 import agentcore.utils.Codable
 import db.base.toIsDeleted
-import db.core.servicemessage.ServiceMessage
-import db.core.servicemessage.ServiceMessageObjectType
-import db.core.servicemessage.ServiceMessageService
-import db.core.servicemessage.ServiceMessageType
+import db.core.servicemessage.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +15,11 @@ import java.util.*
 class ServiceMessageServiceTest : AbstractServiceTest() {
 
     @Autowired
-    private lateinit var service: ServiceMessageService
+    private lateinit var messageService: ServiceMessageService
+    @Autowired
+    private lateinit var messageObjectTypeService: ServiceMessageObjectTypeService
+    @Autowired
+    private lateinit var messageTypeService: ServiceMessageTypeService
 
     /* Параметры создаваемого сообщения */
     private var id: Long? = null
@@ -48,12 +49,48 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         message.createDate = createDate
         message.useDate = useDate
 
-        id = service.save(message)
+        id = messageService.save(message)
     }
 
-    /*  */
+    /* Получение сообщения */
     @Test
     fun testGetCreateMessage() {
+
+    }
+
+    /* Создание сообщения */
+    @Test
+    fun testCreateMessage() {
+
+    }
+
+    /* Обновление типа объекта сообщения */
+    @Test
+    fun testUpdateMessageObjectType() {
+
+    }
+
+    /* Обновление типа сообщения */
+    @Test
+    fun testUpdateMessageType() {
+
+    }
+
+    /* Использование сообщения */
+    @Test
+    fun testUseMessage() {
+
+    }
+
+    /* Получение использованных сообщений */
+    @Test
+    fun testGetUseMessage() {
+
+    }
+
+    /* Получение сообщения по типу сообщения */
+    @Test
+    fun testGetMessageTypeMessages() {
 
     }
 }
