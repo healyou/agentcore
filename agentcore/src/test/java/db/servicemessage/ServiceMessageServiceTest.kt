@@ -3,11 +3,16 @@ package db.servicemessage
 import AbstractServiceTest
 import agentcore.utils.Codable
 import db.base.toIsDeleted
+import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 /**
  * @author Nikita Gorodilov
@@ -55,7 +60,23 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     /* Получение сообщения */
     @Test
     fun testGetCreateMessage() {
+        val messages = messageService.get(ServiceMessageSC())
 
+        val filterMessages = messages.filter { it -> it.id!! == id }
+        assertTrue {
+            filterMessages.isNotEmpty() && filterMessages.size == 1
+        }
+        val message = filterMessages[0]
+
+        /* проверка всех значений создания сообщения */
+        assertEquals(id, message.id)
+        assertEquals(jsonObject, message.jsonObject)
+        assertEquals(objectType.code, message.objectType.code)
+        assertEquals(messageType.code, message.messageType.code)
+        assertEquals(useDate, message.useDate)
+        assertNotNull(message.createDate)
+        assertEquals(false, message.isUse)
+        assertNull(message.useDate)
     }
 
     /* Создание сообщения */

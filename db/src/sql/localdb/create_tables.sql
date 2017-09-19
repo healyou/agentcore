@@ -18,7 +18,7 @@ CREATE TABLE if not exists service_message
   object_type_id  INTEGER                 NOT NULL, -- Тип агента
   message_type_id INTEGER                 NOT NULL, -- Тип сообщения
   create_date     TEXT                    NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
-  use_date        TEXT                    DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата использования сообщения(отправка или чтение)
+  use_date        TEXT                    , -- Дата использования сообщения(отправка или чтение)
   FOREIGN KEY(object_type_id) REFERENCES service_message_object_type(id),
   FOREIGN KEY(message_type_id) REFERENCES service_message_type(id)
 );

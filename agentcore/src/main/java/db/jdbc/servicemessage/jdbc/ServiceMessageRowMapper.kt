@@ -22,8 +22,9 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
                 mapMessageType(rs)
         )
 
+        message.id = getLong(rs, "id")
         message.createDate = getDate(rs, "create_date")
-        message.useDate = getNullDate(rs, "user_date")
+        message.useDate = getNullDate(rs, "use_date")
 
         return message
     }
