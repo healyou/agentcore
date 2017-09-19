@@ -1,18 +1,13 @@
 package db.servicemessage
 
 import AbstractServiceTest
-import agentcore.utils.Codable
-import db.base.toIsDeleted
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /**
  * @author Nikita Gorodilov
@@ -29,23 +24,16 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     /* Параметры создаваемого сообщения */
     private var id: Long? = null
     private var jsonObject = "{}"
-    private var objectType = ServiceMessageObjectType(
-            1,
-            Codable.find(ServiceMessageObjectType.Code::class.java, "get_service_message"),
-            "Сообщение сервиса",
-            "N".toIsDeleted()
-    )
-    private var messageType = ServiceMessageType(
-            1,
-            Codable.find(ServiceMessageType.Code::class.java, "send"),
-            "Отправка сообщения",
-            "N".toIsDeleted()
-    )
+    private lateinit var objectType: ServiceMessageObjectType
+    private lateinit var messageType: ServiceMessageType
     private var createDate = Date(System.currentTimeMillis())
     private var useDate: Date? = null
 
     @Before
     fun setup() {
+        messageType = messageTypeService.get(ServiceMessageType.Code.SEND)
+        objectType = messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE)
+
         val message = ServiceMessage(
                 jsonObject,
                 objectType,
@@ -90,6 +78,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(useDate, message.useDate)
         assertNotNull(message.createDate)
 
+        assertNotEquals(objectType.code, message.objectType.code)
         assertEquals(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA.code, message.objectType.code.code)
     }
 
@@ -110,6 +99,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(useDate, message.useDate)
         assertNotNull(message.createDate)
 
+        assertNotEquals(messageType.code, message.messageType.code)
         assertEquals(ServiceMessageType.Code.GET.code, message.messageType.code.code)
     }
 
@@ -121,20 +111,15 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         messageService.use(message)
         message = getMessage(id!!)
 
+        /* проверка всех значений создания сообщения */
+        assertEquals(id, message.id)
+        assertEquals(jsonObject, message.jsonObject)
+        assertEquals(objectType.code, message.objectType.code)
+        assertEquals(messageType.code, message.messageType.code)
+        assertNotNull(message.createDate)
+
         assertEquals(true, message.isUse)
         assertNotNull(message.useDate)
-    }
-
-    /* Получение использованных сообщений */
-    @Test
-    fun testGetUseMessage() {
-
-    }
-
-    /* Получение сообщения по типу сообщения */
-    @Test
-    fun testGetMessageTypeMessages() {
-
     }
 
     private fun getMessage(id: Long) : ServiceMessage {

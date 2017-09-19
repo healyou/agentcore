@@ -15,8 +15,7 @@ import service.ServerMessageService
 @Component
 class ServiceTask @Autowired constructor(private val messageService: ServerMessageService, environment: Environment) {
 
-    // TODO - классы для работы с локальной бд агента как сервисом спринга
-    // TODO - наладка получения и отправки сообщений с сервиса из лок бд агента
+    // TODO - Сервис получения и отправки сообщений на сервис агентов
 
     init {
     }
