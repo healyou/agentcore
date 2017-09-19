@@ -57,16 +57,10 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         id = messageService.save(message)
     }
 
-    /* Получение сообщения */
+    /* Получение созданного сообщения */
     @Test
     fun testGetCreateMessage() {
-        val messages = messageService.get(ServiceMessageSC())
-
-        val filterMessages = messages.filter { it -> it.id!! == id }
-        assertTrue {
-            filterMessages.isNotEmpty() && filterMessages.size == 1
-        }
-        val message = filterMessages[0]
+        val message = getMessage(id!!)
 
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
@@ -79,28 +73,56 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertNull(message.useDate)
     }
 
-    /* Создание сообщения */
-    @Test
-    fun testCreateMessage() {
-
-    }
-
     /* Обновление типа объекта сообщения */
     @Test
     fun testUpdateMessageObjectType() {
+        var message = getMessage(id!!)
 
+        message.objectType = messageObjectTypeService.get(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA)
+
+        messageService.save(message)
+        message = getMessage(id!!)
+
+        /* проверка всех значений создания сообщения */
+        assertEquals(id, message.id)
+        assertEquals(jsonObject, message.jsonObject)
+        assertEquals(messageType.code, message.messageType.code)
+        assertEquals(useDate, message.useDate)
+        assertNotNull(message.createDate)
+
+        assertEquals(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA.code, message.objectType.code.code)
     }
 
     /* Обновление типа сообщения */
     @Test
     fun testUpdateMessageType() {
+        var message = getMessage(id!!)
 
+        message.messageType = messageTypeService.get(ServiceMessageType.Code.GET)
+
+        messageService.save(message)
+        message = getMessage(id!!)
+
+        /* проверка всех значений создания сообщения */
+        assertEquals(id, message.id)
+        assertEquals(jsonObject, message.jsonObject)
+        assertEquals(objectType.code, message.objectType.code)
+        assertEquals(useDate, message.useDate)
+        assertNotNull(message.createDate)
+
+        assertEquals(ServiceMessageType.Code.GET.code, message.messageType.code.code)
     }
 
     /* Использование сообщения */
     @Test
     fun testUseMessage() {
+        var message = getMessage(id!!)
 
+        messageService.use(message)
+        message = getMessage(id!!)
+
+        assertEquals(true, message.isUse)
+        assertNotNull(message.useDate)
     }
 
     /* Получение использованных сообщений */
@@ -113,5 +135,15 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     @Test
     fun testGetMessageTypeMessages() {
 
+    }
+
+    private fun getMessage(id: Long) : ServiceMessage {
+        val messages = messageService.get(ServiceMessageSC())
+
+        val filterMessages = messages.filter { it -> it.id!! == id }
+        assertTrue {
+            filterMessages.isNotEmpty() && filterMessages.size == 1
+        }
+        return filterMessages[0]
     }
 }
