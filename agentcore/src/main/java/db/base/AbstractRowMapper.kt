@@ -10,6 +10,8 @@ import java.util.*
  */
 abstract class AbstractRowMapper<T: Entity>: RowMapper<T> {
 
+    protected fun getBoolean(resultSet: ResultSet, columnName: String): Boolean = resultSet.getBoolean(columnName)
+    
     protected fun getLong(resultSet: ResultSet, columnName: String): Long = resultSet.getLong(columnName)
 
     protected fun getString(resultSet: ResultSet, columnName: String): String = resultSet.getString(columnName)

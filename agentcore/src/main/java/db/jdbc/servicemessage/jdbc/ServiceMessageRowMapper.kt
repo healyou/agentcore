@@ -19,7 +19,8 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         val message = ServiceMessage(
                 getString(rs, "json_object"),
                 mapObjectType(rs),
-                mapMessageType(rs)
+                mapMessageType(rs),
+                getLong(rs, "system_agent_id")
         )
 
         message.id = getLong(rs, "id")

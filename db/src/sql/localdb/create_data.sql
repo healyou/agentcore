@@ -10,6 +10,10 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.message.send.message.url', '/message/sendMessage'),
   ('agent.service.message.get.messages.url', '/message/getMessages');
 
+------------------ systemAgent data ------------------
+INSERT INTO system_agent (service_login, service_password, send_agent_type_codes) VALUES
+  ('masId', 'psw', 'worker!server');
+
 ------------------ service_message_type data ------------------
 INSERT INTO service_message_type (code, name) VALUES
   ('send', 'Отправка сообщения'),
@@ -21,5 +25,5 @@ INSERT INTO service_message_object_type (code, name) VALUES
   ('send_message_data', 'Объект отправки сообщения в сервис');
 
 ------------------ agentType data ------------------
-INSERT INTO service_message (json_object, object_type_id, message_type_id, use_date) VALUES
-  ('{test_json}', 1, 2, strftime('%Y-%m-%d %H:%M:%f'));
+INSERT INTO service_message (json_object, object_type_id, message_type_id, use_date, system_agent_id) VALUES
+  ('{test_json}', 1, 2, strftime('%Y-%m-%d %H:%M:%f'), 1);

@@ -7,6 +7,7 @@ CREATE VIEW IF NOT EXISTS service_message_v
       service_message.create_date,
       service_message.use_date,
       service_message.object_type_id,
+      service_message.system_agent_id,
       smot.code as message_object_type_code,
       smot.name as message_object_type_name,
       smot.is_deleted as message_object_type_is_deleted,

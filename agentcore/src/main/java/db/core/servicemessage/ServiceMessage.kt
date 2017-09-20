@@ -14,7 +14,9 @@ class ServiceMessage(
         /* Тип json объекта */
         var objectType: ServiceMessageObjectType,
         /* Тип сообщения */
-        var messageType: ServiceMessageType
+        var messageType: ServiceMessageType,
+        /* Агент, которому принадлежит сообщение */
+        var systemAgentId: Long // todo - дописать работу с системными агентами + переделать выгрузки под n агентов
 ) : Entity {
     /* Идентификатор */
     override var id: Long? = null

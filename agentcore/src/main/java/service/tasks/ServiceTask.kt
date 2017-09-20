@@ -1,7 +1,6 @@
 package service.tasks
 
 import org.springframework.beans.factory.annotation.Autowired
-import agentcore.database.base.Environment
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
 import org.springframework.scheduling.annotation.Scheduled
@@ -29,7 +28,9 @@ class ServiceTask @Autowired constructor(
     // TODO - интерсептор на куки
     // TODO - Сервис получения и отправки сообщений на сервис агентов
     // TODO - логин и пароль для входа из бд + привязка чтение к нескольким агентам - надо ли?
-    private val sessionManager = SessionManager()
+
+    // TODO тесты для сообщений - system_agent_id добавлен
+    // TODO переделать чтение и отправку сообщений под n агентов
 
     init {
     }
@@ -41,6 +42,7 @@ class ServiceTask @Autowired constructor(
     fun getMessages() {
         System.out.println("getMessages - ServiceTask")
 
+        val sessionManager = SessionManager()
         val agent = loginService.login(LoginData("masId", "psw"), sessionManager)
         if (agent != null) {
             val messages = serverMessageService.getMessages(sessionManager, GetMessagesData(
@@ -67,6 +69,7 @@ class ServiceTask @Autowired constructor(
     fun sendMessages() {
         System.out.println("sendMessages - ServiceTask")
 
+        val sessionManager = SessionManager()
         val agent = loginService.login(LoginData("masId", "psw"), sessionManager)
         if (agent != null) {
             val sc = ServiceMessageSC()

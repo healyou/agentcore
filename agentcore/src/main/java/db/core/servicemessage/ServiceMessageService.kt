@@ -13,11 +13,14 @@ interface ServiceMessageService {
      * Сохранение сообщения
      */
     fun save(message: ServiceMessage) : Long
-//TODO тесты для работы сообщений
+
     /**
      * Использование сообщения
      */
     fun use(message: ServiceMessage)
 
+    /**
+     * Получение сообщений
+     */
     fun get(sc: ServiceMessageSC) : List<ServiceMessage>
 }

@@ -15,10 +15,11 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
 
     override fun create(message: ServiceMessage) : Long {
         jdbcTemplate.update(
-                "insert into service_message (json_object, object_type_id, message_type_id) values (?, ?, ?)",
+                "insert into service_message (json_object, object_type_id, message_type_id, system_agent_id) values (?, ?, ?, ?)",
                 message.jsonObject,
                 message.objectType.id!!,
-                message.messageType.id!!
+                message.messageType.id!!,
+                message.systemAgentId
         )
 
         /* id последней введённой записи */
@@ -27,10 +28,11 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
 
     override fun update(message: ServiceMessage) : Long {
         jdbcTemplate.update(
-                "update service_message set json_object = ?, object_type_id = ?, message_type_id = ? where id = ?",
+                "update service_message set json_object = ?, object_type_id = ?, message_type_id = ?, system_agent_id = ? where id = ?",
                 message.jsonObject,
                 message.objectType.id!!,
                 message.messageType.id!!,
+                message.systemAgentId,
                 message.id!!
         )
 
@@ -74,6 +76,9 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
         }
         if (sc.messageType != null) {
             addSqlList.add(" message_type_id = ${sc.messageType!!.id!!} ")
+        }
+        if (sc.systemAgentId != null) {
+            addSqlList.add(" system_agent_id = ${sc.systemAgentId} ")
         }
 
         /* объединяем условия запроса */

@@ -14,4 +14,6 @@ class ServiceMessageSC {
     var messageType : ServiceMessageType? = null
     /* Использовалось ли это сообщение */
     var isUse : Boolean? = null
+    /* Агент, которому принадлежит сообщение */
+    var systemAgentId : Long? = null
 }
