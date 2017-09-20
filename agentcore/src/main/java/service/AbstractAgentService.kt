@@ -46,21 +46,24 @@ abstract class AbstractAgentService {
         return headers
     }
 
-    @Throws(IOException::class)
-    protected fun <T> fromJson(json: String, tClass: Class<T>): T {
-        val mapper = ObjectMapper()
-        return mapper.readValue(json, tClass)
-    }
+    companion object {
 
-    @Throws(IOException::class)
-    protected fun <T> fromJson(json: String, tReference: TypeReference<T>): T {
-        val mapper = ObjectMapper()
-        return mapper.readValue(json, tReference)
-    }
+        @Throws(IOException::class)
+        fun <T> fromJson(json: String, tClass: Class<T>): T {
+            val mapper = ObjectMapper()
+            return mapper.readValue(json, tClass)
+        }
 
-    @Throws(JsonProcessingException::class)
-    protected fun toJson(`object`: Any): String {
-        val mapper = ObjectMapper()
-        return mapper.writeValueAsString(`object`)
+        @Throws(IOException::class)
+        fun <T> fromJson(json: String, tReference: TypeReference<T>): T {
+            val mapper = ObjectMapper()
+            return mapper.readValue(json, tReference)
+        }
+
+        @Throws(JsonProcessingException::class)
+        fun toJson(obj: Any): String {
+            val mapper = ObjectMapper()
+            return mapper.writeValueAsString(obj)
+        }
     }
 }

@@ -70,10 +70,10 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
             } else {
                 "is null"
             }
-            addSqlList.add(" use_date $nullQuery) ")
+            addSqlList.add(" use_date $nullQuery ")
         }
         if (sc.messageType != null) {
-            addSqlList.add(" object_type_id = ${sc.messageType!!.id!!} ")
+            addSqlList.add(" message_type_id = ${sc.messageType!!.id!!} ")
         }
 
         /* объединяем условия запроса */
