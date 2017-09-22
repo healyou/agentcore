@@ -2,7 +2,7 @@ package db.jdbc.servicemessage.jdbc
 
 import agentcore.utils.Codable
 import db.base.AbstractRowMapper
-import db.base.toIsDeleted
+import db.base.sqlite_toBoolean
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageObjectType
 import db.core.servicemessage.ServiceMessageType
@@ -35,7 +35,7 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
                 getLong(rs, "object_type_id"),
                 Codable.find(ServiceMessageObjectType.Code::class.java, getString(rs, "message_object_type_code")),
                 getString(rs, "message_object_type_name"),
-                getString(rs, "message_object_type_is_deleted").toIsDeleted()
+                getString(rs, "message_object_type_is_deleted").sqlite_toBoolean()
         )
     }
 
@@ -44,7 +44,7 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
                 getLong(rs, "message_type_id"),
                 Codable.find(ServiceMessageType.Code::class.java, getString(rs, "message_type_code")),
                 getString(rs, "message_type_name"),
-                getString(rs, "message_type_is_deleted").toIsDeleted()
+                getString(rs, "message_type_is_deleted").sqlite_toBoolean()
         )
     }
 }

@@ -100,14 +100,14 @@ class ServiceTask @Autowired constructor(
                 println(Arrays.toString(messages.toTypedArray()))
 
                 /* Поиск агентов, которым надо отправлять данные */
-                val agentCodes = itSystemAgent.sendAgentTypeCodes.split("!")
+                val agentCodes = itSystemAgent.sendAgentTypeCodes
                 val recipients = arrayListOf<Long>()
                 agentCodes.forEach { itAgentCode ->
                     serverAgentService
                             .getAgents(
                                     sessionManager,
                                     GetAgentsData(
-                                            itAgentCode,
+                                            itAgentCode.code,
                                             false
                                     )
                             )

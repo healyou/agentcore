@@ -1,5 +1,6 @@
 package db.core.systemagent
 
+import service.objects.AgentType
 import service.objects.Entity
 import java.util.*
 
@@ -14,10 +15,11 @@ class SystemAgent(
         /* Пароль от сервиса агентов */
         var servicePassword: String,
         /* Типы агентов, которым отправляется сообщение */
-        var sendAgentTypeCodes: String,
+        var sendAgentTypeCodes: List<AgentType.Code>,
         /* Нужно ли получать сообщения от сервиса агентов */
-        var isSendAndGetMessages: Boolean? = null
+        var isSendAndGetMessages: Boolean
 ) : Entity {
+
     /* Идентификатор */
     override var id: Long? = null
     /* Дата создания сообщения */
@@ -26,10 +28,4 @@ class SystemAgent(
     var updateDate: Date? = null
     /* Удалено ли значение */
     var isDeleted: Boolean? = null
-
-    /**
-     * Использовалось ли уже данные сообщение
-     */
-    val useInServiceTask
-        get() = isSendAndGetMessages == true
 }

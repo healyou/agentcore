@@ -1,5 +1,7 @@
 package db.base
 
+import agentcore.utils.Codable
+import service.objects.AgentType
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,7 +25,7 @@ fun String.fromSqlite(): Date {
 
 /********* isDeleted *********/
 /* из sqlite в объект */
-fun String.toIsDeleted(): Boolean {
+fun String.sqlite_toBoolean(): Boolean {
     if (this == "N" || this == "Y") {
         return this != "N"
     }
@@ -34,10 +36,36 @@ fun String.toIsDeleted(): Boolean {
 
 /* из объекта в sqlite */
 fun Boolean.toSqlite(): String {
-    if (this) {
-        return "Y"
+    return if (this) {
+        "Y"
+    } else {
+        "N"
     }
-    else {
-        return "N"
+}
+
+/********* agentCodes *********/
+/* из sqlite в объект */
+fun String.sqlite_toAgentCodes(): List<AgentType.Code> {
+    val codes = this.split("!")
+
+    val list = arrayListOf<AgentType.Code>()
+    codes.forEach {
+        list.add(Codable.find(AgentType.Code::class.java, it))
     }
+
+    return list
+}
+
+/* из объекта в sqlite */
+fun List<AgentType.Code>.toSqlite(): String {
+    var codesString = ""
+
+    this
+            .map { it.code }
+            .forEach { codesString = codesString.plus(it + "!") }
+    if (codesString[codesString.length - 1] == '!') {
+        codesString = codesString.subSequence(0, codesString.length - 1).toString()
+    }
+
+    return codesString
 }

@@ -1,4 +1,4 @@
-package db.servicemessage
+package db.service
 
 import AbstractServiceTest
 import db.core.sc.ServiceMessageSC
@@ -140,7 +140,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     fun testUpdateSystemAgent() {
         var message = getMessage(id!!)
 
-        message.systemAgentId = systemAgentService.get(false, false).filter { it.id != systemAgentId }[0].id!!
+        message.systemAgentId = systemAgentService.get(false, true).filter { it.id != systemAgentId }[0].id!!
 
         messageService.save(message)
         message = getMessage(id!!)

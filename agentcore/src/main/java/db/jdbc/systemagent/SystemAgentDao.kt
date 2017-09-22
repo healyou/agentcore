@@ -1,5 +1,6 @@
 package db.jdbc.systemagent
 
+import db.core.sc.SystemAgentSC
 import db.core.systemagent.SystemAgent
 
 /**
@@ -7,5 +8,9 @@ import db.core.systemagent.SystemAgent
  */
 interface SystemAgentDao {
 
+    fun create(systemAgent: SystemAgent): Long
+
     fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
+
+    fun get(sc: SystemAgentSC): List<SystemAgent>
 }

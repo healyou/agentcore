@@ -1,6 +1,5 @@
 package db.core.sc
 
-import db.core.servicemessage.ServiceMessageObjectType
 import db.core.servicemessage.ServiceMessageType
 
 /**
