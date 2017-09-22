@@ -3,6 +3,7 @@ package service.tasks
 import org.springframework.beans.factory.annotation.Autowired
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
+import db.core.systemagent.SystemAgentService
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import service.*
@@ -22,15 +23,17 @@ class ServiceTask @Autowired constructor(
         private val serverMessageService: ServerMessageService,
         private val messageObjectTypeService: ServiceMessageObjectTypeService,
         private val messageTypeService: ServiceMessageTypeService,
-        private val localMessageService: ServiceMessageService
+        private val localMessageService: ServiceMessageService,
+        private val systemAgentService: SystemAgentService
 ) {
 
     // TODO - интерсептор на куки
-    // TODO - Сервис получения и отправки сообщений на сервис агентов
-    // TODO - логин и пароль для входа из бд + привязка чтение к нескольким агентам - надо ли?
 
-    // TODO тесты для сообщений - system_agent_id добавлен
+    // TODO тесты для system_agent_service
+    // TODO system_agent_id в сообщении на полного агента переделать
     // TODO переделать чтение и отправку сообщений под n агентов
+
+    // TODO логирование на отправку сообщений
 
     init {
     }
@@ -38,61 +41,82 @@ class ServiceTask @Autowired constructor(
     /**
      * Получение сообщений с сервиса агентов
      */
-    @Scheduled(fixedDelay=15000)
+    @Scheduled(fixedDelay=30000)
     fun getMessages() {
         System.out.println("getMessages - ServiceTask")
 
-        val sessionManager = SessionManager()
-        val agent = loginService.login(LoginData("masId", "psw"), sessionManager)
-        if (agent != null) {
-            val messages = serverMessageService.getMessages(sessionManager, GetMessagesData(
-                    null, null, null, null, false, null, null
-            ))
+        val systemAgents = systemAgentService.get(false, true)
 
-            /* Сохраняем сообщения в бд */
-            messages
-                    ?.map { it -> { ServiceMessage(
-                            AbstractAgentService.toJson(it),
-                            messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
-                            messageTypeService.get(ServiceMessageType.Code.SEND)
-                    )}}
-                    ?.forEach { it ->
-                        localMessageService.save(it.invoke())
-                    }
+        /* Для всех агентов */
+        systemAgents.forEach { itSystemAgent ->
+            val sessionManager = SessionManager()
+            val agent = loginService.login(
+                    LoginData(itSystemAgent.serviceLogin, itSystemAgent.servicePassword),
+                    sessionManager
+            )
+            if (agent != null) {
+                val messages = serverMessageService.getMessages(sessionManager, GetMessagesData(
+                        null, null, null, null, false, null, null
+                ))
+
+                /* Сохраняем сообщения в бд */
+                messages
+                        ?.map { it -> { ServiceMessage(
+                                AbstractAgentService.toJson(it),
+                                messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
+                                messageTypeService.get(ServiceMessageType.Code.SEND),
+                                itSystemAgent.id!!
+                        )}}
+                        ?.forEach { it ->
+                            localMessageService.save(it.invoke())
+                        }
+            }
         }
     }
 
     /**
      * Отправка сообщений на сервис агентов
      */
-    @Scheduled(fixedDelay=15000)
+    @Scheduled(fixedDelay=30000)
     fun sendMessages() {
         System.out.println("sendMessages - ServiceTask")
 
-        val sessionManager = SessionManager()
-        val agent = loginService.login(LoginData("masId", "psw"), sessionManager)
-        if (agent != null) {
-            val sc = ServiceMessageSC()
-            sc.isUse = false
-            sc.messageType = messageTypeService.get(ServiceMessageType.Code.SEND)
+        val systemAgents = systemAgentService.get(false, true)
 
-            val messages = localMessageService.get(sc)
-            println(Arrays.toString(messages.toTypedArray()))
+        systemAgents.forEach { itSystemAgent ->
+            val sessionManager = SessionManager()
+            val agent = loginService.login(
+                    LoginData(itSystemAgent.serviceLogin, itSystemAgent.servicePassword),
+                    sessionManager
+            )
+            if (agent != null) {
+                val sc = ServiceMessageSC()
+                sc.isUse = false
+                sc.messageType = messageTypeService.get(ServiceMessageType.Code.SEND)
+                sc.systemAgentId = itSystemAgent.id!!
 
-            val recipients = serverAgentService
-                    .getAgents(
-                            sessionManager,
-                            GetAgentsData(
-                                    null,//AgentType.Code.SERVER.code,
-                                    false
+                /* Считываем сообщения лишь нашего агента */
+                val messages = localMessageService.get(sc)
+                println(Arrays.toString(messages.toTypedArray()))
+
+                /* Поиск агентов, которым надо отправлять данные */
+                val agentCodes = itSystemAgent.sendAgentTypeCodes.split("!")
+                val recipients = arrayListOf<Long>()
+                agentCodes.forEach { itAgentCode ->
+                    serverAgentService
+                            .getAgents(
+                                    sessionManager,
+                                    GetAgentsData(
+                                            itAgentCode,
+                                            false
+                                    )
                             )
-                    )
-                    ?.map {
-                        it.id!!
-                    }
+                            ?.forEach {
+                                recipients.add(it.id!!)
+                            }
+                }
 
-            /* Отправка сообщений */
-            if (recipients != null) {
+                /* Отправка сообщений */
                 messages.forEach {
                     serverMessageService.sendMessage(
                             sessionManager,

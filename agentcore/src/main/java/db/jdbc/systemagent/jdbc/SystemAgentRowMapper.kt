@@ -22,7 +22,7 @@ class SystemAgentRowMapper : AbstractRowMapper<SystemAgent>() {
 
         systemAgent.createDate = getDate(rs, "create_date")
         systemAgent.isDeleted = getString(rs, "is_deleted").toIsDeleted()
-        systemAgent.updateDate = getDate(rs, "update_date")
+        systemAgent.updateDate = getNullDate(rs, "update_date")
         systemAgent.id = getLong(rs, "id")
 
         return systemAgent

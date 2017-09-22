@@ -11,10 +11,12 @@ import org.springframework.stereotype.Component
 @Component
 open class SystemAgentServiceImpl : SystemAgentService {
 
+    // TODO SC для получения данных
+
     @Autowired
     private lateinit var dao: SystemAgentDao
 
-    override fun get(isDeleted: Boolean): List<SystemAgent> {
-        return dao.get(isDeleted)
+    override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> {
+        return dao.get(isDeleted, isSendAndGetMessages)
     }
 }

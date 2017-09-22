@@ -7,5 +7,5 @@ import db.core.systemagent.SystemAgent
  */
 interface SystemAgentDao {
 
-    fun get(isDeleted: Boolean): List<SystemAgent>
+    fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 }

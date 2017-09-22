@@ -12,11 +12,12 @@ import org.springframework.stereotype.Component
 @Component
 open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
-    override fun get(isDeleted: Boolean): List<SystemAgent> {
+    override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> {
         return jdbcTemplate.query(
-                "select * from system_agent where is_deleted = ?",
+                "select * from system_agent where is_deleted = ? and is_sendandget_messages = ?",
                 SystemAgentRowMapper(),
-                isDeleted.toSqlite()
+                isDeleted.toSqlite(),
+                isSendAndGetMessages.toSqlite()
         )
     }
 }

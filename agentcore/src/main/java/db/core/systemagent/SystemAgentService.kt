@@ -5,5 +5,5 @@ package db.core.systemagent
  */
 interface SystemAgentService {
 
-    fun get(isDeleted: Boolean): List<SystemAgent>
+    fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 }
