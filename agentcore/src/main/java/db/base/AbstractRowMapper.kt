@@ -20,7 +20,6 @@ abstract class AbstractRowMapper<T: Entity>: RowMapper<T> {
         return resultSet.getString(columnName).fromSqlite()
     }
 
-    // todo исправить?
     protected fun getNullDate(resultSet: ResultSet, columnName: String): Date? {
         return resultSet.getString(columnName)?.fromSqlite()
     }

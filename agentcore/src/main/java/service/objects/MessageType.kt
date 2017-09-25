@@ -24,8 +24,7 @@ class MessageType @JsonCreator constructor (
         var isDeleted: Boolean
 ): Entity {
 
-    // todo для каждого MessageGoalType.Code тут сделать свой codable
-    /* Типы сообщения */
+    /* Типы сообщения - для каждого MessageGoalType.Code тут сделать свой codable */
     enum class Code(override val code: String): Codable<String> {
         /* Связанные с MessageGoalType.Code.TASK_DECISION */
         SEARCH_TASK_SOLUTION("search_task_solution"),

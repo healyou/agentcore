@@ -16,7 +16,7 @@ class ServiceMessage(
         /* Тип сообщения */
         var messageType: ServiceMessageType,
         /* Агент, которому принадлежит сообщение */
-        var systemAgentId: Long // todo - дописать работу с системными агентами + переделать выгрузки под n агентов
+        var systemAgentId: Long // todo - дописать работу с системными агентами
 ) : Entity {
     /* Идентификатор */
     override var id: Long? = null

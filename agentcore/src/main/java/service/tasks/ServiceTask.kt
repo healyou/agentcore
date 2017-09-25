@@ -27,14 +27,13 @@ class ServiceTask @Autowired constructor(
         private val systemAgentService: SystemAgentService
 ) {
 
-    // TODO - интерсептор на куки
+    // TODO - интерсептор на куки (МОЖЕТ ПОДОЖДАТЬ)
+    // TODO system_agent_id в сообщении на полного агента переделать (МОЖЕТ ПОДОЖДАТЬ)
+    // TODO логирование на отправку сообщений (МОЖЕТ ПОДОЖДАТЬ)
 
-    // TODO тесты для system_agent_service
-    // TODO system_agent_id в сообщении на полного агента переделать
-    // TODO переделать чтение и отправку сообщений под n агентов
-
-    // TODO логирование на отправку сообщений
-
+    // TODO - переписать эту часть на читабельный вид (ВНАЧАЛЕ)
+    // TODO - задание по изображениям выбрать и начать продумывать его
+    // TODO - GUI хоть какое то придумать под запросы разные, тиблички из бд и другое
     init {
     }
 
@@ -45,21 +44,26 @@ class ServiceTask @Autowired constructor(
     fun getMessages() {
         System.out.println("getMessages - ServiceTask")
 
+        /* Список всех локальных агентов */
         val systemAgents = systemAgentService.get(false, true)
 
         /* Для всех агентов */
         systemAgents.forEach { itSystemAgent ->
             val sessionManager = SessionManager()
+            /* Вход на сервер */
             val agent = loginService.login(
                     LoginData(itSystemAgent.serviceLogin, itSystemAgent.servicePassword),
                     sessionManager
             )
+
+            /* При удачном логине */
             if (agent != null) {
+                /* Читаем все свои сообщения */
                 val messages = serverMessageService.getMessages(sessionManager, GetMessagesData(
                         null, null, null, null, false, null, null
                 ))
 
-                /* Сохраняем сообщения в бд */
+                /* Сохраняем сообщения в бд, если такие есть */
                 messages
                         ?.map { it -> { ServiceMessage(
                                 AbstractAgentService.toJson(it),
@@ -70,6 +74,9 @@ class ServiceTask @Autowired constructor(
                         ?.forEach { it ->
                             localMessageService.save(it.invoke())
                         }
+
+                /* Выход с сервера */
+                loginService.logout(sessionManager)
             }
         }
     }
@@ -81,14 +88,19 @@ class ServiceTask @Autowired constructor(
     fun sendMessages() {
         System.out.println("sendMessages - ServiceTask")
 
+        /* Список всех локальных агентов */
         val systemAgents = systemAgentService.get(false, true)
 
+        /* Для всех агентов */
         systemAgents.forEach { itSystemAgent ->
             val sessionManager = SessionManager()
+            /* Вход на сервер */
             val agent = loginService.login(
                     LoginData(itSystemAgent.serviceLogin, itSystemAgent.servicePassword),
                     sessionManager
             )
+
+            /* При удачном логине */
             if (agent != null) {
                 val sc = ServiceMessageSC()
                 sc.isUse = false
@@ -97,7 +109,6 @@ class ServiceTask @Autowired constructor(
 
                 /* Считываем сообщения лишь нашего агента */
                 val messages = localMessageService.get(sc)
-                println(Arrays.toString(messages.toTypedArray()))
 
                 /* Поиск агентов, которым надо отправлять данные */
                 val agentCodes = itSystemAgent.sendAgentTypeCodes

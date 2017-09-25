@@ -19,7 +19,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 "insert into system_agent (service_login, service_password, send_agent_type_codes, is_sendandget_messages) VALUES (?, ?, ?, ?)",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
-                systemAgent.sendAgentTypeCodes.toSqlite(), // todo в java коды привзяать к agent_type list)
+                systemAgent.sendAgentTypeCodes.toSqlite(),
                 systemAgent.isSendAndGetMessages.toSqlite()
         )
 

@@ -15,7 +15,6 @@ class ServiceMessageObjectType (
         var isDeleted: Boolean
 ): Entity {
 
-    // todo для каждого MessageGoalType.Code тут сделать свой codable
     /* Типы сообщения */
     enum class Code(override val code: String): Codable<String> {
         GET_SERVICE_MESSAGE("get_service_message"),

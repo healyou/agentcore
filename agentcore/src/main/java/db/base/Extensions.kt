@@ -11,8 +11,6 @@ import java.util.*
 val SQLITE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS"
 
 /********* дата *********/
-// todo делать работу с message - ну и тесты для них -> продумать сразу всю работу с сообщениями в режиме сервиса и тесты для них делать
-// todo запись ms времени -> так-то не так и надо
 /* дату в строку sqlite */
 fun Date.toSqlite(): String {
     return SimpleDateFormat(SQLITE_DATE_FORMAT).format(this)
