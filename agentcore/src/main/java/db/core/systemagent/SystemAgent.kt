@@ -28,8 +28,4 @@ class SystemAgent(
     var updateDate: Date? = null
     /* Удалено ли значение */
     var isDeleted: Boolean? = null
-
-    override fun toString(): String {
-        return "Агент{$id} $serviceLogin"
-    }
 }

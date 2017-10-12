@@ -6,14 +6,12 @@ import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import gui.table.AgentComboBoxRenderer
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ObservableValue
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
-import javafx.scene.control.ChoiceBox
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
-import javafx.scene.control.Tooltip
+import javafx.scene.control.*
 import javafx.scene.control.cell.PropertyValueFactory
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,7 +34,7 @@ class AgentGuiController {
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
 
     @FXML
-    lateinit var agentChoiceBox: ChoiceBox<SystemAgent>
+    lateinit var agentComboBox: ComboBox<SystemAgent>
     @FXML
     lateinit var messageTable: TableView<ServiceMessage>
 
@@ -52,7 +50,7 @@ class AgentGuiController {
         senderColumn.cellValueFactory = PropertyValueFactory("systemAgentId")
         val createDateColumn = TableColumn<ServiceMessage, String>("Дата создания")
         createDateColumn.cellValueFactory = Callback<TableColumn.CellDataFeatures<ServiceMessage, String>, ObservableValue<String>> { param ->
-            if (param.value != null) {
+            if (param.value != null && param.value.createDate != null) {
                 SimpleStringProperty(dateFormat.format(param.value.createDate))
             } else {
                 SimpleStringProperty("");
@@ -60,7 +58,7 @@ class AgentGuiController {
         }
         val useDateColumn = TableColumn<ServiceMessage, String>("Дата использования")
         useDateColumn.cellValueFactory = Callback<TableColumn.CellDataFeatures<ServiceMessage, String>, ObservableValue<String>> { param ->
-            if (param.value != null) {
+            if (param.value != null && param.value.useDate != null) {
                 SimpleStringProperty(dateFormat.format(param.value.useDate))
             } else {
                 SimpleStringProperty("");
@@ -82,11 +80,14 @@ class AgentGuiController {
     }
 
     private fun configureAgentChoiceBox() {
-        agentChoiceBox.items = FXCollections.observableArrayList(getSystemAgents())
-        agentChoiceBox.tooltip = Tooltip("Выберите агента")
-        agentChoiceBox.selectionModel.selectedIndexProperty().addListener { observable, oldValue, newValue ->
-
-            messagesData.setAll(loadServiceMessages(agentChoiceBox.items[newValue.toInt()]))
+        agentComboBox.items = FXCollections.observableArrayList(getSystemAgents())
+        agentComboBox.tooltip = Tooltip("Выберите агента")
+        agentComboBox.buttonCell = AgentComboBoxRenderer()
+        agentComboBox.cellFactory = Callback<ListView<SystemAgent>, ListCell<SystemAgent>> {
+            AgentComboBoxRenderer()
+        }
+        agentComboBox.selectionModel.selectedIndexProperty().addListener { observable, oldValue, newValue ->
+            messagesData.setAll(loadServiceMessages(agentComboBox.items[newValue.toInt()]))
         }
     }
 

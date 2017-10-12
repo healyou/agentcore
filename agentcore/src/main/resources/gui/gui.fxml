@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
+<?import javafx.scene.control.ComboBox?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="813.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AgentGuiController">
 <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -22,14 +23,16 @@
     <RowConstraints />
 </rowConstraints>
    <children>
-      <ChoiceBox fx:id="agentChoiceBox" prefWidth="150.0" GridPane.rowIndex="1">
+      <ComboBox fx:id="agentComboBox" prefWidth="150.0" GridPane.rowIndex="1">
          <GridPane.margin>
             <Insets left="10.0" />
-         </GridPane.margin></ChoiceBox>
+         </GridPane.margin>
+      </ComboBox>
       <TableView fx:id="messageTable" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2" />
       <Label alignment="CENTER" contentDisplay="CENTER" text="Агент" GridPane.halignment="LEFT">
          <GridPane.margin>
             <Insets left="10.0" />
-         </GridPane.margin></Label>
+         </GridPane.margin>
+      </Label>
    </children>
 </GridPane>
