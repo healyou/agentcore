@@ -62,7 +62,8 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
         /* параметры запроса */
         if (Utils.isOneNotNull(
                 sc.messageType,
-                sc.isUse
+                sc.isUse,
+                sc.systemAgentId
         )) {
             sql.append(" where ")
         }
