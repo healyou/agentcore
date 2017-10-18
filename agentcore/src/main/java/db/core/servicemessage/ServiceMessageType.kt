@@ -1,7 +1,7 @@
 package db.core.servicemessage
 
 import agentcore.utils.Codable
-import service.objects.Entity
+import db.base.IDictionary
 
 /**
  * Тип сообщения
@@ -10,10 +10,10 @@ import service.objects.Entity
  */
 class ServiceMessageType (
     override var id: Long?,
-    var code: Code,
-    var name: String,
-    var isDeleted: Boolean
-): Entity {
+    override val code: Code,
+    override val name: String,
+    override val isDeleted: Boolean
+): IDictionary<ServiceMessageType.Code> {
 
     /* Типы сообщения */
     enum class Code(override val code: String): Codable<String> {
