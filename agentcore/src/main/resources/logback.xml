@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_HOME" value="C:/Users/user/IdeaProjects/agentproject/logs" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+    <appender name="SPRING_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_HOME}/spring.log</file>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+        </layout>
+    </appender>
+    <appender name="SERVICE_TASK_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_HOME}/service.log</file>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+        </layout>
+    </appender>
+    <appender name="JDBC_TEMPLATE_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_HOME}/jdbctemplate.log</file>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <!-- root logging -->
+    <root level="error">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <logger name="org.springframework" level="error" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- Логирование запросов к бд -->
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" level="debug" additivity="false">
+        <appender-ref ref="JDBC_TEMPLATE_FILE" />
+    </logger>
+
+    <!-- Логирование чтения и отправки сообщений -->
+    <logger name="service.tasks.ServiceTask" level="debug" additivity="false">
+        <appender-ref ref="SERVICE_TASK_FILE" />
+    </logger>
+
+</configuration>

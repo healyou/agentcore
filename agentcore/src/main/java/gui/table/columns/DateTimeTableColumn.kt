@@ -44,7 +44,7 @@ class DateTimeTableColumn<S : Any>(text: String, property: String): TableColumn<
                         SimpleStringProperty(dateFormat.format(propertyRef!!.getProperty(rowData)))
                     } else {
                         val value = propertyRef!!.get(rowData)
-                        SimpleStringProperty(dateFormat.format(value))
+                        SimpleStringProperty(if (value != null) dateFormat.format(value) else "")
                     }
 
                 } catch (e: IllegalStateException) {

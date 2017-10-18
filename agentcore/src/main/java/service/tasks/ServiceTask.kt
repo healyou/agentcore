@@ -5,6 +5,7 @@ import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import service.*
@@ -28,12 +29,12 @@ class ServiceTask @Autowired constructor(
         private val systemAgentService: SystemAgentService
 ) {
 
+    private val logger = LoggerFactory.getLogger(javaClass)
+
     // TODO - интерсептор на куки (МОЖЕТ ПОДОЖДАТЬ)
     // TODO system_agent_id в сообщении на полного агента переделать (МОЖЕТ ПОДОЖДАТЬ)
-    // TODO логирование на отправку сообщений (МОЖЕТ ПОДОЖДАТЬ)
 
     // TODO - задание по изображениям выбрать и начать продумывать его
-    // TODO - GUI хоть какое то придумать под запросы разные, тиблички из бд и другое
     init {
     }
 
@@ -42,7 +43,8 @@ class ServiceTask @Autowired constructor(
      */
     @Scheduled(fixedDelay=30000)
     fun getMessages() {
-        System.out.println("getMessages - ServiceTask")
+        System.out.println("Процесс получения сообщений")
+        logger.debug("Старт - Процесс получения сообщений")
 
         /* Список всех локальных агентов */
         getSystemAgents().forEach { it ->
@@ -57,6 +59,8 @@ class ServiceTask @Autowired constructor(
                 loginService.logout(sessionManager)
             }
         }
+
+        logger.debug("Конец - Процесс получения сообщений")
     }
 
     /**
@@ -64,7 +68,8 @@ class ServiceTask @Autowired constructor(
      */
     @Scheduled(fixedDelay=30000)
     fun sendMessages() {
-        System.out.println("sendMessages - ServiceTask")
+        System.out.println("Процесс отправки сообщений")
+        logger.debug("Старт - Процесс отправки сообщений")
 
         /* Список всех локальных агентов */
         getSystemAgents().forEach { it ->
@@ -79,16 +84,25 @@ class ServiceTask @Autowired constructor(
                 loginService.logout(sessionManager)
             }
         }
+
+        logger.debug("Конец - Процесс отправки сообщений")
     }
 
     /**
      * Логин агента в сервисе
      */
     private fun isSuccessLogin(systemAgent: SystemAgent, sessionManager: SessionManager): Boolean {
-        return loginService.login(
+        return if (loginService.login(
                 LoginData(systemAgent.serviceLogin, systemAgent.servicePassword),
                 sessionManager
-        ) != null
+        ) != null) {
+            logger.debug("Агент[id = ${systemAgent.id}] - успешный логин в сервисе")
+            true
+
+        } else {
+            logger.debug("Агент[id = ${systemAgent.id}] - неудачная попытка логина в сервисе")
+            false
+        }
     }
 
     /**
@@ -106,13 +120,14 @@ class ServiceTask @Autowired constructor(
         val messages = serverMessageService.getMessages(sessionManager, GetMessagesData(
                 null, null, null, null, false, null, null
         ))
+        logger.debug("Агент[id = ${systemAgent.id}] - с сервиса агентов считано ${messages?.size ?: 0} сообщений")
 
         /* Сохраняем сообщения в бд, если такие есть */
         messages
                 ?.map { it -> { ServiceMessage(
                         AbstractAgentService.toJson(it),
                         messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
-                        messageTypeService.get(ServiceMessageType.Code.SEND),
+                        messageTypeService.get(ServiceMessageType.Code.GET),
                         systemAgent.id!!
                 )}}
                 ?.forEach { it ->
@@ -131,9 +146,11 @@ class ServiceTask @Autowired constructor(
 
         /* Считываем сообщения лишь нашего агента */
         val messages = localMessageService.get(sc)
+        logger.debug("Агент[id = ${systemAgent.id}] - считано локальный сообщений для отправки - ${messages.size}")
 
         /* Поиск агентов, которым надо отправлять данные */
         val recipients = getMessageRecipientsIds(systemAgent, sessionManager)
+        logger.debug("Агент[id = ${systemAgent.id}] - считано агентов с сервиса, которым надо отправлять сообщения - ${recipients.size}")
 
         /* Отправка сообщений */
         messages.forEach {
