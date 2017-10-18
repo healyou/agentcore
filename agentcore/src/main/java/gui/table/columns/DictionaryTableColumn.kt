@@ -34,12 +34,15 @@ class DictionaryTableColumn<S : Any, out T: IDictionary<Codable<out Any>>>(text:
                         this.propertyRef = PropertyReference<T>(rowData.javaClass, getProperty())
                     }
 
-                    return if (propertyRef != null && propertyRef!!.hasProperty()) {
-                        val value = propertyRef!!.getProperty(rowData)
-                        SimpleStringProperty(value.value.name)
-
-                    } else {
+                    if (propertyRef == null) {
                         return SimpleStringProperty("")
+                    }
+
+                    return if (propertyRef!!.hasProperty()) {
+                        SimpleStringProperty(propertyRef!!.getProperty(rowData).value.name)
+                    } else {
+                        val value = propertyRef!!.get(rowData)
+                        SimpleStringProperty(value.name)
                     }
 
                 } catch (e: IllegalStateException) {

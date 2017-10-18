@@ -12,13 +12,12 @@ import javafx.scene.control.TableView
  */
 class CustomTableBuilder<S> {
 
-    // TODO проверить работы builder-а
-
-    private val columns = listOf<TableColumn<S, Any>>()
+    private val columns = arrayListOf<TableColumn<S, out Any>>()
     private var data = FXCollections.observableArrayList<S>()
+    private var table = TableView<S>()
 
-    fun addColumn(column: TableColumn<S, Any>): CustomTableBuilder<S> {
-        columns.plus(column)
+    fun addColumn(column: TableColumn<S, out Any>): CustomTableBuilder<S> {
+        columns.add(column)
         return this
     }
 
@@ -27,9 +26,12 @@ class CustomTableBuilder<S> {
         return this
     }
 
-    fun build(): TableView<S> {
-        val table = TableView<S>()
+    fun withTable(table: TableView<S>): CustomTableBuilder<S> {
+        this.table = table;
+        return this
+    }
 
+    fun build(): TableView<S> {
         table.columns.addAll(columns)
         table.items = data
 

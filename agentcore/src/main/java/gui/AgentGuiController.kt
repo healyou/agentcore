@@ -4,15 +4,17 @@ import db.core.sc.ServiceMessageSC
 import db.core.sc.SystemAgentSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
+import db.core.servicemessage.ServiceMessageType
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
 import gui.table.AgentComboBoxRenderer
-import javafx.beans.property.SimpleStringProperty
-import javafx.beans.value.ObservableValue
+import gui.table.CustomTableBuilder
+import gui.table.columns.DateTimeTableColumn
+import gui.table.columns.DictionaryTableColumn
+import gui.table.columns.PropertyTableColumn
 import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.*
-import javafx.scene.control.cell.PropertyValueFactory
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -44,39 +46,16 @@ class AgentGuiController {
     }
 
     private fun configureMessageTable() {
-        val idColumn = TableColumn<ServiceMessage, Long>("Идентификатор")
-        idColumn.cellValueFactory = PropertyValueFactory("id")
-        val senderColumn = TableColumn<ServiceMessage, Long>("Собственник")
-        senderColumn.cellValueFactory = PropertyValueFactory("systemAgentId")
-        val createDateColumn = TableColumn<ServiceMessage, String>("Дата создания")
-        createDateColumn.cellValueFactory = Callback<TableColumn.CellDataFeatures<ServiceMessage, String>, ObservableValue<String>> { param ->
-            if (param.value != null && param.value.createDate != null) {
-                SimpleStringProperty(dateFormat.format(param.value.createDate))
-            } else {
-                SimpleStringProperty("");
-            }
-        }
-        val useDateColumn = TableColumn<ServiceMessage, String>("Дата использования")
-        useDateColumn.cellValueFactory = Callback<TableColumn.CellDataFeatures<ServiceMessage, String>, ObservableValue<String>> { param ->
-            if (param.value != null && param.value.useDate != null) {
-                SimpleStringProperty(dateFormat.format(param.value.useDate))
-            } else {
-                SimpleStringProperty("");
-            }
-        }
-        val typeColumn = TableColumn<ServiceMessage, String>("Тип сообщения")
-        typeColumn.cellValueFactory = Callback<TableColumn.CellDataFeatures<ServiceMessage, String>, ObservableValue<String>> { param ->
-            if (param.value != null) {
-                return@Callback SimpleStringProperty(param.value.messageType.name);
-            } else {
-                SimpleStringProperty("");
-            }
-        }
-        val jsonColumn = TableColumn<ServiceMessage, String>("Тело сообщения")
-        jsonColumn.cellValueFactory = PropertyValueFactory("jsonObject")
-
-        messageTable.columns.addAll(idColumn, senderColumn, createDateColumn, useDateColumn, typeColumn, jsonColumn)
-        messageTable.items = messagesData
+        messageTable = CustomTableBuilder<ServiceMessage>()
+                .addColumn(PropertyTableColumn("Идентификатор", "id"))
+                .addColumn(PropertyTableColumn("Собственник", "systemAgentId"))
+                .addColumn(DateTimeTableColumn("Дата создания", "createDate"))
+                .addColumn(DateTimeTableColumn("Дата использования", "useDate"))
+                .addColumn(DictionaryTableColumn<ServiceMessage, ServiceMessageType>("Тип сообщения", "messageType"))
+                .addColumn(PropertyTableColumn("Тело сообщения", "jsonObject"))
+                .withTable(messageTable)
+                .withItems(messagesData)
+                .build()
     }
 
     private fun configureAgentChoiceBox() {

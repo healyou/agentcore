@@ -36,12 +36,15 @@ class DateTimeTableColumn<S : Any>(text: String, property: String): TableColumn<
                         this.propertyRef = PropertyReference<Date>(rowData.javaClass, getProperty())
                     }
 
-                    return if (propertyRef != null && propertyRef!!.hasProperty()) {
-                        val value = propertyRef!!.getProperty(rowData)
-                        SimpleStringProperty(dateFormat.format(value))
-
-                    } else {
+                    if (propertyRef == null) {
                         return SimpleStringProperty("")
+                    }
+
+                    return if (propertyRef!!.hasProperty()) {
+                        SimpleStringProperty(dateFormat.format(propertyRef!!.getProperty(rowData)))
+                    } else {
+                        val value = propertyRef!!.get(rowData)
+                        SimpleStringProperty(dateFormat.format(value))
                     }
 
                 } catch (e: IllegalStateException) {
