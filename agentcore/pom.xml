@@ -57,21 +57,10 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- add local maven libs -> libs/maven_add_jar.txt -->
-        <!-- CLIPSJNI - экспертные системы -->
         <dependency>
-            <groupId>org.genetics</groupId>
-            <artifactId>genetics</artifactId>
-            <version>1.0.0</version>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
         </dependency>
-
-        <!-- GenAlgorithms - генетические алгоритмы -->
-        <dependency>
-            <groupId>org.clipsjni</groupId>
-            <artifactId>clipsjni</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <!-- add local maven libs -> libs/maven_add_jar.txt -->
 
         <!-- Bridge logging from JCL to SLF4j -->
         <dependency>
@@ -238,6 +227,44 @@
             </testResource>
         </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>${gmavenplus-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>compileTests</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sources>
+                        <source>
+                            <directory>${project.basedir}/src/main/java</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </source>
+                    </sources>
+                    <testSources>
+                        <testSource>
+                            <directory>${project.basedir}/src/test/java</directory>
+                            <includes>
+                                <include>**/*.groovy</include>
+                            </includes>
+                        </testSource>
+                    </testSources>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-all</artifactId>
+                        <version>${groovy.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
