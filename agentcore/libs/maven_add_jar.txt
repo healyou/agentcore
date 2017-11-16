@@ -1,2 +1,0 @@
-mvn install:install-file -Dfile=CLIPSJNI.jar -DgroupId=org.clipsjni -DartifactId=clipsjni -Dversion=1.0.0 -Dpackaging=jar
-mvn install:install-file -Dfile=GenAlgorithms.jar -DgroupId=org.genetics -DartifactId=genetics -Dversion=1.0.0 -Dpackaging=jar

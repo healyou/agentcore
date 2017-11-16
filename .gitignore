@@ -1,6 +1,7 @@
 **/.idea/
 **/*.iml
 **/logs/
+**/target
 
 **/inputdb.s3db
 **/localdb.s3db
