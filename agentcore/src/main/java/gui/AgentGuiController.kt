@@ -7,6 +7,7 @@ import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageType
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import dsl.RuntimeAgent
 import gui.table.AgentComboBoxRenderer
 import gui.table.CustomTableBuilder
 import gui.table.columns.DateTimeTableColumn
@@ -18,6 +19,8 @@ import javafx.scene.control.*
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.awt.Image
+import java.awt.image.BufferedImage
 import java.text.SimpleDateFormat
 
 
@@ -39,10 +42,24 @@ class AgentGuiController {
     lateinit var agentComboBox: ComboBox<SystemAgent>
     @FXML
     lateinit var messageTable: TableView<ServiceMessage>
+    @FXML
+    lateinit var loadAgentsButton: Button
 
     fun initialize() {
+        configureLoadAgentsButton()
         configureMessageTable()
         configureAgentChoiceBox()
+    }
+
+    private fun configureLoadAgentsButton() {
+        loadAgentsButton.setOnAction {
+            /* Для теста чисто 1 файл загрузим - а так надо сканировать все файлы в папке*/
+            val runtimeAgent = object : RuntimeAgent("data/dsl/testagent.groovy") {
+
+                override fun getSystemAgentService(): SystemAgentService = systemAgentService
+                override fun getServiceMessageService(): ServiceMessageService = serviceMessageService
+            }
+        }
     }
 
     private fun configureMessageTable() {

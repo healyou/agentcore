@@ -37,9 +37,6 @@ class AgentGui : Application() {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            ImagesFunctions.testImageFun1()
-            ImagesFunctions.testImageFun2()
-            ImagesFunctions.testImageFun3()
             launch(AgentGui::class.java)
         }
     }

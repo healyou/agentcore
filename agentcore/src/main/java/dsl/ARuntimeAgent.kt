@@ -19,9 +19,9 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     private var getMessagesTimer: Timer? = null
 
     init {
-        getMessagesTimer = timer("hello-timer", true, 2000, 2000) {
-            searchMessages()
-        }
+//        getMessagesTimer = timer("hello-timer", true, 2000, 2000) {
+//            searchMessages()
+//        }
     }
 
     /**

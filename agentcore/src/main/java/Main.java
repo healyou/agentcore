@@ -15,9 +15,9 @@ import java.util.UUID;
 public class Main {
 
     public static void main(String[] args) {
-        AgentImageFunctions.INSTANCE.testImageFun1();
-        AgentImageFunctions.INSTANCE.testImageFun2();
-        AgentImageFunctions.INSTANCE.testImageFun3();
+        AgentImageFunctions.testImageFun1();
+        AgentImageFunctions.testImageFun2();
+        AgentImageFunctions.testImageFun3();
     }
 
     private static void testServiceFuncions() {
