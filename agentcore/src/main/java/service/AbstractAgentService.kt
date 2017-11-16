@@ -1,6 +1,6 @@
 package service
 
-import agentcore.database.base.Environment
+import db.base.Environment
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper

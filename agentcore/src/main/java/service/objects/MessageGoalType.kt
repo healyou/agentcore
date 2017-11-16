@@ -1,6 +1,6 @@
 package service.objects
 
-import agentcore.utils.Codable
+import db.base.Codable
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 

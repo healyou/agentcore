@@ -1,6 +1,6 @@
 package db.core.servicemessage
 
-import agentcore.utils.Codable
+import db.base.Codable
 import service.objects.Entity
 
 /**

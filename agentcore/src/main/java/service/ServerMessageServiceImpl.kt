@@ -1,6 +1,6 @@
 package service
 
-import agentcore.database.base.Environment
+import db.base.Environment
 import com.fasterxml.jackson.core.type.TypeReference
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity

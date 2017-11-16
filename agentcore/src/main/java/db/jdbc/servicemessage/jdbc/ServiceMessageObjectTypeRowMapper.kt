@@ -1,6 +1,6 @@
 package db.jdbc.servicemessage.jdbc
 
-import agentcore.utils.Codable
+import db.base.Codable
 import db.base.AbstractRowMapper
 import db.base.sqlite_toBoolean
 import db.core.servicemessage.ServiceMessageObjectType

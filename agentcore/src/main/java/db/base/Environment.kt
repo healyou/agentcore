@@ -1,4 +1,4 @@
-package agentcore.database.base
+package db.base
 
 import org.springframework.stereotype.Component
 

@@ -1,6 +1,6 @@
 package gui.table.columns
 
-import agentcore.utils.Codable
+import db.base.Codable
 import com.sun.javafx.property.PropertyReference
 import db.base.IDictionary
 import javafx.beans.property.SimpleStringProperty

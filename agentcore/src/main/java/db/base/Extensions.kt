@@ -1,6 +1,6 @@
 package db.base
 
-import agentcore.utils.Codable
+import db.base.Codable
 import service.objects.AgentType
 import java.text.SimpleDateFormat
 import java.util.*
