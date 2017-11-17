@@ -1,11 +1,7 @@
 init = {
-    println 'masId from java = ' + masId
-
-    type = 'worker'
-    name = 'name'
-    masId = 'masId'
-
-    println 'masId in groovy = ' + masId
+    type = "worker"
+    name = "name"
+    masId = "masId"
 }
 
 onGetMessage = {

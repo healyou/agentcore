@@ -57,12 +57,16 @@ class RuntimeAgentService {
             binding.init = init
 
             GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("init.delegate = this;init()")
+            shell.evaluate("init.delegate = this;init.resolveStrategy = Closure.DELEGATE_FIRST;init()")
 
-            agentType = binding.type
-            agentName = binding.name
-            masId = binding.masId
-
+            try {
+                agentType = binding.type
+                agentName = binding.name
+                masId = binding.masId
+            } catch (ignored) {
+                throw new RuntimeException("Нет данных для инициализации агента")
+            }
+            assert !agentType.isEmpty() && !agentName.isEmpty() && !masId.isEmpty()
             println("masId from groovy " + masId)
         }
     }
@@ -70,7 +74,6 @@ class RuntimeAgentService {
     void applyOnLoadImage(Image image) {
         if (on_load_image_provided) {
             Binding binding = new Binding()
-            prepareInitData(binding)
             prepareClosures(binding)
             prepareAgentTypes(binding)
 
@@ -172,8 +175,8 @@ class RuntimeAgentService {
      * Параметры инициализации агента
      */
     private void prepareInitData(Binding binding) {
-        binding.type = "testworker"
-        binding.name = "testname"
-        binding.masId = "test" + UUID.randomUUID()
+        binding.type = ""
+        binding.name = ""
+        binding.masId = ""
     }
 }
