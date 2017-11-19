@@ -70,7 +70,9 @@ class RuntimeAgentService {
             } catch (ignored) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
-            assert !agentType.isEmpty() && !agentName.isEmpty() && !masId.isEmpty()
+            if (agentType.isEmpty() || agentName.isEmpty() || masId.isEmpty()) {
+                throw new RuntimeException("Нет данных для инициализации агента")
+            }
             println("masId from groovy " + masId)
         }
     }
