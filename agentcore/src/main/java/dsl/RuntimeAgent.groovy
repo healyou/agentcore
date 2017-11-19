@@ -3,6 +3,7 @@ package dsl
 import db.core.servicemessage.ServiceMessage
 import org.jetbrains.annotations.NotNull
 
+import javax.annotation.Nullable
 import java.awt.Image
 
 /**
@@ -19,7 +20,7 @@ abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    void onLoadImage(Image image) {
+    void onLoadImage(@Nullable Image image) {
         runtimeAgentService.applyOnLoadImage(image)
     }
 
@@ -29,7 +30,7 @@ abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    void onEndImageTask(Image updateImage) {
-        runtimeAgentService.onEndImageTask(updateImage)
+    void onEndImageTask(@Nullable Image updateImage) {
+        runtimeAgentService.applyOnEndImageTask(updateImage)
     }
 }

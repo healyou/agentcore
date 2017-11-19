@@ -59,6 +59,10 @@ class AgentGuiController {
                 override fun getSystemAgentService(): SystemAgentService = systemAgentService
                 override fun getServiceMessageService(): ServiceMessageService = serviceMessageService
             }
+            val message = serviceMessageService.get(ServiceMessageSC()).get(0)
+            runtimeAgent.onGetMessage(message)
+            runtimeAgent.onLoadImage(null)
+            runtimeAgent.onEndImageTask(null)
         }
     }
 

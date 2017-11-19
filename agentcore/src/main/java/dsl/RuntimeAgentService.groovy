@@ -14,17 +14,17 @@ class RuntimeAgentService {
     def masId = null
 
     boolean on_load_image_provided = true
-    def onLoadImage = { image ->
+    def onLoadImage = {
         on_load_image_provided = false
     }
 
     boolean on_get_message_provided = true
-    def onGetMessage = { serviceMessage ->
+    def onGetMessage = {
         on_get_message_provided = false
     }
 
     boolean on_end_image_task_provided = true
-    def onEndImageTask = { updateImage ->
+    def onEndImageTask = {
         on_end_image_task_provided = false
     }
 
@@ -56,6 +56,10 @@ class RuntimeAgentService {
             prepareInitData(binding)
             binding.init = init
 
+            /**
+             * GroovyShell изначально delegate owner = this class
+             * а надо script, потому что только через binding можно сохранить изменения в evaluate
+             */
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("init.delegate = this;init.resolveStrategy = Closure.DELEGATE_FIRST;init()")
 
@@ -80,7 +84,7 @@ class RuntimeAgentService {
             binding.image = image
 
             GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onLoadImage.delegate = this;onLoadImage(image)")
+            shell.evaluate("onLoadImage.delegate = this;onLoadImage.resolveStrategy = Closure.DELEGATE_FIRST;onLoadImage(image)")
         }
     }
     void applyOnGetMessage(ServiceMessage serviceMessage) {
@@ -92,7 +96,7 @@ class RuntimeAgentService {
             binding.serviceMessage = serviceMessage
 
             GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onGetMessage.delegate = this;onGetMessage(serviceMessage)")
+            shell.evaluate("onGetMessage.delegate = this;onGetMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetMessage(serviceMessage)")
         }
     }
     void applyOnEndImageTask(Image updateImage) {
@@ -104,7 +108,7 @@ class RuntimeAgentService {
             binding.updateImage = updateImage
 
             GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onEndImageTask.delegate = this;onEndImageTask(updateImage)")
+            shell.evaluate("onEndImageTask.delegate = this;onEndImageTask.resolveStrategy = Closure.DELEGATE_FIRST;onEndImageTask(updateImage)")
         }
     }
 
@@ -112,7 +116,10 @@ class RuntimeAgentService {
         binding.init = init
         binding.onLoadImage = onLoadImage
         binding.onGetMessage = onGetMessage
-        binding.onEndTask = onEndImageTask
+        binding.onEndImageTask = onEndImageTask
+        binding.sendMessage = {
+            println("execute sendMessage")
+        }
         binding.executeCondition = { spec, closure ->
             closure.delegate = delegate
             binding.result = true
@@ -161,7 +168,9 @@ class RuntimeAgentService {
             closure.delegate = delegate
 
             if (binding.result)
-                closure()
+                use(ImagesFunctions) {
+                    closure()
+                }
         }
     }
 
