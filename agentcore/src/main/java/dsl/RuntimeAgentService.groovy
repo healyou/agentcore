@@ -145,7 +145,7 @@ class RuntimeAgentService {
         binding.onLoadImage = onLoadImage
         binding.onGetMessage = onGetMessage
         binding.onEndImageTask = onEndImageTask
-        binding.sendMessage = {
+        binding.sendMessage = { Map map ->
             println("execute sendMessage")
         }
         binding.executeCondition = { spec, closure ->

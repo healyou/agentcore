@@ -26,7 +26,6 @@ onGetMessage = { message ->
             true
         }
         execute {
-            sendMessage()
             testImageFun1()
             println 'script onGetMessage onExecute'
         }
@@ -57,7 +56,7 @@ onLoadImage = { image ->
             true
         }
         execute {
-            sendMessage()
+            sendMessage messageType: "typeMessage", image: image, agentTypes: ["worker", "server"]
             testImageFun2()
             println 'script onLoadImage onExecute'
         }
@@ -88,7 +87,6 @@ onEndImageTask = { updateImage ->
             true
         }
         execute {
-            sendMessage()
             testImageFun3()
             println 'script onEndImageTask onExecute'
         }

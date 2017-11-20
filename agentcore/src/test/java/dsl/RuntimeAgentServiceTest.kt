@@ -261,5 +261,8 @@ class RuntimeAgentServiceTest : Assert() {
                     true
             )
     )
-    private class TestDslConditionBlocks(val rules: String, val expectedExecute: Boolean)
+    private data class TestDslConditionBlocks(
+            val rules: String,
+            val expectedExecute: Boolean
+    )
 }
