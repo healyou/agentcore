@@ -6,9 +6,9 @@ package dsl
 class TestRuntimeAgentServiceClass extends RuntimeAgentService {
 
     def isExecuteInit = false
-    def isExecuteOnGetMessages = false
-    def isExecuteOnLoadImage = false
-    def isExecuteOnEndImageTask = false
+    def isExecuteTestOnGetMessages = false
+    def isExecuteTestOnLoadImage = false
+    def isExecuteTestOnEndImageTask = false
 
     /* Повторяет функцию loadExecuteRules - но тут сразу строку передаем а не файл*/
     void testLoadExecuteRules(rules) {
@@ -31,14 +31,14 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
      */
 
     void testOnGetMessageFun() {
-        isExecuteOnGetMessages = true
+        isExecuteTestOnGetMessages = true
     }
 
     void testOnLoadImage() {
-        isExecuteOnLoadImage = true
+        isExecuteTestOnLoadImage = true
     }
 
     void testOnEndImageTask() {
-        isExecuteOnEndImageTask = true
+        isExecuteTestOnEndImageTask = true
     }
 }

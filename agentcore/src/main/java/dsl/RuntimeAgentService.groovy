@@ -11,7 +11,7 @@ class RuntimeAgentService {
 
     def agentType = null
     def agentName = null
-    def masId = null
+    def masId = null // TODO rename to agentMasId
 
     boolean on_load_image_provided = false
     def onLoadImage = {}

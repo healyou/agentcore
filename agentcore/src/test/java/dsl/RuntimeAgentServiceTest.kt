@@ -1,13 +1,10 @@
 package dsl
 
 import db.core.servicemessage.ServiceMessage
-import groovy.lang.MetaClass
 import org.easymock.EasyMock.mock
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 import java.awt.image.BufferedImage
-import kotlin.test.assertTrue
 
 /**
  * @author Nikita Gorodilov
@@ -60,19 +57,56 @@ class RuntimeAgentServiceTest : Assert() {
         runtimeAgentService.applyOnGetMessage(mock(ServiceMessage::class.java))
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
-        assertTrue(runtimeAgentService.isExecuteOnGetMessages as Boolean)
-        assertTrue(runtimeAgentService.isExecuteOnEndImageTask as Boolean)
-        assertTrue(runtimeAgentService.isExecuteOnLoadImage as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
 
     /**
      * Тестирование выполнения блоков dsl
      */
 
-    /* Вызов функций в anyOf, allOf, condition блоках */
+    /* Тестирование работы init блока */
     @Test
-    fun testExecuteConditionBlock() {
-        /* Проверить работу dsl блоков */
+    fun testDslInitBlock() {
+        val runtimeAgentService = TestRuntimeAgentServiceClass()
+        val type = "worker"
+        val name = "name"
+        val masId = "masId"
+
+        runtimeAgentService.testLoadExecuteRules(
+                """
+                    init = {
+                        type = "$type"
+                        name = "$name"
+                        masId = "$masId"
+                    }
+                    onGetMessage = {}
+                    onLoadImage = {}
+                    onEndImageTask = {}
+                """
+        )
+        runtimeAgentService.applyInit()
+
+        assertTrue(runtimeAgentService.isExecuteInit as Boolean)
+        assertEquals(type, runtimeAgentService.agentType)
+        assertEquals(name, runtimeAgentService.agentName)
+        assertEquals(masId, runtimeAgentService.masId)
+    }
+
+    // TODO - junit5
+
+    /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */
+    @Test
+    fun testDslExecuteConditionBlock() {
+        testDslConditionBlocksArray.forEach {
+            val runtimeAgentService = TestRuntimeAgentServiceClass()
+
+            runtimeAgentService.testLoadExecuteRules(it.rules)
+            runtimeAgentService.applyOnGetMessage(mock(ServiceMessage::class.java))
+
+            assertEquals(it.expectedExecute, runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
+        }
     }
 
     private fun runExpectedFunctionError(func: () -> Unit): Boolean {
@@ -83,4 +117,149 @@ class RuntimeAgentServiceTest : Assert() {
             true
         }
     }
+
+    private val testDslConditionBlocksArray = arrayListOf<TestDslConditionBlocks>(
+            TestDslConditionBlocks( // все блоки вернут да
+                    """
+                        init = {
+                            type = "worker"
+                            name = "name"
+                            masId = "masId"
+                        }
+                        onGetMessage = { message ->
+                            executeCondition ("Успешное выполнение функции") {
+                                anyOf {
+                                    allOf {
+                                        condition {
+                                            true
+                                        }
+                                        condition {
+                                            true
+                                        }
+                                    }
+                                    condition {
+                                        false
+                                    }
+                                }
+                                execute {
+                                    testOnGetMessageFun()
+                                }
+                            }
+                        }
+                        onLoadImage = {}
+                        onEndImageTask = {}
+                    """,
+                    true
+            ),
+            TestDslConditionBlocks( // блоки allOf вернёт нет
+                    """
+                        init = {
+                            type = "worker"
+                            name = "name"
+                            masId = "masId"
+                        }
+                        onGetMessage = { message ->
+                            executeCondition ("Нет выполнение функции") {
+                                anyOf {
+                                    allOf {
+                                        condition {
+                                            true
+                                        }
+                                        condition {
+                                            false
+                                        }
+                                    }
+                                    condition {
+                                        false
+                                    }
+                                }
+                                execute {
+                                    testOnGetMessageFun()
+                                }
+                            }
+                        }
+                        onLoadImage = {}
+                        onEndImageTask = {}
+                    """,
+                    false
+            ),
+            TestDslConditionBlocks( // блок вернёт нет
+                    """
+                        init = {
+                            type = "worker"
+                            name = "name"
+                            masId = "masId"
+                        }
+                        onGetMessage = { message ->
+                            executeCondition ("Успешное выполнение функции") {
+                                anyOf {
+                                    allOf {
+                                        condition {
+                                            true
+                                        }
+                                        condition {
+                                            true
+                                        }
+                                    }
+                                    condition {
+                                        false
+                                    }
+                                }
+                                // по and объединяются
+                                condition {
+                                    false
+                                }
+                                execute {
+                                    testOnGetMessageFun()
+                                }
+                            }
+                        }
+                        onLoadImage = {}
+                        onEndImageTask = {}
+                    """,
+                    false
+            ),
+            TestDslConditionBlocks(
+                    """
+                        init = {
+                            type = "worker"
+                            name = "name"
+                            masId = "masId"
+                        }
+                        onGetMessage = { message ->
+                            executeCondition ("Успешное выполнение функции") {
+                                execute {
+                                    testOnGetMessageFun()
+                                }
+                            }
+                        }
+                        onLoadImage = {}
+                        onEndImageTask = {}
+                    """,
+                    true
+            ),
+            TestDslConditionBlocks(
+                    """
+                        init = {
+                            type = "worker"
+                            name = "name"
+                            masId = "masId"
+                        }
+                        onGetMessage = { message ->
+                            executeCondition ("Успешное выполнение функции") {
+                                condition {
+                                    true
+                                }
+                                execute {
+                                    testOnGetMessageFun()
+                                }
+                            }
+                        }
+                        onLoadImage = {}
+                        onEndImageTask = {}
+                    """,
+                    true
+            )
+    )
+    private class TestDslConditionBlocks(val rules: String, val expectedExecute: Boolean)
 }
