@@ -8,7 +8,7 @@ import java.util.*
  *
  * @author Nikita Gorodilov
  */
-class ServiceMessage(
+open class ServiceMessage(
         /* Объект получаемый или передаваемый в сообщении */
         var jsonObject: String,
         /* Тип json объекта */

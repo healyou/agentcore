@@ -26,6 +26,15 @@ class RuntimeAgentService {
     def init = {}
 
     void loadExecuteRules(path) {
+        Binding binding = createLoadBindings()
+
+        GroovyShell shell = new GroovyShell(binding)
+        shell.evaluate(new File(String.valueOf(path)))
+
+        checkLoadRules(binding)
+    }
+
+    Binding createLoadBindings() {
         Binding binding = new Binding()
 
         binding.init = init
@@ -33,9 +42,10 @@ class RuntimeAgentService {
         binding.onGetMessage = onGetMessage
         binding.onEndImageTask = onEndImageTask
 
-        GroovyShell shell = new GroovyShell(binding)
-        shell.evaluate(new File(String.valueOf(path)))
+        return binding
+    }
 
+    void checkLoadRules(Binding binding) {
         if (bindingFunctionCheck(binding)) {
             init = binding.init
             onLoadImage = binding.onLoadImage
