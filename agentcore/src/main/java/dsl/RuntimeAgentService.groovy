@@ -13,25 +13,17 @@ class RuntimeAgentService {
     def agentName = null
     def masId = null
 
-    boolean on_load_image_provided = true
-    def onLoadImage = {
-        on_load_image_provided = false
-    }
+    boolean on_load_image_provided = false
+    def onLoadImage = {}
 
-    boolean on_get_message_provided = true
-    def onGetMessage = {
-        on_get_message_provided = false
-    }
+    boolean on_get_message_provided = false
+    def onGetMessage = {}
 
-    boolean on_end_image_task_provided = true
-    def onEndImageTask = {
-        on_end_image_task_provided = false
-    }
+    boolean on_end_image_task_provided = false
+    def onEndImageTask = {}
 
-    boolean init_provided = true
-    def init = {
-        init_provided = false
-    }
+    boolean init_provided = false
+    def init = {}
 
     void loadExecuteRules(path) {
         Binding binding = new Binding()
@@ -44,10 +36,24 @@ class RuntimeAgentService {
         GroovyShell shell = new GroovyShell(binding)
         shell.evaluate(new File(String.valueOf(path)))
 
-        init = binding.init
-        onLoadImage = binding.onLoadImage
-        onGetMessage = binding.onGetMessage
-        onEndImageTask = binding.onEndImageTask
+        if (bindingFunctionCheck(binding)) {
+            init = binding.init
+            onLoadImage = binding.onLoadImage
+            onGetMessage = binding.onGetMessage
+            onEndImageTask = binding.onEndImageTask
+
+            on_load_image_provided = true
+            on_get_message_provided = true
+            on_end_image_task_provided = true
+            init_provided = true
+        } else {
+            throw new RuntimeException("Неправильная dsl")
+        }
+    }
+
+    /* Проверка функций */
+    boolean bindingFunctionCheck(Binding binding) {
+        return binding.init != init && binding.onLoadImage != onLoadImage && binding.onGetMessage != onGetMessage && binding.onEndImageTask != onEndImageTask
     }
 
     void applyInit() {
@@ -74,6 +80,8 @@ class RuntimeAgentService {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
             println("masId from groovy " + masId)
+        } else {
+            throw new RuntimeException("Функция init не загружена")
         }
     }
 
@@ -87,8 +95,11 @@ class RuntimeAgentService {
 
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onLoadImage.delegate = this;onLoadImage.resolveStrategy = Closure.DELEGATE_FIRST;onLoadImage(image)")
+        } else {
+            throw new RuntimeException("Функция on_load_image не загружена")
         }
     }
+
     void applyOnGetMessage(ServiceMessage serviceMessage) {
         if (on_get_message_provided) {
             Binding binding = new Binding()
@@ -99,8 +110,11 @@ class RuntimeAgentService {
 
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onGetMessage.delegate = this;onGetMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetMessage(serviceMessage)")
+        } else {
+            throw new RuntimeException("Функция on_get_message не загружена")
         }
     }
+
     void applyOnEndImageTask(Image updateImage) {
         if (on_end_image_task_provided) {
             Binding binding = new Binding()
@@ -111,6 +125,8 @@ class RuntimeAgentService {
 
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onEndImageTask.delegate = this;onEndImageTask.resolveStrategy = Closure.DELEGATE_FIRST;onEndImageTask(updateImage)")
+        } else {
+            throw new RuntimeException("Функция on_end_image_task не загружена")
         }
     }
 
