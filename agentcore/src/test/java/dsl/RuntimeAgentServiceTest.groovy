@@ -1,42 +1,44 @@
 package dsl
 
 import db.core.servicemessage.ServiceMessage
-import org.easymock.EasyMock.mock
 import org.junit.Assert
 import org.junit.Test
+
 import java.awt.image.BufferedImage
+
+import static org.easymock.EasyMock.mock
 
 /**
  * @author Nikita Gorodilov
  */
-class RuntimeAgentServiceTest : Assert() {
+class RuntimeAgentServiceTest extends Assert {
 
     /* Без загрузки функций выходит ошибка при работе */
     @Test
-    fun testErrorApplyNotLoadFunctions() {
-        val runtimeAgentService = RuntimeAgentService()
+    void testErrorApplyNotLoadFunctions() {
+        def runtimeAgentService = new RuntimeAgentService()
 
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyInit() })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(BufferedImage::class.java)) })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(BufferedImage::class.java)) })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetMessage(mock(ServiceMessage::class.java)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class)) })
     }
 
     /* Если в dsl не предоставлены все функции - выходит ошибка */
     @Test
-    fun testLoadErrorsDsl() {
-        val runtimeAgentService = RuntimeAgentService()
+    void testLoadErrorsDsl() {
+        def runtimeAgentService = new RuntimeAgentService()
 
-        assertTrue(runExpectedFunctionError { runtimeAgentService.loadExecuteRules(javaClass.getResource("noinitagentdsl.groovy").toURI().path) })
-        assertFalse(runExpectedFunctionError { runtimeAgentService.loadExecuteRules(javaClass.getResource("testagentdsl.groovy").toURI().path) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.loadExecuteRules(getClass().getResource("noinitagentdsl.groovy").toURI().path) })
+        assertFalse(runExpectedFunctionError { runtimeAgentService.loadExecuteRules(getClass().getResource("testagentdsl.groovy").toURI().path) })
     }
 
     /* Тест загрузки данных из dsl */
     @Test
-    fun testApplyInit() {
-        val runtimeAgentService = RuntimeAgentService()
+    void testApplyInit() {
+        def runtimeAgentService = new RuntimeAgentService()
 
-        runtimeAgentService.loadExecuteRules(javaClass.getResource("testagentdsl.groovy").toURI().path)
+        runtimeAgentService.loadExecuteRules(getClass().getResource("testagentdsl.groovy").toURI().path)
         runtimeAgentService.applyInit()
 
         /* Данные из файла testagentdsl.groovy */
@@ -47,14 +49,14 @@ class RuntimeAgentServiceTest : Assert() {
 
     /* Проходят все вызовы функций из dsl */
     @Test
-    fun testExecuteDslFunction() {
-        val runtimeAgentService = TestRuntimeAgentServiceClass()
+    void testExecuteDslFunction() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        runtimeAgentService.loadExecuteRules(javaClass.getResource("testagentdsl.groovy").toURI().path)
+        runtimeAgentService.loadExecuteRules(getClass().getResource("testagentdsl.groovy").toURI().path)
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnLoadImage(mock(BufferedImage::class.java))
-        runtimeAgentService.applyOnEndImageTask(mock(BufferedImage::class.java))
-        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage::class.java))
+        runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class))
+        runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class))
+        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
@@ -68,11 +70,11 @@ class RuntimeAgentServiceTest : Assert() {
 
     /* Тестирование работы init блока */
     @Test
-    fun testDslInitBlock() {
-        val runtimeAgentService = TestRuntimeAgentServiceClass()
-        val type = "worker"
-        val name = "name"
-        val masId = "masId"
+    void testDslInitBlock() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def type = "worker"
+        def name = "name"
+        def masId = "masId"
 
         runtimeAgentService.testLoadExecuteRules(
                 """
@@ -94,33 +96,31 @@ class RuntimeAgentServiceTest : Assert() {
         assertEquals(masId, runtimeAgentService.masId)
     }
 
-    // TODO - junit5
-
     /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */
     @Test
-    fun testDslExecuteConditionBlock() {
+    void testDslExecuteConditionBlock() {
         testDslConditionBlocksArray.forEach {
-            val runtimeAgentService = TestRuntimeAgentServiceClass()
+            def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
             runtimeAgentService.testLoadExecuteRules(it.rules)
-            runtimeAgentService.applyOnGetMessage(mock(ServiceMessage::class.java))
+            runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
 
             assertEquals(it.expectedExecute, runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
         }
     }
 
-    private fun runExpectedFunctionError(func: () -> Unit): Boolean {
-        return try {
-            func.invoke()
+    private runExpectedFunctionError(Closure c) {
+        try {
+            c()
             false
-        } catch (ignored: Exception) {
+        } catch (ignored) {
             true
         }
     }
 
-    private val testDslConditionBlocksArray = arrayListOf<TestDslConditionBlocks>(
-            TestDslConditionBlocks( // все блоки вернут да
-                    """
+    def testDslConditionBlocksArray = [
+            new TestDslConditionBlocks( // все блоки вернут да
+                    rules: """
                         init = {
                             type = "worker"
                             name = "name"
@@ -149,10 +149,10 @@ class RuntimeAgentServiceTest : Assert() {
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    true
+                    expectedExecute: true
             ),
-            TestDslConditionBlocks( // блоки allOf вернёт нет
-                    """
+            new TestDslConditionBlocks( // блоки allOf вернёт нет
+                    rules: """
                         init = {
                             type = "worker"
                             name = "name"
@@ -181,10 +181,10 @@ class RuntimeAgentServiceTest : Assert() {
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    false
+                    expectedExecute: false
             ),
-            TestDslConditionBlocks( // блок вернёт нет
-                    """
+            new TestDslConditionBlocks( // блок вернёт нет
+                    rules: """
                         init = {
                             type = "worker"
                             name = "name"
@@ -217,10 +217,10 @@ class RuntimeAgentServiceTest : Assert() {
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    false
+                    expectedExecute: false
             ),
-            TestDslConditionBlocks(
-                    """
+            new TestDslConditionBlocks(
+                    rules: """
                         init = {
                             type = "worker"
                             name = "name"
@@ -236,10 +236,10 @@ class RuntimeAgentServiceTest : Assert() {
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    true
+                    expectedExecute: true
             ),
-            TestDslConditionBlocks(
-                    """
+            new TestDslConditionBlocks(
+                    rules: """
                         init = {
                             type = "worker"
                             name = "name"
@@ -258,11 +258,11 @@ class RuntimeAgentServiceTest : Assert() {
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    true
+                    expectedExecute: true
             )
-    )
-    private data class TestDslConditionBlocks(
-            val rules: String,
-            val expectedExecute: Boolean
-    )
+    ]
+    private class TestDslConditionBlocks {
+        def rules
+        def expectedExecute
+    }
 }
