@@ -56,7 +56,9 @@ onLoadImage = { image ->
             true
         }
         execute {
-            sendMessage messageType: "typeMessage", image: image, agentTypes: ["worker", "server"]
+            sendMessage messageType: "typeMessage",
+                    image: image,
+                    agentTypes: ["worker", "server"]
             testImageFun2()
             println 'script onLoadImage onExecute'
         }

@@ -98,8 +98,11 @@ class RuntimeAgentService {
     void applyOnLoadImage(Image image) {
         if (on_load_image_provided) {
             Binding binding = new Binding()
-            prepareClosures(binding)
+
             prepareAgentTypes(binding)
+            prepareMessageBodyFormats(binding)
+            prepareMessageGoalTypes(binding)
+            prepareClosures(binding)
 
             binding.image = image
 
@@ -113,8 +116,11 @@ class RuntimeAgentService {
     void applyOnGetMessage(ServiceMessage serviceMessage) {
         if (on_get_message_provided) {
             Binding binding = new Binding()
-            prepareClosures(binding)
+
             prepareAgentTypes(binding)
+            prepareMessageBodyFormats(binding)
+            prepareMessageGoalTypes(binding)
+            prepareClosures(binding)
 
             binding.serviceMessage = serviceMessage
 
@@ -128,8 +134,11 @@ class RuntimeAgentService {
     void applyOnEndImageTask(Image updateImage) {
         if (on_end_image_task_provided) {
             Binding binding = new Binding()
-            prepareClosures(binding)
+
             prepareAgentTypes(binding)
+            prepareMessageBodyFormats(binding)
+            prepareMessageGoalTypes(binding)
+            prepareClosures(binding)
 
             binding.updateImage = updateImage
 
@@ -146,6 +155,21 @@ class RuntimeAgentService {
         binding.onGetMessage = onGetMessage
         binding.onEndImageTask = onEndImageTask
         binding.sendMessage = { Map map ->
+            def messageType = map.get("messageType")
+            def image = map["image"]
+            def agentTypes = map["agentTypes"]
+            def bodyFormat = map["bodyFormat"]
+            def messageGoalType = map["messageGoalType"]
+
+            assert messageType != null && image != null && agentTypes != null
+            if (bodyFormat == null) {
+                bodyFormat = binding.JSON
+            }
+            if (messageGoalType == null) {
+                messageGoalType = binding.TASK_DECISION
+            }
+
+            // TODO отправка сообщения
             println("execute sendMessage")
         }
         binding.executeCondition = { spec, closure ->
@@ -206,6 +230,14 @@ class RuntimeAgentService {
         /* пока типы агентов задаются статично - тк они находятся все в сервисе обмена сообщениями */
         binding.WORKER = "worker"
         binding.SERVER = "server"
+    }
+
+    private void prepareMessageBodyFormats(Binding binding) {
+        binding.JSON = "json"
+    }
+
+    private void prepareMessageGoalTypes(Binding binding) {
+        binding.TASK_DECISION = "task_decision"
     }
 
     /**
