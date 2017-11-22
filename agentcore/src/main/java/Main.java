@@ -15,6 +15,25 @@ import java.util.UUID;
 public class Main {
 
     public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
+        SessionManager sessionManager = new SessionManager();
+        // todo исправить путь до бд в properties
+        testLoginService(context, sessionManager);
+        testServerTypeService(context, sessionManager);
+    }
+
+    private static void testServerTypeService(ApplicationContext context, SessionManager sessionManager) {
+        ServerTypeServiceImpl serverTypeService = (ServerTypeServiceImpl) context.getBean(ServerTypeService.class);
+
+        List<AgentType> agentTypes = serverTypeService.getAgentTypes(sessionManager);
+        List<MessageBodyType> messageBodyTypes = serverTypeService.getMessageBodyTypes(sessionManager);
+        List<MessageGoalType> messageGoalTypes = serverTypeService.getMessageGoalTypes(sessionManager);
+        List<MessageType> messageTypes = serverTypeService.getMessageTypes(sessionManager, messageGoalTypes.get(0).getCode().getCode());
+
+        int k = 1;
+    }
+
+    private static void testFunctions() {
         AgentImageFunctions.testImageFun1();
         AgentImageFunctions.testImageFun2();
         AgentImageFunctions.testImageFun3();

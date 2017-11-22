@@ -8,7 +8,11 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.agent.get.current.agent.url', '/agent/getCurrentAgent'),
   ('agent.service.agent.get.agents.url', '/agent/getAgents'),
   ('agent.service.message.send.message.url', '/message/sendMessage'),
-  ('agent.service.message.get.messages.url', '/message/getMessages');
+  ('agent.service.message.get.messages.url', '/message/getMessages'),
+  ('agent.service.type.get.agent.types.url', '/type/getAgentTypes'),
+  ('agent.service.type.get.message.body.types.url', '/type/getMessageBodyTypes'),
+  ('agent.service.type.get.message.goal.types.url', '/type/getMessageGoalTypes'),
+  ('agent.service.type.get.message.types.url', '/type/getMessageTypes');
 
 ------------------ systemAgent data ------------------
 INSERT INTO system_agent (service_login, service_password, send_agent_type_codes, is_sendandget_messages) VALUES
