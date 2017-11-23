@@ -1,5 +1,6 @@
 package gui
 
+import db.base.Environment
 import db.core.sc.ServiceMessageSC
 import db.core.sc.SystemAgentSC
 import db.core.servicemessage.ServiceMessage
@@ -19,6 +20,8 @@ import javafx.scene.control.*
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import service.LoginService
+import service.ServerTypeService
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.text.SimpleDateFormat
@@ -34,6 +37,12 @@ class AgentGuiController {
     private lateinit var systemAgentService: SystemAgentService
     @Autowired
     private lateinit var serviceMessageService: ServiceMessageService
+    @Autowired
+    private lateinit var serverTypeService: ServerTypeService
+    @Autowired
+    private lateinit var environment: Environment
+    @Autowired
+    private lateinit var loginService: LoginService
 
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
     private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
@@ -56,8 +65,11 @@ class AgentGuiController {
             /* Для теста чисто 1 файл загрузим - а так надо сканировать все файлы в папке*/
             val runtimeAgent = object : RuntimeAgent("data/dsl/testagent.groovy") {
 
-                override fun getSystemAgentService(): SystemAgentService = systemAgentService
-                override fun getServiceMessageService(): ServiceMessageService = serviceMessageService
+                override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
+                override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
+                override fun getServerTypeService(): ServerTypeService = this@AgentGuiController.serverTypeService
+                override fun getLoginService(): LoginService = this@AgentGuiController.loginService
+                override fun getEnvironment(): Environment = this@AgentGuiController.environment
             }
             val message = serviceMessageService.get(ServiceMessageSC()).get(0)
             runtimeAgent.onGetMessage(message)

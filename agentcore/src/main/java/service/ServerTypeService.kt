@@ -17,4 +17,6 @@ interface ServerTypeService {
     fun getMessageGoalTypes(sessionManager: SessionManager): List<MessageGoalType>?
 
     fun getMessageTypes(sessionManager: SessionManager, goalType: String): List<MessageType>?
+
+    // TODO - метод для получения всех MessageType сразу
 }

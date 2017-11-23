@@ -1,6 +1,10 @@
 package dsl
 
 import db.core.servicemessage.ServiceMessage
+import service.objects.AgentType
+import service.objects.MessageBodyType
+import service.objects.MessageGoalType
+import service.objects.MessageType
 
 import java.awt.Image
 
@@ -11,7 +15,12 @@ class RuntimeAgentService {
 
     def agentType = null
     def agentName = null
-    def agentMasId = null // TODO rename to agentMasId
+    def agentMasId = null
+
+    List<AgentType> agentTypes = []
+    List<MessageBodyType> messageBodyTypes = []
+    List<MessageGoalType> messageGoalTypes = []
+    List<MessageType> messageTypes = []
 
     boolean on_load_image_provided = false
     def onLoadImage = {}
@@ -248,4 +257,6 @@ class RuntimeAgentService {
         binding.name = ""
         binding.masId = ""
     }
+
+    // TODO инициализация всех типов из массивов -  по хорошему сделать
 }
