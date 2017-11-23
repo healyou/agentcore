@@ -44,7 +44,7 @@ class RuntimeAgentServiceTest extends Assert {
         /* Данные из файла testagentdsl.groovy */
         assertEquals(runtimeAgentService.agentName, "name")
         assertEquals(runtimeAgentService.agentType, "worker")
-        assertEquals(runtimeAgentService.masId, "masId")
+        assertEquals(runtimeAgentService.agentMasId, "masId")
     }
 
     /* Проходят все вызовы функций из dsl */
@@ -93,7 +93,7 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
         assertEquals(type, runtimeAgentService.agentType)
         assertEquals(name, runtimeAgentService.agentName)
-        assertEquals(masId, runtimeAgentService.masId)
+        assertEquals(masId, runtimeAgentService.agentMasId)
     }
 
     /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */

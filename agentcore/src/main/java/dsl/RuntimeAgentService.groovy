@@ -11,7 +11,7 @@ class RuntimeAgentService {
 
     def agentType = null
     def agentName = null
-    def masId = null // TODO rename to agentMasId
+    def agentMasId = null // TODO rename to agentMasId
 
     boolean on_load_image_provided = false
     def onLoadImage = {}
@@ -82,14 +82,14 @@ class RuntimeAgentService {
             try {
                 agentType = binding.type
                 agentName = binding.name
-                masId = binding.masId
+                agentMasId = binding.masId
             } catch (ignored) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
-            if (agentType.isEmpty() || agentName.isEmpty() || masId.isEmpty()) {
+            if (agentType.isEmpty() || agentName.isEmpty() || agentMasId.isEmpty()) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
-            println("masId from groovy " + masId)
+            println("masId from groovy " + agentMasId)
         } else {
             throw new RuntimeException("Функция init не загружена")
         }
