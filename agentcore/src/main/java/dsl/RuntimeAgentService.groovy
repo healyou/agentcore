@@ -108,9 +108,7 @@ class RuntimeAgentService {
         if (on_load_image_provided) {
             Binding binding = new Binding()
 
-            prepareAgentTypes(binding)
-            prepareMessageBodyFormats(binding)
-            prepareMessageGoalTypes(binding)
+            prepareTypes(binding)
             prepareClosures(binding)
 
             binding.image = image
@@ -126,9 +124,7 @@ class RuntimeAgentService {
         if (on_get_message_provided) {
             Binding binding = new Binding()
 
-            prepareAgentTypes(binding)
-            prepareMessageBodyFormats(binding)
-            prepareMessageGoalTypes(binding)
+            prepareTypes(binding)
             prepareClosures(binding)
 
             binding.serviceMessage = serviceMessage
@@ -144,9 +140,7 @@ class RuntimeAgentService {
         if (on_end_image_task_provided) {
             Binding binding = new Binding()
 
-            prepareAgentTypes(binding)
-            prepareMessageBodyFormats(binding)
-            prepareMessageGoalTypes(binding)
+            prepareTypes(binding)
             prepareClosures(binding)
 
             binding.updateImage = updateImage
@@ -235,18 +229,30 @@ class RuntimeAgentService {
         }
     }
 
-    private void prepareAgentTypes(Binding binding) {
-        /* пока типы агентов задаются статично - тк они находятся все в сервисе обмена сообщениями */
-        binding.WORKER = "worker"
-        binding.SERVER = "server"
-    }
+    private void prepareTypes(Binding binding) {
+        /* Типы агентов */
+        agentTypes.each {
+            def code = it.getCode().code
+            binding."${code.toUpperCase()}_AT" = code
+        }
 
-    private void prepareMessageBodyFormats(Binding binding) {
-        binding.JSON = "json"
-    }
+        /* Типы тела сообщения */
+        messageBodyTypes.each {
+            def code = it.getCode().code
+            binding."${code.toUpperCase()}_MBT" = code
+        }
 
-    private void prepareMessageGoalTypes(Binding binding) {
-        binding.TASK_DECISION = "task_decision"
+        /* Типы целей общения */
+        messageGoalTypes.each {
+            def code = it.getCode().code
+            binding."${code.toUpperCase()}_MGT" = code
+        }
+
+        /* Типы сообщений */
+        messageTypes.each {
+            def code = it.getCode().code
+            binding."${code.toUpperCase()}_MT" = code
+        }
     }
 
     /**
