@@ -72,9 +72,9 @@ class AgentGuiController {
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
             }
             val message = serviceMessageService.get(ServiceMessageSC()).get(0)
-            runtimeAgent.onGetMessage(message)
-            runtimeAgent.onLoadImage(null)
-            runtimeAgent.onEndImageTask(null)
+//            runtimeAgent.onGetMessage(message)
+//            runtimeAgent.onLoadImage(null)
+//            runtimeAgent.onEndImageTask(null)
         }
     }
 

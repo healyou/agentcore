@@ -7,9 +7,12 @@ import db.core.systemagent.SystemAgentService
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.jdbc.UncategorizedSQLException
 import service.objects.AgentType
+import java.sql.SQLException
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -90,5 +93,32 @@ class SystemAgentServiceTest : AbstractServiceTest() {
         systemAgentService.get(sc).forEach {
             assertTrue(it.isSendAndGetMessages == sc.isSendAndGetMessages)
         }
+    }
+
+    /* Получение агента по логину в сервисе */
+    @Test
+    fun testGetSystemAgentByServiceName() {
+        val agent = systemAgentService.getByServiceLogin(serviceLogin)
+
+        assertTrue(agent.serviceLogin == serviceLogin)
+    }
+
+    /* Нельзя создать двух агентов с одинаковый service_login */
+    @Test(expected = UncategorizedSQLException::class)
+    fun testCreateTwoAgentWithOneServiceName() {
+        val systemAgent = SystemAgent(
+                serviceLogin,
+                servicePassword,
+                sendAgentTypeCodes,
+                isSendAndGetMessages
+        )
+        systemAgentService.create(systemAgent)
+    }
+
+    /* Проверка существования агента */
+    @Test()
+    fun testIsExistsAgent() {
+        assertTrue(systemAgentService.isExistsAgent(serviceLogin))
+        assertFalse(systemAgentService.isExistsAgent(UUID.randomUUID().toString()))
     }
 }

@@ -1,6 +1,7 @@
 package dsl
 
 import db.core.sc.ServiceMessageSC
+import db.core.sc.SystemAgentSC
 import db.core.servicemessage.ServiceMessageService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
@@ -19,23 +20,20 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     private var getMessagesTimer: Timer? = null
 
     init {
-//        getMessagesTimer = timer("hello-timer", true, 2000, 2000) {
-//            searchMessages()
-//        }
+        getMessagesTimer = timer("hello-timer", true, 2000, 2000) {
+            searchMessages()
+        }
     }
 
     /**
      * Поиск сообщений для текущего агента
      */
     private fun searchMessages() {
-        if (systemAgent == null) {
-            return
-        }
-
+        val systemAgent = getSystemAgent() ?: return
         val messageService = getServiceMessageService()
 
         val sc = ServiceMessageSC()
-        sc.systemAgentId = systemAgent!!.id
+        sc.systemAgentId = systemAgent.id
         sc.isUse = false
 
         messageService.get(sc).forEach {
@@ -45,4 +43,5 @@ abstract class ARuntimeAgent : IRuntimeAgent {
 
     protected abstract fun getSystemAgentService(): SystemAgentService
     protected abstract fun getServiceMessageService(): ServiceMessageService
+    protected abstract fun getSystemAgent(): SystemAgent?
 }

@@ -13,4 +13,8 @@ interface SystemAgentDao {
     fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 
     fun get(sc: SystemAgentSC): List<SystemAgent>
+
+    fun getByServiceLogin(serviceLogin: String): SystemAgent
+
+    fun isExistsAgent(serviceLogin: String): Boolean
 }

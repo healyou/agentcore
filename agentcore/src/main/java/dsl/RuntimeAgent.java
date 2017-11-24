@@ -2,6 +2,8 @@ package dsl;
 
 import db.base.Environment;
 import db.core.servicemessage.ServiceMessage;
+import db.core.systemagent.SystemAgent;
+import db.core.systemagent.SystemAgentService;
 import org.jetbrains.annotations.NotNull;
 import service.LoginService;
 import service.ServerTypeService;
@@ -12,6 +14,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,12 +26,14 @@ import java.util.List;
 public abstract class RuntimeAgent extends ARuntimeAgent {
 
     private RuntimeAgentService runtimeAgentService = new RuntimeAgentService();
+    private SystemAgent systemAgent = null;
 
     public RuntimeAgent(String path) {
         super();
         runtimeAgentService.loadExecuteRules(path);
         runtimeAgentService.applyInit();
         loadServiceTypes(runtimeAgentService);
+        configureSystemAgent();
     }
 
     @Override
@@ -46,9 +51,32 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.applyOnEndImageTask(updateImage);
     }
 
+    @Nullable
+    @Override
+    protected SystemAgent getSystemAgent() {
+        return systemAgent;
+    }
+
     protected abstract ServerTypeService getServerTypeService();
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
+
+    /**
+     * Создание и получение системного агента(из локальной бд)
+     */
+    private void configureSystemAgent() {
+        String agentMasId = String.valueOf(runtimeAgentService.getAgentMasId());
+        SystemAgentService systemAgentService = getSystemAgentService();
+        if (!systemAgentService.isExistsAgent(agentMasId)) {
+            systemAgentService.create(new SystemAgent(
+                    agentMasId,
+                    getEnvironment().getProperty("agent.service.password"),
+                    Collections.emptyList(),
+                    true
+            ));
+        }
+        systemAgent = getSystemAgentService().getByServiceLogin(agentMasId);
+    }
 
     private void loadServiceTypes(RuntimeAgentService runtimeAgentService) {
         LoginService loginService = getLoginService();

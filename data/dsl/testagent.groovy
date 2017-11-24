@@ -1,7 +1,7 @@
 init = {
     type = "worker"
     name = "name"
-    masId = "masId"
+    masId = "masIdNew"
 }
 
 onGetMessage = { message ->

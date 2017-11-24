@@ -45,6 +45,22 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         return jdbcTemplate.query(sql.toString(), SystemAgentRowMapper())
     }
 
+    override fun getByServiceLogin(serviceLogin: String): SystemAgent {
+        return jdbcTemplate.queryForObject(
+                "SELECT * FROM system_agent WHERE service_login = ?",
+                SystemAgentRowMapper(),
+                serviceLogin
+        )
+    }
+
+    override fun isExistsAgent(serviceLogin: String): Boolean {
+        return jdbcTemplate.queryForObject(
+                "SELECT EXISTS (SELECT 1 FROM system_agent WHERE service_login = ?)",
+                Boolean::class.java,
+                serviceLogin
+        )
+    }
+
     /* Делаем поисковых запрос */
     private fun applyCondition(sql: StringBuilder, sc: SystemAgentSC) {
         val addSqlList = arrayListOf<String>()

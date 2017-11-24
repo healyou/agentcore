@@ -15,15 +15,14 @@ open class SystemAgentServiceImpl : SystemAgentService {
     @Autowired
     private lateinit var dao: SystemAgentDao
 
-    override fun create(systemAgent: SystemAgent): Long {
-        return dao.create(systemAgent)
-    }
+    override fun create(systemAgent: SystemAgent): Long = dao.create(systemAgent)
 
-    override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> {
-        return dao.get(isDeleted, isSendAndGetMessages)
-    }
+    override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> =
+            dao.get(isDeleted, isSendAndGetMessages)
 
-    override fun get(sc: SystemAgentSC): List<SystemAgent> {
-        return dao.get(sc)
-    }
+    override fun get(sc: SystemAgentSC): List<SystemAgent> = dao.get(sc)
+
+    override fun getByServiceLogin(serviceLogin: String): SystemAgent = dao.getByServiceLogin(serviceLogin)
+
+    override fun isExistsAgent(serviceLogin: String): Boolean = dao.isExistsAgent(serviceLogin)
 }

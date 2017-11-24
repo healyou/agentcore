@@ -142,6 +142,7 @@ class RuntimeAgentServiceTest extends Assert {
             ras.isExecuteTestOnGetMessages = false
         }
 
+        /* Выполняется функция в dsl, которая проверяет условие СОЗДАННЫЙ_ТИП == "значение типа" */
         ras.agentTypes.each {
             ras.testLoadExecuteRules(String.format(rule, "${ras.getAgentTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
             testClosure()
