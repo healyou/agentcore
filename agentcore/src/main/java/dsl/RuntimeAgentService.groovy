@@ -233,26 +233,40 @@ class RuntimeAgentService {
         /* Типы агентов */
         agentTypes.each {
             def code = it.getCode().code
-            binding."${code.toUpperCase()}_AT" = code
+            binding."${getAgentTypeVariableByCode(code)}" = code
         }
 
         /* Типы тела сообщения */
         messageBodyTypes.each {
             def code = it.getCode().code
-            binding."${code.toUpperCase()}_MBT" = code
+            binding."${getMessageBodyTypeVariableByCode(code)}" = code
         }
 
         /* Типы целей общения */
         messageGoalTypes.each {
             def code = it.getCode().code
-            binding."${code.toUpperCase()}_MGT" = code
+            binding."${getMessageGoalTypeVariableByCode(code)}" = code
         }
 
         /* Типы сообщений */
         messageTypes.each {
             def code = it.getCode().code
-            binding."${code.toUpperCase()}_MT" = code
+            binding."${getMessaTypeVariableByCode(code)}" = code
         }
+    }
+
+    /* Имена переменных словарей */
+    public String getAgentTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_AT"
+    }
+    public String getMessaTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_MT"
+    }
+    public String getMessageGoalTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_MGT"
+    }
+    public String getMessageBodyTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_MBT"
     }
 
     /**

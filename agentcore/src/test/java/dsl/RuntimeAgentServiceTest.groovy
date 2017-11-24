@@ -3,6 +3,10 @@ package dsl
 import db.core.servicemessage.ServiceMessage
 import org.junit.Assert
 import org.junit.Test
+import service.objects.AgentType
+import service.objects.MessageBodyType
+import service.objects.MessageGoalType
+import service.objects.MessageType
 
 import java.awt.image.BufferedImage
 
@@ -109,7 +113,54 @@ class RuntimeAgentServiceTest extends Assert {
         }
     }
 
-    private runExpectedFunctionError(Closure c) {
+    /* Проверка создания всех переменный из типов данных словарей(с сервиса) */
+    @Test
+    void testCreateBindingTypeVariables() {
+        /* создание данных */
+        def rule = testTypeRule
+        def ras = new TestRuntimeAgentServiceClass()
+        // TODO - вынести в модуль Objects
+        ras.agentTypes = Arrays.asList(
+                new AgentType(1L, AgentType.Code.WORKER, "name", false),
+                new AgentType(1L, AgentType.Code.SERVER, "name", false)
+        )
+        ras.messageBodyTypes = Arrays.asList(
+                new MessageBodyType(1L, MessageBodyType.Code.JSON, "name", false)
+        )
+        ras.messageGoalTypes = Arrays.asList(
+                new MessageGoalType(1L, MessageGoalType.Code.TASK_DECISION, "name", false)
+        )
+        ras.messageTypes = Arrays.asList(
+                new MessageType(1L, MessageType.Code.SEARCH_SOLUTION, "name", 1, ras.messageGoalTypes[0], false),
+                new MessageType(1L, MessageType.Code.SEARCH_TASK_SOLUTION, "name", 2, ras.messageGoalTypes[0], false)
+        )
+
+        /* Проверка выполнения условий с созданными типами */
+        def testClosure = {
+            ras.applyOnGetMessage(mock(ServiceMessage.class))
+            assertEquals(true, ras.isExecuteTestOnGetMessages as Boolean)
+            ras.isExecuteTestOnGetMessages = false
+        }
+
+        ras.agentTypes.each {
+            ras.testLoadExecuteRules(String.format(rule, "${ras.getAgentTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            testClosure()
+        }
+        ras.messageBodyTypes.each {
+            ras.testLoadExecuteRules(String.format(rule, "${ras.getMessageBodyTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            testClosure()
+        }
+        ras.messageGoalTypes.each {
+            ras.testLoadExecuteRules(String.format(rule, "${ras.getMessageGoalTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            testClosure()
+        }
+        ras.messageTypes.each {
+            ras.testLoadExecuteRules(String.format(rule, "${ras.getMessaTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            testClosure()
+        }
+    }
+
+    private boolean runExpectedFunctionError(Closure c) {
         try {
             c()
             false
@@ -117,6 +168,27 @@ class RuntimeAgentServiceTest extends Assert {
             true
         }
     }
+
+    def testTypeRule =
+            """
+                init = {
+                    type = "worker"
+                    name = "name"
+                    masId = "masId"
+                }
+                onGetMessage = {
+                    executeCondition ("Успешное выполнение функции") {
+                        condition() {
+                            %s
+                        }
+                        execute() {
+                            testOnGetMessageFun()
+                        }
+                    }
+                }
+                onLoadImage = {}
+                onEndImageTask = {}
+            """
 
     def testDslConditionBlocksArray = [
             new TestDslConditionBlocks( // все блоки вернут да
