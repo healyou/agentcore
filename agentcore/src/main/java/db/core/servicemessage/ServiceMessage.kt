@@ -1,5 +1,6 @@
 package db.core.servicemessage
 
+import service.objects.AgentType
 import service.objects.Entity
 import java.util.*
 
@@ -15,6 +16,8 @@ open class ServiceMessage(
         var objectType: ServiceMessageObjectType,
         /* Тип сообщения */
         var messageType: ServiceMessageType,
+        /* Типы агентов, которым отправляется сообщение */
+        var sendAgentTypeCodes: List<AgentType.Code>,
         /* Агент, которому принадлежит сообщение */
         var systemAgentId: Long // todo - дописать работу с системными агентами
 ) : Entity {

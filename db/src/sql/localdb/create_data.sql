@@ -30,5 +30,5 @@ INSERT INTO service_message_object_type (code, name) VALUES
   ('send_message_data', 'Объект отправки сообщения в сервис');
 
 ------------------ agentType data ------------------
-INSERT INTO service_message (json_object, object_type_id, message_type_id, use_date, system_agent_id) VALUES
-  ('{test_json}', 1, 2, strftime('%Y-%m-%d %H:%M:%f'), 1);
+INSERT INTO service_message (json_object, object_type_id, message_type_id, send_agent_type_codes, use_date, system_agent_id) VALUES
+  ('{test_json}', 1, 2, '', strftime('%Y-%m-%d %H:%M:%f'), 1);

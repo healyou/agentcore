@@ -128,6 +128,7 @@ class ServiceTask @Autowired constructor(
                         AbstractAgentService.toJson(it),
                         messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
                         messageTypeService.get(ServiceMessageType.Code.GET),
+                        Collections.emptyList(),
                         systemAgent.id!!
                 )}}
                 ?.forEach { it ->

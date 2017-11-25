@@ -2,6 +2,7 @@ package db.jdbc.servicemessage.jdbc
 
 import db.base.Codable
 import db.base.AbstractRowMapper
+import db.base.sqlite_toAgentCodes
 import db.base.sqlite_toBoolean
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageObjectType
@@ -20,6 +21,7 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
                 getString(rs, "json_object"),
                 mapObjectType(rs),
                 mapMessageType(rs),
+                getString(rs, "send_agent_type_codes").sqlite_toAgentCodes(),
                 getLong(rs, "system_agent_id")
         )
 

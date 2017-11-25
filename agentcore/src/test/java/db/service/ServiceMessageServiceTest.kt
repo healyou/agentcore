@@ -7,6 +7,7 @@ import db.core.systemagent.SystemAgentService
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
+import service.objects.AgentType
 import java.util.*
 import kotlin.test.*
 
@@ -29,6 +30,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     private var jsonObject = "{}"
     private lateinit var objectType: ServiceMessageObjectType
     private lateinit var messageType: ServiceMessageType
+    private val sendAgentTypeCodes = arrayListOf<AgentType.Code>(AgentType.Code.SERVER, AgentType.Code.WORKER)
     private var createDate = Date(System.currentTimeMillis())
     private var useDate: Date? = null
     private var systemAgentId: Long = 0
@@ -44,6 +46,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
                 jsonObject,
                 objectType,
                 messageType,
+                sendAgentTypeCodes,
                 systemAgent.id!!
         )
         message.createDate = createDate
@@ -67,6 +70,9 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(false, message.isUse)
         assertEquals(systemAgentId, message.systemAgentId)
         assertNull(message.useDate)
+        sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
+            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+        }
     }
 
     /* Обновление типа объекта сообщения */
@@ -86,6 +92,9 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(useDate, message.useDate)
         assertEquals(systemAgentId, message.systemAgentId)
         assertNotNull(message.createDate)
+        sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
+            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+        }
 
         assertNotEquals(objectType.code, message.objectType.code)
         assertEquals(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA.code, message.objectType.code.code)
@@ -108,6 +117,9 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(useDate, message.useDate)
         assertEquals(systemAgentId, message.systemAgentId)
         assertNotNull(message.createDate)
+        sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
+            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+        }
 
         assertNotEquals(messageType.code, message.messageType.code)
         assertEquals(ServiceMessageType.Code.GET.code, message.messageType.code.code)
@@ -128,6 +140,9 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(messageType.code, message.messageType.code)
         assertEquals(systemAgentId, message.systemAgentId)
         assertNotNull(message.createDate)
+        sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
+            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+        }
 
         assertEquals(true, message.isUse)
         assertNotNull(message.useDate)
@@ -153,6 +168,9 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertNotNull(message.createDate)
         assertEquals(false, message.isUse)
         assertEquals(messageType.code, message.messageType.code)
+        sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
+            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+        }
 
         assertNotEquals(systemAgentId, message.systemAgentId)
     }

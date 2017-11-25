@@ -4,6 +4,7 @@ CREATE VIEW IF NOT EXISTS service_message_v
     SELECT
       service_message.id,
       service_message.json_object,
+      service_message.send_agent_type_codes,
       service_message.create_date,
       service_message.use_date,
       service_message.object_type_id,
