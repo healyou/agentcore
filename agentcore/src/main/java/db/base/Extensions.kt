@@ -49,7 +49,9 @@ fun String.sqlite_toAgentCodes(): List<AgentType.Code> {
 
     val list = arrayListOf<AgentType.Code>()
     codes.forEach {
-        list.add(Codable.find(AgentType.Code::class.java, it))
+        if (it.isNotEmpty()) {
+            list.add(Codable.find(AgentType.Code::class.java, it))
+        }
     }
 
     return list
@@ -62,7 +64,8 @@ fun List<AgentType.Code>.toSqlite(): String {
     this
             .map { it.code }
             .forEach { codesString = codesString.plus(it + "!") }
-    if (codesString[codesString.length - 1] == '!') {
+
+    if (codesString.isNotEmpty() && codesString[codesString.length - 1] == '!') {
         codesString = codesString.subSequence(0, codesString.length - 1).toString()
     }
 
