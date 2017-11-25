@@ -71,7 +71,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             systemAgentService.create(new SystemAgent(
                     agentMasId,
                     getEnvironment().getProperty("agent.service.password"),
-                    Collections.emptyList(),
                     true
             ));
         }

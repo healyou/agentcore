@@ -1,6 +1,5 @@
 package db.core.systemagent
 
-import service.objects.AgentType
 import service.objects.Entity
 import java.util.*
 
@@ -14,8 +13,6 @@ class SystemAgent(
         var serviceLogin: String,
         /* Пароль от сервиса агентов */
         var servicePassword: String,
-        /* Типы агентов, которым отправляется сообщение */
-        var sendAgentTypeCodes: List<AgentType.Code>,
         /* Нужно ли получать сообщения от сервиса агентов */
         var isSendAndGetMessages: Boolean
 ) : Entity {

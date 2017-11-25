@@ -19,7 +19,6 @@ class SystemAgentRowMapper : AbstractRowMapper<SystemAgent>() {
         val systemAgent = SystemAgent(
                 getString(rs, "service_login"),
                 getString(rs, "service_password"),
-                getString(rs, "send_agent_type_codes").sqlite_toAgentCodes(),
                 getString(rs, "is_sendandget_messages").sqlite_toBoolean()
         )
 

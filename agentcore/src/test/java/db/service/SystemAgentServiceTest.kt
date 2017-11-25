@@ -28,7 +28,6 @@ class SystemAgentServiceTest : AbstractServiceTest() {
     private var id: Long? = null
     private var serviceLogin = "login"
     private var servicePassword = "password"
-    private val sendAgentTypeCodes = arrayListOf<AgentType.Code>(AgentType.Code.SERVER, AgentType.Code.WORKER)
     private val updateDate: Date? = null
     private val isDeleted: Boolean = false
     private val isSendAndGetMessages = false
@@ -38,7 +37,6 @@ class SystemAgentServiceTest : AbstractServiceTest() {
         val systemAgent = SystemAgent(
                 serviceLogin,
                 servicePassword,
-                sendAgentTypeCodes,
                 isSendAndGetMessages
         )
 
@@ -54,9 +52,6 @@ class SystemAgentServiceTest : AbstractServiceTest() {
         assertEquals(id, systemAgent.id)
         assertEquals(serviceLogin, systemAgent.serviceLogin)
         assertEquals(servicePassword, systemAgent.servicePassword)
-        sendAgentTypeCodes.forEach {
-            systemAgent.sendAgentTypeCodes.any { new -> it == new }
-        }
         assertNotNull(systemAgent.createDate)
         assertEquals(updateDate, systemAgent.updateDate)
         assertEquals(isDeleted, systemAgent.isDeleted)
@@ -109,7 +104,6 @@ class SystemAgentServiceTest : AbstractServiceTest() {
         val systemAgent = SystemAgent(
                 serviceLogin,
                 servicePassword,
-                sendAgentTypeCodes,
                 isSendAndGetMessages
         )
         systemAgentService.create(systemAgent)

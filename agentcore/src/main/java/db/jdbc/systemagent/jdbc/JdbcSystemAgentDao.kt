@@ -16,10 +16,9 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun create(systemAgent: SystemAgent): Long {
         jdbcTemplate.update(
-                "insert into system_agent (service_login, service_password, send_agent_type_codes, is_sendandget_messages) VALUES (?, ?, ?, ?)",
+                "insert into system_agent (service_login, service_password, is_sendandget_messages) VALUES (?, ?, ?)",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
-                systemAgent.sendAgentTypeCodes.toSqlite(),
                 systemAgent.isSendAndGetMessages.toSqlite()
         )
 

@@ -173,7 +173,7 @@ class ServiceTask @Autowired constructor(
      * Список получателей сообщения
      */
     private fun getMessageRecipientsIds(systemAgent: SystemAgent, sessionManager: SessionManager): List<Long> {
-        val agentCodes = systemAgent.sendAgentTypeCodes
+        val agentCodes = Collections.emptyList<AgentType.Code>()
         val recipients = arrayListOf<Long>()
 
         agentCodes.forEach { itAgentCode ->

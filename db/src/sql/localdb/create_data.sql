@@ -15,9 +15,9 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.type.get.message.types.url', '/type/getMessageTypes');
 
 ------------------ systemAgent data ------------------
-INSERT INTO system_agent (service_login, service_password, send_agent_type_codes, is_sendandget_messages) VALUES
-  ('masId', 'psw', 'worker!server', 'Y'),
-  ('test1', 'psw', 'worker', 'Y');
+INSERT INTO system_agent (service_login, service_password, is_sendandget_messages) VALUES
+  ('masId', 'psw', 'Y'),
+  ('test1', 'psw', 'Y');
 
 ------------------ service_message_type data ------------------
 INSERT INTO service_message_type (code, name) VALUES

@@ -16,7 +16,6 @@ CREATE TABLE if not exists system_agent
   id INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL, -- Идетификатор
   service_login     TEXT                  NOT NULL UNIQUE, -- Логин от сервиса
   service_password  TEXT                  NOT NULL, -- Пароль от сервиса
-  send_agent_type_codes TEXT              NOT NULL, -- Типы агентов, которым отправляется сообщение(через точку с запятой в строчку)
   create_date       TEXT                  NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
   update_date       TEXT                  , -- Дата редактирования
   is_deleted TEXT NOT NULL DEFAULT ('N') CHECK(is_deleted='N' OR is_deleted='Y'), -- Удалено ли значение
