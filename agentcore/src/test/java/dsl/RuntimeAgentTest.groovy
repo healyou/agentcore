@@ -16,6 +16,10 @@ import service.ServerTypeService
 import service.objects.AgentType
 import testbase.AbstractServiceTest
 
+import java.awt.image.BufferedImage
+
+import static org.easymock.EasyMock.mock
+
 /**
  * Тестирование работы двух агентов, где роль сервера и вызова функций происходит в тестовом режиме
  * И того - тестим отработку всех действий при вз-вии двух агентов
@@ -106,7 +110,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         }
     }
 
-    /* Агенты получают друг от друга сообщения и выполняют соответствующие функции */
+    /* Выполнение функций агентами */
     @Test
     void testGetAgentMessage() {
         assert workerAgent_a1 != null
@@ -114,9 +118,18 @@ class RuntimeAgentTest extends AbstractServiceTest {
 
         workerAgent_a1.onGetMessage(createSystemSendMessage(serverAgent_a2))
         serverAgent_a2.onGetMessage(createSystemSendMessage(workerAgent_a1))
-
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetMessageFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetMessageFun
+
+        workerAgent_a1.onLoadImage(mock(BufferedImage.class))
+        serverAgent_a2.onLoadImage(mock(BufferedImage.class))
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnLoadImageFun
+        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnLoadImageFun
+
+        workerAgent_a1.onEndImageTask(mock(BufferedImage.class))
+        serverAgent_a2.onEndImageTask(mock(BufferedImage.class))
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndImageTaskFun
+        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndImageTaskFun
     }
 
     ServiceMessage createSystemSendMessage(TestRuntimeAgentClass agent) {

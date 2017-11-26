@@ -16,43 +16,23 @@ onGetMessage = { message ->
 }
 
 onLoadImage = { image ->
-    executeCondition ("Наименование") {
-        anyOf {
-            allOf {
-                condition {
-                    true
-                }
-                condition {
-                    true
-                }
-            }
-            condition {
-                false
-            }
+    executeCondition ("Выполним функцию над изображением") {
+        condition {
+            image != null
         }
         execute {
-            testOnLoadImage()
+            a2_testOnLoadImageFun()
         }
     }
 }
 
 onEndImageTask = { updateImage ->
-    executeCondition ("Наименование") {
-        anyOf {
-            allOf {
-                condition {
-                    true
-                }
-                condition {
-                    true
-                }
-            }
-            condition {
-                false
-            }
+    executeCondition ("Выполним функцию над изображением") {
+        condition {
+            updateImage != null
         }
         execute {
-            testOnEndImageTask()
+            a2_testOnEndImageTaskFun()
         }
     }
 }

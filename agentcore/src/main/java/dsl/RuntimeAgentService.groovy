@@ -98,7 +98,6 @@ class RuntimeAgentService {
             if (agentType.isEmpty() || agentName.isEmpty() || agentMasId.isEmpty()) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
-            println("masId from groovy " + agentMasId)
         } else {
             throw new RuntimeException("Функция init не загружена")
         }
@@ -256,16 +255,16 @@ class RuntimeAgentService {
     }
 
     /* Имена переменных словарей */
-    public String getAgentTypeVariableByCode(String code) {
+    String getAgentTypeVariableByCode(String code) {
         "${code.toUpperCase()}_AT"
     }
-    public String getMessaTypeVariableByCode(String code) {
+    String getMessaTypeVariableByCode(String code) {
         "${code.toUpperCase()}_MT"
     }
-    public String getMessageGoalTypeVariableByCode(String code) {
+    String getMessageGoalTypeVariableByCode(String code) {
         "${code.toUpperCase()}_MGT"
     }
-    public String getMessageBodyTypeVariableByCode(String code) {
+    String getMessageBodyTypeVariableByCode(String code) {
         "${code.toUpperCase()}_MBT"
     }
 

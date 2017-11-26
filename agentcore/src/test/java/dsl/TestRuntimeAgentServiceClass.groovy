@@ -11,11 +11,11 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def isExecuteTestOnEndImageTask = false
 
     def isExecuteA1_testOnGetMessageFun = false
-    def isExecuteA1_testOnLoadImage = false
-    def isExecuteA1_testOnEndImageTask = false
+    def isExecuteA1_testOnLoadImageFun = false
+    def isExecuteA1_testOnEndImageTaskFun = false
     def isExecuteA2_testOnGetMessageFun = false
-    def isExecuteA2_testOnLoadImage = false
-    def isExecuteA2_testOnEndImageTask = false
+    def isExecuteA2_testOnLoadImageFun = false
+    def isExecuteA2_testOnEndImageTaskFun = false
 
     /* Повторяет функцию loadExecuteRules - но тут сразу строку передаем а не файл*/
     void testLoadExecuteRules(rules) {
@@ -57,21 +57,21 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
         isExecuteA1_testOnGetMessageFun = true
         def k = 1
     }
-    def a1_testOnLoadImage() {
-        isExecuteA1_testOnLoadImage = true
+    def a1_testOnLoadImageFun() {
+        isExecuteA1_testOnLoadImageFun = true
     }
-    def a1_testOnEndImageTask() {
-        isExecuteA1_testOnEndImageTask = true
+    def a1_testOnEndImageTaskFun() {
+        isExecuteA1_testOnEndImageTaskFun = true
     }
 
     def a2_testOnGetMessageFun() {
         isExecuteA2_testOnGetMessageFun = true
         def k = 1
     }
-    def a2_testOnLoadImage() {
-        isExecuteA2_testOnLoadImage = true
+    def a2_testOnLoadImageFun() {
+        isExecuteA2_testOnLoadImageFun = true
     }
-    def a2_testOnEndImageTask() {
-        isExecuteA2_testOnEndImageTask = true
+    def a2_testOnEndImageTaskFun() {
+        isExecuteA2_testOnEndImageTaskFun = true
     }
 }
