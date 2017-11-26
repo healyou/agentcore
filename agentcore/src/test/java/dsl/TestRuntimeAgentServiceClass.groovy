@@ -10,6 +10,13 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def isExecuteTestOnLoadImage = false
     def isExecuteTestOnEndImageTask = false
 
+    def isExecuteA1_testOnGetMessageFun = false
+    def isExecuteA1_testOnLoadImage = false
+    def isExecuteA1_testOnEndImageTask = false
+    def isExecuteA2_testOnGetMessageFun = false
+    def isExecuteA2_testOnLoadImage = false
+    def isExecuteA2_testOnEndImageTask = false
+
     /* Повторяет функцию loadExecuteRules - но тут сразу строку передаем а не файл*/
     void testLoadExecuteRules(rules) {
         Binding binding = createLoadBindings()
@@ -40,5 +47,31 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
 
     void testOnEndImageTask() {
         isExecuteTestOnEndImageTask = true
+    }
+
+    /**
+     * Методы для тестирования работы двух агентов без интернета(инет - тестовые объекты)
+     */
+
+    def a1_testOnGetMessageFun() {
+        isExecuteA1_testOnGetMessageFun = true
+        def k = 1
+    }
+    def a1_testOnLoadImage() {
+        isExecuteA1_testOnLoadImage = true
+    }
+    def a1_testOnEndImageTask() {
+        isExecuteA1_testOnEndImageTask = true
+    }
+
+    def a2_testOnGetMessageFun() {
+        isExecuteA2_testOnGetMessageFun = true
+        def k = 1
+    }
+    def a2_testOnLoadImage() {
+        isExecuteA2_testOnLoadImage = true
+    }
+    def a2_testOnEndImageTask() {
+        isExecuteA2_testOnEndImageTask = true
     }
 }

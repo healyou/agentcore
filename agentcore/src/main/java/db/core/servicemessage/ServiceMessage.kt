@@ -27,6 +27,8 @@ open class ServiceMessage(
     var createDate: Date? = null
     /* Дата использования(отправки или чтения агентом) */
     var useDate: Date? = null
+    /* Тип отправителя сообщения */
+    var senderCode: AgentType.Code? = null
 
     /**
      * Использовалось ли уже данные сообщение

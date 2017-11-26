@@ -108,9 +108,7 @@ class ServiceTask @Autowired constructor(
     /**
      * Список локальный агентов
      */
-    private fun getSystemAgents(): List<SystemAgent> {
-        return systemAgentService.get(false, true);
-    }
+    private fun getSystemAgents(): List<SystemAgent> = systemAgentService.get(false, true)
 
     /**
      * Чтение сообщений(нужно перед этим залогиниться)
@@ -124,13 +122,17 @@ class ServiceTask @Autowired constructor(
 
         /* Сохраняем сообщения в бд, если такие есть */
         messages
-                ?.map { it -> { ServiceMessage(
+                ?.map { it -> {
+                    val serviceMessage = ServiceMessage(
                         AbstractAgentService.toJson(it),
                         messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
                         messageTypeService.get(ServiceMessageType.Code.GET),
                         Arrays.asList(AgentType.Code.WORKER, AgentType.Code.SERVER),//TODO для теста- возможно вообще ненадо
                         systemAgent.id!!
-                )}}
+                    )
+                    serviceMessage.senderCode = it.sender?.type?.code
+                    serviceMessage
+                }}
                 ?.forEach { it ->
                     localMessageService.save(it.invoke())
                 }

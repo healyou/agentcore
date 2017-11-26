@@ -13,7 +13,6 @@ open class JdbcServiceMessageObjectTypeDao : AbstractDao(), ServiceMessageObject
 
     // TODO общий класс для dictionary
     
-    override fun get(code: ServiceMessageObjectType.Code): ServiceMessageObjectType {
-        return jdbcTemplate.queryForObject("select * from service_message_object_type where code = ?",  ServiceMessageObjectTypeRowMapper(), code.code)
-    }
+    override fun get(code: ServiceMessageObjectType.Code): ServiceMessageObjectType =
+            jdbcTemplate.queryForObject("select * from service_message_object_type where code = ?",  ServiceMessageObjectTypeRowMapper(), code.code)
 }

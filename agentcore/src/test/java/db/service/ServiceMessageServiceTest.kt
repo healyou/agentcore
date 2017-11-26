@@ -1,6 +1,6 @@
 package db.service
 
-import AbstractServiceTest
+import testbase.AbstractServiceTest
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
 import db.core.systemagent.SystemAgentService

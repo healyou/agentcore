@@ -37,6 +37,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
         sc.isUse = false
 
         messageService.get(sc).forEach {
+            messageService.use(it)
             onGetMessage(it)
         }
     }

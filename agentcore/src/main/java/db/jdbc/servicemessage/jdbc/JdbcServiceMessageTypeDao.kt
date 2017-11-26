@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component
 @Component
 open class JdbcServiceMessageTypeDao : AbstractDao(), ServiceMessageTypeDao {
 
-    override fun get(code: ServiceMessageType.Code): ServiceMessageType {
-        return jdbcTemplate.queryForObject("select * from service_message_type where code = ?",  ServiceMessageTypeRowMapper(), code.code)
-    }
+    override fun get(code: ServiceMessageType.Code): ServiceMessageType =
+            jdbcTemplate.queryForObject("select * from service_message_type where code = ?",  ServiceMessageTypeRowMapper(), code.code)
 }

@@ -25,7 +25,7 @@ import java.util.List;
  */
 public abstract class RuntimeAgent extends ARuntimeAgent {
 
-    private RuntimeAgentService runtimeAgentService = new RuntimeAgentService();
+    private RuntimeAgentService runtimeAgentService = createRuntimeAgentService();
     private SystemAgent systemAgent = null;
 
     public RuntimeAgent(String path) {
@@ -57,9 +57,18 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         return systemAgent;
     }
 
+    public RuntimeAgentService getRuntimeAgentService() {
+        return runtimeAgentService;
+    }
+
     protected abstract ServerTypeService getServerTypeService();
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
+
+    /* для облегчения тестирования */
+    protected RuntimeAgentService createRuntimeAgentService() {
+        return new RuntimeAgentService();
+    }
 
     /**
      * Создание и получение системного агента(из локальной бд)

@@ -1,6 +1,6 @@
 package db.service
 
-import AbstractServiceTest
+import testbase.AbstractServiceTest
 import db.core.sc.SystemAgentSC
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
@@ -8,8 +8,6 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.UncategorizedSQLException
-import service.objects.AgentType
-import java.sql.SQLException
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

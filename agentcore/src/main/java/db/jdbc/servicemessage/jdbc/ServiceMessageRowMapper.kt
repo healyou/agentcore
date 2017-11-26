@@ -7,6 +7,7 @@ import db.base.sqlite_toBoolean
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageObjectType
 import db.core.servicemessage.ServiceMessageType
+import service.objects.AgentType
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -26,6 +27,7 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         )
 
         message.id = getLong(rs, "id")
+        message.senderCode = mapSenderCode(rs)
         message.createDate = getDate(rs, "create_date")
         message.useDate = getNullDate(rs, "use_date")
 
@@ -48,5 +50,14 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
                 getString(rs, "message_type_name"),
                 getString(rs, "message_type_is_deleted").sqlite_toBoolean()
         )
+    }
+
+    private fun mapSenderCode(rs: ResultSet) : AgentType.Code? {
+        return try {
+            return Codable.find(AgentType.Code::class.java, getString(rs, "sender_code"))
+
+        } catch (e: Exception) {
+            null
+        }
     }
 }
