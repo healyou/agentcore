@@ -56,7 +56,7 @@ onLoadImage = { image ->
             true
         }
         execute {
-            sendMessage messageType: "typeMessage",
+            sendMessage messageType: SEARCH_SOLUTION_MT,
                     image: image,
                     agentTypes: ["worker", "server"]
             testImageFun2()

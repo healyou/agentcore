@@ -34,6 +34,9 @@ class RuntimeAgentService {
     boolean init_provided = false
     def init = {}
 
+    boolean agent_send_message_provided = false
+    def agentSendMessage = {}
+
     void loadExecuteRules(path) {
         Binding binding = createLoadBindings()
 
@@ -52,6 +55,11 @@ class RuntimeAgentService {
         binding.onEndImageTask = onEndImageTask
 
         return binding
+    }
+
+    void setAgentSendMessageClosure(Closure c) {
+        agent_send_message_provided = true
+        agentSendMessage = c
     }
 
     void checkLoadRules(Binding binding) {
@@ -157,22 +165,33 @@ class RuntimeAgentService {
         binding.onGetMessage = onGetMessage
         binding.onEndImageTask = onEndImageTask
         binding.sendMessage = { Map map ->
-            def messageType = map.get("messageType")
-            def image = map["image"]
-            def agentTypes = map["agentTypes"]
-            def bodyFormat = map["bodyFormat"]
-            def messageGoalType = map["messageGoalType"]
+            /* required fields */
+            SendMessageParameters.values().each {
+                if (it.required && map[it.paramName] == null) {
+                    throw new RuntimeException("Обязательный параметр '" + it.paramName + "' не найден")
+                }
+            }
 
-            assert messageType != null && image != null && agentTypes != null
-            if (bodyFormat == null) {
-                bodyFormat = binding.JSON
+            /* default value fields */
+            def bodyTypeParamName = SendMessageParameters.BODY_TYPE.paramName
+            def goalTypeParamName = SendMessageParameters.MESSAGE_GOAL_TYPE.paramName
+            def bodyType = map[bodyTypeParamName]
+            def messageGoalType = map[goalTypeParamName]
+            if (bodyType == null) {
+                // TODO - параметры тоже дефолтные надо как-то вынести
+                map[bodyTypeParamName] = binding.JSON_MBT
             }
             if (messageGoalType == null) {
-                messageGoalType = binding.TASK_DECISION
+                map[goalTypeParamName] = binding.TASK_DECISION_MGT
             }
 
-            // TODO отправка сообщения
-            println("execute sendMessage")
+            /* call */
+            if (agent_send_message_provided) {
+                agentSendMessage.call(map)
+
+            } else {
+                throw new RuntimeException("Функция sendMessage не загружена")
+            }
         }
         binding.executeCondition = { spec, closure ->
             closure.delegate = delegate
@@ -192,7 +211,7 @@ class RuntimeAgentService {
             def storeResult = binding.result
             def storeAnd = binding.and
 
-            binding.result = true // Starting premise is true
+            binding.result = true
             binding.and = true
             closure()
 
@@ -229,25 +248,18 @@ class RuntimeAgentService {
     }
 
     private void prepareTypes(Binding binding) {
-        /* Типы агентов */
         agentTypes.each {
             def code = it.getCode().code
             binding."${getAgentTypeVariableByCode(code)}" = code
         }
-
-        /* Типы тела сообщения */
         messageBodyTypes.each {
             def code = it.getCode().code
             binding."${getMessageBodyTypeVariableByCode(code)}" = code
         }
-
-        /* Типы целей общения */
         messageGoalTypes.each {
             def code = it.getCode().code
             binding."${getMessageGoalTypeVariableByCode(code)}" = code
         }
-
-        /* Типы сообщений */
         messageTypes.each {
             def code = it.getCode().code
             binding."${getMessaTypeVariableByCode(code)}" = code

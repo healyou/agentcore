@@ -78,6 +78,16 @@ class RuntimeAgentTest extends AbstractServiceTest {
             protected ServiceMessageService getServiceMessageService() {
                 return RuntimeAgentTest.this.serviceMessageService
             }
+
+            @Override
+            protected ServiceMessageTypeService getMessageTypeService() {
+                return RuntimeAgentTest.this.messageTypeService
+            }
+
+            @Override
+            protected ServiceMessageObjectTypeService getMessageObjectTypeService() {
+                return RuntimeAgentTest.this.messageObjectTypeService
+            }
         }
         serverAgent_a2 = new TestRuntimeAgentClass(getClass().getResource("a2_testdsl.groovy").toURI().path) {
 
@@ -106,6 +116,16 @@ class RuntimeAgentTest extends AbstractServiceTest {
             @Override
             protected ServiceMessageService getServiceMessageService() {
                 return RuntimeAgentTest.this.serviceMessageService
+            }
+
+            @Override
+            protected ServiceMessageTypeService getMessageTypeService() {
+                return RuntimeAgentTest.this.messageTypeService
+            }
+
+            @Override
+            protected ServiceMessageObjectTypeService getMessageObjectTypeService() {
+                return RuntimeAgentTest.this.messageObjectTypeService
             }
         }
     }

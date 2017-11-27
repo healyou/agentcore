@@ -1,21 +1,26 @@
 package dsl;
 
+import db.base.Codable;
 import db.base.Environment;
-import db.core.servicemessage.ServiceMessage;
+import db.core.servicemessage.*;
 import db.core.systemagent.SystemAgent;
 import db.core.systemagent.SystemAgentService;
+import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
+import service.AbstractAgentService;
 import service.LoginService;
 import service.ServerTypeService;
 import service.SessionManager;
 import service.objects.*;
 
 import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Класс java, тк использующий его kotlin класс ничего не должен знать про groovy
@@ -30,6 +35,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     public RuntimeAgent(String path) {
         super();
+        runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.loadExecuteRules(path);
         runtimeAgentService.applyInit();
         loadServiceTypes(runtimeAgentService);
@@ -37,7 +43,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    public void onLoadImage(@Nullable Image image) {
+    public void onLoadImage(@NotNull Image image) {
         runtimeAgentService.applyOnLoadImage(image);
     }
 
@@ -64,10 +70,86 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected abstract ServerTypeService getServerTypeService();
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
+    protected abstract ServiceMessageTypeService getMessageTypeService();
+    protected abstract ServiceMessageObjectTypeService getMessageObjectTypeService();
 
     /* для облегчения тестирования */
     protected RuntimeAgentService createRuntimeAgentService() {
         return new RuntimeAgentService();
+    }
+
+    protected void sendMessage(MessageType.Code messageType,
+                             Image image,
+                             List<AgentType.Code> agentTypes,
+                             MessageBodyType.Code bodyFormatType,
+                             MessageGoalType.Code messageGoalType) {
+
+        if (systemAgent.getId() == null) {
+            return;
+        }
+
+        /* TODO работу с изображениями надо бы переписать */
+        String test;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write((BufferedImage) image, "jpg", baos);
+            baos.flush();
+            byte[] imageInByte = baos.toByteArray();
+            baos.close();
+
+            test = AbstractAgentService.Companion.toJson(new JsonImage(
+                    "testFileName",
+                    new byte[] { 1 }
+            ));
+        } catch (Exception ignored) {
+            return;
+        }
+
+        ServiceMessageService messageService = getServiceMessageService();
+        messageService.save(new ServiceMessage(
+                test,
+                getMessageObjectTypeService().get(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA),
+                getMessageTypeService().get(ServiceMessageType.Code.SEND),
+                agentTypes,
+                systemAgent.getId()
+        ));
+
+        System.out.println("RuntimeAgent.sendMessage call");
+    }
+
+    /**
+     * Функция вызывается из groovy
+     * Идёт обработка всех параметров и передача управления самим функциям отправки сообщения
+     */
+    private Closure<Void> createSendMessageClosure() {
+        return new Closure<Void>(null) {
+
+            @Override
+            public Void call(Object arguments) {
+                /* Проверки и дефолтные поля выставляются в dsl */
+                if (!(arguments instanceof Map)) return null;
+                Map map = (Map) arguments;
+
+                String messageType = (String) map.get(SendMessageParameters.MESSAGE_TYPE.getParamName());
+                Image image = (Image) map.get(SendMessageParameters.IMAGE.getParamName());
+                List<String> agentTypes =
+                        map.get(SendMessageParameters.AGENT_TYPES.getParamName()) instanceof List ?
+                                (List<String>) map.get(SendMessageParameters.AGENT_TYPES.getParamName()) :
+                                Collections.emptyList();
+                String bodyType = (String) map.get(SendMessageParameters.BODY_TYPE.getParamName());
+                String messageGoalType = (String) map.get(SendMessageParameters.MESSAGE_GOAL_TYPE.getParamName());
+
+                MessageType.Code messageTypeCode = Codable.Companion.find(MessageType.Code.class, messageType);
+                List<AgentType.Code> agentTypeCodes = agentTypes.stream()
+                        .map(it -> Codable.Companion.find(AgentType.Code.class, it))
+                        .collect(Collectors.toList());
+                MessageBodyType.Code bodyTypeCode = Codable.Companion.find(MessageBodyType.Code.class, bodyType);
+                MessageGoalType.Code messageGoalTypeCode = Codable.Companion.find(MessageGoalType.Code.class, messageGoalType);
+
+                sendMessage(messageTypeCode, image, agentTypeCodes, bodyTypeCode, messageGoalTypeCode);
+                return null;
+            }
+        };
     }
 
     /**
@@ -161,5 +243,32 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
         runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
         runtimeAgentService.setMessageTypes(messageTypes);
+    }
+
+    // TODO в отдельный класс - если работать буду с изображениями - стырить работу с файлами из EREPORT
+    private class JsonImage {
+        private String name;
+        private byte[] data;
+
+        public JsonImage(String name, byte[] data) {
+            this.setName(name);
+            this.setData(data);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+
+        public void setData(byte[] data) {
+            this.data = data;
+        }
     }
 }

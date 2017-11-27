@@ -3,9 +3,7 @@ package gui
 import db.base.Environment
 import db.core.sc.ServiceMessageSC
 import db.core.sc.SystemAgentSC
-import db.core.servicemessage.ServiceMessage
-import db.core.servicemessage.ServiceMessageService
-import db.core.servicemessage.ServiceMessageType
+import db.core.servicemessage.*
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
 import dsl.RuntimeAgent
@@ -25,6 +23,11 @@ import service.ServerTypeService
 import java.awt.Image
 import java.awt.image.BufferedImage
 import java.text.SimpleDateFormat
+import java.io.IOException
+import java.io.File
+import javax.imageio.ImageIO
+
+
 
 
 /**
@@ -37,6 +40,10 @@ class AgentGuiController {
     private lateinit var systemAgentService: SystemAgentService
     @Autowired
     private lateinit var serviceMessageService: ServiceMessageService
+    @Autowired
+    private lateinit var messageObjectTypeService: ServiceMessageObjectTypeService
+    @Autowired
+    private lateinit var messageTypeService: ServiceMessageTypeService
     @Autowired
     private lateinit var serverTypeService: ServerTypeService
     @Autowired
@@ -70,10 +77,17 @@ class AgentGuiController {
                 override fun getServerTypeService(): ServerTypeService = this@AgentGuiController.serverTypeService
                 override fun getLoginService(): LoginService = this@AgentGuiController.loginService
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
+                override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
+                override fun getMessageObjectTypeService(): ServiceMessageObjectTypeService = this@AgentGuiController.messageObjectTypeService
             }
             val message = serviceMessageService.get(ServiceMessageSC()).get(0)
-//            runtimeAgent.onGetMessage(message)
-//            runtimeAgent.onLoadImage(null)
+            //runtimeAgent.onGetMessage(message)
+            var img: BufferedImage? = null
+            try {
+                img = ImageIO.read(File("C:\\Users\\user\\IdeaProjects\\agentproject\\agentcore\\src\\test\\resources\\testimage.jpg"))
+            } catch (e: IOException) {
+            }
+            runtimeAgent.onLoadImage(img!!)
 //            runtimeAgent.onEndImageTask(null)
         }
     }
