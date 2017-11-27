@@ -1,4 +1,4 @@
-package testbase
+package objects
 
 import service.objects.AgentType
 import service.objects.MessageBodyType

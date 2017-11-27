@@ -7,10 +7,9 @@ import service.objects.AgentType
 import service.objects.MessageBodyType
 import service.objects.MessageGoalType
 import service.objects.MessageType
-import testbase.TypesObjects
+import objects.TypesObjects
 
 import java.awt.image.BufferedImage
-import java.util.stream.Collectors
 
 import static org.easymock.EasyMock.mock
 
@@ -95,18 +94,18 @@ class RuntimeAgentServiceTest extends Assert {
     /* Если в dsl не предоставлены все функции - выходит ошибка */
     @Test
     void testLoadErrorsDsl() {
-        def runtimeAgentService = new RuntimeAgentService()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        assertTrue(runExpectedFunctionError { runtimeAgentService.loadExecuteRules(getClass().getResource("noinitagentdsl.groovy").toURI().path) })
-        assertFalse(runExpectedFunctionError { runtimeAgentService.loadExecuteRules(getClass().getResource("testagentdsl.groovy").toURI().path) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(createNotInitBlockDsl())})
+        assertFalse(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(createAllBlocksDsl())})
     }
 
     /* Тест загрузки данных из dsl */
     @Test
     void testApplyInit() {
-        def runtimeAgentService = new RuntimeAgentService()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        runtimeAgentService.loadExecuteRules(getClass().getResource("testagentdsl.groovy").toURI().path)
+        runtimeAgentService.testLoadExecuteRules(createAllBlocksDsl())
         runtimeAgentService.applyInit()
 
         /* Данные из файла testagentdsl.groovy */
@@ -120,7 +119,25 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteDslFunction() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        runtimeAgentService.loadExecuteRules(getClass().getResource("testagentdsl.groovy").toURI().path)
+        runtimeAgentService.testLoadExecuteRules(
+                createDslWithExecuteConditionBlocks(
+                        """
+                            execute {
+                                testOnGetMessageFun()
+                            }
+                        """,
+                        """
+                            execute {
+                                testOnLoadImage()
+                            }
+                        """,
+                        """
+                            execute {
+                                testOnEndImageTask()
+                            }
+                        """
+                )
+        )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class))
         runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class))
@@ -137,22 +154,13 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteFunctionWithoutCondition() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                """
-                    init = {
-                        type = "worker"
-                        name = "name"
-                        masId = "masId"
-                    }
-                    onGetMessage = { message ->
-                        executeCondition ("Выполняется всегда") {
+                createDslWithOnGetMessageExecuteConditionBlock(
+                        """
                             execute {
                                 testOnGetMessageFun()
                             }
-                        }
-                    }
-                    onLoadImage = {}
-                    onEndImageTask = {}
-                """
+                        """
+                )
         )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
@@ -165,20 +173,13 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteFunctionWithoutExecuteConditionBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                """
-                    init = {
-                        type = "worker"
-                        name = "name"
-                        masId = "masId"
-                    }
-                    onGetMessage = { message ->
-                        execute {
-                            testOnGetMessageFun()
-                        }
-                    }
-                    onLoadImage = {}
-                    onEndImageTask = {}
-                """
+                createDslWithOnGetMessageBlock(
+                        """
+                            execute {
+                                testOnGetMessageFun()
+                            }
+                        """
+                )
         )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
@@ -189,18 +190,11 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteLibraryFunctionWithoutExecuteBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                """
-                    init = {
-                        type = "worker"
-                        name = "name"
-                        masId = "masId"
-                    }
-                    onGetMessage = { message ->
-                        testOnGetMessageFun()
-                    }
-                    onLoadImage = {}
-                    onEndImageTask = {}
-                """
+                createDslWithOnGetMessageBlock(
+                        """
+                            testOnGetMessageFun()
+                        """
+                )
         )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
@@ -211,41 +205,34 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteMoreOneConditionInOneBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                """
-                    init = {
-                        type = "worker"
-                        name = "name"
-                        masId = "masId"
-                    }
-                    onGetMessage = { message ->
-                        executeCondition ("Выполняется всегда") {
-                            condition {
-                                true
+                createDslWithOnGetMessageBlock(
+                        """
+                            executeCondition ("Выполняется всегда") {
+                                condition {
+                                    true
+                                }
+                                execute {
+                                    testOnGetMessageFun()
+                                }
                             }
-                            execute {
-                                testOnGetMessageFun()
+                            executeCondition ("Выполняется всегда") {
+                                condition {
+                                    true
+                                }
+                                execute {
+                                    testOnLoadImage()
+                                }
                             }
-                        }
-                        executeCondition ("Выполняется всегда") {
-                            condition {
-                                true
+                            executeCondition ("Выполняется всегда") {
+                                condition {
+                                    true
+                                }
+                                execute {
+                                    testOnEndImageTask()
+                                }
                             }
-                            execute {
-                                testOnLoadImage()
-                            }
-                        }
-                        executeCondition ("Выполняется всегда") {
-                            condition {
-                                true
-                            }
-                            execute {
-                                testOnEndImageTask()
-                            }
-                        }
-                    }
-                    onLoadImage = {}
-                    onEndImageTask = {}
-                """
+                        """
+                )
         )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
@@ -362,7 +349,32 @@ class RuntimeAgentServiceTest extends Assert {
         }
     }
 
-    String createDslWithOnGetMessageBlock(executeConditionBlockBody) {
+    // TODO - вынести в objects все создания dsl
+    String createNotInitBlockDsl() {
+        """
+            onGetMessage = { message -> }
+            onLoadImage = { image -> }
+            onEndImageTask = { updateImage -> }
+        """
+    }
+
+    String createAllBlocksDsl() {
+        """
+            init = {
+                type = "worker"
+                name = "name"
+                masId = "masId"
+            }
+            onGetMessage = { message ->
+            }
+            onLoadImage = { image ->
+            }
+            onEndImageTask = { updateImage ->
+            }
+        """
+    }
+
+    String createDslWithOnGetMessageExecuteConditionBlock(executeConditionBlockBody) {
         """
             init = {
                 type = "worker"
@@ -378,6 +390,54 @@ class RuntimeAgentServiceTest extends Assert {
             }
             onLoadImage = {}
             onEndImageTask = {}
+        """
+    }
+
+    String createDslWithOnGetMessageBlock(executeConditionBlockBody) {
+        """
+            init = {
+                type = "worker"
+                name = "name"
+                masId = "masId"
+            }
+            onGetMessage = {
+                """ +
+                executeConditionBlockBody +
+                """
+            }
+            onLoadImage = {}
+            onEndImageTask = {}
+        """
+    }
+
+    String createDslWithExecuteConditionBlocks(onGetMessageBlock, onLoadImageBlock, onEndImageBlock) {
+        """
+            init = {
+                type = "worker"
+                name = "name"
+                masId = "masId"
+            }
+            onGetMessage = {
+                executeCondition ("BlockBody") {
+                    """ +
+                    onGetMessageBlock +
+                    """
+                }
+            }
+            onLoadImage = {
+                executeCondition ("BlockBody") {
+                    """ +
+                    onLoadImageBlock +
+                    """
+                }
+            }
+            onEndImageTask = {
+                executeCondition ("BlockBody") {
+                    """ +
+                    onEndImageBlock +
+                    """
+                }
+            }
         """
     }
 

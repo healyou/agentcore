@@ -1,6 +1,7 @@
 package dsl
 
 import db.base.Environment
+import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageObjectType
 import db.core.servicemessage.ServiceMessageObjectTypeService
@@ -15,6 +16,8 @@ import service.LoginService
 import service.ServerTypeService
 import service.objects.AgentType
 import testbase.AbstractServiceTest
+import objects.MockObjects
+import objects.OtherObjects
 
 import java.awt.image.BufferedImage
 
@@ -42,8 +45,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
     ServerTypeService serverTypeService
     @Autowired
     Environment environment
-    @Autowired
-    LoginService loginService
+    LoginService loginService = MockObjects.loginService()
 
     TestRuntimeAgentClass workerAgent_a1
     TestRuntimeAgentClass serverAgent_a2
@@ -130,12 +132,21 @@ class RuntimeAgentTest extends AbstractServiceTest {
         }
     }
 
+    /* Отправленное из dsl сообщение сохраняется в базе данных */
+    @Test
+    void testSendMessage() {
+        /* отправка сообщения из onLoadImage */
+        def sc = new ServiceMessageSC()
+        sc.systemAgentId = workerAgent_a1.systemAgent.id
+        def prevSize = serviceMessageService.get(sc).size()
+        workerAgent_a1.onLoadImage(OtherObjects.image())
+        def updateSize = serviceMessageService.get(sc).size()
+        assert prevSize != updateSize && prevSize + 1 == updateSize
+    }
+
     /* Выполнение функций агентами */
     @Test
     void testGetAgentMessage() {
-        assert workerAgent_a1 != null
-        assert serverAgent_a2 != null
-
         workerAgent_a1.onGetMessage(createSystemSendMessage(serverAgent_a2))
         serverAgent_a2.onGetMessage(createSystemSendMessage(workerAgent_a1))
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetMessageFun

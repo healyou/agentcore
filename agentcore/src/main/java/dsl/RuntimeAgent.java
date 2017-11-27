@@ -174,6 +174,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         SessionManager sessionManager = new SessionManager();
 
         /* Не проверяем выход данного метода т.к. мы уже могли быть зареганы */
+        // TODO заменить эти сервисы на mock в тестах - скорость работы вырастет
         loginService.registration(
                 new RegistrationData(
                         runtimeAgentService.getAgentMasId().toString(),

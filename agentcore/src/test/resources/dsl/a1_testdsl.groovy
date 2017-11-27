@@ -21,6 +21,9 @@ onLoadImage = { image ->
             image != null
         }
         execute {
+            sendMessage messageType: "search_solution",
+                    image: image,
+                    agentTypes: ["worker", "server"]
             a1_testOnLoadImageFun()
         }
     }
