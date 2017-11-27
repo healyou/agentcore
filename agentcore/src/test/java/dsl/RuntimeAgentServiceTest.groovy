@@ -1,6 +1,7 @@
 package dsl
 
 import db.core.servicemessage.ServiceMessage
+import objects.DslObjects
 import org.junit.Assert
 import org.junit.Test
 import service.objects.AgentType
@@ -32,7 +33,7 @@ class RuntimeAgentServiceTest extends Assert {
             isExecuteSendMessage = true
         })
         runtimeAgentService.testLoadExecuteRules(
-                createDslWithOnGetLoadImageBlock(
+                DslObjects.createDslWithOnGetLoadImageBlock(
                         """
                             execute {
                                 sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${MessageType.Code.values()[0].code}",
@@ -57,7 +58,7 @@ class RuntimeAgentServiceTest extends Assert {
             isExecuteSendMessage = true
         })
         runtimeAgentService.testLoadExecuteRules(
-                createDslWithOnGetLoadImageBlock(
+                DslObjects.createDslWithOnGetLoadImageBlock(
                         """
                             execute {
                                 sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${MessageType.Code.values()[0].code}",
@@ -96,8 +97,8 @@ class RuntimeAgentServiceTest extends Assert {
     void testLoadErrorsDsl() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        assertTrue(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(createNotInitBlockDsl())})
-        assertFalse(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(createAllBlocksDsl())})
+        assertTrue(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(DslObjects.notInitBlockDsl)})
+        assertFalse(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)})
     }
 
     /* Тест загрузки данных из dsl */
@@ -105,7 +106,7 @@ class RuntimeAgentServiceTest extends Assert {
     void testApplyInit() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        runtimeAgentService.testLoadExecuteRules(createAllBlocksDsl())
+        runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)
         runtimeAgentService.applyInit()
 
         /* Данные из файла testagentdsl.groovy */
@@ -120,7 +121,7 @@ class RuntimeAgentServiceTest extends Assert {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
         runtimeAgentService.testLoadExecuteRules(
-                createDslWithExecuteConditionBlocks(
+                DslObjects.createDslWithExecuteConditionBlocks(
                         """
                             execute {
                                 testOnGetMessageFun()
@@ -154,7 +155,7 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteFunctionWithoutCondition() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                createDslWithOnGetMessageExecuteConditionBlock(
+                DslObjects.createDslWithOnGetMessageExecuteConditionBlock(
                         """
                             execute {
                                 testOnGetMessageFun()
@@ -205,7 +206,7 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteMoreOneConditionInOneBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                createDslWithOnGetMessageBlock(
+                DslObjects.createDslWithOnGetMessageBlock(
                         """
                             executeCondition ("Выполняется всегда") {
                                 condition {
@@ -273,7 +274,7 @@ class RuntimeAgentServiceTest extends Assert {
     /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */
     @Test
     void testDslExecuteConditionBlock() {
-        testDslConditionBlocksArray.forEach {
+        DslObjects.testDslConditionBlocksArray.forEach {
             def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
             runtimeAgentService.testLoadExecuteRules(it.rules)
@@ -287,23 +288,12 @@ class RuntimeAgentServiceTest extends Assert {
     @Test
     void testCreateBindingTypeVariables() {
         /* создание данных */
-        def rule = testTypeRule
+        def rule = DslObjects.testTypeRule
         def ras = new TestRuntimeAgentServiceClass()
-        // TODO - вынести в модуль Objects
-        ras.agentTypes = Arrays.asList(
-                new AgentType(1L, AgentType.Code.WORKER, "name", false),
-                new AgentType(1L, AgentType.Code.SERVER, "name", false)
-        )
-        ras.messageBodyTypes = Arrays.asList(
-                new MessageBodyType(1L, MessageBodyType.Code.JSON, "name", false)
-        )
-        ras.messageGoalTypes = Arrays.asList(
-                new MessageGoalType(1L, MessageGoalType.Code.TASK_DECISION, "name", false)
-        )
-        ras.messageTypes = Arrays.asList(
-                new MessageType(1L, MessageType.Code.SEARCH_SOLUTION, "name", 1, ras.messageGoalTypes[0], false),
-                new MessageType(1L, MessageType.Code.SEARCH_TASK_SOLUTION, "name", 2, ras.messageGoalTypes[0], false)
-        )
+        ras.agentTypes = TypesObjects.agentTypes
+        ras.messageBodyTypes = TypesObjects.messageBodyTypes
+        ras.messageGoalTypes = TypesObjects.messageGoalTypes
+        ras.messageTypes = TypesObjects.messageTypes
 
         /* Проверка выполнения условий с созданными типами */
         def testClosure = {
@@ -333,10 +323,12 @@ class RuntimeAgentServiceTest extends Assert {
 
     TestRuntimeAgentServiceClass createTestRuntimeAgentServiceClass() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
+
         runtimeAgentService.setAgentTypes(TypesObjects.agentTypes)
         runtimeAgentService.setMessageBodyTypes(TypesObjects.messageBodyTypes)
         runtimeAgentService.setMessageGoalTypes(TypesObjects.messageGoalTypes)
         runtimeAgentService.setMessageTypes(TypesObjects.messageTypes)
+
         runtimeAgentService
     }
 
@@ -347,285 +339,5 @@ class RuntimeAgentServiceTest extends Assert {
         } catch (ignored) {
             true
         }
-    }
-
-    // TODO - вынести в objects все создания dsl
-    String createNotInitBlockDsl() {
-        """
-            onGetMessage = { message -> }
-            onLoadImage = { image -> }
-            onEndImageTask = { updateImage -> }
-        """
-    }
-
-    String createAllBlocksDsl() {
-        """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
-            onGetMessage = { message ->
-            }
-            onLoadImage = { image ->
-            }
-            onEndImageTask = { updateImage ->
-            }
-        """
-    }
-
-    String createDslWithOnGetMessageExecuteConditionBlock(executeConditionBlockBody) {
-        """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
-            onGetMessage = {
-                executeCondition ("BlockBody") {
-        """ +
-                    executeConditionBlockBody +
-        """
-                }
-            }
-            onLoadImage = {}
-            onEndImageTask = {}
-        """
-    }
-
-    String createDslWithOnGetMessageBlock(executeConditionBlockBody) {
-        """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
-            onGetMessage = {
-                """ +
-                executeConditionBlockBody +
-                """
-            }
-            onLoadImage = {}
-            onEndImageTask = {}
-        """
-    }
-
-    String createDslWithExecuteConditionBlocks(onGetMessageBlock, onLoadImageBlock, onEndImageBlock) {
-        """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
-            onGetMessage = {
-                executeCondition ("BlockBody") {
-                    """ +
-                    onGetMessageBlock +
-                    """
-                }
-            }
-            onLoadImage = {
-                executeCondition ("BlockBody") {
-                    """ +
-                    onLoadImageBlock +
-                    """
-                }
-            }
-            onEndImageTask = {
-                executeCondition ("BlockBody") {
-                    """ +
-                    onEndImageBlock +
-                    """
-                }
-            }
-        """
-    }
-
-    String createDslWithOnGetLoadImageBlock(executeConditionBlockBody) {
-        """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
-            onGetMessage = {}
-            onLoadImage = { image ->
-                executeCondition ("BlockBody") {
-        """ +
-                    executeConditionBlockBody +
-        """
-                }
-            }
-            onEndImageTask = {}
-        """
-    }
-
-    def testTypeRule =
-            """
-                init = {
-                    type = "worker"
-                    name = "name"
-                    masId = "masId"
-                }
-                onGetMessage = {
-                    executeCondition ("Успешное выполнение функции") {
-                        condition() {
-                            %s
-                        }
-                        execute() {
-                            testOnGetMessageFun()
-                        }
-                    }
-                }
-                onLoadImage = {}
-                onEndImageTask = {}
-            """
-
-    def testDslConditionBlocksArray = [
-            new TestDslConditionBlocks( // все блоки вернут да
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
-                        onGetMessage = { message ->
-                            executeCondition ("Успешное выполнение функции") {
-                                anyOf {
-                                    allOf {
-                                        condition {
-                                            true
-                                        }
-                                        condition {
-                                            true
-                                        }
-                                    }
-                                    condition {
-                                        false
-                                    }
-                                }
-                                execute {
-                                    testOnGetMessageFun()
-                                }
-                            }
-                        }
-                        onLoadImage = {}
-                        onEndImageTask = {}
-                    """,
-                    expectedExecute: true
-            ),
-            new TestDslConditionBlocks( // блоки allOf вернёт нет
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
-                        onGetMessage = { message ->
-                            executeCondition ("Нет выполнение функции") {
-                                anyOf {
-                                    allOf {
-                                        condition {
-                                            true
-                                        }
-                                        condition {
-                                            false
-                                        }
-                                    }
-                                    condition {
-                                        false
-                                    }
-                                }
-                                execute {
-                                    testOnGetMessageFun()
-                                }
-                            }
-                        }
-                        onLoadImage = {}
-                        onEndImageTask = {}
-                    """,
-                    expectedExecute: false
-            ),
-            new TestDslConditionBlocks( // блок вернёт нет
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
-                        onGetMessage = { message ->
-                            executeCondition ("Успешное выполнение функции") {
-                                anyOf {
-                                    allOf {
-                                        condition {
-                                            true
-                                        }
-                                        condition {
-                                            true
-                                        }
-                                    }
-                                    condition {
-                                        false
-                                    }
-                                }
-                                // по and объединяются
-                                condition {
-                                    false
-                                }
-                                execute {
-                                    testOnGetMessageFun()
-                                }
-                            }
-                        }
-                        onLoadImage = {}
-                        onEndImageTask = {}
-                    """,
-                    expectedExecute: false
-            ),
-            new TestDslConditionBlocks(
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
-                        onGetMessage = { message ->
-                            executeCondition ("Успешное выполнение функции") {
-                                execute {
-                                    testOnGetMessageFun()
-                                }
-                            }
-                        }
-                        onLoadImage = {}
-                        onEndImageTask = {}
-                    """,
-                    expectedExecute: true
-            ),
-            new TestDslConditionBlocks(
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
-                        onGetMessage = { message ->
-                            executeCondition ("Успешное выполнение функции") {
-                                condition {
-                                    true
-                                }
-                                execute {
-                                    testOnGetMessageFun()
-                                }
-                            }
-                        }
-                        onLoadImage = {}
-                        onEndImageTask = {}
-                    """,
-                    expectedExecute: true
-            )
-    ]
-    private class TestDslConditionBlocks {
-        def rules
-        def expectedExecute
     }
 }
