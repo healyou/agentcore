@@ -55,7 +55,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
 
     def a1_testOnGetMessageFun() {
         isExecuteA1_testOnGetMessageFun = true
-        def k = 1
     }
     def a1_testOnLoadImageFun() {
         isExecuteA1_testOnLoadImageFun = true
@@ -66,7 +65,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
 
     def a2_testOnGetMessageFun() {
         isExecuteA2_testOnGetMessageFun = true
-        def k = 1
     }
     def a2_testOnLoadImageFun() {
         isExecuteA2_testOnLoadImageFun = true

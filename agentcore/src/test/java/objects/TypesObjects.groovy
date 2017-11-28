@@ -10,6 +10,14 @@ import service.objects.MessageType
  */
 class TypesObjects {
 
+    static def firstAgentType() {
+        new AgentType(1L, AgentType.Code.values()[0], "первый тип", false)
+    }
+
+    static def firstAgentTypeCodeStr() {
+        firstAgentType().code.code
+    }
+
     static final def agentTypes = Arrays.asList(
             new AgentType(1L, AgentType.Code.SERVER, "Рабочий агент", false),
             new AgentType(2L, AgentType.Code.WORKER, "Серверный агент", false)

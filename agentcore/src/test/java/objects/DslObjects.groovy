@@ -12,28 +12,30 @@ class DslObjects {
             onEndImageTask = { updateImage -> }
         """
 
-    static final def allBlocksDsl =
+    static def allBlocksDslWithInitParams(type, name, masId) {
         """
             init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
+                type = "$type"
+                name = "$name"
+                masId = "$masId"
             }
-            onGetMessage = { message ->
-            }
-            onLoadImage = { image ->
-            }
-            onEndImageTask = { updateImage ->
-            }
+            onGetMessage = { message -> }
+            onLoadImage = { image -> }
+            onEndImageTask = { updateImage -> }
+        """
+    }
+
+    static final def allBlocksDsl =
+        """
+            ${randomInitBlock()}
+            onGetMessage = { message -> }
+            onLoadImage = { image -> }
+            onEndImageTask = { updateImage -> }
         """
 
     static def createDslWithOnGetMessageExecuteConditionBlock(executeConditionBlockBody) {
         """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
+            ${randomInitBlock()}
             onGetMessage = {
                 executeCondition ("BlockBody") {
         """ +
@@ -48,11 +50,7 @@ class DslObjects {
 
     static def createDslWithOnGetMessageBlock(executeConditionBlockBody) {
         """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
+            ${randomInitBlock()}
             onGetMessage = {
                 """ +
                 executeConditionBlockBody +
@@ -65,11 +63,7 @@ class DslObjects {
 
     static def createDslWithExecuteConditionBlocks(onGetMessageBlock, onLoadImageBlock, onEndImageBlock) {
         """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
+            ${randomInitBlock()}
             onGetMessage = {
                 executeCondition ("BlockBody") {
                     """ +
@@ -96,11 +90,7 @@ class DslObjects {
 
     static def createDslWithOnGetLoadImageBlock(executeConditionBlockBody) {
         """
-            init = {
-                type = "worker"
-                name = "name"
-                masId = "masId"
-            }
+            ${randomInitBlock()}
             onGetMessage = {}
             onLoadImage = { image ->
                 executeCondition ("BlockBody") {
@@ -113,35 +103,39 @@ class DslObjects {
         """
     }
 
-    static final def testTypeRule =
-            """
-                init = {
-                    type = "worker"
-                    name = "name"
-                    masId = "masId"
-                }
+    static def executeConditionDsl(condition, execute) {
+        """
+                ${randomInitBlock()}
                 onGetMessage = {
                     executeCondition ("Успешное выполнение функции") {
                         condition() {
-                            %s
+                            $condition
                         }
                         execute() {
-                            testOnGetMessageFun()
+                            $execute
                         }
                     }
                 }
                 onLoadImage = {}
                 onEndImageTask = {}
             """
+    }
 
-    static final def testDslConditionBlocksArray = [
-            new TestDslConditionBlocks( // все блоки вернут да
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
+    static def randomInitBlock() {
+        """
+            init = {
+                type = "${TypesObjects.firstAgentTypeCodeStr()}"
+                name = "${StringObjects.randomString()}"
+                masId = "${StringObjects.randomString()}"
+            }
+        """
+    }
+
+    static def testDslConditionBlocksArray(execute) {
+        [
+                new TestDslConditionBlocks( // все блоки вернут да
+                        rules: """
+                        ${randomInitBlock()}
                         onGetMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 anyOf {
@@ -158,22 +152,18 @@ class DslObjects {
                                     }
                                 }
                                 execute {
-                                    testOnGetMessageFun()
+                                    $execute
                                 }
                             }
                         }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    expectedExecute: true
-            ),
-            new TestDslConditionBlocks( // блоки allOf вернёт нет
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
+                        expectedExecute: true
+                ),
+                new TestDslConditionBlocks( // блоки allOf вернёт нет
+                        rules: """
+                        ${randomInitBlock()}
                         onGetMessage = { message ->
                             executeCondition ("Нет выполнение функции") {
                                 anyOf {
@@ -190,22 +180,18 @@ class DslObjects {
                                     }
                                 }
                                 execute {
-                                    testOnGetMessageFun()
+                                    $execute
                                 }
                             }
                         }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    expectedExecute: false
-            ),
-            new TestDslConditionBlocks( // блок вернёт нет
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
+                        expectedExecute: false
+                ),
+                new TestDslConditionBlocks( // блок вернёт нет
+                        rules: """
+                        ${randomInitBlock()}
                         onGetMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 anyOf {
@@ -226,57 +212,50 @@ class DslObjects {
                                     false
                                 }
                                 execute {
-                                    testOnGetMessageFun()
+                                    $execute
                                 }
                             }
                         }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    expectedExecute: false
-            ),
-            new TestDslConditionBlocks(
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
+                        expectedExecute: false
+                ),
+                new TestDslConditionBlocks(
+                        rules: """
+                        ${randomInitBlock()}
                         onGetMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 execute {
-                                    testOnGetMessageFun()
+                                    $execute
                                 }
                             }
                         }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    expectedExecute: true
-            ),
-            new TestDslConditionBlocks(
-                    rules: """
-                        init = {
-                            type = "worker"
-                            name = "name"
-                            masId = "masId"
-                        }
+                        expectedExecute: true
+                ),
+                new TestDslConditionBlocks(
+                        rules: """
+                        ${randomInitBlock()}
                         onGetMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 condition {
                                     true
                                 }
                                 execute {
-                                    testOnGetMessageFun()
+                                    $execute
                                 }
                             }
                         }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
-                    expectedExecute: true
-            )
-    ]
+                        expectedExecute: true
+                )
+        ]
+    }
     static class TestDslConditionBlocks {
         def rules
         def expectedExecute

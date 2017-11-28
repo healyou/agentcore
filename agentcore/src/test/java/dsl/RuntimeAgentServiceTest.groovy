@@ -2,6 +2,7 @@ package dsl
 
 import db.core.servicemessage.ServiceMessage
 import objects.DslObjects
+import objects.StringObjects
 import org.junit.Assert
 import org.junit.Test
 import service.objects.AgentType
@@ -105,14 +106,16 @@ class RuntimeAgentServiceTest extends Assert {
     @Test
     void testApplyInit() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def type = TypesObjects.firstAgentTypeCodeStr()
+        def name = StringObjects.randomString()
+        def masId = StringObjects.randomString()
 
-        runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)
+        runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDslWithInitParams(type, name, masId))
         runtimeAgentService.applyInit()
 
-        /* Данные из файла testagentdsl.groovy */
-        assertEquals(runtimeAgentService.agentName, "name")
-        assertEquals(runtimeAgentService.agentType, "worker")
-        assertEquals(runtimeAgentService.agentMasId, "masId")
+        assertEquals(runtimeAgentService.agentName, name)
+        assertEquals(runtimeAgentService.agentType, type)
+        assertEquals(runtimeAgentService.agentMasId, masId)
     }
 
     /* Проходят все вызовы функций из dsl */
@@ -174,7 +177,7 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteFunctionWithoutExecuteConditionBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                createDslWithOnGetMessageBlock(
+                DslObjects.createDslWithOnGetMessageBlock(
                         """
                             execute {
                                 testOnGetMessageFun()
@@ -190,13 +193,7 @@ class RuntimeAgentServiceTest extends Assert {
     @Test(expected = Exception.class)
     void testExecuteLibraryFunctionWithoutExecuteBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
-        runtimeAgentService.testLoadExecuteRules(
-                createDslWithOnGetMessageBlock(
-                        """
-                            testOnGetMessageFun()
-                        """
-                )
-        )
+        runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetMessageBlock("testOnGetMessageFun()"))
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
     }
@@ -243,38 +240,10 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
 
-    /* Тестирование работы init блока */
-    @Test
-    void testDslInitBlock() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
-        def type = "worker"
-        def name = "name"
-        def masId = "masId"
-
-        runtimeAgentService.testLoadExecuteRules(
-                """
-                    init = {
-                        type = "$type"
-                        name = "$name"
-                        masId = "$masId"
-                    }
-                    onGetMessage = {}
-                    onLoadImage = {}
-                    onEndImageTask = {}
-                """
-        )
-        runtimeAgentService.applyInit()
-
-        assertTrue(runtimeAgentService.isExecuteInit as Boolean)
-        assertEquals(type, runtimeAgentService.agentType)
-        assertEquals(name, runtimeAgentService.agentName)
-        assertEquals(masId, runtimeAgentService.agentMasId)
-    }
-
     /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */
     @Test
     void testDslExecuteConditionBlock() {
-        DslObjects.testDslConditionBlocksArray.forEach {
+        DslObjects.testDslConditionBlocksArray("testOnGetMessageFun()").forEach {
             def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
             runtimeAgentService.testLoadExecuteRules(it.rules)
@@ -287,8 +256,6 @@ class RuntimeAgentServiceTest extends Assert {
     /* Проверка создания всех переменный из типов данных словарей(с сервиса) */
     @Test
     void testCreateBindingTypeVariables() {
-        /* создание данных */
-        def rule = DslObjects.testTypeRule
         def ras = new TestRuntimeAgentServiceClass()
         ras.agentTypes = TypesObjects.agentTypes
         ras.messageBodyTypes = TypesObjects.messageBodyTypes
@@ -304,19 +271,31 @@ class RuntimeAgentServiceTest extends Assert {
 
         /* Выполняется функция в dsl, которая проверяет условие СОЗДАННЫЙ_ТИП == "значение типа" */
         ras.agentTypes.each {
-            ras.testLoadExecuteRules(String.format(rule, "${ras.getAgentTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                    "${ras.getAgentTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "testOnGetMessageFun()"
+            ))
             testClosure()
         }
         ras.messageBodyTypes.each {
-            ras.testLoadExecuteRules(String.format(rule, "${ras.getMessageBodyTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                    "${ras.getMessageBodyTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "testOnGetMessageFun()"
+            ))
             testClosure()
         }
         ras.messageGoalTypes.each {
-            ras.testLoadExecuteRules(String.format(rule, "${ras.getMessageGoalTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                    "${ras.getMessageGoalTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "testOnGetMessageFun()"
+            ))
             testClosure()
         }
         ras.messageTypes.each {
-            ras.testLoadExecuteRules(String.format(rule, "${ras.getMessaTypeVariableByCode(it.code.code)} == \"${it.code.code}\""))
+            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                    "${ras.getMessaTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "testOnGetMessageFun()"
+            ))
             testClosure()
         }
     }
