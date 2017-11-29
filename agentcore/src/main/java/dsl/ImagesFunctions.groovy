@@ -2,6 +2,8 @@ package dsl
 
 import com.company.AgentImageFunctions
 
+import java.awt.Image
+
 /**
  * Функции для работы с изображениями, которые можно использовать в dsl
  *
@@ -19,5 +21,9 @@ class ImagesFunctions {
 
     static void testImageFun3(Object self, value) {
         AgentImageFunctions.testImageFun3()
+    }
+
+    static void testUpdateImageWithSleep(Object self, Image image, Long sleep) {
+        AgentImageFunctions.testUpdateImageWithSleep(image, sleep)
     }
 }

@@ -1,5 +1,7 @@
 package com.company
 
+import java.awt.Image
+
 /**
  * Функции для работы с изображениями
  *
@@ -20,5 +22,13 @@ object AgentImageFunctions {
     @JvmStatic
     fun testImageFun3() {
         println("testImageFun3")
+    }
+
+    @JvmStatic
+    fun testUpdateImageWithSleep(image: Image, sleep: Long = 5000): Image {
+        println("start testUpdateImageWithSleep")
+        Thread.sleep(sleep)
+        println("end testUpdateImageWithSleep")
+        return image
     }
 }
