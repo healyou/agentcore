@@ -13,32 +13,37 @@ init = {
     masId = "test_agent_1_masId"
 }
 
-onGetMessage = { message ->
-    executeCondition ("Если пришло сообщение от серверного агента") {
-        condition {
-            message.senderCode.code == SERVER_AT
-        }
-        execute {
-            a1_testOnGetMessageFun()
-        }
-    }
-}
-
 onLoadImage = { image ->
-    executeCondition ("Обновить изображение") {
+    executeCondition ("Обновим изображение") {
+        condition {
+            image != null
+        }
         execute {
-            testUpdateImageWithSleep(image, 3000)
+            testUpdateImageWithSleep image: image, sleep: 3000
         }
     }
 }
 
 onEndImageTask = { updateImage ->
-    executeCondition ("Выполним функцию над изображением") {
+    executeCondition ("Отправим сообщение второму тестовому агенту") {
         condition {
             updateImage != null
         }
         execute {
-            a1_testOnEndImageTaskFun()
+            sendMessage messageType: SEARCH_SOLUTION_MT,
+                    image: updateImage,
+                    agentTypes: [TEST_AGENT_TYPE_2_AT]
+        }
+    }
+}
+
+onGetMessage = { message ->
+    executeCondition ("Если пришло сообщение от второго серверного агента") {
+        condition {
+            message.senderCode.code == TEST_AGENT_TYPE_2_AT
+        }
+        execute {
+            println("УСПЕХ - ПРИШЛО СООБЩЕНИЕ ОТ 2ГО ТЕСТОВОГО АГЕНТА")
         }
     }
 }

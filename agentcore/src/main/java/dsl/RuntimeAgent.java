@@ -35,6 +35,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     public RuntimeAgent(String path) {
         super();
+        runtimeAgentService.setRuntimeAgent(this);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.loadExecuteRules(path);
         runtimeAgentService.applyInit();

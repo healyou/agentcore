@@ -13,6 +13,8 @@ import java.awt.Image
  */
 class RuntimeAgentService {
 
+    RuntimeAgent runtimeAgent
+
     def agentType = null
     def agentName = null
     def agentMasId = null

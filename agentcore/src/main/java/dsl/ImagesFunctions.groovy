@@ -24,6 +24,8 @@ class ImagesFunctions {
     }
 
     static void testUpdateImageWithSleep(Object self, Image image, Long sleep) {
-        AgentImageFunctions.testUpdateImageWithSleep(image, sleep)
+        def runtimeAgent = (self.delegate as RuntimeAgentService).runtimeAgent
+        def updateImage = AgentImageFunctions.testUpdateImageWithSleep(image, sleep)
+        runtimeAgent.onEndImageTask(updateImage)
     }
 }

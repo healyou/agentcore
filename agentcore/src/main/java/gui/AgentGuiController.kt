@@ -84,7 +84,7 @@ class AgentGuiController {
             //runtimeAgent.onGetMessage(message)
             var img: BufferedImage? = null
             try {
-                img = ImageIO.read(File("C:\\Users\\user\\IdeaProjects\\agentproject\\agentcore\\src\\test\\resources\\testimage.jpg"))
+                img = ImageIO.read(File("C:\\Users\\lappi\\Intellij IDEA\\Projects\\agentproject\\agentcore\\src\\test\\resources\\testimage.jpg"))
             } catch (e: IOException) {
             }
             runtimeAgent.onLoadImage(img!!)
