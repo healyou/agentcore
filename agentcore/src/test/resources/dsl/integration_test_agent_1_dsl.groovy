@@ -40,7 +40,7 @@ onEndImageTask = { updateImage ->
 onGetMessage = { message ->
     executeCondition ("Если пришло сообщение от второго серверного агента") {
         condition {
-            message.senderCode.code == TEST_AGENT_TYPE_2_AT
+            message.senderType == TEST_AGENT_TYPE_2_AT
         }
         execute {
             println("УСПЕХ - ПРИШЛО СООБЩЕНИЕ ОТ 2ГО ТЕСТОВОГО АГЕНТА")

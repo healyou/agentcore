@@ -5,6 +5,10 @@ import db.base.Environment;
 import db.core.servicemessage.*;
 import db.core.systemagent.SystemAgent;
 import db.core.systemagent.SystemAgentService;
+import dsl.base.ARuntimeAgent;
+import dsl.objects.DslMessage;
+import dsl.objects.DslImage;
+import dsl.base.SendMessageParameters;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
 import service.AbstractAgentService;
@@ -24,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * Класс java, тк использующий его kotlin класс ничего не должен знать про groovy
- * kotlin файлы ничего не должны знать про groovy классы
+ * а здесь используется RuntimeAgentService.groovy
  *
  * @author Nikita Gorodilov
  */
@@ -49,8 +53,8 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    public void onGetMessage(@NotNull ServiceMessage serviceMessage) {
-        runtimeAgentService.applyOnGetMessage(serviceMessage);
+    public void onGetMessage(@NotNull DslMessage message) {
+        runtimeAgentService.applyOnGetMessage(message);
     }
 
     @Override
@@ -98,7 +102,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             byte[] imageInByte = baos.toByteArray();
             baos.close();
 
-            test = AbstractAgentService.Companion.toJson(new JsonImage(
+            test = AbstractAgentService.Companion.toJson(new DslImage(
                     "testFileName",
                     new byte[] { 1 }
             ));
@@ -245,32 +249,5 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
         runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
         runtimeAgentService.setMessageTypes(messageTypes);
-    }
-
-    // TODO в отдельный класс - если работать буду с изображениями - стырить работу с файлами из EREPORT
-    private class JsonImage {
-        private String name;
-        private byte[] data;
-
-        public JsonImage(String name, byte[] data) {
-            this.setName(name);
-            this.setData(data);
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public byte[] getData() {
-            return data;
-        }
-
-        public void setData(byte[] data) {
-            this.data = data;
-        }
     }
 }

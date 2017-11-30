@@ -9,6 +9,8 @@ import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageType
 import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgentService
+import dsl.objects.DslMessage
+import dsl.objects.DslImage
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -163,7 +165,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndImageTaskFun
     }
 
-    ServiceMessage createSystemSendMessage(TestRuntimeAgentClass agent) {
+    DslMessage createSystemSendMessage(TestRuntimeAgentClass agent) {
         def message = new ServiceMessage(
                 "{}",
                 messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
@@ -172,8 +174,11 @@ class RuntimeAgentTest extends AbstractServiceTest {
                 agent.systemAgent.id
         )
         message.senderCode = agent.senderCode
-
         messageService.save(message)
-        message
+
+        new DslMessage(
+                message.senderCode.code,
+                new DslImage("testImage", [1, 2, 3] as byte[])//AbstractAgentService.Companion.fromJson(message.jsonObject, DslImage.class)
+        )
     }
 }

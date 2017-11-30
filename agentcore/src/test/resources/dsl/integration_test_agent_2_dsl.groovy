@@ -14,7 +14,7 @@ init = {
 onGetMessage = { message ->
     executeCondition ("Если пришло сообщение от второго серверного агента") {
         condition {
-            message.senderCode.code == TEST_AGENT_TYPE_1_AT
+            message.senderType == TEST_AGENT_TYPE_1_AT
         }
         execute {
             // TODO получение изображения из сообщения

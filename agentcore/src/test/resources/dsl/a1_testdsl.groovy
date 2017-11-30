@@ -7,7 +7,7 @@ init = {
 onGetMessage = { message ->
     executeCondition ("Если пришло сообщение от серверного агента") {
         condition {
-            message.senderCode.code == SERVER_AT
+            message.senderType == SERVER_AT
         }
         execute {
             a1_testOnGetMessageFun()

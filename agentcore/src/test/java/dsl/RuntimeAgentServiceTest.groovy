@@ -1,13 +1,12 @@
 package dsl
 
-import db.core.servicemessage.ServiceMessage
+import dsl.objects.DslMessage
+import dsl.base.SendMessageParameters
 import objects.DslObjects
 import objects.StringObjects
 import org.junit.Assert
 import org.junit.Test
 import service.objects.AgentType
-import service.objects.MessageBodyType
-import service.objects.MessageGoalType
 import service.objects.MessageType
 import objects.TypesObjects
 
@@ -90,7 +89,7 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyInit() })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class)) })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetMessage(mock(DslMessage.class)) })
     }
 
     /* Если в dsl не предоставлены все функции - выходит ошибка */
@@ -145,7 +144,7 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class))
         runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class))
-        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
+        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
@@ -167,7 +166,7 @@ class RuntimeAgentServiceTest extends Assert {
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
+        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
     }
@@ -186,7 +185,7 @@ class RuntimeAgentServiceTest extends Assert {
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
+        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
     }
 
     /* Нельзя вызвать функции библиотеки вне execute блока */
@@ -195,7 +194,7 @@ class RuntimeAgentServiceTest extends Assert {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetMessageBlock("testOnGetMessageFun()"))
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
+        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
     }
 
     /* Выполнение двух и более функций в одном блоке dsl */
@@ -233,7 +232,7 @@ class RuntimeAgentServiceTest extends Assert {
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
+        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
@@ -247,7 +246,7 @@ class RuntimeAgentServiceTest extends Assert {
             def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
             runtimeAgentService.testLoadExecuteRules(it.rules)
-            runtimeAgentService.applyOnGetMessage(mock(ServiceMessage.class))
+            runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
 
             assertEquals(it.expectedExecute, runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
         }
@@ -264,7 +263,7 @@ class RuntimeAgentServiceTest extends Assert {
 
         /* Проверка выполнения условий с созданными типами */
         def testClosure = {
-            ras.applyOnGetMessage(mock(ServiceMessage.class))
+            ras.applyOnGetMessage(mock(DslMessage.class))
             assertEquals(true, ras.isExecuteTestOnGetMessages as Boolean)
             ras.isExecuteTestOnGetMessages = false
         }

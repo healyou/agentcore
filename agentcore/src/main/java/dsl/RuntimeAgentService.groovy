@@ -1,6 +1,7 @@
 package dsl
 
-import db.core.servicemessage.ServiceMessage
+import dsl.objects.DslMessage
+import dsl.base.SendMessageParameters
 import service.objects.AgentType
 import service.objects.MessageBodyType
 import service.objects.MessageGoalType
@@ -13,7 +14,7 @@ import java.awt.Image
  */
 class RuntimeAgentService {
 
-    RuntimeAgent runtimeAgent
+    def runtimeAgent
 
     def agentType = null
     def agentName = null
@@ -129,17 +130,17 @@ class RuntimeAgentService {
         }
     }
 
-    void applyOnGetMessage(ServiceMessage serviceMessage) {
+    void applyOnGetMessage(DslMessage message) {
         if (on_get_message_provided) {
             Binding binding = new Binding()
 
             prepareTypes(binding)
             prepareClosures(binding)
 
-            binding.serviceMessage = serviceMessage
+            binding.message = message
 
             GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onGetMessage.delegate = this;onGetMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetMessage(serviceMessage)")
+            shell.evaluate("onGetMessage.delegate = this;onGetMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetMessage(message)")
         } else {
             throw new RuntimeException("Функция on_get_message не загружена")
         }

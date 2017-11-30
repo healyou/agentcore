@@ -7,7 +7,7 @@ init = {
 onGetMessage = { message ->
     executeCondition ("Если пришло сообщение от рабочего агента") {
         condition {
-            message.senderCode.code == WORKER_AT
+            message.senderType == WORKER_AT
         }
         execute {
             a2_testOnGetMessageFun()

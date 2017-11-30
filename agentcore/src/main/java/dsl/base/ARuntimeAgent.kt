@@ -1,10 +1,13 @@
-package dsl
+package dsl.base
 
 import db.core.sc.ServiceMessageSC
-import db.core.sc.SystemAgentSC
+import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import dsl.objects.DslMessage
+import dsl.objects.DslImage
+import service.AbstractAgentService
 import java.util.*
 import kotlin.concurrent.timer
 
@@ -38,11 +41,21 @@ abstract class ARuntimeAgent : IRuntimeAgent {
 
         messageService.get(sc).forEach {
             messageService.use(it)
-            onGetMessage(it)
+            onGetMessage(configureDslServiceMessage(it))
         }
     }
 
     protected abstract fun getSystemAgentService(): SystemAgentService
     protected abstract fun getServiceMessageService(): ServiceMessageService
     protected abstract fun getSystemAgent(): SystemAgent?
+
+    /**
+     * Получаем сообщение, которые легко испоьзовать в dsl
+     */
+    private fun configureDslServiceMessage(serviceMessage: ServiceMessage): DslMessage {
+        return DslMessage(
+                serviceMessage.senderCode!!.code,
+                AbstractAgentService.fromJson(serviceMessage.jsonObject, DslImage::class.java)
+        )
+    }
 }

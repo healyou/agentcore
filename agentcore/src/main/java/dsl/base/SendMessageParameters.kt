@@ -1,4 +1,4 @@
-package dsl
+package dsl.base
 
 /**
  * Параметры метода sendMessage в dsl

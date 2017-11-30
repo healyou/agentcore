@@ -1,6 +1,6 @@
-package dsl
+package dsl.base
 
-import db.core.servicemessage.ServiceMessage
+import dsl.objects.DslMessage
 import java.awt.Image
 
 /**
@@ -10,7 +10,7 @@ interface IRuntimeAgent {
 
     fun onLoadImage(image: Image)
 
-    fun onGetMessage(serviceMessage: ServiceMessage)
+    fun onGetMessage(message: DslMessage)
 
     fun onEndImageTask(updateImage: Image)
 }
