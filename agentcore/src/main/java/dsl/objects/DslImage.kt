@@ -6,7 +6,7 @@ package dsl.objects
  * @author Nikita Gorodilov
  */
 // TODO в отдельный класс - если работать буду с изображениями - стырить работу с файлами из EREPORT
-class DslImage(name: String, data: ByteArray) {
+open class DslImage(name: String, data: ByteArray) {
     var name: String? = null
     var data: ByteArray? = null
 

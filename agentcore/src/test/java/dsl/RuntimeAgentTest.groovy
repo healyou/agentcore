@@ -154,13 +154,13 @@ class RuntimeAgentTest extends AbstractServiceTest {
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetMessageFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetMessageFun
 
-        workerAgent_a1.onLoadImage(mock(BufferedImage.class))
-        serverAgent_a2.onLoadImage(mock(BufferedImage.class))
+        workerAgent_a1.onLoadImage(mock(DslImage.class))
+        serverAgent_a2.onLoadImage(mock(DslImage.class))
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnLoadImageFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnLoadImageFun
 
-        workerAgent_a1.onEndImageTask(mock(BufferedImage.class))
-        serverAgent_a2.onEndImageTask(mock(BufferedImage.class))
+        workerAgent_a1.onEndImageTask(mock(DslImage.class))
+        serverAgent_a2.onEndImageTask(mock(DslImage.class))
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndImageTaskFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndImageTaskFun
     }

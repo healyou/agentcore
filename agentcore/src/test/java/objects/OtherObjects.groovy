@@ -1,6 +1,7 @@
 package objects
 
 import dsl.RuntimeAgentServiceTest
+import dsl.objects.DslImage
 
 import javax.imageio.ImageIO
 import java.awt.Image
@@ -11,7 +12,10 @@ import java.awt.image.BufferedImage
  */
 class OtherObjects {
 
-    static Image image() {
-        ImageIO.read(new File(RuntimeAgentServiceTest.classLoader.getResource("testimage.jpg").toURI().path))
+    static DslImage image() {
+        new DslImage(
+                StringObjects.randomString(),
+                [1,2,3] as byte[]
+        )
     }
 }

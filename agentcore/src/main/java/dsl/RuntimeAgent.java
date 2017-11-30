@@ -48,7 +48,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    public void onLoadImage(@NotNull Image image) {
+    public void onLoadImage(@NotNull DslImage image) {
         runtimeAgentService.applyOnLoadImage(image);
     }
 
@@ -58,7 +58,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    public void onEndImageTask(@Nullable Image updateImage) {
+    public void onEndImageTask(@Nullable DslImage updateImage) {
         runtimeAgentService.applyOnEndImageTask(updateImage);
     }
 
@@ -84,10 +84,10 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     protected void sendMessage(MessageType.Code messageType,
-                             Image image,
-                             List<AgentType.Code> agentTypes,
-                             MessageBodyType.Code bodyFormatType,
-                             MessageGoalType.Code messageGoalType) {
+                               DslImage image,
+                               List<AgentType.Code> agentTypes,
+                               MessageBodyType.Code bodyFormatType,
+                               MessageGoalType.Code messageGoalType) {
 
         if (systemAgent.getId() == null) {
             return;
@@ -96,12 +96,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         /* TODO работу с изображениями надо бы переписать */
         String test;
         try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write((BufferedImage) image, "jpg", baos);
-            baos.flush();
-            byte[] imageInByte = baos.toByteArray();
-            baos.close();
-
             test = AbstractAgentService.Companion.toJson(new DslImage(
                     "testFileName",
                     new byte[] { 1 }
@@ -136,7 +130,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 Map map = (Map) arguments;
 
                 String messageType = (String) map.get(SendMessageParameters.MESSAGE_TYPE.getParamName());
-                Image image = (Image) map.get(SendMessageParameters.IMAGE.getParamName());
+                DslImage image = (DslImage) map.get(SendMessageParameters.IMAGE.getParamName());
                 List<String> agentTypes =
                         map.get(SendMessageParameters.AGENT_TYPES.getParamName()) instanceof List ?
                                 (List<String>) map.get(SendMessageParameters.AGENT_TYPES.getParamName()) :

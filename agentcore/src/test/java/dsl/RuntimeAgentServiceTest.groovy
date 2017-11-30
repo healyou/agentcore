@@ -1,16 +1,15 @@
 package dsl
 
-import dsl.objects.DslMessage
 import dsl.base.SendMessageParameters
+import dsl.objects.DslImage
+import dsl.objects.DslMessage
 import objects.DslObjects
 import objects.StringObjects
+import objects.TypesObjects
 import org.junit.Assert
 import org.junit.Test
 import service.objects.AgentType
 import service.objects.MessageType
-import objects.TypesObjects
-
-import java.awt.image.BufferedImage
 
 import static org.easymock.EasyMock.mock
 
@@ -43,7 +42,7 @@ class RuntimeAgentServiceTest extends Assert {
                         """
                 )
         )
-        runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class))
+        runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
 
         assertTrue(isExecuteSendMessage)
     }
@@ -69,7 +68,7 @@ class RuntimeAgentServiceTest extends Assert {
         )
         def isError = false
         try {
-            runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class))
+            runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
         } catch (ignored) {
             isError = true
         }
@@ -87,8 +86,8 @@ class RuntimeAgentServiceTest extends Assert {
         def runtimeAgentService = new RuntimeAgentService()
 
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyInit() })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class)) })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(DslImage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(DslImage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetMessage(mock(DslMessage.class)) })
     }
 
@@ -142,8 +141,8 @@ class RuntimeAgentServiceTest extends Assert {
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnLoadImage(mock(BufferedImage.class))
-        runtimeAgentService.applyOnEndImageTask(mock(BufferedImage.class))
+        runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
+        runtimeAgentService.applyOnEndImageTask(mock(DslImage.class))
         runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)

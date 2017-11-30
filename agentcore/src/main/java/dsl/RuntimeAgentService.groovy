@@ -1,5 +1,6 @@
 package dsl
 
+import dsl.objects.DslImage
 import dsl.objects.DslMessage
 import dsl.base.SendMessageParameters
 import service.objects.AgentType
@@ -114,7 +115,7 @@ class RuntimeAgentService {
         }
     }
 
-    void applyOnLoadImage(Image image) {
+    void applyOnLoadImage(DslImage image) {
         if (on_load_image_provided) {
             Binding binding = new Binding()
 
@@ -146,7 +147,7 @@ class RuntimeAgentService {
         }
     }
 
-    void applyOnEndImageTask(Image updateImage) {
+    void applyOnEndImageTask(DslImage updateImage) {
         if (on_end_image_task_provided) {
             Binding binding = new Binding()
 
