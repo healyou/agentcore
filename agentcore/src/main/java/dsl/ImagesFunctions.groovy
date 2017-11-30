@@ -1,6 +1,7 @@
 package dsl
 
 import com.company.AgentImageFunctions
+import dsl.objects.DslImage
 
 import java.awt.Image
 
@@ -23,9 +24,10 @@ class ImagesFunctions {
         AgentImageFunctions.testImageFun3()
     }
 
-    static void testUpdateImageWithSleep(Object self, Image image, Long sleep) {
+    static void testUpdateImageWithSleep(Object self, DslImage dslImage, Long sleep) {
         def runtimeAgent = (self.delegate as RuntimeAgentService).runtimeAgent
-        def updateImage = AgentImageFunctions.testUpdateImageWithSleep(image, sleep)
-        runtimeAgent.onEndImageTask(updateImage)
+        def updateImageData = AgentImageFunctions.testUpdateImageWithSleep(dslImage.data, sleep)
+        dslImage.data = updateImageData
+        runtimeAgent.onEndImageTask(dslImage)
     }
 }

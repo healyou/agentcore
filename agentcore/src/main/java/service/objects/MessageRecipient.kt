@@ -1,6 +1,7 @@
 package service.objects
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.*
 
@@ -23,5 +24,6 @@ class MessageRecipient @JsonCreator constructor (
 
     /* Просмотрено ли сообщение */
     val isViewed
+        @JsonIgnore
         get() = viewedDate != null
 }

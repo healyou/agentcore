@@ -25,10 +25,10 @@ object AgentImageFunctions {
     }
 
     @JvmStatic
-    fun testUpdateImageWithSleep(image: Image, sleep: Long = 5000): Image {
+    fun testUpdateImageWithSleep(imageData: ByteArray, sleep: Long = 5000): ByteArray {
         println("start testUpdateImageWithSleep")
         Thread.sleep(sleep)
         println("end testUpdateImageWithSleep")
-        return image
+        return imageData
     }
 }

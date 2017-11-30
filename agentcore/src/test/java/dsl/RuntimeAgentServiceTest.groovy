@@ -171,7 +171,7 @@ class RuntimeAgentServiceTest extends Assert {
     }
 
     /* Нельзя вызвать функцию execute вне executeCondition блока */
-    @Test(expected = Exception.class)
+    @Test(expected = MissingPropertyException)
     void testExecuteFunctionWithoutExecuteConditionBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
@@ -188,7 +188,7 @@ class RuntimeAgentServiceTest extends Assert {
     }
 
     /* Нельзя вызвать функции библиотеки вне execute блока */
-    @Test(expected = Exception.class)
+    @Test(expected = MissingMethodException)
     void testExecuteLibraryFunctionWithoutExecuteBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetMessageBlock("testOnGetMessageFun()"))

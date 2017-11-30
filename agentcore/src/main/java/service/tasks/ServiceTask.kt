@@ -41,7 +41,7 @@ class ServiceTask @Autowired constructor(
     /**
      * Получение сообщений с сервиса агентов
      */
-    @Scheduled(fixedDelay=30000)
+    @Scheduled(fixedDelay=10000)
     fun getMessages() {
         System.out.println("Процесс получения сообщений")
         logger.debug("Старт - Процесс получения сообщений")
@@ -66,7 +66,7 @@ class ServiceTask @Autowired constructor(
     /**
      * Отправка сообщений на сервис агентов
      */
-    @Scheduled(fixedDelay=30000)
+    @Scheduled(fixedDelay=10000)
     fun sendMessages() {
         System.out.println("Процесс отправки сообщений")
         logger.debug("Старт - Процесс отправки сообщений")
@@ -151,10 +151,6 @@ class ServiceTask @Autowired constructor(
         val messages = localMessageService.get(sc)
         logger.debug("Агент[id = ${systemAgent.id}] - считано локальный сообщений для отправки - ${messages.size}")
 
-        /* Поиск агентов, которым надо отправлять данные */
-        val recipients = getMessageRecipientsIds(systemAgent, sessionManager)
-        logger.debug("Агент[id = ${systemAgent.id}] - считано агентов с сервиса, которым надо отправлять сообщения - ${recipients.size}")
-
         /* Отправка сообщений */
         messages.forEach {
             serverMessageService.sendMessage(
@@ -162,7 +158,7 @@ class ServiceTask @Autowired constructor(
                     SendMessageData(
                             MessageGoalType.Code.TASK_DECISION.code,
                             MessageType.Code.SEARCH_SOLUTION.code,
-                            recipients,
+                            getMessageRecipientsIds(it, systemAgent, sessionManager),
                             MessageBodyType.Code.JSON.code,
                             it.jsonObject
                     )
@@ -174,8 +170,10 @@ class ServiceTask @Autowired constructor(
     /**
      * Список получателей сообщения
      */
-    private fun getMessageRecipientsIds(systemAgent: SystemAgent, sessionManager: SessionManager): List<Long> {
-        val agentCodes = Collections.emptyList<AgentType.Code>()
+    private fun getMessageRecipientsIds(serviceMessage: ServiceMessage,
+                                        systemAgent: SystemAgent,
+                                        sessionManager: SessionManager): List<Long> {
+        val agentCodes = serviceMessage.sendAgentTypeCodes
         val recipients = arrayListOf<Long>()
 
         agentCodes.forEach { itAgentCode ->
@@ -192,6 +190,7 @@ class ServiceTask @Autowired constructor(
                     }
         }
 
+        logger.debug("Агент[id = ${systemAgent.id}] - считано агентов с сервиса, которым надо отправлять сообщения - ${recipients.size}")
         return recipients
     }
 }

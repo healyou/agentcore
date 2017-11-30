@@ -1,5 +1,6 @@
 package dsl.base
 
+import com.fasterxml.jackson.core.type.TypeReference
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
@@ -8,6 +9,7 @@ import db.core.systemagent.SystemAgentService
 import dsl.objects.DslMessage
 import dsl.objects.DslImage
 import service.AbstractAgentService
+import service.objects.Message
 import java.util.*
 import kotlin.concurrent.timer
 
@@ -23,7 +25,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     private var getMessagesTimer: Timer? = null
 
     init {
-        getMessagesTimer = timer("hello-timer", true, 2000, 2000) {
+        getMessagesTimer = timer("hello-timer", true, 1000, 2000) {
             searchMessages()
         }
     }
@@ -31,7 +33,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     /**
      * Поиск сообщений для текущего агента
      */
-    private fun searchMessages() {
+    protected fun searchMessages() {
         val systemAgent = getSystemAgent() ?: return
         val messageService = getServiceMessageService()
 
@@ -53,9 +55,15 @@ abstract class ARuntimeAgent : IRuntimeAgent {
      * Получаем сообщение, которые легко испоьзовать в dsl
      */
     private fun configureDslServiceMessage(serviceMessage: ServiceMessage): DslMessage {
+        val jsonDslImage = parseServiceMessage(serviceMessage.jsonObject).body
+
         return DslMessage(
                 serviceMessage.senderCode!!.code,
-                AbstractAgentService.fromJson(serviceMessage.jsonObject, DslImage::class.java)
+                AbstractAgentService.fromJson(jsonDslImage, object : TypeReference<DslImage>() {})
         )
+    }
+
+    private fun parseServiceMessage(jsonObject: String): Message {
+        return AbstractAgentService.fromJson(jsonObject, object : TypeReference<Message>() {})
     }
 }

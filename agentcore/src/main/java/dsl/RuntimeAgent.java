@@ -112,8 +112,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 agentTypes,
                 systemAgent.getId()
         ));
-
-        System.out.println("RuntimeAgent.sendMessage call");
     }
 
     /**

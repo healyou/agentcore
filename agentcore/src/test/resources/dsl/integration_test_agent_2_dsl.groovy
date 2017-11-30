@@ -17,28 +17,24 @@ onGetMessage = { message ->
             message.senderType == TEST_AGENT_TYPE_1_AT
         }
         execute {
-            // TODO получение изображения из сообщения
+            println "execute onGetMessage test_agent_type_2"
+            testUpdateImageWithSleep image: message.image, sleep: 3000
         }
     }
 }
 
 onLoadImage = { image ->
     executeCondition ("Обновим изображение") {
-        condition {
-            image != null
-        }
         execute {
-            testUpdateImageWithSleep image: image, sleep: 3000
+            println "execute onLoadImage test_agent_type_2"
         }
     }
 }
 
 onEndImageTask = { updateImage ->
     executeCondition ("Отправим сообщение второму тестовому агенту") {
-        condition {
-            updateImage != null
-        }
         execute {
+            println "execute onEndImageTask test_agent_type_2"
             sendMessage messageType: SEARCH_SOLUTION_MT,
                     image: updateImage,
                     agentTypes: [TEST_AGENT_TYPE_1_AT]
