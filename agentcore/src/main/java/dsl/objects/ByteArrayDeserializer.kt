@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
-
+import java.nio.charset.StandardCharsets
 
 
 /**
@@ -13,9 +13,7 @@ import com.fasterxml.jackson.databind.JsonNode
 class ByteArrayDeserializer: JsonDeserializer<ByteArray>() {
 
     override fun deserialize(parser: JsonParser, context: DeserializationContext): ByteArray {
-        val oc = parser.getCodec()
-        val node = oc.readTree<JsonNode>(parser)
-
-        return byteArrayOf(1, 2, 3)
+        val node = parser.codec.readTree<JsonNode>(parser)
+        return node.asText().toByteArray(StandardCharsets.UTF_8)
     }
 }

@@ -96,10 +96,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         /* TODO работу с изображениями надо бы переписать */
         String test;
         try {
-            test = AbstractAgentService.Companion.toJson(new DslImage(
-                    "testFileName",
-                    new byte[] { 1 }
-            ));
+            test = AbstractAgentService.Companion.toJson(image);
         } catch (Exception ignored) {
             return;
         }

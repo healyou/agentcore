@@ -56,7 +56,7 @@ onLoadImage = { image ->
             true
         }
         execute {
-            testUpdateImageWithSleep(image, 3000)
+            testUpdateImageWithSleep image: image, sleep: 3000
             sendMessage messageType: SEARCH_SOLUTION_MT,
                     image: image,
                     agentTypes: ["worker", "server"]

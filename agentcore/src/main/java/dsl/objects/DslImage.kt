@@ -11,16 +11,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
  * @author Nikita Gorodilov
  */
 // TODO в отдельный класс - если работать буду с изображениями - стырить работу с файлами из EREPORT
-@JsonDeserialize(using = DslImageDeserializer::class)
-open class DslImage(name: String, data: ByteArray) {
-    @JsonProperty("name")
-    var name: String? = null
-    @JsonProperty("data")
-    //@JsonSerialize(using = ByteArraySerializer::class)
-    var data: ByteArray? = null
-
-    init {
-        this.name = name
-        this.data = data
-    }
-}
+open class DslImage(
+        @JsonProperty("name")
+        var name: String? = null,
+        @JsonProperty("data")
+        @JsonSerialize(using = ByteArraySerializer::class)
+        @JsonDeserialize(using = ByteArrayDeserializer::class)
+        var data: ByteArray? = null
+)
