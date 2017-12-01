@@ -17,7 +17,7 @@ onLoadImage = { image ->
     executeCondition ("Обновим изображение") {
         execute {
             println "1) Работа над загруженным изображением первым тестовым агентов"
-            testUpdateImageWithSleep image, 3000
+            testUpdateImageWithSleep image: image, sleep: 3000L
         }
     }
 }

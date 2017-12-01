@@ -24,10 +24,19 @@ class ImagesFunctions {
         AgentImageFunctions.testImageFun3()
     }
 
-    static void testUpdateImageWithSleep(Object self, DslImage dslImage, Long sleep) {
+    /**
+     * Вызов всех функций с именовынными параметрами идёт как Map(тут все параметры хранятся)
+     *
+     * @param self
+     * @param value
+     */
+    static void testUpdateImageWithSleep(Object self, value) {
+        def image = value["image"]
+        def sleep = value["sleep"]
+
         def runtimeAgent = (self.delegate as RuntimeAgentService).runtimeAgent
-        def updateImageData = AgentImageFunctions.testUpdateImageWithSleep(dslImage.data, sleep)
-        dslImage.data = updateImageData
-        runtimeAgent.onEndImageTask(dslImage)
+        def updateImageData = AgentImageFunctions.testUpdateImageWithSleep(image.data, sleep)
+        image.data = updateImageData
+        runtimeAgent.onEndImageTask(image)
     }
 }

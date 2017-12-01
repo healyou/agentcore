@@ -18,7 +18,7 @@ onGetMessage = { message ->
         }
         execute {
             println "3) Получение сообщения с сервиса от первого тестового агента вторым тестовым агентом. Работа над изображением"
-            testUpdateImageWithSleep message.image, 3000
+            testUpdateImageWithSleep image: message.image, sleep: 3000
         }
     }
 }
