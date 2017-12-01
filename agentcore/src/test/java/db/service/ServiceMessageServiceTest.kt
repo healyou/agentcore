@@ -2,8 +2,11 @@ package db.service
 
 import testbase.AbstractServiceTest
 import db.core.sc.ServiceMessageSC
+import db.core.sc.SystemAgentSC
 import db.core.servicemessage.*
+import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import objects.StringObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -37,6 +40,8 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
 
     @Before
     fun setup() {
+        createSystemAgent(true)
+        createSystemAgent(true)
         messageType = messageTypeService.get(ServiceMessageType.Code.SEND)
         objectType = messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE)
         val systemAgent = systemAgentService.get(false, true)[0]
@@ -183,5 +188,13 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
             filterMessages.isNotEmpty() && filterMessages.size == 1
         }
         return filterMessages[0]
+    }
+
+    private fun createSystemAgent(isSendAndGetMessages: Boolean) {
+        val id = systemAgentService.create(SystemAgent(
+                StringObjects.randomString(),
+                StringObjects.randomString(),
+                isSendAndGetMessages
+        ))
     }
 }

@@ -5,7 +5,7 @@ package objects
  */
 class StringObjects {
 
-    static def randomString() {
+    static String randomString() {
         UUID.randomUUID().toString()
     }
 

@@ -7,6 +7,7 @@ import db.core.servicemessage.*
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
 import dsl.RuntimeAgent
+import dsl.objects.DslImage
 import gui.table.AgentComboBoxRenderer
 import gui.table.CustomTableBuilder
 import gui.table.columns.DateTimeTableColumn
@@ -82,12 +83,7 @@ class AgentGuiController {
             }
             val message = serviceMessageService.get(ServiceMessageSC()).get(0)
             //runtimeAgent.onGetMessage(message)
-            var img: BufferedImage? = null
-            try {
-                img = ImageIO.read(File("C:\\Users\\lappi\\Intellij IDEA\\Projects\\agentproject\\agentcore\\src\\test\\resources\\testimage.jpg"))
-            } catch (e: IOException) {
-            }
-            runtimeAgent.onLoadImage(img!!)
+            runtimeAgent.onLoadImage(DslImage("testName", byteArrayOf(1, 2, 3)))
 //            runtimeAgent.onEndImageTask(null)
         }
     }
