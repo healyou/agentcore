@@ -16,8 +16,7 @@ init = {
 onLoadImage = { image ->
     executeCondition ("Обновим изображение") {
         execute {
-            println "execute onLoadImage test_agent_type_1"
-            //image sleep
+            println "1) Работа над загруженным изображением первым тестовым агентов"
             testUpdateImageWithSleep image, 3000
         }
     }
@@ -26,7 +25,7 @@ onLoadImage = { image ->
 onEndImageTask = { updateImage ->
     executeCondition ("Отправим сообщение второму тестовому агенту") {
         execute {
-            println "execute onEndImageTask test_agent_type_1"
+            println "2) Работы над изображением закончена. Отправка сообщения второму тестовому агенту первым тестовым агентов"
             sendMessage messageType: SEARCH_SOLUTION_MT,
                     image: updateImage,
                     agentTypes: [TEST_AGENT_TYPE_2_AT]
@@ -40,8 +39,7 @@ onGetMessage = { message ->
             message.senderType == TEST_AGENT_TYPE_2_AT
         }
         execute {
-            println "execute onGetMessage test_agent_type_1"
-            println("УСПЕХ - ПРИШЛО СООБЩЕНИЕ ОТ 2ГО ТЕСТОВОГО АГЕНТА")
+            println "5) Получение сообщения с сервиса от второго тестового агента первым тестовым агентом. Конец работы"
         }
     }
 }

@@ -18,6 +18,10 @@ import service.tasks.ServiceTask
 import testbase.AbstractServiceTest
 
 /**
+ * Тестирование взаимодействие двух агентов с сервисом
+ * - сервис должен быть включен
+ * - не используются тестовые классы, только то, что будет использовано при работе прилоежния
+ *
  * @author Nikita Gorodilov
  */
 @Ignore
@@ -135,13 +139,22 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
         )
     }
 
+    /**
+     * Порядок сообщений в консоли должен быть следующим:
+     * 1) Работа над загруженным изображением первым тестовым агентов
+     * 2) Работы над изображением закончена. Отправка сообщения второму тестовому агенту первым тестовым агентов
+     * 3) Получение сообщения с сервиса от первого тестового агента вторым тестовым агентом. Работа над изображением
+     * 4) Работы над изображением закончена. Отправка сообщения первому тестовому агенту вторым тестовым агентов
+     * 5) Получение сообщения с сервиса от второго тестового агента первым тестовым агентом. Конец работы
+     */
     @Test
     void "Сценарий взаимодействия двух агентов с сервисом"() {
         testAgent1.onLoadImage(OtherObjects.image())
         serviceTask.sendMessages()
         serviceTask.getMessages()
         testAgent2.searchMessages()
-
-        println("ggwp")
+        serviceTask.sendMessages()
+        serviceTask.getMessages()
+        testAgent1.searchMessages()
     }
 }

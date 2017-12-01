@@ -26,9 +26,7 @@ object AgentImageFunctions {
 
     @JvmStatic
     fun testUpdateImageWithSleep(imageData: ByteArray, sleep: Long = 5000): ByteArray {
-        println("start testUpdateImageWithSleep")
         Thread.sleep(sleep)
-        println("end testUpdateImageWithSleep")
         return imageData
     }
 }

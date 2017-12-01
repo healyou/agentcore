@@ -12,13 +12,13 @@ init = {
 }
 
 onGetMessage = { message ->
-    executeCondition ("Если пришло сообщение от второго серверного агента") {
+    executeCondition ("Если пришло сообщение от первого серверного агента") {
         condition {
             message.senderType == TEST_AGENT_TYPE_1_AT
         }
         execute {
-            println "execute onGetMessage test_agent_type_2"
-            testUpdateImageWithSleep image: message.image, sleep: 3000
+            println "3) Получение сообщения с сервиса от первого тестового агента вторым тестовым агентом. Работа над изображением"
+            testUpdateImageWithSleep message.image, 3000
         }
     }
 }
@@ -32,9 +32,9 @@ onLoadImage = { image ->
 }
 
 onEndImageTask = { updateImage ->
-    executeCondition ("Отправим сообщение второму тестовому агенту") {
+    executeCondition ("Отправим сообщение первому тестовому агенту") {
         execute {
-            println "execute onEndImageTask test_agent_type_2"
+            println "4) Работы над изображением закончена. Отправка сообщения первому тестовому агенту вторым тестовым агентов"
             sendMessage messageType: SEARCH_SOLUTION_MT,
                     image: updateImage,
                     agentTypes: [TEST_AGENT_TYPE_1_AT]
