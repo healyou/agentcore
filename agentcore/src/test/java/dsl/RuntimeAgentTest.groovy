@@ -43,8 +43,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
     SystemAgentService systemAgentService
     @Autowired
     ServiceMessageService serviceMessageService
-    @Autowired
-    ServerTypeService serverTypeService
+    ServerTypeService serverTypeService = MockObjects.serverTypeService()
     @Autowired
     Environment environment
     LoginService loginService = MockObjects.loginService()

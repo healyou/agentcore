@@ -8,7 +8,7 @@
  */
 
 init = {
-    type = "test_agent_type_1"
+    type = TEST_AGENT_TYPE_1_AT
     name = "Тестовый агент 1"
     masId = "test_agent_1_masId"
 }

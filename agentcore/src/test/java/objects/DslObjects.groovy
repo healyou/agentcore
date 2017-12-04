@@ -12,6 +12,19 @@ class DslObjects {
             onEndImageTask = { updateImage -> }
         """
 
+    static def allBlocksDslWithTypeParameterInInitBlock(typeParameter) {
+        """
+            init = {
+                type = $typeParameter
+                name = "${StringObjects.randomString()}"
+                masId = "${StringObjects.randomString()}"
+            }
+            onGetMessage = { message -> }
+            onLoadImage = { image -> }
+            onEndImageTask = { updateImage -> }
+        """
+    }
+
     static def allBlocksDslWithInitParams(type, name, masId) {
         """
             init = {

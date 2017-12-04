@@ -1,5 +1,5 @@
 init = {
-    type = "worker"
+    type = WORKER_AT
     name = "a2_testdsl"
     masId = "a2_testdsl"
 }

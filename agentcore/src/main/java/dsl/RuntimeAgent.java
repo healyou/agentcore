@@ -39,11 +39,11 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     public RuntimeAgent(String path) {
         super();
+        loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setRuntimeAgent(this);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.loadExecuteRules(path);
         runtimeAgentService.applyInit();
-        loadServiceTypes(runtimeAgentService);
         configureSystemAgent();
     }
 
@@ -163,52 +163,30 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     private void loadServiceTypes(RuntimeAgentService runtimeAgentService) {
-        LoginService loginService = getLoginService();
-        String password = getEnvironment().getProperty("agent.service.password");
         SessionManager sessionManager = new SessionManager();
+        ServerTypeService typeService = getServerTypeService();
+        List<AgentType> agentTypeList = typeService.getAgentTypes(sessionManager);
+        List<MessageBodyType> messageBodyTypes = typeService.getMessageBodyTypes(sessionManager);
+        List<MessageGoalType> messageGoalTypes = typeService.getMessageGoalTypes(sessionManager);
+        List<MessageType> messageTypes = new ArrayList<>();
+        if (messageGoalTypes != null) {
+            messageGoalTypes.forEach(it -> {
+                List<MessageType> tempTypes = typeService.getMessageTypes(sessionManager, it.getCode().getCode());
 
-        /* Не проверяем выход данного метода т.к. мы уже могли быть зареганы */
-        // TODO заменить эти сервисы на mock в тестах - скорость работы вырастет
-        loginService.registration(
-                new RegistrationData(
-                        runtimeAgentService.getAgentMasId().toString(),
-                        runtimeAgentService.getAgentName().toString(),
-                        runtimeAgentService.getAgentType().toString(),
-                        password
-                ),
-                sessionManager
-        );
-        Agent agent = loginService.login(
-                new LoginData(
-                        runtimeAgentService.getAgentMasId().toString(),
-                        password
-                ),
-                sessionManager
-        );
+                if (tempTypes != null) {
+                    messageTypes.addAll(tempTypes);
+                }
+            });
+        }
 
-        if (agent != null) {
-            ServerTypeService typeService = getServerTypeService();
-            List<AgentType> agentTypeList = typeService.getAgentTypes(sessionManager);
-            List<MessageBodyType> messageBodyTypes = typeService.getMessageBodyTypes(sessionManager);
-            List<MessageGoalType> messageGoalTypes = typeService.getMessageGoalTypes(sessionManager);
-            List<MessageType> messageTypes = new ArrayList<>();
-            if (messageGoalTypes != null) {
-                messageGoalTypes.forEach(it -> {
-                    List<MessageType> tempTypes = typeService.getMessageTypes(sessionManager, it.getCode().getCode());
+        runtimeAgentService.setAgentTypes(agentTypeList);
+        runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
+        runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
+        runtimeAgentService.setMessageTypes(messageTypes);
 
-                    if (tempTypes != null) {
-                        messageTypes.addAll(tempTypes);
-                    }
-                });
-            }
-
-            runtimeAgentService.setAgentTypes(agentTypeList);
-            runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
-            runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
-            runtimeAgentService.setMessageTypes(messageTypes);
-
-        } else {
+        if (agentTypeList != null && messageBodyTypes != null && messageGoalTypes != null && messageTypes.isEmpty()) {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
+            System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
             setTestData(runtimeAgentService);
         }
     }
@@ -219,7 +197,9 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     private void setTestData(RuntimeAgentService runtimeAgentService) {
         List<AgentType> agentTypeList = Arrays.asList(
                 new AgentType(1L, AgentType.Code.SERVER, "Рабочий агент", false),
-                new AgentType(1L, AgentType.Code.WORKER, "Серверный агент", false)
+                new AgentType(2L, AgentType.Code.WORKER, "Серверный агент", false),
+                new AgentType(3L, AgentType.Code.TEST_AGENT_TYPE_1, "test_agent_type_1", false),
+                new AgentType(4L, AgentType.Code.TEST_AGENT_TYPE_2, "test_agent_type_2 агент", false)
         );
         List<MessageBodyType> messageBodyTypes = Arrays.asList(
                 new MessageBodyType(1L, MessageBodyType.Code.JSON, "Тело сообщения формата Json", false)

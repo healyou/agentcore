@@ -298,6 +298,27 @@ class RuntimeAgentServiceTest extends Assert {
         }
     }
 
+    /* Блок инициализации можно задать как строкой, так и константным параметром */
+    @Test
+    void testInitBlockWithTypeParameter() {
+        /* Константа */
+        def ras = new TestRuntimeAgentServiceClass()
+        ras.agentTypes = TypesObjects.agentTypes
+        def type = TypesObjects.firstAgentType()
+        ras.testLoadExecuteRules(DslObjects.allBlocksDslWithTypeParameterInInitBlock(
+                "${ras.getAgentTypeVariableByCode(type.code.code)}")
+        )
+        ras.applyInit()
+        assertEquals(ras.agentType, type.code.code)
+
+        /* Строковый параметр */
+        ras = new TestRuntimeAgentServiceClass()
+        type = TypesObjects.firstAgentTypeCodeStr()
+        ras.testLoadExecuteRules(DslObjects.allBlocksDslWithTypeParameterInInitBlock("\"$type\""))
+        ras.applyInit()
+        assertEquals(ras.agentType, type)
+    }
+
     TestRuntimeAgentServiceClass createTestRuntimeAgentServiceClass() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 

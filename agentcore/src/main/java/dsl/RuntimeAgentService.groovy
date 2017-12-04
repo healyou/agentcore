@@ -90,6 +90,7 @@ class RuntimeAgentService {
     void applyInit() {
         if (init_provided) {
             Binding binding = new Binding()
+            prepareTypes(binding)
             prepareInitData(binding)
             binding.init = init
 
