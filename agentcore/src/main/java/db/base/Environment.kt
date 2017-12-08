@@ -15,7 +15,6 @@ open class Environment : AbstractDao() {
     }
 
     fun addProperty(key: String, value: String): Long {
-        // todo вынести в AbstractDao c возвратом id
         jdbcTemplate.update("INSERT INTO parameter " +
                 "(key, value) VALUES (?, ?);",
                 key,
@@ -23,6 +22,6 @@ open class Environment : AbstractDao() {
         )
 
         /* id последней введённой записи */
-        return jdbcTemplate.queryForObject("select seq from sqlite_sequence where name='parameter';", Long::class.java)
+        return getSequence("parameter")
     }
 }

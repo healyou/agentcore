@@ -30,13 +30,6 @@ class ServiceTask @Autowired constructor(
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    // TODO - интерсептор на куки (МОЖЕТ ПОДОЖДАТЬ)
-    // TODO system_agent_id в сообщении на полного агента переделать (МОЖЕТ ПОДОЖДАТЬ)
-
-    // TODO - задание по изображениям выбрать и начать продумывать его
-    init {
-    }
-
     /**
      * Получение сообщений с сервиса агентов
      */
@@ -125,7 +118,7 @@ class ServiceTask @Autowired constructor(
                     val serviceMessage = ServiceMessage(
                         AbstractAgentService.toJson(it),
                         messageTypeService.get(ServiceMessageType.Code.GET),
-                        arrayListOf(),//TODO для теста- возможно вообще ненадо
+                        arrayListOf(),
                         systemAgent.id!!
                     )
                     serviceMessage.senderCode = it.sender?.type?.code

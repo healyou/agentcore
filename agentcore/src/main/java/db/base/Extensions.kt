@@ -42,7 +42,6 @@ fun Boolean.toSqlite(): String {
 }
 
 /********* agentCodes *********/
-// TODO тесты для этого - работает неправильно
 /* из sqlite в объект */
 fun String.sqlite_toAgentCodes(): List<AgentType.Code> {
     val codes = this.split("!")

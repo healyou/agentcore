@@ -1,16 +1,17 @@
 package db.service
 
-import testbase.AbstractServiceTest
 import db.core.sc.ServiceMessageSC
-import db.core.sc.SystemAgentSC
-import db.core.servicemessage.*
+import db.core.servicemessage.ServiceMessage
+import db.core.servicemessage.ServiceMessageService
+import db.core.servicemessage.ServiceMessageType
+import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
-import objects.StringObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import service.objects.AgentType
+import testbase.AbstractServiceTest
 import java.util.*
 import kotlin.test.*
 
@@ -158,8 +159,8 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
 
     private fun createSystemAgent(isSendAndGetMessages: Boolean) {
         systemAgentService.create(SystemAgent(
-                StringObjects.randomString(),
-                StringObjects.randomString(),
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString(),
                 isSendAndGetMessages
         ))
     }

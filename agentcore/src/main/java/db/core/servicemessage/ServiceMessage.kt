@@ -17,7 +17,7 @@ open class ServiceMessage(
         /* Типы агентов, которым отправляется сообщение */
         var sendAgentTypeCodes: List<AgentType.Code>,
         /* Агент, которому принадлежит сообщение */
-        var systemAgentId: Long // todo - дописать работу с системными агентами
+        var systemAgentId: Long
 ) : Entity {
     /* Идентификатор */
     override var id: Long? = null

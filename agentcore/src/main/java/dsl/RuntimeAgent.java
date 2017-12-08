@@ -92,17 +92,16 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             return;
         }
 
-        /* TODO работу с изображениями надо бы переписать */
-        String test;
+        String jsonObject;
         try {
-            test = AbstractAgentService.Companion.toJson(image);
+            jsonObject = AbstractAgentService.Companion.toJson(image);
         } catch (Exception ignored) {
-            return;
+            throw new RuntimeException("Невозможно преобразовать DslImage в json");
         }
 
         ServiceMessageService messageService = getServiceMessageService();
         messageService.save(new ServiceMessage(
-                test,
+                jsonObject,
                 getMessageTypeService().get(ServiceMessageType.Code.SEND),
                 agentTypes,
                 systemAgent.getId()
@@ -173,7 +172,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
         runtimeAgentService.setMessageTypes(messageTypes);
 
-        if (agentTypeList != null && messageBodyTypes != null && messageGoalTypes != null && messageTypes != null) {
+        if (agentTypeList == null || messageBodyTypes == null || messageGoalTypes == null || messageTypes == null) {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
             System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
             setTestData(runtimeAgentService);

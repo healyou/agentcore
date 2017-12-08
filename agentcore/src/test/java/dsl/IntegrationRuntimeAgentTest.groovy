@@ -26,8 +26,6 @@ import testbase.AbstractServiceTest
 @Ignore
 class IntegrationRuntimeAgentTest extends AbstractServiceTest {
 
-    // TODO переименовать все groovy тестовые методы таким образом, как снизу
-
     @Autowired
     ServiceMessageService messageService
     @Autowired

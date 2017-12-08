@@ -42,6 +42,8 @@ class MockObjects {
                 .andStubReturn(messageGoalTypes)
         expect(serverTypeService.getMessageTypes(capture(sessionManagerCapture), capture(goalTypeCapture)))
                 .andStubReturn(TypesObjects.messageTypes)
+        expect(serverTypeService.getMessageTypes(capture(sessionManagerCapture)))
+                .andStubReturn(TypesObjects.messageTypes)
         replay(serverTypeService)
 
         serverTypeService

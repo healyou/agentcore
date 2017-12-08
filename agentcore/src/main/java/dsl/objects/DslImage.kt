@@ -1,6 +1,5 @@
 package dsl.objects
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
@@ -10,7 +9,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize
  *
  * @author Nikita Gorodilov
  */
-// TODO в отдельный класс - если работать буду с изображениями - стырить работу с файлами из EREPORT
 open class DslImage(
         @JsonProperty("name")
         var name: String? = null,

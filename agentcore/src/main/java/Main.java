@@ -17,7 +17,6 @@ public class Main {
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
         SessionManager sessionManager = new SessionManager();
-        // todo исправить путь до бд в properties
         testLoginService(context, sessionManager);
         testServerTypeService(context, sessionManager);
     }
@@ -43,7 +42,6 @@ public class Main {
     private static void testServiceFuncions() {
         ApplicationContext context = new ClassPathXmlApplicationContext("context.xml");
         SessionManager sessionManager = new SessionManager();
-        // todo исправить путь до бд в properties
         testLoginService(context, sessionManager);
         testServerAgentService(context, sessionManager);
         testSendMessageService(context, sessionManager);

@@ -183,14 +183,13 @@ class RuntimeAgentService {
             def bodyType = map[bodyTypeParamName]
             def messageGoalType = map[goalTypeParamName]
             if (bodyType == null) {
-                // TODO - параметры тоже дефолтные надо как-то вынести
+                // TODO - параметры тоже дефолтные надо как-то вынести - можно и init их устанавливать как дефолтные и норм
                 map[bodyTypeParamName] = binding.JSON_MBT
             }
             if (messageGoalType == null) {
                 map[goalTypeParamName] = binding.TASK_DECISION_MGT
             }
 
-            /* call */
             if (agent_send_message_provided) {
                 agentSendMessage.call(map)
 
@@ -293,6 +292,4 @@ class RuntimeAgentService {
         binding.name = ""
         binding.masId = ""
     }
-
-    // TODO инициализация всех типов из массивов -  по хорошему сделать
 }
