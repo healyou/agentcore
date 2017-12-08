@@ -29,6 +29,7 @@ public class Main {
         List<MessageBodyType> messageBodyTypes = serverTypeService.getMessageBodyTypes(sessionManager);
         List<MessageGoalType> messageGoalTypes = serverTypeService.getMessageGoalTypes(sessionManager);
         List<MessageType> messageTypes = serverTypeService.getMessageTypes(sessionManager, messageGoalTypes.get(0).getCode().getCode());
+        List<MessageType> messageTypeList = serverTypeService.getMessageTypes(sessionManager);
 
         int k = 1;
     }

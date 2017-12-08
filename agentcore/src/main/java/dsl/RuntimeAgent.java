@@ -166,23 +166,14 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         List<AgentType> agentTypeList = typeService.getAgentTypes(sessionManager);
         List<MessageBodyType> messageBodyTypes = typeService.getMessageBodyTypes(sessionManager);
         List<MessageGoalType> messageGoalTypes = typeService.getMessageGoalTypes(sessionManager);
-        List<MessageType> messageTypes = new ArrayList<>();
-        if (messageGoalTypes != null) {
-            messageGoalTypes.forEach(it -> {
-                List<MessageType> tempTypes = typeService.getMessageTypes(sessionManager, it.getCode().getCode());
-
-                if (tempTypes != null) {
-                    messageTypes.addAll(tempTypes);
-                }
-            });
-        }
+        List<MessageType> messageTypes = typeService.getMessageTypes(sessionManager);
 
         runtimeAgentService.setAgentTypes(agentTypeList);
         runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
         runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
         runtimeAgentService.setMessageTypes(messageTypes);
 
-        if (agentTypeList != null && messageBodyTypes != null && messageGoalTypes != null && messageTypes.isEmpty()) {
+        if (agentTypeList != null && messageBodyTypes != null && messageGoalTypes != null && messageTypes != null) {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
             System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
             setTestData(runtimeAgentService);

@@ -23,10 +23,11 @@ open class ServerTypeServiceImpl(@Autowired final override val environment: Envi
     private val GET_AGENT_TYPES_URL = environment.getProperty("agent.service.type.get.agent.types.url")
     private val GET_MESSAGE_BODY_TYPES_URL = environment.getProperty("agent.service.type.get.message.body.types.url")
     private val GET_MESSAGE_GOAL_TYPES_URL = environment.getProperty("agent.service.type.get.message.goal.types.url")
+    private val GET_MESSAGE_TYPES_BY_GOAL_TYPE_URL = environment.getProperty("agent.service.type.get.message.types.by.goal.type.url")
     private val GET_MESSAGE_TYPES_URL = environment.getProperty("agent.service.type.get.message.types.url")
 
     override fun getAgentTypes(sessionManager: SessionManager): List<AgentType>? =
-            getTypes<AgentType>(sessionManager, GET_AGENT_TYPES_URL, object : TypeReference<List<AgentType>>(){})
+            getTypes(sessionManager, GET_AGENT_TYPES_URL, object : TypeReference<List<AgentType>>(){})
 
     override fun getMessageBodyTypes(sessionManager: SessionManager): List<MessageBodyType>? =
             getTypes(sessionManager, GET_MESSAGE_BODY_TYPES_URL, object : TypeReference<List<MessageBodyType>>(){})
@@ -41,7 +42,7 @@ open class ServerTypeServiceImpl(@Autowired final override val environment: Envi
 
             val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
 
-            val outData = restTemplate.exchange(BASE_URL + GET_MESSAGE_TYPES_URL, HttpMethod.POST, request, String::class.java)
+            val outData = restTemplate.exchange(BASE_URL + GET_MESSAGE_TYPES_BY_GOAL_TYPE_URL, HttpMethod.POST, request, String::class.java)
             val jsonObject = outData.body
 
             fromJson(jsonObject, object : TypeReference<List<MessageType>>(){})
@@ -49,6 +50,9 @@ open class ServerTypeServiceImpl(@Autowired final override val environment: Envi
             null
         }
     }
+
+    override fun getMessageTypes(sessionManager: SessionManager): List<MessageType>? =
+            getTypes(sessionManager, GET_MESSAGE_TYPES_URL, object : TypeReference<List<MessageType>>(){})
 
     /**
      * Получение списка объектов в зависимости от addUrl

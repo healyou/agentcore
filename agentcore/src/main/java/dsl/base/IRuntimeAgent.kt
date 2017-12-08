@@ -8,6 +8,7 @@ import dsl.objects.DslMessage
  */
 interface IRuntimeAgent {
 
+    // TODO на основные операции threadpool и норм для всех агентов 1 и тот же
     fun onLoadImage(image: DslImage)
 
     fun onGetMessage(message: DslMessage)

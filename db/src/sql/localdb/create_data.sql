@@ -12,6 +12,7 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.type.get.agent.types.url', '/type/getAgentTypes'),
   ('agent.service.type.get.message.body.types.url', '/type/getMessageBodyTypes'),
   ('agent.service.type.get.message.goal.types.url', '/type/getMessageGoalTypes'),
+  ('agent.service.type.get.message.types.by.goal.type.url', '/type/getMessageTypes'),
   ('agent.service.type.get.message.types.url', '/type/getMessageTypes');
 
 ------------------ service_message_type data ------------------
