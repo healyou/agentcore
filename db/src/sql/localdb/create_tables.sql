@@ -28,26 +28,14 @@ CREATE TABLE if not exists service_message
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL, -- Идетификатор
   json_object     TEXT                    NOT NULL, -- Объект, полученный или отправляемый сообщением
-  object_type_id  INTEGER                 NOT NULL, -- Тип агента
   message_type_id INTEGER                 NOT NULL, -- Тип сообщения
   send_agent_type_codes TEXT              NOT NULL, -- Типы агентов, которым отправляется сообщение(через знак '!')
   sender_code     TEXT                    , -- Тип агента, отправившего сообщение
   create_date     TEXT                    NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
   use_date        TEXT                    , -- Дата использования сообщения(отправка или чтение)
   system_agent_id INTEGER                 NOT NULL,
-  FOREIGN KEY(object_type_id) REFERENCES service_message_object_type(id),
   FOREIGN KEY(message_type_id) REFERENCES service_message_type(id),
   FOREIGN KEY(system_agent_id) REFERENCES system_agent(id)
-);
-
------------------------ service message object type table -----------------------
-CREATE TABLE if not exists service_message_object_type
-  -- Таблицы типа объекта в сообщении
-(
-  id      INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
-  code    TEXT                              NOT NULL, -- Системное имя
-  name    TEXT                              NOT NULL, -- Читаемое имя
-  is_deleted TEXT NOT NULL DEFAULT ('N') CHECK(is_deleted='N' OR is_deleted='Y') -- Удалено ли значение
 );
 
 ----------------------- service message type table -----------------------

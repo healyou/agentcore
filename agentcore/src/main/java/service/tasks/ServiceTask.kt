@@ -23,7 +23,6 @@ class ServiceTask @Autowired constructor(
         private val loginService: LoginService,
         private val serverAgentService: ServerAgentService,
         private val serverMessageService: ServerMessageService,
-        private val messageObjectTypeService: ServiceMessageObjectTypeService,
         private val messageTypeService: ServiceMessageTypeService,
         private val localMessageService: ServiceMessageService,
         private val systemAgentService: SystemAgentService
@@ -125,7 +124,6 @@ class ServiceTask @Autowired constructor(
                 ?.map { it -> {
                     val serviceMessage = ServiceMessage(
                         AbstractAgentService.toJson(it),
-                        messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
                         messageTypeService.get(ServiceMessageType.Code.GET),
                         arrayListOf(),//TODO для теста- возможно вообще ненадо
                         systemAgent.id!!

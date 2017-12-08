@@ -42,8 +42,6 @@ class AgentGuiController {
     @Autowired
     private lateinit var serviceMessageService: ServiceMessageService
     @Autowired
-    private lateinit var messageObjectTypeService: ServiceMessageObjectTypeService
-    @Autowired
     private lateinit var messageTypeService: ServiceMessageTypeService
     @Autowired
     private lateinit var serverTypeService: ServerTypeService
@@ -79,9 +77,8 @@ class AgentGuiController {
                 override fun getLoginService(): LoginService = this@AgentGuiController.loginService
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
-                override fun getMessageObjectTypeService(): ServiceMessageObjectTypeService = this@AgentGuiController.messageObjectTypeService
             }
-            val message = serviceMessageService.get(ServiceMessageSC()).get(0)
+            //val message = serviceMessageService.get(ServiceMessageSC()).get(0)
             //runtimeAgent.onGetMessage(message)
             runtimeAgent.onLoadImage(DslImage("testName", byteArrayOf(1, 2, 3)))
 //            runtimeAgent.onEndImageTask(null)

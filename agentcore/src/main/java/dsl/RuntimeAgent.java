@@ -76,7 +76,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
     protected abstract ServiceMessageTypeService getMessageTypeService();
-    protected abstract ServiceMessageObjectTypeService getMessageObjectTypeService();
 
     /* для облегчения тестирования */
     protected RuntimeAgentService createRuntimeAgentService() {
@@ -104,7 +103,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         ServiceMessageService messageService = getServiceMessageService();
         messageService.save(new ServiceMessage(
                 test,
-                getMessageObjectTypeService().get(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA),
                 getMessageTypeService().get(ServiceMessageType.Code.SEND),
                 agentTypes,
                 systemAgent.getId()

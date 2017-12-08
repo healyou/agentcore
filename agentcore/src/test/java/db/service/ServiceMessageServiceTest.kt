@@ -22,8 +22,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     @Autowired
     private lateinit var messageService: ServiceMessageService
     @Autowired
-    private lateinit var messageObjectTypeService: ServiceMessageObjectTypeService
-    @Autowired
     private lateinit var messageTypeService: ServiceMessageTypeService
     @Autowired
     private lateinit var systemAgentService: SystemAgentService
@@ -31,7 +29,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     /* Параметры создаваемого сообщения */
     private var id: Long? = null
     private var jsonObject = "{}"
-    private lateinit var objectType: ServiceMessageObjectType
     private lateinit var messageType: ServiceMessageType
     private val sendAgentTypeCodes = arrayListOf<AgentType.Code>(AgentType.Code.SERVER, AgentType.Code.WORKER)
     private var createDate = Date(System.currentTimeMillis())
@@ -43,13 +40,11 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         createSystemAgent(true)
         createSystemAgent(true)
         messageType = messageTypeService.get(ServiceMessageType.Code.SEND)
-        objectType = messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE)
         val systemAgent = systemAgentService.get(false, true)[0]
         systemAgentId = systemAgent.id!!
 
         val message = ServiceMessage(
                 jsonObject,
-                objectType,
                 messageType,
                 sendAgentTypeCodes,
                 systemAgent.id!!
@@ -68,7 +63,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
         assertEquals(jsonObject, message.jsonObject)
-        assertEquals(objectType.code, message.objectType.code)
         assertEquals(messageType.code, message.messageType.code)
         assertEquals(useDate, message.useDate)
         assertNotNull(message.createDate)
@@ -78,31 +72,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
             assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
         }
-    }
-
-    /* Обновление типа объекта сообщения */
-    @Test
-    fun testUpdateMessageObjectType() {
-        var message = getMessage(id!!)
-
-        message.objectType = messageObjectTypeService.get(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA)
-
-        messageService.save(message)
-        message = getMessage(id!!)
-
-        /* проверка всех значений создания сообщения */
-        assertEquals(id, message.id)
-        assertEquals(jsonObject, message.jsonObject)
-        assertEquals(messageType.code, message.messageType.code)
-        assertEquals(useDate, message.useDate)
-        assertEquals(systemAgentId, message.systemAgentId)
-        assertNotNull(message.createDate)
-        sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
-            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
-        }
-
-        assertNotEquals(objectType.code, message.objectType.code)
-        assertEquals(ServiceMessageObjectType.Code.SEND_MESSAGE_DATA.code, message.objectType.code.code)
     }
 
     /* Обновление типа сообщения */
@@ -118,7 +87,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
         assertEquals(jsonObject, message.jsonObject)
-        assertEquals(objectType.code, message.objectType.code)
         assertEquals(useDate, message.useDate)
         assertEquals(systemAgentId, message.systemAgentId)
         assertNotNull(message.createDate)
@@ -141,7 +109,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
         assertEquals(jsonObject, message.jsonObject)
-        assertEquals(objectType.code, message.objectType.code)
         assertEquals(messageType.code, message.messageType.code)
         assertEquals(systemAgentId, message.systemAgentId)
         assertNotNull(message.createDate)
@@ -168,7 +135,6 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
         assertEquals(jsonObject, message.jsonObject)
-        assertEquals(objectType.code, message.objectType.code)
         assertEquals(useDate, message.useDate)
         assertNotNull(message.createDate)
         assertEquals(false, message.isUse)
@@ -191,7 +157,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     }
 
     private fun createSystemAgent(isSendAndGetMessages: Boolean) {
-        val id = systemAgentService.create(SystemAgent(
+        systemAgentService.create(SystemAgent(
                 StringObjects.randomString(),
                 StringObjects.randomString(),
                 isSendAndGetMessages

@@ -18,8 +18,3 @@ INSERT INTO parameter (key, value) VALUES
 INSERT INTO service_message_type (code, name) VALUES
   ('send', 'Отправка сообщения'),
   ('get', 'Получение сообщения');
-
------------------- agentType data ------------------
-INSERT INTO service_message_object_type (code, name) VALUES
-  ('get_service_message', 'Сообщение сервиса'),
-  ('send_message_data', 'Объект отправки сообщения в сервис');

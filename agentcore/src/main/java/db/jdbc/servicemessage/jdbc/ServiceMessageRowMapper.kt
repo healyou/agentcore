@@ -5,7 +5,6 @@ import db.base.AbstractRowMapper
 import db.base.sqlite_toAgentCodes
 import db.base.sqlite_toBoolean
 import db.core.servicemessage.ServiceMessage
-import db.core.servicemessage.ServiceMessageObjectType
 import db.core.servicemessage.ServiceMessageType
 import service.objects.AgentType
 import java.sql.ResultSet
@@ -20,7 +19,6 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
     override fun mapRow(rs: ResultSet, i: Int): ServiceMessage {
         val message = ServiceMessage(
                 getString(rs, "json_object"),
-                mapObjectType(rs),
                 mapMessageType(rs),
                 getString(rs, "send_agent_type_codes").sqlite_toAgentCodes(),
                 getLong(rs, "system_agent_id")
@@ -32,15 +30,6 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         message.useDate = getNullDate(rs, "use_date")
 
         return message
-    }
-
-    private fun mapObjectType(rs: ResultSet) : ServiceMessageObjectType {
-        return ServiceMessageObjectType(
-                getLong(rs, "object_type_id"),
-                Codable.find(ServiceMessageObjectType.Code::class.java, getString(rs, "message_object_type_code")),
-                getString(rs, "message_object_type_name"),
-                getString(rs, "message_object_type_is_deleted").sqlite_toBoolean()
-        )
     }
 
     private fun mapMessageType(rs: ResultSet) : ServiceMessageType {

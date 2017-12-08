@@ -1,7 +1,6 @@
 package dsl
 
 import db.base.Environment
-import db.core.servicemessage.ServiceMessageObjectTypeService
 import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgentService
@@ -31,8 +30,6 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
 
     @Autowired
     ServiceMessageService messageService
-    @Autowired
-    ServiceMessageObjectTypeService messageObjectTypeService
     @Autowired
     ServiceMessageTypeService messageTypeService
     @Autowired
@@ -85,11 +82,6 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
             protected ServiceMessageTypeService getMessageTypeService() {
                 return IntegrationRuntimeAgentTest.this.messageTypeService
             }
-
-            @Override
-            protected ServiceMessageObjectTypeService getMessageObjectTypeService() {
-                return IntegrationRuntimeAgentTest.this.messageObjectTypeService
-            }
         }
         testAgent2 = new RuntimeAgent(getClass().getResource("integration_test_agent_2_dsl.groovy").toURI().path) {
 
@@ -122,17 +114,11 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
             protected ServiceMessageTypeService getMessageTypeService() {
                 return IntegrationRuntimeAgentTest.this.messageTypeService
             }
-
-            @Override
-            protected ServiceMessageObjectTypeService getMessageObjectTypeService() {
-                return IntegrationRuntimeAgentTest.this.messageObjectTypeService
-            }
         }
         serviceTask = new ServiceTask(
                 loginService,
                 serverAgentService,
                 serverMessageService,
-                messageObjectTypeService,
                 messageTypeService,
                 messageService,
                 systemAgentService

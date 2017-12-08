@@ -3,8 +3,6 @@ package dsl
 import db.base.Environment
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
-import db.core.servicemessage.ServiceMessageObjectType
-import db.core.servicemessage.ServiceMessageObjectTypeService
 import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageType
 import db.core.servicemessage.ServiceMessageTypeService
@@ -35,8 +33,6 @@ class RuntimeAgentTest extends AbstractServiceTest {
 
     @Autowired
     ServiceMessageService messageService
-    @Autowired
-    ServiceMessageObjectTypeService messageObjectTypeService
     @Autowired
     ServiceMessageTypeService messageTypeService
     @Autowired
@@ -86,11 +82,6 @@ class RuntimeAgentTest extends AbstractServiceTest {
             protected ServiceMessageTypeService getMessageTypeService() {
                 return RuntimeAgentTest.this.messageTypeService
             }
-
-            @Override
-            protected ServiceMessageObjectTypeService getMessageObjectTypeService() {
-                return RuntimeAgentTest.this.messageObjectTypeService
-            }
         }
         serverAgent_a2 = new TestRuntimeAgentClass(getClass().getResource("a2_testdsl.groovy").toURI().path) {
 
@@ -124,11 +115,6 @@ class RuntimeAgentTest extends AbstractServiceTest {
             @Override
             protected ServiceMessageTypeService getMessageTypeService() {
                 return RuntimeAgentTest.this.messageTypeService
-            }
-
-            @Override
-            protected ServiceMessageObjectTypeService getMessageObjectTypeService() {
-                return RuntimeAgentTest.this.messageObjectTypeService
             }
         }
     }
@@ -167,7 +153,6 @@ class RuntimeAgentTest extends AbstractServiceTest {
     DslMessage createSystemSendMessage(TestRuntimeAgentClass agent) {
         def message = new ServiceMessage(
                 "{}",
-                messageObjectTypeService.get(ServiceMessageObjectType.Code.GET_SERVICE_MESSAGE),
                 messageTypeService.get(ServiceMessageType.Code.SEND),
                 Collections.emptyList(),
                 agent.systemAgent.id

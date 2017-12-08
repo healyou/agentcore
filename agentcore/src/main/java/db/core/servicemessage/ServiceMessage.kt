@@ -12,8 +12,6 @@ import java.util.*
 open class ServiceMessage(
         /* Объект получаемый или передаваемый в сообщении */
         var jsonObject: String,
-        /* Тип json объекта */
-        var objectType: ServiceMessageObjectType,
         /* Тип сообщения */
         var messageType: ServiceMessageType,
         /* Типы агентов, которым отправляется сообщение */
