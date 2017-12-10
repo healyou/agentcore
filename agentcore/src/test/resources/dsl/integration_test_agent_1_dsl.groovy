@@ -11,6 +11,8 @@ init = {
     type = TEST_AGENT_TYPE_1_AT
     name = "Тестовый агент 1"
     masId = "test_agent_1_masId"
+    defaultBodyType = JSON_MBT
+    defaultGoalType = TEST_MESSAGE_GOAL_TYPE_1_MGT
 }
 
 onLoadImage = { image ->

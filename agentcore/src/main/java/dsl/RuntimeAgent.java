@@ -2,28 +2,34 @@ package dsl;
 
 import db.base.Codable;
 import db.base.Environment;
-import db.core.servicemessage.*;
+import db.core.servicemessage.ServiceMessage;
+import db.core.servicemessage.ServiceMessageService;
+import db.core.servicemessage.ServiceMessageType;
+import db.core.servicemessage.ServiceMessageTypeService;
 import db.core.systemagent.SystemAgent;
 import db.core.systemagent.SystemAgentService;
 import dsl.base.ARuntimeAgent;
-import dsl.objects.DslMessage;
-import dsl.objects.DslImage;
 import dsl.base.SendMessageParameters;
+import dsl.objects.DslImage;
+import dsl.objects.DslMessage;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
 import service.AbstractAgentService;
 import service.LoginService;
 import service.ServerTypeService;
 import service.SessionManager;
-import service.objects.*;
+import service.objects.AgentType;
+import service.objects.MessageBodyType;
+import service.objects.MessageGoalType;
+import service.objects.MessageType;
 
 import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -49,17 +55,29 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     @Override
     public void onLoadImage(@NotNull DslImage image) {
-        runtimeAgentService.applyOnLoadImage(image);
+        try {
+            runtimeAgentService.applyOnLoadImage(image);
+        } catch (Exception e) {
+            System.out.println("Ошибка работы агента");
+        }
     }
 
     @Override
     public void onGetMessage(@NotNull DslMessage message) {
-        runtimeAgentService.applyOnGetMessage(message);
+        try {
+            runtimeAgentService.applyOnGetMessage(message);
+        } catch (Exception e) {
+            System.out.println("Ошибка работы агента");
+        }
     }
 
     @Override
     public void onEndImageTask(@Nullable DslImage updateImage) {
-        runtimeAgentService.applyOnEndImageTask(updateImage);
+        try {
+            runtimeAgentService.applyOnEndImageTask(updateImage);
+        } catch (Exception e) {
+            System.out.println("Ошибка работы агента");
+        }
     }
 
     @Nullable

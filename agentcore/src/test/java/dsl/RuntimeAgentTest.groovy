@@ -20,6 +20,7 @@ import objects.MockObjects
 import objects.OtherObjects
 
 import java.awt.image.BufferedImage
+import java.util.concurrent.ThreadPoolExecutor
 
 import static org.easymock.EasyMock.mock
 
@@ -162,7 +163,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
 
         new DslMessage(
                 message.senderCode.code,
-                new DslImage("testImage", [1, 2, 3] as byte[])//AbstractAgentService.Companion.fromJson(message.jsonObject, DslImage.class)
+                new DslImage("testImage", [1, 2, 3] as byte[])
         )
     }
 }

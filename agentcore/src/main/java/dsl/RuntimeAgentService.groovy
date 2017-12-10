@@ -20,6 +20,8 @@ class RuntimeAgentService {
     def agentType = null
     def agentName = null
     def agentMasId = null
+    def defaultBodyType = null
+    def defaultGoalType = null
 
     List<AgentType> agentTypes = []
     List<MessageBodyType> messageBodyTypes = []
@@ -105,10 +107,12 @@ class RuntimeAgentService {
                 agentType = binding.type
                 agentName = binding.name
                 agentMasId = binding.masId
+                defaultBodyType = binding.defaultBodyType
+                defaultGoalType = binding.defaultGoalType
             } catch (ignored) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
-            if (agentType.isEmpty() || agentName.isEmpty() || agentMasId.isEmpty()) {
+            if (initDataIsNullOrEmpty()) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
         } else {
@@ -183,11 +187,10 @@ class RuntimeAgentService {
             def bodyType = map[bodyTypeParamName]
             def messageGoalType = map[goalTypeParamName]
             if (bodyType == null) {
-                // TODO - параметры тоже дефолтные надо как-то вынести - можно и init их устанавливать как дефолтные и норм
-                map[bodyTypeParamName] = binding.JSON_MBT
+                map[bodyTypeParamName] = defaultBodyType
             }
             if (messageGoalType == null) {
-                map[goalTypeParamName] = binding.TASK_DECISION_MGT
+                map[goalTypeParamName] = defaultGoalType
             }
 
             if (agent_send_message_provided) {
@@ -291,5 +294,19 @@ class RuntimeAgentService {
         binding.type = ""
         binding.name = ""
         binding.masId = ""
+        binding.defaultBodyType = ""
+        binding.defaultGoalType = ""
+    }
+
+    /**
+     * Проверка на инициализацию обязательных данных блока init
+     */
+    private boolean initDataIsNullOrEmpty() {
+        if (agentType == null || agentType.isEmpty() || agentName == null || agentName.isEmpty() ||
+                agentMasId == null || agentMasId.isEmpty() || defaultBodyType == null || defaultBodyType.isEmpty() ||
+                defaultGoalType == null || defaultGoalType.isEmpty()) {
+            true
+        }
+        false
     }
 }

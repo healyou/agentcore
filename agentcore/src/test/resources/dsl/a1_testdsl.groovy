@@ -2,6 +2,8 @@ init = {
     type = WORKER_AT
     name = "a1_testdsl"
     masId = "a1_testdsl"
+    defaultBodyType = JSON_MBT
+    defaultGoalType = TASK_DECISION_MGT
 }
 
 onGetMessage = { message ->
