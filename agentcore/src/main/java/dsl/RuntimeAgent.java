@@ -13,6 +13,7 @@ import dsl.base.SendMessageParameters;
 import dsl.objects.DslImage;
 import dsl.objects.DslMessage;
 import groovy.lang.Closure;
+import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import service.AbstractAgentService;
 import service.LoginService;
@@ -28,8 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 /**
@@ -93,7 +92,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected abstract ServerTypeService getServerTypeService();
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
-    protected abstract ServiceMessageTypeService getMessageTypeService();
 
     /* для облегчения тестирования */
     protected RuntimeAgentService createRuntimeAgentService() {

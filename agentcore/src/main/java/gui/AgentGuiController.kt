@@ -3,11 +3,15 @@ package gui
 import db.base.Environment
 import db.core.sc.ServiceMessageSC
 import db.core.sc.SystemAgentSC
-import db.core.servicemessage.*
+import db.core.servicemessage.ServiceMessage
+import db.core.servicemessage.ServiceMessageService
+import db.core.servicemessage.ServiceMessageType
+import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
-import dsl.RuntimeAgent
+import dsl.ThreadPoolRuntimeAgent
 import dsl.objects.DslImage
+import dsl.objects.DslMessage
 import gui.table.AgentComboBoxRenderer
 import gui.table.CustomTableBuilder
 import gui.table.columns.DateTimeTableColumn
@@ -21,14 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import service.LoginService
 import service.ServerTypeService
-import java.awt.Image
-import java.awt.image.BufferedImage
 import java.text.SimpleDateFormat
-import java.io.IOException
-import java.io.File
-import javax.imageio.ImageIO
-
-
 
 
 /**
@@ -69,7 +66,7 @@ class AgentGuiController {
     private fun configureLoadAgentsButton() {
         loadAgentsButton.setOnAction {
             /* Для теста чисто 1 файл загрузим - а так надо сканировать все файлы в папке*/
-            val runtimeAgent = object : RuntimeAgent("data/dsl/testagent.groovy") {
+            val runtimeAgent = object : ThreadPoolRuntimeAgent("data/dsl/testagent.groovy") {
 
                 override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
                 override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
@@ -78,10 +75,9 @@ class AgentGuiController {
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
             }
-            //val message = serviceMessageService.get(ServiceMessageSC()).get(0)
-            //runtimeAgent.onGetMessage(message)
+            runtimeAgent.onGetMessage(DslMessage("worker", DslImage("testName", byteArrayOf(1, 2, 3))))
             runtimeAgent.onLoadImage(DslImage("testName", byteArrayOf(1, 2, 3)))
-//            runtimeAgent.onEndImageTask(null)
+            runtimeAgent.onEndImageTask(DslImage("testName", byteArrayOf(1, 2, 3)))
         }
     }
 

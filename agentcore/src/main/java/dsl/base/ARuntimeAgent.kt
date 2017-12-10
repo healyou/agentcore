@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.type.TypeReference
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
+import db.core.servicemessage.ServiceMessageType
+import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
-import dsl.objects.DslMessage
 import dsl.objects.DslImage
+import dsl.objects.DslMessage
 import service.AbstractAgentService
 import service.objects.Message
 import java.util.*
@@ -31,7 +33,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     }
 
     /**
-     * Поиск сообщений для текущего агента
+     * Поиск сообщений для текущего агента от других агентов
      */
     protected fun searchMessages() {
         val systemAgent = getSystemAgent() ?: return
@@ -40,6 +42,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
         val sc = ServiceMessageSC()
         sc.systemAgentId = systemAgent.id
         sc.isUse = false
+        sc.messageType = getMessageTypeService().get(ServiceMessageType.Code.GET)
 
         messageService.get(sc).forEach {
             messageService.use(it)
@@ -49,6 +52,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
 
     protected abstract fun getSystemAgentService(): SystemAgentService
     protected abstract fun getServiceMessageService(): ServiceMessageService
+    protected abstract fun getMessageTypeService(): ServiceMessageTypeService
     protected abstract fun getSystemAgent(): SystemAgent?
 
     /**
