@@ -11,4 +11,6 @@ interface ServerAgentService {
     fun getCurrentAgent(sessionManager: SessionManager): Agent?
 
     fun getAgents(sessionManager: SessionManager, data: GetAgentsData): List<Agent>?
+
+    fun getAgent(sessionManager: SessionManager, masId: String): Agent?
 }

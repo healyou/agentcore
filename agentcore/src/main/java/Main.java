@@ -80,6 +80,7 @@ public class Main {
         Agent agent = serverAgentService.getCurrentAgent(sessionManager);
         List<Agent> agents = serverAgentService.getAgents(sessionManager, new GetAgentsData(
                 "worker",
+                null,
                 null
         ));
         int k = 1;

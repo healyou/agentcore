@@ -31,7 +31,8 @@ data class RegistrationData(
  */
 data class GetAgentsData(
         val type: String? = null,
-        val isDeleted: Boolean? = null
+        val isDeleted: Boolean? = null,
+        val name: String? = null
 )
 
 /**

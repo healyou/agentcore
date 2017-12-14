@@ -51,6 +51,10 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
         session = new SessionManager()
     }
 
+    /**
+     * Тестирование лишь запуска методов
+     */
+
     @Test
     void "Тестирование сервиса авторизации"() {
         /* без авторизации нельзя выйти */
@@ -67,11 +71,13 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
         /* без авторизации */
         assertNull(serverAgentService.getCurrentAgent(session))
         assertNull(serverAgentService.getAgents(session, RestServiceObjects.agentsData))
+        assertNull(serverAgentService.getAgent(session, StringObjects.emptyString()))
 
         /* с авторизацией */
-        login(session)
+        def agent = login(session)
         assertNotNull(serverAgentService.getCurrentAgent(session))
         assertNotNull(serverAgentService.getAgents(session, RestServiceObjects.agentsData))
+        assertNotNull(serverAgentService.getAgent(session, agent.masId))
     }
 
     @Test
@@ -108,6 +114,11 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
             assertNotNull(serverTypeService.getMessageTypes(session, messageGoalTypes.get(0).code.code))
         }
     }
+
+    /**
+     * TODO
+     * Тестирование какой-то логики работы сервиса
+     */
 
     private Agent login(SessionManager session) {
         def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))

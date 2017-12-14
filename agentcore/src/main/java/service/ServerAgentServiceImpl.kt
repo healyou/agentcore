@@ -20,6 +20,7 @@ open class ServerAgentServiceImpl(@Autowired final override val environment: Env
     override val BASE_URL: String = environment.getProperty("agent.service.base.url")
     private val GET_CURRENT_AGENT_URL = environment.getProperty("agent.service.agent.get.current.agent.url")
     private val GET_AGENTS_URL = environment.getProperty("agent.service.agent.get.agents.url")
+    private val GET_AGENT_URL = environment.getProperty("agent.service.agent.get.agent.url")
 
     override fun getCurrentAgent(sessionManager: SessionManager): Agent? {
         return try {
@@ -44,6 +45,9 @@ open class ServerAgentServiceImpl(@Autowired final override val environment: Env
             if (data.isDeleted != null) {
                 map.add("isDeleted", data.isDeleted.toString())
             }
+            if (data.name != null) {
+                map.add("name", data.name)
+            }
 
             val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
 
@@ -52,6 +56,22 @@ open class ServerAgentServiceImpl(@Autowired final override val environment: Env
 
             /* грузим куки, если они есть */
             fromJson(jsonObject, object : TypeReference<List<Agent>>(){})
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override fun getAgent(sessionManager: SessionManager, masId: String): Agent? {
+        return try {
+            val map = LinkedMultiValueMap<String, String>()
+            map.add("masId", masId)
+
+            val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
+
+            val outData = restTemplate.exchange(BASE_URL + GET_AGENT_URL, HttpMethod.POST, request, String::class.java)
+            val jsonObject = outData.body
+
+            fromJson(jsonObject, object : TypeReference<Agent>(){})
         } catch (e: Exception) {
             null
         }

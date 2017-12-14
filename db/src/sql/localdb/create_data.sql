@@ -7,6 +7,7 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.password', 'psw'),
   ('agent.service.agent.get.current.agent.url', '/agent/getCurrentAgent'),
   ('agent.service.agent.get.agents.url', '/agent/getAgents'),
+  ('agent.service.agent.get.agent.url', '/agent/getAgent'),
   ('agent.service.message.send.message.url', '/message/sendMessage'),
   ('agent.service.message.get.messages.url', '/message/getMessages'),
   ('agent.service.type.get.agent.types.url', '/type/getAgentTypes'),
