@@ -16,10 +16,10 @@ class MessageType @JsonCreator constructor (
         var code: Code,
         @JsonProperty("name")
         var name: String,
-        @JsonProperty("messageOrder")
-        var messageOrder: Long,
-        @JsonProperty("messageGoalType")
-        var messageGoalType: MessageGoalType,
+        @JsonProperty("order")
+        var order: Long,
+        @JsonProperty("goalType")
+        var goalType: MessageGoalType,
         @JsonProperty("deleted")
         var isDeleted: Boolean
 ): Entity {

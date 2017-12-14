@@ -27,14 +27,13 @@ class DslObjects {
         """
     }
 
-    static def allBlocksDslWithInitParams(type, name, masId, bodyType, goalType) {
+    static def allBlocksDslWithInitParams(type, name, masId, bodyType) {
         """
             init = {
                 type = "$type"
                 name = "$name"
                 masId = "$masId"
                 defaultBodyType = "$bodyType"
-                defaultGoalType = "$goalType"
             }
             onGetMessage = { message -> }
             onLoadImage = { image -> }
@@ -145,7 +144,6 @@ class DslObjects {
                 name = "${StringObjects.randomString()}"
                 masId = "${StringObjects.randomString()}"
                 defaultBodyType = "${StringObjects.randomString()}"
-                defaultGoalType = "${StringObjects.randomString()}"
             }
         """
     }

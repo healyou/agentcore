@@ -38,7 +38,6 @@ data class GetAgentsData(
  * Данные для отправки сообщения
  */
 data class SendMessageData(
-        val goalType: String,
         val type: String,
         val recipientsIds: List<Long>,
         val bodyType: String,

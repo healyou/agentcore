@@ -108,10 +108,9 @@ class RuntimeAgentServiceTest extends Assert {
         def name = StringObjects.randomString()
         def masId = StringObjects.randomString()
         def defaultBodyType = StringObjects.randomString()
-        def defaultGoalType = StringObjects.randomString()
 
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.allBlocksDslWithInitParams(type, name, masId, defaultBodyType, defaultGoalType)
+                DslObjects.allBlocksDslWithInitParams(type, name, masId, defaultBodyType)
         )
         runtimeAgentService.applyInit()
 
@@ -119,7 +118,6 @@ class RuntimeAgentServiceTest extends Assert {
         assertEquals(runtimeAgentService.agentType, type)
         assertEquals(runtimeAgentService.agentMasId, masId)
         assertEquals(runtimeAgentService.defaultBodyType, defaultBodyType)
-        assertEquals(runtimeAgentService.defaultGoalType, defaultGoalType)
     }
 
     /* Проходят все вызовы функций из dsl */

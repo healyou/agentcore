@@ -147,7 +147,6 @@ class ServiceTask @Autowired constructor(
             serverMessageService.sendMessage(
                     sessionManager,
                     SendMessageData(
-                            MessageGoalType.Code.TASK_DECISION.code,
                             MessageType.Code.SEARCH_SOLUTION.code,
                             getMessageRecipientsIds(it, systemAgent, sessionManager),
                             MessageBodyType.Code.JSON.code,

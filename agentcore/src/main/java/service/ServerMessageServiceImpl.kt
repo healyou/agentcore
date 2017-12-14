@@ -25,7 +25,6 @@ open class ServerMessageServiceImpl(@Autowired final override val environment: E
     override fun sendMessage(sessionManager: SessionManager, data: SendMessageData): Message? {
         return try {
             val map = LinkedMultiValueMap<String, String>()
-            map.add("goalType", data.goalType)
             map.add("type", data.type)
             map.add("bodyType", data.bodyType)
             map.add("body", data.body)

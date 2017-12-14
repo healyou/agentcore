@@ -18,9 +18,6 @@ class Message @JsonCreator constructor (
         @JsonProperty("recipients")
         var recipients: List<MessageRecipient>? = null,
         /* Цель сообщения */
-        @JsonProperty("goalType")
-        var goalType: MessageGoalType? = null,
-        /* Цель сообщения */
         @JsonProperty("type")
         var type: MessageType? = null,
         /* Дата создания */

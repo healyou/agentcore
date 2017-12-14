@@ -57,7 +57,6 @@ public class Main {
         recipients.add(agent.getId());
 
         Message message = serverMessageService.sendMessage(sessionManager, new SendMessageData(
-                MessageGoalType.Code.TASK_DECISION.getCode(),
                 MessageType.Code.SEARCH_SOLUTION.getCode(),
                 recipients,
                 MessageBodyType.Code.JSON.getCode(),

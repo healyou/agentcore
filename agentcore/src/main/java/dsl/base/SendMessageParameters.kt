@@ -22,8 +22,4 @@ enum class SendMessageParameters(val paramName: String, val isRequired: Boolean)
      * Тип тела сообщения - default JSON
      */
     BODY_TYPE("bodyType", false),
-    /**
-     * Цель общения - default работа с изображением
-     */
-    MESSAGE_GOAL_TYPE("messageGoalType", false);
 }

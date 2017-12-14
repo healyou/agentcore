@@ -1,9 +1,10 @@
-package dsl
+package integration
 
 import db.base.Environment
 import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgentService
+import dsl.RuntimeAgent
 import objects.OtherObjects
 import org.junit.Before
 import org.junit.Ignore
@@ -25,6 +26,8 @@ import testbase.AbstractServiceTest
  */
 @Ignore
 class IntegrationRuntimeAgentTest extends AbstractServiceTest {
+
+    // TODO тесты работы методов сервиса написать
 
     @Autowired
     ServiceMessageService messageService
@@ -49,7 +52,7 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
 
     @Before
     void setup() {
-        testAgent1 = new RuntimeAgent(getClass().getResource("integration_test_agent_1_dsl.groovy").toURI().path) {
+        testAgent1 = new RuntimeAgent(RuntimeAgent.class.getResource("integration_test_agent_1_dsl.groovy").toURI().path) {
 
             @Override
             protected ServerTypeService getServerTypeService() {
@@ -81,7 +84,7 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
                 return IntegrationRuntimeAgentTest.this.messageTypeService
             }
         }
-        testAgent2 = new RuntimeAgent(getClass().getResource("integration_test_agent_2_dsl.groovy").toURI().path) {
+        testAgent2 = new RuntimeAgent(RuntimeAgent.class.getResource("integration_test_agent_2_dsl.groovy").toURI().path) {
 
             @Override
             protected ServerTypeService getServerTypeService() {

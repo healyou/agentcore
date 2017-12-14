@@ -101,8 +101,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected void sendMessage(MessageType.Code messageType,
                                DslImage image,
                                List<AgentType.Code> agentTypes,
-                               MessageBodyType.Code bodyFormatType,
-                               MessageGoalType.Code messageGoalType) {
+                               MessageBodyType.Code bodyFormatType) {
 
         if (systemAgent.getId() == null) {
             return;
@@ -144,16 +143,14 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                                 (List<String>) map.get(SendMessageParameters.AGENT_TYPES.getParamName()) :
                                 Collections.emptyList();
                 String bodyType = (String) map.get(SendMessageParameters.BODY_TYPE.getParamName());
-                String messageGoalType = (String) map.get(SendMessageParameters.MESSAGE_GOAL_TYPE.getParamName());
 
                 MessageType.Code messageTypeCode = Codable.Companion.find(MessageType.Code.class, messageType);
                 List<AgentType.Code> agentTypeCodes = agentTypes.stream()
                         .map(it -> Codable.Companion.find(AgentType.Code.class, it))
                         .collect(Collectors.toList());
                 MessageBodyType.Code bodyTypeCode = Codable.Companion.find(MessageBodyType.Code.class, bodyType);
-                MessageGoalType.Code messageGoalTypeCode = Codable.Companion.find(MessageGoalType.Code.class, messageGoalType);
 
-                sendMessage(messageTypeCode, image, agentTypeCodes, bodyTypeCode, messageGoalTypeCode);
+                sendMessage(messageTypeCode, image, agentTypeCodes, bodyTypeCode);
                 return null;
             }
         };

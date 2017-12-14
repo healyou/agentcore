@@ -10,7 +10,6 @@ init = {
     name = "Тестовый агент 2"
     masId = "test_agent_2_masId"
     defaultBodyType = JSON_MBT
-    defaultGoalType = TEST_MESSAGE_GOAL_TYPE_1_MGT
 }
 
 onGetMessage = { message ->

@@ -21,7 +21,6 @@ class RuntimeAgentService {
     def agentName = null
     def agentMasId = null
     def defaultBodyType = null
-    def defaultGoalType = null
 
     List<AgentType> agentTypes = []
     List<MessageBodyType> messageBodyTypes = []
@@ -108,7 +107,6 @@ class RuntimeAgentService {
                 agentName = binding.name
                 agentMasId = binding.masId
                 defaultBodyType = binding.defaultBodyType
-                defaultGoalType = binding.defaultGoalType
             } catch (ignored) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
@@ -183,14 +181,9 @@ class RuntimeAgentService {
 
             /* default value fields */
             def bodyTypeParamName = SendMessageParameters.BODY_TYPE.paramName
-            def goalTypeParamName = SendMessageParameters.MESSAGE_GOAL_TYPE.paramName
             def bodyType = map[bodyTypeParamName]
-            def messageGoalType = map[goalTypeParamName]
             if (bodyType == null) {
                 map[bodyTypeParamName] = defaultBodyType
-            }
-            if (messageGoalType == null) {
-                map[goalTypeParamName] = defaultGoalType
             }
 
             if (agent_send_message_provided) {
@@ -295,7 +288,6 @@ class RuntimeAgentService {
         binding.name = ""
         binding.masId = ""
         binding.defaultBodyType = ""
-        binding.defaultGoalType = ""
     }
 
     /**
@@ -303,8 +295,7 @@ class RuntimeAgentService {
      */
     private boolean initDataIsNullOrEmpty() {
         if (agentType == null || agentType.isEmpty() || agentName == null || agentName.isEmpty() ||
-                agentMasId == null || agentMasId.isEmpty() || defaultBodyType == null || defaultBodyType.isEmpty() ||
-                defaultGoalType == null || defaultGoalType.isEmpty()) {
+                agentMasId == null || agentMasId.isEmpty() || defaultBodyType == null || defaultBodyType.isEmpty()) {
             true
         }
         false
