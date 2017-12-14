@@ -27,8 +27,6 @@ import testbase.AbstractServiceTest
 @Ignore
 class IntegrationRuntimeAgentTest extends AbstractServiceTest {
 
-    // TODO тесты работы методов сервиса написать
-
     @Autowired
     ServiceMessageService messageService
     @Autowired
