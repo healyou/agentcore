@@ -8,8 +8,6 @@ import spock.lang.Specification
  */
 class ExtensionsSpecification extends Specification {
 
-    // TODO запуск spock тестов с junit
-
     def "Не пустая строка должна правильно конвертироваться в массив типов AgentType.Code"() {
         when:
         def list
