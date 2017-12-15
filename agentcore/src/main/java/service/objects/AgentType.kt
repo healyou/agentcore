@@ -23,9 +23,9 @@ class AgentType @JsonCreator constructor (
 
     /* Типы агентов */
     enum class Code(override val code: String): Codable<String> {
-        WORKER("worker"),
-        SERVER("server"),
-        TEST_AGENT_TYPE_1("test_agent_type_1"),
-        TEST_AGENT_TYPE_2("test_agent_type_2");
+        worker("worker"),
+        server("server"),
+        test_agent_type_1("test_agent_type_1"),
+        test_agent_type_2("test_agent_type_2");
     }
 }

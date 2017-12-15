@@ -22,6 +22,6 @@ class MessageBodyType @JsonCreator constructor (
 
     /* Типы тела сообщения */
     enum class Code(override val code: String): Codable<String> {
-        JSON("json");
+        json("json");
     }
 }

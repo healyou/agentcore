@@ -22,9 +22,9 @@ class ExtensionsSpecification extends Specification {
 
         where:
         [EXPECT, VALUE] << [
-                [Arrays.asList(AgentType.Code.WORKER, AgentType.Code.SERVER), AgentType.Code.WORKER.code + "!" + AgentType.Code.SERVER.code],
-                [Arrays.asList(AgentType.Code.SERVER), AgentType.Code.SERVER.code + "!"],
-                [Arrays.asList(AgentType.Code.SERVER), AgentType.Code.SERVER.code]
+                [Arrays.asList(AgentType.Code.worker, AgentType.Code.server), AgentType.Code.worker.code + "!" + AgentType.Code.server.code],
+                [Arrays.asList(AgentType.Code.server), AgentType.Code.server.code + "!"],
+                [Arrays.asList(AgentType.Code.server), AgentType.Code.server.code]
         ]
     }
 
@@ -53,8 +53,8 @@ class ExtensionsSpecification extends Specification {
 
         where:
         [EXPECT, VALUE] << [
-                [AgentType.Code.WORKER.code + "!" + AgentType.Code.SERVER.code, Arrays.asList(AgentType.Code.WORKER, AgentType.Code.SERVER)],
-                [AgentType.Code.SERVER.code, Arrays.asList(AgentType.Code.SERVER)],
+                [AgentType.Code.worker.code + "!" + AgentType.Code.server.code, Arrays.asList(AgentType.Code.worker, AgentType.Code.server)],
+                [AgentType.Code.server.code, Arrays.asList(AgentType.Code.server)],
                 ["", Collections.emptyList()]
         ]
     }

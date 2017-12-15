@@ -19,7 +19,7 @@ enum class SendMessageParameters(val paramName: String, val isRequired: Boolean)
      */
     AGENT_TYPES("agentTypes", true),
     /**
-     * Тип тела сообщения - default JSON
+     * Тип тела сообщения - default json
      */
     BODY_TYPE("bodyType", false),
 }

@@ -24,7 +24,7 @@ class MessageGoalType @JsonCreator constructor (
 
     /* Типы тела сообщения */
     enum class Code(override val code: String): Codable<String> {
-        TASK_DECISION("task_decision"),
-        TEST_MESSAGE_GOAL_TYPE_1("test_message_goal_type_1");
+        task_decision("task_decision"),
+        test_message_goal_type_1("test_message_goal_type_1");
     }
 }

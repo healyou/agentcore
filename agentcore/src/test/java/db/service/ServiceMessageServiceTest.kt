@@ -31,7 +31,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     private var id: Long? = null
     private var jsonObject = "{}"
     private lateinit var messageType: ServiceMessageType
-    private val sendAgentTypeCodes = arrayListOf<AgentType.Code>(AgentType.Code.SERVER, AgentType.Code.WORKER)
+    private val sendAgentTypeCodes = arrayListOf<AgentType.Code>(AgentType.Code.server, AgentType.Code.worker)
     private var createDate = Date(System.currentTimeMillis())
     private var useDate: Date? = null
     private var systemAgentId: Long = 0

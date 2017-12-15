@@ -5,7 +5,6 @@ import db.base.Environment;
 import db.core.servicemessage.ServiceMessage;
 import db.core.servicemessage.ServiceMessageService;
 import db.core.servicemessage.ServiceMessageType;
-import db.core.servicemessage.ServiceMessageTypeService;
 import db.core.systemagent.SystemAgent;
 import db.core.systemagent.SystemAgentService;
 import dsl.base.ARuntimeAgent;
@@ -13,7 +12,6 @@ import dsl.base.SendMessageParameters;
 import dsl.objects.DslImage;
 import dsl.objects.DslMessage;
 import groovy.lang.Closure;
-import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import service.AbstractAgentService;
 import service.LoginService;
@@ -197,22 +195,22 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      */
     private void setTestData(RuntimeAgentService runtimeAgentService) {
         List<AgentType> agentTypeList = Arrays.asList(
-                new AgentType(1L, AgentType.Code.SERVER, "Рабочий агент", false),
-                new AgentType(2L, AgentType.Code.WORKER, "Серверный агент", false),
-                new AgentType(3L, AgentType.Code.TEST_AGENT_TYPE_1, "test_agent_type_1", false),
-                new AgentType(4L, AgentType.Code.TEST_AGENT_TYPE_2, "test_agent_type_2 агент", false)
+                new AgentType(1L, AgentType.Code.server, "Рабочий агент", false),
+                new AgentType(2L, AgentType.Code.worker, "Серверный агент", false),
+                new AgentType(3L, AgentType.Code.test_agent_type_1, "test_agent_type_1", false),
+                new AgentType(4L, AgentType.Code.test_agent_type_2, "test_agent_type_2 агент", false)
         );
         List<MessageBodyType> messageBodyTypes = Arrays.asList(
-                new MessageBodyType(1L, MessageBodyType.Code.JSON, "Тело сообщения формата Json", false)
+                new MessageBodyType(1L, MessageBodyType.Code.json, "Тело сообщения формата Json", false)
         );
         List<MessageGoalType> messageGoalTypes = Arrays.asList(
-                new MessageGoalType(1L, MessageGoalType.Code.TASK_DECISION, "Решение задачи", false)
+                new MessageGoalType(1L, MessageGoalType.Code.task_decision, "Решение задачи", false)
         );
         List<MessageType> messageTypes = Arrays.asList(
-                new MessageType(1L, MessageType.Code.SEARCH_TASK_SOLUTION, "Поиск решения задачи", 1, messageGoalTypes.get(0), false),
-                new MessageType(2L, MessageType.Code.SEARCH_SOLUTION, "Поиск решения", 2, messageGoalTypes.get(0), false),
-                new MessageType(3L, MessageType.Code.SOLUTION_ANSWER, "Ответ на запрос решения задачи", 3, messageGoalTypes.get(0), false),
-                new MessageType(4L, MessageType.Code.TASK_SOLUTION_ANSWER, "Ответ на задачу", 4, messageGoalTypes.get(0), false)
+                new MessageType(1L, MessageType.Code.search_task_solution, "Поиск решения задачи", 1, messageGoalTypes.get(0), false),
+                new MessageType(2L, MessageType.Code.search_solution, "Поиск решения", 2, messageGoalTypes.get(0), false),
+                new MessageType(3L, MessageType.Code.solution_answer, "Ответ на запрос решения задачи", 3, messageGoalTypes.get(0), false),
+                new MessageType(4L, MessageType.Code.task_solution_answer, "Ответ на задачу", 4, messageGoalTypes.get(0), false)
         );
 
         runtimeAgentService.setAgentTypes(agentTypeList);

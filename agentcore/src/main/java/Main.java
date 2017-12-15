@@ -5,7 +5,6 @@ import service.*;
 import service.objects.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,9 +56,9 @@ public class Main {
         recipients.add(agent.getId());
 
         Message message = serverMessageService.sendMessage(sessionManager, new SendMessageData(
-                MessageType.Code.SEARCH_SOLUTION.getCode(),
+                MessageType.Code.search_solution.getCode(),
                 recipients,
-                MessageBodyType.Code.JSON.getCode(),
+                MessageBodyType.Code.json.getCode(),
                 "{}"
         ));
         List<Message> list = serverMessageService.getMessages(sessionManager, new GetMessagesData(

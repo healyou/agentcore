@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import service.*
 import service.objects.*
-import java.util.*
 
 /**
  * Класс получения и отправки сообщений в сервис агентов
@@ -147,9 +146,9 @@ class ServiceTask @Autowired constructor(
             serverMessageService.sendMessage(
                     sessionManager,
                     SendMessageData(
-                            MessageType.Code.SEARCH_SOLUTION.code,
+                            MessageType.Code.search_solution.code,
                             getMessageRecipientsIds(it, systemAgent, sessionManager),
-                            MessageBodyType.Code.JSON.code,
+                            MessageBodyType.Code.json.code,
                             it.jsonObject
                     )
             )

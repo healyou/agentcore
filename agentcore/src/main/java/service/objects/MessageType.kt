@@ -26,11 +26,11 @@ class MessageType @JsonCreator constructor (
 
     /* Типы сообщения - для каждого MessageGoalType.Code тут сделать свой codable */
     enum class Code(override val code: String): Codable<String> {
-        /* Связанные с MessageGoalType.Code.TASK_DECISION */
-        SEARCH_TASK_SOLUTION("search_task_solution"),
-        SEARCH_SOLUTION("search_solution"),
-        SOLUTION_ANSWER("solution_answer"),
-        TASK_SOLUTION_ANSWER("task_solution_answer");
+        /* Связанные с MessageGoalType.Code.task_decision */
+        search_task_solution("search_task_solution"),
+        search_solution("search_solution"),
+        solution_answer("solution_answer"),
+        task_solution_answer("task_solution_answer");
 
         /* Связанные с ... */
     }

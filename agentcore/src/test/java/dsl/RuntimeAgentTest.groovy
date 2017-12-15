@@ -19,11 +19,6 @@ import testbase.AbstractServiceTest
 import objects.MockObjects
 import objects.OtherObjects
 
-import java.awt.image.BufferedImage
-import java.util.concurrent.ThreadPoolExecutor
-
-import static org.easymock.EasyMock.mock
-
 /**
  * Тестирование работы двух агентов, где роль сервера и вызова функций происходит в тестовом режиме
  * И того - тестим отработку всех действий при вз-вии двух агентов
@@ -52,7 +47,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
     void setup() {
         workerAgent_a1 = new TestRuntimeAgentClass(getClass().getResource("a1_testdsl.groovy").toURI().path) {
 
-            def senderCode = AgentType.Code.WORKER
+            def senderCode = AgentType.Code.worker
 
             @Override
             protected ServerTypeService getServerTypeService() {
@@ -86,7 +81,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         }
         serverAgent_a2 = new TestRuntimeAgentClass(getClass().getResource("a2_testdsl.groovy").toURI().path) {
 
-            def senderCode = AgentType.Code.SERVER
+            def senderCode = AgentType.Code.server
 
             @Override
             protected ServerTypeService getServerTypeService() {

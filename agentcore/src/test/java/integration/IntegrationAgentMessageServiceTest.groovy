@@ -4,24 +4,15 @@ import db.base.Environment
 import objects.OtherObjects
 import objects.RestServiceObjects
 import objects.StringObjects
-import objects.TypesObjects
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import service.LoginService
-import service.ServerAgentService
-import service.ServerMessageService
-import service.ServerTypeService
-import service.SessionManager
+import service.*
 import service.objects.Agent
-import service.objects.RegistrationData
 import testbase.AbstractServiceTest
 
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
 
 /**
  * Тестирование работы методов сервиса обмена сообщениями агента
