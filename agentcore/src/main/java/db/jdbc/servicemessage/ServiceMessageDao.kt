@@ -12,4 +12,5 @@ interface ServiceMessageDao {
     fun update(message: ServiceMessage) : Long
     fun use(message: ServiceMessage)
     fun get(sc: ServiceMessageSC) : List<ServiceMessage>
+    fun get(id: Long): ServiceMessage
 }

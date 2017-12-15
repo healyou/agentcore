@@ -23,4 +23,9 @@ interface ServiceMessageService {
      * Получение сообщений
      */
     fun get(sc: ServiceMessageSC) : List<ServiceMessage>
+
+    /**
+     * Получения сообщения по id
+     */
+    fun get(id: Long): ServiceMessage
 }

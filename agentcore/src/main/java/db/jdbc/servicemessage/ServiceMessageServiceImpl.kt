@@ -31,4 +31,8 @@ open class ServiceMessageServiceImpl : ServiceMessageService {
     override fun get(sc: ServiceMessageSC) : List<ServiceMessage> {
         return dao.get(sc)
     }
+
+    override fun get(id: Long): ServiceMessage {
+        return dao.get(id)
+    }
 }

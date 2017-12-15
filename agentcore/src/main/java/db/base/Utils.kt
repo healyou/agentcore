@@ -12,7 +12,7 @@ object Utils {
      *
      * @return true - если один из параметров null
      */
-    fun isNull(vararg args: Any?): Boolean {
+    fun isOneNull(vararg args: Any?): Boolean {
         args.forEach {
             if (it == null) {
                 return true

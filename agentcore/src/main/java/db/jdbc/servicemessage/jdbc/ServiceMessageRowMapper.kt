@@ -6,7 +6,6 @@ import db.base.sqlite_toAgentCodes
 import db.base.sqlite_toBoolean
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageType
-import service.objects.AgentType
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -28,6 +27,8 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         message.senderCode = getNullString(rs, "sender_code")
         message.createDate = getDate(rs, "create_date")
         message.useDate = getNullDate(rs, "use_date")
+        message.messageType = getNullString(rs, "message_type")
+        message.messageBodyType = getNullString(rs, "message_body_type")
 
         return message
     }

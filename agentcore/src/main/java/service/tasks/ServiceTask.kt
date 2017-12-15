@@ -1,5 +1,6 @@
 package service.tasks
 
+import db.base.Utils
 import org.springframework.beans.factory.annotation.Autowired
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.*
@@ -143,16 +144,21 @@ class ServiceTask @Autowired constructor(
 
         /* Отправка сообщений */
         messages.forEach {
-            serverMessageService.sendMessage(
-                    sessionManager,
-                    SendMessageData(
-                            "search_task_solution", // TODO тип надо сюда передавать
-                            getMessageRecipientsIds(it, systemAgent, sessionManager),
-                            "json", // TODO тип надо сюда передавать
-                            it.jsonObject
-                    )
-            )
-            localMessageService.use(it)
+            if (!Utils.isOneNull(it.messageType, it.messageBodyType)) {
+                serverMessageService.sendMessage(
+                        sessionManager,
+                        SendMessageData(
+                                it.messageType!!,
+                                getMessageRecipientsIds(it, systemAgent, sessionManager),
+                                it.messageBodyType!!,
+                                it.jsonObject
+                        )
+                )
+                localMessageService.use(it)
+            } else {
+                logger.debug("Агент[id = ${systemAgent.id}] - невозможно отправить сообщения - нехватка данных")
+                throw RuntimeException("Ошибка отправки сообщения - нехватка данных")
+            }
         }
     }
 

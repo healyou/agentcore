@@ -31,6 +31,8 @@ CREATE TABLE if not exists service_message
   message_type_id INTEGER                 NOT NULL, -- Тип сообщения
   send_agent_type_codes TEXT              NOT NULL, -- Типы агентов, которым отправляется сообщение(через знак '!')
   sender_code     TEXT                    , -- Тип агента, отправившего сообщение
+  message_type    TEXT                    , -- Тип сообщения в RestApi
+  message_body_type TEXT                  , -- Тип тела сообщения
   create_date     TEXT                    NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
   use_date        TEXT                    , -- Дата использования сообщения(отправка или чтение)
   system_agent_id INTEGER                 NOT NULL,

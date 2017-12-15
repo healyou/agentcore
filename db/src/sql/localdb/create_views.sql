@@ -10,6 +10,8 @@ CREATE VIEW IF NOT EXISTS service_message_v
       service_message.use_date,
       service_message.system_agent_id,
       service_message.message_type_id,
+      service_message.message_type,
+      service_message.message_body_type,
       smt.code as message_type_code,
       smt.name as message_type_name,
       smt.is_deleted as message_type_is_deleted

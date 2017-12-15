@@ -99,26 +99,30 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected void sendMessage(String messageTypeCode,
                                DslImage image,
                                List<String> agentTypeCodes,
-                               String bodyFormatTypeCode) {
-
+                               String messageBodyTypeCode) {
         if (systemAgent.getId() == null) {
             return;
         }
-
-        String jsonObject;
-        try {
-            jsonObject = AbstractAgentService.Companion.toJson(image);
-        } catch (Exception ignored) {
-            throw new RuntimeException("Невозможно преобразовать DslImage в json");
-        }
+        String jsonObject = imageToJsonWithThrowError(image);
 
         ServiceMessageService messageService = getServiceMessageService();
-        messageService.save(new ServiceMessage(
+        ServiceMessage serviceMessage = new ServiceMessage(
                 jsonObject,
                 getMessageTypeService().get(ServiceMessageType.Code.SEND),
                 agentTypeCodes,
                 systemAgent.getId()
-        ));
+        );
+        serviceMessage.setMessageType(messageTypeCode);
+        serviceMessage.setMessageBodyType(messageBodyTypeCode);
+        messageService.save(serviceMessage);
+    }
+
+    private String imageToJsonWithThrowError(DslImage image) {
+        try {
+            return AbstractAgentService.Companion.toJson(image);
+        } catch (Exception ignored) {
+            throw new RuntimeException("Невозможно преобразовать DslImage в json");
+        }
     }
 
     /**
@@ -180,7 +184,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         if (agentTypeList == null || messageBodyTypes == null || messageGoalTypes == null || messageTypes == null) {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
             System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
-            setTestData(runtimeAgentService); // TODO - тесты без этой штуки запустить
+            setTestData(runtimeAgentService); // тесты работают и без этой строчки
         }
     }
 

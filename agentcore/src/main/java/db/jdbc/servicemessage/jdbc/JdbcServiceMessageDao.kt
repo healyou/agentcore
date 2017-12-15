@@ -16,11 +16,13 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
 
     override fun create(message: ServiceMessage) : Long {
         jdbcTemplate.update(
-                "insert into service_message (json_object, message_type_id, send_agent_type_codes, sender_code, system_agent_id) values (?, ?, ?, ?, ?)",
+                "insert into service_message (json_object, message_type_id, send_agent_type_codes, sender_code, message_type, message_body_type, system_agent_id) values (?, ?, ?, ?, ?, ?, ?)",
                 message.jsonObject,
-                message.messageType.id!!,
+                message.serviceMessageType.id!!,
                 message.sendAgentTypeCodes.toSqlite(),
                 message.senderCode,
+                message.messageType,
+                message.messageBodyType,
                 message.systemAgentId
         )
 
@@ -30,11 +32,13 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
 
     override fun update(message: ServiceMessage) : Long {
         jdbcTemplate.update(
-                "update service_message set json_object = ?, message_type_id = ?, send_agent_type_codes = ?, sender_code = ?, system_agent_id = ? where id = ?",
+                "update service_message set json_object = ?, message_type_id = ?, send_agent_type_codes = ?, sender_code = ?, message_type = ?, message_body_type = ?, system_agent_id = ? where id = ?",
                 message.jsonObject,
-                message.messageType.id!!,
+                message.serviceMessageType.id!!,
                 message.sendAgentTypeCodes.toSqlite(),
                 message.senderCode,
+                message.messageType,
+                message.messageBodyType,
                 message.systemAgentId,
                 message.id!!
         )
@@ -56,6 +60,14 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
         applyCondition(sql, sc)
 
         return jdbcTemplate.query(sql.toString(), ServiceMessageRowMapper())
+    }
+
+    override fun get(id: Long): ServiceMessage {
+        return jdbcTemplate.queryForObject(
+                "select * from service_message_v where id = ?",
+                ServiceMessageRowMapper(),
+                id
+        )
     }
 
     /* Делаем поисковых запрос */

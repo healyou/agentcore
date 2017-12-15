@@ -13,7 +13,7 @@ open class ServiceMessage(
         /* Объект получаемый или передаваемый в сообщении */
         var jsonObject: String,
         /* Тип сообщения */
-        var messageType: ServiceMessageType,
+        var serviceMessageType: ServiceMessageType,
         /* Типы агентов, которым отправляется сообщение */
         var sendAgentTypeCodes: List<String>,
         /* Агент, которому принадлежит сообщение */
@@ -27,6 +27,10 @@ open class ServiceMessage(
     var useDate: Date? = null
     /* Тип отправителя сообщения */
     var senderCode: String? = null
+    /* Тип сообщения на Rest сервисе */
+    var messageType: String? = null
+    /* Тип тела сообщения */
+    var messageBodyType: String? = null
 
     /**
      * Использовалось ли уже данные сообщение
