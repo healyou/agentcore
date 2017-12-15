@@ -146,9 +146,9 @@ class ServiceTask @Autowired constructor(
             serverMessageService.sendMessage(
                     sessionManager,
                     SendMessageData(
-                            MessageType.Code.search_solution.code,
+                            "search_task_solution", // TODO тип надо сюда передавать
                             getMessageRecipientsIds(it, systemAgent, sessionManager),
-                            MessageBodyType.Code.json.code,
+                            "json", // TODO тип надо сюда передавать
                             it.jsonObject
                     )
             )
@@ -170,7 +170,7 @@ class ServiceTask @Autowired constructor(
                     .getAgents(
                             sessionManager,
                             GetAgentsData(
-                                    itAgentCode.code,
+                                    itAgentCode,
                                     false
                             )
                     )

@@ -15,7 +15,7 @@ class RestServiceObjects {
         new RegistrationData(
                 StringObjects.randomString(),
                 StringObjects.emptyString(),
-                TypesObjects.firstAgentType().code.code,
+                TypesObjects.testAgentType1().code,
                 password
         )
     }

@@ -1,6 +1,5 @@
 package db.base
 
-import db.base.Codable
 import service.objects.AgentType
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,26 +42,18 @@ fun Boolean.toSqlite(): String {
 
 /********* agentCodes *********/
 /* из sqlite в объект */
-fun String.sqlite_toAgentCodes(): List<AgentType.Code> {
-    val codes = this.split("!")
-
-    val list = arrayListOf<AgentType.Code>()
-    codes.forEach {
-        if (it.isNotEmpty()) {
-            list.add(Codable.find(AgentType.Code::class.java, it))
-        }
+fun String.sqlite_toAgentCodes(): List<String> {
+    if (this.isEmpty()) {
+        return arrayListOf()
     }
-
-    return list
+    return this.split("!")
 }
 
 /* из объекта в sqlite */
-fun List<AgentType.Code>.toSqlite(): String {
+fun List<String>.toSqlite(): String {
     var codesString = ""
 
-    this
-            .map { it.code }
-            .forEach { codesString = codesString.plus(it + "!") }
+    this.forEach { codesString = codesString.plus(it + "!") }
 
     if (codesString.isNotEmpty() && codesString[codesString.length - 1] == '!') {
         codesString = codesString.subSequence(0, codesString.length - 1).toString()

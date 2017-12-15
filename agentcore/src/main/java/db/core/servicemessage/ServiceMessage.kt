@@ -15,7 +15,7 @@ open class ServiceMessage(
         /* Тип сообщения */
         var messageType: ServiceMessageType,
         /* Типы агентов, которым отправляется сообщение */
-        var sendAgentTypeCodes: List<AgentType.Code>,
+        var sendAgentTypeCodes: List<String>,
         /* Агент, которому принадлежит сообщение */
         var systemAgentId: Long
 ) : Entity {
@@ -26,7 +26,7 @@ open class ServiceMessage(
     /* Дата использования(отправки или чтения агентом) */
     var useDate: Date? = null
     /* Тип отправителя сообщения */
-    var senderCode: AgentType.Code? = null
+    var senderCode: String? = null
 
     /**
      * Использовалось ли уже данные сообщение

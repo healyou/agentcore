@@ -1,14 +1,14 @@
 init = {
-    type = WORKER_AT
+    type = TEST_AGENT_TYPE_2_AT
     name = "a2_testdsl"
     masId = "a2_testdsl"
     defaultBodyType = JSON_MBT
 }
 
 onGetMessage = { message ->
-    executeCondition ("Если пришло сообщение от рабочего агента") {
+    executeCondition ("Если пришло сообщение от 1 агента") {
         condition {
-            message.senderType == WORKER_AT
+            message.senderType == TEST_AGENT_TYPE_1_AT
         }
         execute {
             a2_testOnGetMessageFun()

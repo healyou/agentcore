@@ -20,7 +20,7 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
                 message.jsonObject,
                 message.messageType.id!!,
                 message.sendAgentTypeCodes.toSqlite(),
-                message.senderCode?.code,
+                message.senderCode,
                 message.systemAgentId
         )
 
@@ -34,7 +34,7 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
                 message.jsonObject,
                 message.messageType.id!!,
                 message.sendAgentTypeCodes.toSqlite(),
-                message.senderCode?.code,
+                message.senderCode,
                 message.systemAgentId,
                 message.id!!
         )

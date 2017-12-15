@@ -35,9 +35,9 @@ class RuntimeAgentServiceTest extends Assert {
                 DslObjects.createDslWithOnGetLoadImageBlock(
                         """
                             execute {
-                                sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${MessageType.Code.values()[0].code}",
+                                sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
                                         ${SendMessageParameters.IMAGE.paramName}: image,
-                                        ${SendMessageParameters.AGENT_TYPES.paramName}: ["${AgentType.Code.values()[0].code}"]
+                                        ${SendMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
                             }
                         """
                 )
@@ -60,8 +60,8 @@ class RuntimeAgentServiceTest extends Assert {
                 DslObjects.createDslWithOnGetLoadImageBlock(
                         """
                             execute {
-                                sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${MessageType.Code.values()[0].code}",
-                                        ${SendMessageParameters.AGENT_TYPES.paramName}: ["${AgentType.Code.values()[0].code}"]
+                                sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
+                                        ${SendMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
                             }
                         """
                 )
@@ -104,7 +104,7 @@ class RuntimeAgentServiceTest extends Assert {
     @Test
     void testApplyInit() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
-        def type = TypesObjects.firstAgentTypeCodeStr()
+        def type = TypesObjects.testAgent1TypeCode()
         def name = StringObjects.randomString()
         def masId = StringObjects.randomString()
         def defaultBodyType = StringObjects.randomString()
@@ -274,28 +274,28 @@ class RuntimeAgentServiceTest extends Assert {
         /* Выполняется функция в dsl, которая проверяет условие СОЗДАННЫЙ_ТИП == "значение типа" */
         ras.agentTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getAgentTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "${ras.getAgentTypeVariableByCode(it.code)} == \"${it.code}\"",
                     "testOnGetMessageFun()"
             ))
             testClosure()
         }
         ras.messageBodyTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getMessageBodyTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "${ras.getMessageBodyTypeVariableByCode(it.code)} == \"${it.code}\"",
                     "testOnGetMessageFun()"
             ))
             testClosure()
         }
         ras.messageGoalTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getMessageGoalTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "${ras.getMessageGoalTypeVariableByCode(it.code)} == \"${it.code}\"",
                     "testOnGetMessageFun()"
             ))
             testClosure()
         }
         ras.messageTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getMessaTypeVariableByCode(it.code.code)} == \"${it.code.code}\"",
+                    "${ras.getMessaTypeVariableByCode(it.code)} == \"${it.code}\"",
                     "testOnGetMessageFun()"
             ))
             testClosure()
@@ -308,16 +308,16 @@ class RuntimeAgentServiceTest extends Assert {
         /* Константа */
         def ras = new TestRuntimeAgentServiceClass()
         ras.agentTypes = TypesObjects.agentTypes
-        def type = TypesObjects.firstAgentType()
+        def type = TypesObjects.testAgentType1()
         ras.testLoadExecuteRules(DslObjects.allBlocksDslWithTypeParameterInInitBlock(
-                "${ras.getAgentTypeVariableByCode(type.code.code)}")
+                "${ras.getAgentTypeVariableByCode(type.code)}")
         )
         ras.applyInit()
-        assertEquals(ras.agentType, type.code.code)
+        assertEquals(ras.agentType, type.code)
 
         /* Строковый параметр */
         ras = new TestRuntimeAgentServiceClass()
-        type = TypesObjects.firstAgentTypeCodeStr()
+        type = TypesObjects.testAgent1TypeCode()
         ras.testLoadExecuteRules(DslObjects.allBlocksDslWithTypeParameterInInitBlock("\"$type\""))
         ras.applyInit()
         assertEquals(ras.agentType, type)

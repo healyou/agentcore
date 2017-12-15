@@ -249,19 +249,19 @@ class RuntimeAgentService {
 
     private void prepareTypes(Binding binding) {
         agentTypes.each {
-            def code = it.getCode().code
+            def code = it.getCode()
             binding."${getAgentTypeVariableByCode(code)}" = code
         }
         messageBodyTypes.each {
-            def code = it.getCode().code
+            def code = it.getCode()
             binding."${getMessageBodyTypeVariableByCode(code)}" = code
         }
         messageGoalTypes.each {
-            def code = it.getCode().code
+            def code = it.getCode()
             binding."${getMessageGoalTypeVariableByCode(code)}" = code
         }
         messageTypes.each {
-            def code = it.getCode().code
+            def code = it.getCode()
             binding."${getMessaTypeVariableByCode(code)}" = code
         }
     }

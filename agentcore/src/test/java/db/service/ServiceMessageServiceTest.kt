@@ -7,6 +7,7 @@ import db.core.servicemessage.ServiceMessageType
 import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import objects.TypesObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,7 +32,10 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
     private var id: Long? = null
     private var jsonObject = "{}"
     private lateinit var messageType: ServiceMessageType
-    private val sendAgentTypeCodes = arrayListOf<AgentType.Code>(AgentType.Code.server, AgentType.Code.worker)
+    private val sendAgentTypeCodes = arrayListOf(
+            TypesObjects.testAgentType1().code,
+            TypesObjects.testAgentType2().code
+    )
     private var createDate = Date(System.currentTimeMillis())
     private var useDate: Date? = null
     private var systemAgentId: Long = 0

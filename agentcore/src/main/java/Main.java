@@ -26,7 +26,7 @@ public class Main {
         List<AgentType> agentTypes = serverTypeService.getAgentTypes(sessionManager);
         List<MessageBodyType> messageBodyTypes = serverTypeService.getMessageBodyTypes(sessionManager);
         List<MessageGoalType> messageGoalTypes = serverTypeService.getMessageGoalTypes(sessionManager);
-        List<MessageType> messageTypes = serverTypeService.getMessageTypes(sessionManager, messageGoalTypes.get(0).getCode().getCode());
+        List<MessageType> messageTypes = serverTypeService.getMessageTypes(sessionManager, messageGoalTypes.get(0).getCode());
         List<MessageType> messageTypeList = serverTypeService.getMessageTypes(sessionManager);
 
         int k = 1;
@@ -56,9 +56,9 @@ public class Main {
         recipients.add(agent.getId());
 
         Message message = serverMessageService.sendMessage(sessionManager, new SendMessageData(
-                MessageType.Code.search_solution.getCode(),
+                "search_solution",
                 recipients,
-                MessageBodyType.Code.json.getCode(),
+                "json",
                 "{}"
         ));
         List<Message> list = serverMessageService.getMessages(sessionManager, new GetMessagesData(

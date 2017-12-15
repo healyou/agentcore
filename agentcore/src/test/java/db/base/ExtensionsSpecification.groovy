@@ -1,6 +1,6 @@
 package db.base
 
-import service.objects.AgentType
+import objects.TypesObjects
 import spock.lang.Specification
 
 /**
@@ -8,7 +8,7 @@ import spock.lang.Specification
  */
 class ExtensionsSpecification extends Specification {
 
-    def "Не пустая строка должна правильно конвертироваться в массив типов AgentType.Code"() {
+    def "Не пустая строка должна правильно конвертироваться в массив типов String"() {
         when:
         def list
         use(ExtensionsKt) {
@@ -17,14 +17,14 @@ class ExtensionsSpecification extends Specification {
 
         then:
         EXPECT.each { itExpect ->
-            assert list.stream().anyMatch { it -> itExpect == it }
+            assert list.any { it -> itExpect == it }
         }
 
         where:
         [EXPECT, VALUE] << [
-                [Arrays.asList(AgentType.Code.worker, AgentType.Code.server), AgentType.Code.worker.code + "!" + AgentType.Code.server.code],
-                [Arrays.asList(AgentType.Code.server), AgentType.Code.server.code + "!"],
-                [Arrays.asList(AgentType.Code.server), AgentType.Code.server.code]
+                [Arrays.asList(TypesObjects.testAgent1TypeCode(), TypesObjects.testAgent2TypeCode()), TypesObjects.testAgent1TypeCode() + "!" + TypesObjects.testAgent2TypeCode()],
+                [Arrays.asList(TypesObjects.testAgent1TypeCode()), TypesObjects.testAgent1TypeCode() + "!"],
+                [Arrays.asList(TypesObjects.testAgent2TypeCode()), TypesObjects.testAgent2TypeCode()]
         ]
     }
 
@@ -53,8 +53,8 @@ class ExtensionsSpecification extends Specification {
 
         where:
         [EXPECT, VALUE] << [
-                [AgentType.Code.worker.code + "!" + AgentType.Code.server.code, Arrays.asList(AgentType.Code.worker, AgentType.Code.server)],
-                [AgentType.Code.server.code, Arrays.asList(AgentType.Code.server)],
+                [TypesObjects.testAgent1TypeCode() + "!" + TypesObjects.testAgent2TypeCode(), Arrays.asList(TypesObjects.testAgent1TypeCode(), TypesObjects.testAgent2TypeCode())],
+                [TypesObjects.testAgent1TypeCode(), Arrays.asList(TypesObjects.testAgent1TypeCode())],
                 ["", Collections.emptyList()]
         ]
     }

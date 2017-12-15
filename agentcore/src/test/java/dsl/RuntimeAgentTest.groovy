@@ -9,6 +9,7 @@ import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgentService
 import dsl.objects.DslMessage
 import dsl.objects.DslImage
+import objects.TypesObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -47,7 +48,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
     void setup() {
         workerAgent_a1 = new TestRuntimeAgentClass(getClass().getResource("a1_testdsl.groovy").toURI().path) {
 
-            def senderCode = AgentType.Code.worker
+            def senderCode = TypesObjects.testAgent1TypeCode()
 
             @Override
             protected ServerTypeService getServerTypeService() {
@@ -81,7 +82,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         }
         serverAgent_a2 = new TestRuntimeAgentClass(getClass().getResource("a2_testdsl.groovy").toURI().path) {
 
-            def senderCode = AgentType.Code.server
+            def senderCode = TypesObjects.testAgent2TypeCode()
 
             @Override
             protected ServerTypeService getServerTypeService() {
@@ -157,7 +158,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         messageService.save(message)
 
         new DslMessage(
-                message.senderCode.code,
+                message.senderCode,
                 new DslImage("testImage", [1, 2, 3] as byte[])
         )
     }

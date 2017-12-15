@@ -86,9 +86,9 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
             def messageType = messageTypes.get(0)
             def bodyType = bodyTypes.get(0)
             assertNotNull(serverMessageService.sendMessage(session, RestServiceObjects.sendMessageData(
-                    messageType.code.code,
+                    messageType.code,
                     Collections.singletonList(agent.id),
-                    bodyType.code.code,
+                    bodyType.code,
                     OtherObjects.emptyJsonObject()
             )))
         }
@@ -102,7 +102,7 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
         assertNotNull(serverTypeService.getMessageTypes(session))
         assertNotNull(serverTypeService.getAgentTypes(session))
         if (!messageGoalTypes.isEmpty()) {
-            assertNotNull(serverTypeService.getMessageTypes(session, messageGoalTypes.get(0).code.code))
+            assertNotNull(serverTypeService.getMessageTypes(session, messageGoalTypes.get(0).code))
         }
     }
 

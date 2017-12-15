@@ -10,31 +10,39 @@ import service.objects.MessageType
  */
 class TypesObjects {
 
-    static def firstAgentType() {
-        new AgentType(1L, AgentType.Code.values()[0], "первый тип", false)
+    static AgentType testAgentType1() {
+        new AgentType(1L, "test_agent_type_1", "первый тип", false)
     }
 
-    static def firstAgentTypeCodeStr() {
-        firstAgentType().code.code
+    static AgentType testAgentType2() {
+        new AgentType(2L, "test_agent_type_2", "Серверный агент", false)
+    }
+
+    static def testAgent1TypeCode() {
+        testAgentType1().code
+    }
+
+    static def testAgent2TypeCode() {
+        testAgentType2().code
     }
 
     static final def agentTypes = Arrays.asList(
-            new AgentType(1L, AgentType.Code.server, "Рабочий агент", false),
-            new AgentType(2L, AgentType.Code.worker, "Серверный агент", false)
+            testAgentType1(),
+            testAgentType2()
     )
 
     static final def messageBodyTypes = Arrays.asList(
-            new MessageBodyType(1L, MessageBodyType.Code.json, "Тело сообщения формата Json", false)
+            new MessageBodyType(1L, "json", "Тело сообщения формата Json", false)
     )
 
     static final def messageGoalTypes = Arrays.asList(
-            new MessageGoalType(1L, MessageGoalType.Code.task_decision, "Решение задачи", false)
+            new MessageGoalType(1L, "task_decision", "Решение задачи", false)
     )
 
     static final def messageTypes = Arrays.asList(
-            new MessageType(1L, MessageType.Code.search_task_solution, "Поиск решения задачи", 1, messageGoalTypes.get(0), false),
-            new MessageType(2L, MessageType.Code.search_solution, "Поиск решения", 2, messageGoalTypes.get(0), false),
-            new MessageType(3L, MessageType.Code.solution_answer, "Ответ на запрос решения задачи", 3, messageGoalTypes.get(0), false),
-            new MessageType(4L, MessageType.Code.task_solution_answer, "Ответ на задачу", 4, messageGoalTypes.get(0), false)
+            new MessageType(1L, "test_message_type_1", "Поиск решения задачи", 1, messageGoalTypes.get(0), false),
+            new MessageType(2L, "test_message_type_2", "Поиск решения", 2, messageGoalTypes.get(0), false),
+            new MessageType(3L, "test_message_type_3", "Ответ на запрос решения задачи", 3, messageGoalTypes.get(0), false),
+            new MessageType(4L, "test_message_type_4", "Ответ на задачу", 4, messageGoalTypes.get(0), false)
     )
 }

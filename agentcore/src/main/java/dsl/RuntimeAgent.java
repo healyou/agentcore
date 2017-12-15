@@ -96,10 +96,10 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         return new RuntimeAgentService();
     }
 
-    protected void sendMessage(MessageType.Code messageType,
+    protected void sendMessage(String messageTypeCode,
                                DslImage image,
-                               List<AgentType.Code> agentTypes,
-                               MessageBodyType.Code bodyFormatType) {
+                               List<String> agentTypeCodes,
+                               String bodyFormatTypeCode) {
 
         if (systemAgent.getId() == null) {
             return;
@@ -116,7 +116,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         messageService.save(new ServiceMessage(
                 jsonObject,
                 getMessageTypeService().get(ServiceMessageType.Code.SEND),
-                agentTypes,
+                agentTypeCodes,
                 systemAgent.getId()
         ));
     }
@@ -134,19 +134,13 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 if (!(arguments instanceof Map)) return null;
                 Map map = (Map) arguments;
 
-                String messageType = (String) map.get(SendMessageParameters.MESSAGE_TYPE.getParamName());
+                String messageTypeCode = (String) map.get(SendMessageParameters.MESSAGE_TYPE.getParamName());
                 DslImage image = (DslImage) map.get(SendMessageParameters.IMAGE.getParamName());
-                List<String> agentTypes =
+                List<String> agentTypeCodes =
                         map.get(SendMessageParameters.AGENT_TYPES.getParamName()) instanceof List ?
                                 (List<String>) map.get(SendMessageParameters.AGENT_TYPES.getParamName()) :
                                 Collections.emptyList();
-                String bodyType = (String) map.get(SendMessageParameters.BODY_TYPE.getParamName());
-
-                MessageType.Code messageTypeCode = Codable.Companion.find(MessageType.Code.class, messageType);
-                List<AgentType.Code> agentTypeCodes = agentTypes.stream()
-                        .map(it -> Codable.Companion.find(AgentType.Code.class, it))
-                        .collect(Collectors.toList());
-                MessageBodyType.Code bodyTypeCode = Codable.Companion.find(MessageBodyType.Code.class, bodyType);
+                String bodyTypeCode = (String) map.get(SendMessageParameters.BODY_TYPE.getParamName());
 
                 sendMessage(messageTypeCode, image, agentTypeCodes, bodyTypeCode);
                 return null;
@@ -195,22 +189,23 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      */
     private void setTestData(RuntimeAgentService runtimeAgentService) {
         List<AgentType> agentTypeList = Arrays.asList(
-                new AgentType(1L, AgentType.Code.server, "Рабочий агент", false),
-                new AgentType(2L, AgentType.Code.worker, "Серверный агент", false),
-                new AgentType(3L, AgentType.Code.test_agent_type_1, "test_agent_type_1", false),
-                new AgentType(4L, AgentType.Code.test_agent_type_2, "test_agent_type_2 агент", false)
+                new AgentType(1L, "worker", "Рабочий агент", false),
+                new AgentType(2L, "server", "Серверный агент", false),
+                new AgentType(3L, "test_agent_type_1", "test_agent_type_1", false),
+                new AgentType(4L, "test_agent_type_2", "test_agent_type_2 агент", false)
         );
         List<MessageBodyType> messageBodyTypes = Arrays.asList(
-                new MessageBodyType(1L, MessageBodyType.Code.json, "Тело сообщения формата Json", false)
+                new MessageBodyType(1L, "json", "Тело сообщения формата Json", false)
         );
         List<MessageGoalType> messageGoalTypes = Arrays.asList(
-                new MessageGoalType(1L, MessageGoalType.Code.task_decision, "Решение задачи", false)
+                new MessageGoalType(1L, "task_decision", "Решение задачи", false),
+                new MessageGoalType(1L, "test_message_goal_type_1", "Тестовая цель общения 1", false)
         );
         List<MessageType> messageTypes = Arrays.asList(
-                new MessageType(1L, MessageType.Code.search_task_solution, "Поиск решения задачи", 1, messageGoalTypes.get(0), false),
-                new MessageType(2L, MessageType.Code.search_solution, "Поиск решения", 2, messageGoalTypes.get(0), false),
-                new MessageType(3L, MessageType.Code.solution_answer, "Ответ на запрос решения задачи", 3, messageGoalTypes.get(0), false),
-                new MessageType(4L, MessageType.Code.task_solution_answer, "Ответ на задачу", 4, messageGoalTypes.get(0), false)
+                new MessageType(1L, "search_task_solution", "Поиск решения задачи", 1, messageGoalTypes.get(0), false),
+                new MessageType(2L, "search_solution", "Поиск решения", 2, messageGoalTypes.get(0), false),
+                new MessageType(3L, "solution_answer", "Ответ на запрос решения задачи", 3, messageGoalTypes.get(0), false),
+                new MessageType(4L, "task_solution_answer", "Ответ на задачу", 4, messageGoalTypes.get(0), false)
         );
 
         runtimeAgentService.setAgentTypes(agentTypeList);

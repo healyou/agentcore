@@ -140,7 +140,7 @@ class DslObjects {
     static def randomInitBlock() {
         """
             init = {
-                type = "${TypesObjects.firstAgentTypeCodeStr()}"
+                type = "${TypesObjects.testAgent1TypeCode()}"
                 name = "${StringObjects.randomString()}"
                 masId = "${StringObjects.randomString()}"
                 defaultBodyType = "${StringObjects.randomString()}"
