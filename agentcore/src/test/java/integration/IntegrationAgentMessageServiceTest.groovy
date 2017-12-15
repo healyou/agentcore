@@ -107,8 +107,7 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
     }
 
     /**
-     * TODO
-     * Тестирование какой-то логики работы сервиса
+     * TODO Тестирование какой-то логики работы сервиса
      */
 
     private Agent login(SessionManager session) {

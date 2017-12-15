@@ -180,7 +180,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         if (agentTypeList == null || messageBodyTypes == null || messageGoalTypes == null || messageTypes == null) {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
             System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
-            setTestData(runtimeAgentService);
+            setTestData(runtimeAgentService); // TODO - тесты без этой штуки запустить
         }
     }
 
