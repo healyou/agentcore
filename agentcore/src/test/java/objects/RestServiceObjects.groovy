@@ -1,10 +1,6 @@
 package objects
 
-import service.objects.GetAgentsData
-import service.objects.GetMessagesData
-import service.objects.LoginData
-import service.objects.RegistrationData
-import service.objects.SendMessageData
+import service.objects.*
 
 /**
  * @author Nikita Gorodilov
@@ -27,6 +23,10 @@ class RestServiceObjects {
         )
     }
 
+    static def loginData(String masId, String password) {
+        new LoginData(masId, password)
+    }
+
     static def getAgentsData() {
         new GetAgentsData()
     }
@@ -35,12 +35,24 @@ class RestServiceObjects {
         new GetMessagesData()
     }
 
-    static def sendMessageData(String type, List<Long> recipientsIds, String bodyType, String body) {
+    static def getMessageData(Long senderId) {
+        new GetMessagesData(
+                null,
+                null,
+                null,
+                senderId,
+                null,
+                null,
+                null
+        )
+    }
+
+    static def sendMessageData(String messageType, List<Long> recipientsIds, String messageBodyType, String messageBody) {
         new SendMessageData(
-                type,
+                messageType,
                 recipientsIds,
-                bodyType,
-                body
+                messageBodyType,
+                messageBody
         )
     }
 

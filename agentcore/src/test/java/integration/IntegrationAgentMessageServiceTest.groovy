@@ -10,7 +10,11 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import service.*
 import service.objects.Agent
+import service.objects.MessageBodyType
+import service.objects.MessageType
 import testbase.AbstractServiceTest
+
+import java.util.stream.Collectors
 
 import static org.junit.Assert.*
 
@@ -65,7 +69,7 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
         assertNull(serverAgentService.getAgent(session, StringObjects.emptyString()))
 
         /* с авторизацией */
-        def agent = login(session)
+        def agent = loginWithRegistration(session)
         assertNotNull(serverAgentService.getCurrentAgent(session))
         assertNotNull(serverAgentService.getAgents(session, RestServiceObjects.agentsData))
         assertNotNull(serverAgentService.getAgent(session, agent.masId))
@@ -78,7 +82,7 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
         assertNull(serverMessageService.sendMessage(session, RestServiceObjects.randomDataSendMessageData()))
 
         /* с авторизацией */
-        def agent = login(session)
+        def agent = loginWithRegistration(session)
         def messageTypes = serverTypeService.getMessageTypes(session)
         def bodyTypes = serverTypeService.getMessageBodyTypes(session)
         assertNotNull(serverMessageService.getMessages(session, RestServiceObjects.messageData))
@@ -114,7 +118,78 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
      * Тестирование логики работы сервиса
      */
 
-    private Agent login(SessionManager session) {
+    @Test
+    void "Регистрация агента"() {
+        /* Успешная регистрация */
+        def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))
+        def agent = loginService.registration(registrationData, session)
+        assertNotNull(agent)
+        assertEquals(agent.name, registrationData.name)
+        assertEquals(agent.masId, registrationData.masId)
+        assertEquals(agent.type.code, registrationData.type)
+
+        /* Ошибка регистрации */
+        registrationData = RestServiceObjects.registrationData(StringObjects.randomString())
+        assertNull(loginService.registration(registrationData, session))
+    }
+
+    @Test
+    void "Авторизация и выход агента"() {
+        /* Без авторизации не выйти */
+        assertFalse(logout(session))
+
+        assertNotNull(loginWithRegistration(session))
+        assertTrue(logout(session))
+    }
+
+    @Test
+    void "Получатель может прочитать отправленно ему сообщение"() {
+        def sender = registration(session)
+        def toArray = Arrays.asList(registration(session), registration(session))
+        def toIds = toArray.stream().map({it.id}).collect(Collectors.toList())
+
+        def messageTypes = getMessageTypes(session)
+        def messageBodyTypes = getMessageBodyTypes(session)
+        if (messageTypes == null || messageTypes.isEmpty() || messageBodyTypes == null || messageBodyTypes.isEmpty()) {
+            fail("Нет типов данных для отправки сообщения")
+        }
+
+        /* Отправка сообщения */
+        def messageType = messageTypes[0].code
+        def messageBodyType = messageBodyTypes[0].code
+        def messageBody = OtherObjects.emptyJsonObject()
+        login(sender, session)
+        serverMessageService.sendMessage(session, RestServiceObjects.sendMessageData(
+                messageType,
+                toIds,
+                messageBodyType,
+                messageBody
+        ))
+        logout(session)
+
+        /* Чтение сообщения */
+        toArray.forEach {
+            assertNotNull(login(it, session))
+
+            def messages = serverMessageService.getMessages(session, RestServiceObjects.getMessageData(sender.id))
+            assertNotNull(messages)
+            assertTrue(messages.size() == 1)
+        }
+    }
+
+    private Agent registration(SessionManager session) {
+        def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))
+        loginService.registration(registrationData, session)
+    }
+
+    private Agent login(Agent agent, SessionManager session) {
+        loginService.login(
+                RestServiceObjects.loginData(agent.masId, environment.getProperty("agent.service.password")),
+                session
+        )
+    }
+
+    private Agent loginWithRegistration(SessionManager session) {
         def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))
 
         def outRegistrationData = loginService.registration(registrationData, session)
@@ -123,5 +198,17 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
         assertNotNull(outLoginData)
 
         outLoginData
+    }
+
+    private Boolean logout(SessionManager session) {
+        loginService.logout(session)
+    }
+
+    private List<MessageType> getMessageTypes(SessionManager session) {
+        serverTypeService.getMessageTypes(session)
+    }
+
+    private List<MessageBodyType> getMessageBodyTypes(SessionManager session) {
+        serverTypeService.getMessageBodyTypes(session)
     }
 }
