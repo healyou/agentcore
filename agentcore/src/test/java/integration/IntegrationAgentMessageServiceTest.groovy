@@ -110,6 +110,10 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
      * TODO Тестирование какой-то логики работы сервиса
      */
 
+    /**
+     * Тестирование логики работы сервиса
+     */
+
     private Agent login(SessionManager session) {
         def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))
 

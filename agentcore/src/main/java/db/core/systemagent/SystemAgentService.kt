@@ -13,6 +13,8 @@ interface SystemAgentService {
 
     fun get(sc: SystemAgentSC): List<SystemAgent>
 
+    fun get(id: Long): SystemAgent
+
     fun getByServiceLogin(serviceLogin: String): SystemAgent
 
     fun isExistsAgent(serviceLogin: String): Boolean

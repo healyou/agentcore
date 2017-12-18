@@ -1,6 +1,7 @@
 package db.jdbc.systemagent.jdbc
 
 import db.base.AbstractDao
+import db.base.SQLITE_NO_STRING
 import db.base.Utils
 import db.base.toSqlite
 import db.core.sc.SystemAgentSC
@@ -16,10 +17,11 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun create(systemAgent: SystemAgent): Long {
         jdbcTemplate.update(
-                "insert into system_agent (service_login, service_password, is_sendandget_messages) VALUES (?, ?, ?)",
+                "insert into system_agent (service_login, service_password, is_sendandget_messages, is_deleted) VALUES (?, ?, ?, ?)",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
-                systemAgent.isSendAndGetMessages.toSqlite()
+                systemAgent.isSendAndGetMessages.toSqlite(),
+                systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING
         )
 
         /* id последней введённой записи */
@@ -42,6 +44,10 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         applyCondition(sql, sc)
 
         return jdbcTemplate.query(sql.toString(), SystemAgentRowMapper())
+    }
+
+    override fun get(id: Long): SystemAgent {
+        return jdbcTemplate.queryForObject("SELECT * FROM system_agent WHERE id = ?", SystemAgentRowMapper(), id)
     }
 
     override fun getByServiceLogin(serviceLogin: String): SystemAgent {

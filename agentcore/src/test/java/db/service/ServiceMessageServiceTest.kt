@@ -1,6 +1,5 @@
 package db.service
 
-import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageType

@@ -1,7 +1,11 @@
 package db.base
 
+import objects.OtherObjects
+import objects.StringObjects
 import objects.TypesObjects
 import spock.lang.Specification
+
+import java.text.ParseException
 
 /**
  * @author Nikita Gorodilov
@@ -57,5 +61,80 @@ class ExtensionsSpecification extends Specification {
                 [TypesObjects.testAgent1TypeCode(), Arrays.asList(TypesObjects.testAgent1TypeCode())],
                 ["", Collections.emptyList()]
         ]
+    }
+
+    def "Sqlite строка с датой правильно конвертируется в Date"() {
+        Date date = OtherObjects.getDate(2016, 10, 26)
+
+        when:
+        Date convertDate = null
+        use(ExtensionsKt) {
+            convertDate = OtherObjects.getSqliteDateString(date).fromSqlite()
+        }
+
+        then:
+        assert date.getTime() == convertDate.getTime()
+
+        when:
+        convertDate = null
+        use(ExtensionsKt) {
+            convertDate = "error date string".fromSqlite()
+        }
+
+        then:
+        thrown ParseException
+    }
+
+    def "Date правильно конвертируется в Sqlite строку"() {
+        Date date = OtherObjects.getDate(2016, 10, 26)
+
+        when:
+        String convertString = null
+        use(ExtensionsKt) {
+            convertString = date.toSqlite()
+        }
+
+        then:
+        assert OtherObjects.getSqliteDateString(date) == convertString
+    }
+
+    def "isDeleted строка в бд правильно конвертируется в boolean"() {
+        when:
+        Boolean convertBoolean = null
+        use(ExtensionsKt) {
+            convertBoolean = VALUE.sqlite_toBoolean()
+        }
+
+        then:
+        assert EXPECT == convertBoolean
+
+        where:
+        EXPECT | VALUE
+        true   | ExtensionsKt.SQLITE_YES_STRING
+        false  | ExtensionsKt.SQLITE_NO_STRING
+    }
+
+    def "Неверный формат строки isDeleted sqlite вызывает ошибку при конвертации в boolean"() {
+        when:
+        Boolean convertBoolean = null
+        use(ExtensionsKt) {
+            convertBoolean = StringObjects.randomString().sqlite_toBoolean()
+        }
+
+        then:
+        thrown UnsupportedOperationException
+    }
+
+    def "boolean правильно конвертируется в isDeleted строку в бд"() {
+        when:
+        String convertString = ExtensionsKt.toSqlite(VALUE)
+
+        then:
+        assert EXPECT == convertString
+
+        where:
+        EXPECT                         | VALUE
+        ExtensionsKt.SQLITE_YES_STRING | true
+        ExtensionsKt.SQLITE_NO_STRING  | false
     }
 }
