@@ -1,6 +1,5 @@
 package dsl;
 
-import db.base.Codable;
 import db.base.Environment;
 import db.core.servicemessage.ServiceMessage;
 import db.core.servicemessage.ServiceMessageService;
@@ -27,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Класс java, тк использующий его kotlin класс ничего не должен знать про groovy

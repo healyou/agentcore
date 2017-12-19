@@ -1,5 +1,6 @@
-package objects
+package integration.objects
 
+import objects.StringObjects
 import service.objects.*
 
 /**
@@ -11,7 +12,7 @@ class RestServiceObjects {
         new RegistrationData(
                 StringObjects.randomString(),
                 StringObjects.emptyString(),
-                TypesObjects.testAgentType1().code,
+                IntegrationTypesObjects.testAgentType1().code,
                 password
         )
     }

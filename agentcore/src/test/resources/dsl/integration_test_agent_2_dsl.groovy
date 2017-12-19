@@ -6,16 +6,16 @@
  */
 
 init = {
-    type = TEST_AGENT_TYPE_2_AT
+    type = INTEGRATION_TEST_AGENT_TYPE_2_AT
     name = "Тестовый агент 2"
-    masId = "test_agent_2_masId"
+    masId = "integration_test_agent_2_masId"
     defaultBodyType = JSON_MBT
 }
 
 onGetMessage = { message ->
     executeCondition ("Если пришло сообщение от первого серверного агента") {
         condition {
-            message.senderType == TEST_AGENT_TYPE_1_AT
+            message.senderType == INTEGRATION_TEST_AGENT_TYPE_1_AT
         }
         execute {
             println "3) Получение сообщения с сервиса от первого тестового агента вторым тестовым агентом. Работа над изображением"
@@ -36,9 +36,9 @@ onEndImageTask = { updateImage ->
     executeCondition ("Отправим сообщение первому тестовому агенту") {
         execute {
             println "4) Работы над изображением закончена. Отправка сообщения первому тестовому агенту вторым тестовым агентов"
-            sendMessage messageType: SEARCH_SOLUTION_MT,
+            sendMessage messageType: INTEGRATION_TEST_MESSAGE_TYPE_2_TEST_GOAL_1_MT,
                     image: updateImage,
-                    agentTypes: [TEST_AGENT_TYPE_1_AT]
+                    agentTypes: [INTEGRATION_TEST_AGENT_TYPE_1_AT]
         }
     }
 }

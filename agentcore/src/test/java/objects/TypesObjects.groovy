@@ -11,11 +11,11 @@ import service.objects.MessageType
 class TypesObjects {
 
     static AgentType testAgentType1() {
-        new AgentType(1L, "test_agent_type_1", "первый тип", false)
+        new AgentType(1L, "test_agent_type_1", "Первый тип агента", false)
     }
 
     static AgentType testAgentType2() {
-        new AgentType(2L, "test_agent_type_2", "Серверный агент", false)
+        new AgentType(2L, "test_agent_type_2", "Второй тип агента", false)
     }
 
     static def testAgent1TypeCode() {

@@ -2,7 +2,7 @@ package integration
 
 import db.base.Environment
 import objects.OtherObjects
-import objects.RestServiceObjects
+import integration.objects.RestServiceObjects
 import objects.StringObjects
 import org.junit.Before
 import org.junit.Ignore

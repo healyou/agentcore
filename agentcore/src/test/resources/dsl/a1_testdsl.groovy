@@ -1,3 +1,7 @@
+/**
+ * Работает с данными MockObjects - TypesObjects класса
+ */
+
 init = {
     type = TEST_AGENT_TYPE_1_AT
     name = "a1_testdsl"
