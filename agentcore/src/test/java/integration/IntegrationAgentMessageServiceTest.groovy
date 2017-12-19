@@ -10,8 +10,11 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import service.*
 import service.objects.Agent
+import service.objects.GetAgentsData
+import service.objects.Message
 import service.objects.MessageBodyType
 import service.objects.MessageType
+import service.objects.RegistrationData
 import testbase.AbstractServiceTest
 
 import java.util.stream.Collectors
@@ -145,40 +148,186 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
     @Test
     void "Получатель может прочитать отправленно ему сообщение"() {
         def sender = registration(session)
-        def toArray = Arrays.asList(registration(session), registration(session))
-        def toIds = toArray.stream().map({it.id}).collect(Collectors.toList())
+        def toAgents = Arrays.asList(registration(session), registration(session))
+        sendMessage(session, sender, toAgents)
+
+        /* Чтение сообщения */
+        toAgents.forEach {
+            assertGetMessagesSize(session, it, sender.id, false, 1)
+        }
+    }
+
+    @Test
+    void "Получатель не может прочитать одно и то же сообщение дважды"() {
+        def sender = registration(session)
+        def toAgents = Arrays.asList(registration(session))
+        sendMessage(session, sender, toAgents)
+
+        toAgents.forEach {
+            assertGetMessagesSize(session, it, sender.id, false, 1)
+            assertGetMessagesSize(session, it, sender.id, false, 0)
+        }
+    }
+
+    @Test
+    void "Чтение прочитанного сообщения"() {
+        def sender = registration(session)
+        def toAgents = Arrays.asList(registration(session))
+        sendMessage(session, sender, toAgents)
+
+        toAgents.forEach {
+            assertGetMessagesSize(session, it, sender.id, false, 1)
+            assertGetMessagesSize(session, it, sender.id, true, 1)
+        }
+    }
+
+    /**
+     * Сервис работы с агентами
+     */
+
+    @Test
+    void "Получение текущего агента"() {
+        def agent = registration(session)
+        login(agent, session)
+        def retAgent = serverAgentService.getCurrentAgent(session)
+
+        assertNotNull(retAgent)
+        assertEqualsAgentParams(agent, retAgent)
+    }
+
+    @Test
+    void "Получение агента по masId"() {
+        def agent = registration(session)
+        login(agent, session)
+        def retAgent = serverAgentService.getAgent(session, agent.masId)
+
+        assertNotNull(retAgent)
+        assertEqualsAgentParams(agent, retAgent)
+    }
+
+    @Test
+    void "Получение агентов по типу"() {
+        def agent = registration(session)
+        login(agent, session)
+        def retAgents = serverAgentService.getAgents(session, RestServiceObjects.getAgentsDataWithType(agent.type.code))
+
+        assertTrue(retAgents != null && !retAgents.isEmpty())
+        retAgents.each {
+            assertEquals(it.type.code, agent.type.code)
+        }
+    }
+
+    @Test
+    void "Получение агентов по имени"() {
+        def agent = registration(session)
+        login(agent, session)
+        def retAgents = serverAgentService.getAgents(session, RestServiceObjects.getAgentsDataWithName(agent.name))
+
+        assertTrue(retAgents != null && !retAgents.isEmpty())
+        retAgents.each {
+            assertEquals(it.name, agent.name)
+        }
+    }
+
+    @Test
+    void "Получение не удалённых агентов"() {
+        def agent = registration(session)
+        login(agent, session)
+        def retAgents = serverAgentService.getAgents(session, RestServiceObjects.getAgentsDataWithIsDeleted(false))
+
+        assertTrue(retAgents != null && !retAgents.isEmpty())
+        retAgents.each {
+            assertFalse(it.deleted)
+        }
+    }
+
+    /**
+     * Логин сервис
+     */
+
+    @Test
+    void "Данные при успешном логине совпадают с регистрационными данными"() {
+        def agent = registration(session)
+        def retAgent = login(agent, session)
+
+        assertNotNull(retAgent)
+        assertEqualsAgentParams(agent, retAgent)
+    }
+
+    @Test
+    void "Данные метода регистрации совпадают регистрационными данными"() {
+        def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))
+        def agent = registration(session, registrationData)
+
+        assertNotNull(agent)
+        assertEquals(registrationData.name, agent.name)
+        assertEquals(registrationData.type, agent.type.code)
+        assertEquals(registrationData.masId, agent.masId)
+    }
+
+    private void assertEqualsAgentParams(Agent first, Agent two) {
+        assertEquals(first.id, two.id)
+        assertEquals(first.createDate, two.createDate)
+        assertEquals(first.deleted, two.deleted)
+        assertEquals(first.masId, two.masId)
+        assertEquals(first.name, two.name)
+        assertEquals(first.type.code, two.type.code)
+    }
+
+    private void assertGetMessagesSize(SessionManager session, Agent recipient,Long senderId, boolean isViewed, int size) {
+        assertNotNull(login(recipient, session))
+        def messages = getMessages(session, senderId, isViewed)
+        assertNotNull(messages)
+        assertTrue(messages.size() == size)
+    }
+
+    private void sendMessage(SessionManager session, Agent sender, List<Agent> toAgents) {
+        def toAgentsIds = toAgents.stream().map({it.id}).collect(Collectors.toList())
 
         def messageTypes = getMessageTypes(session)
         def messageBodyTypes = getMessageBodyTypes(session)
-        if (messageTypes == null || messageTypes.isEmpty() || messageBodyTypes == null || messageBodyTypes.isEmpty()) {
-            fail("Нет типов данных для отправки сообщения")
-        }
+        assertNotNullAndNotEmpty(messageTypes, messageBodyTypes)
 
         /* Отправка сообщения */
         def messageType = messageTypes[0].code
         def messageBodyType = messageBodyTypes[0].code
         def messageBody = OtherObjects.emptyJsonObject()
+        loginAndSendMessage(messageType, toAgentsIds, messageBodyType, messageBody, sender, session)
+        logout(session)
+    }
+
+    private List<Message> getMessages(SessionManager session, Long senderId, Boolean isViewed) {
+        serverMessageService.getMessages(session, RestServiceObjects.getMessageData(senderId, isViewed))
+    }
+
+    private void loginAndSendMessage(String messageType, List<Long> recipientsIds, String messageBodyType, String messageBody,
+                                     Agent sender, SessionManager session) {
         login(sender, session)
+        sendMessage(messageType, recipientsIds, messageBodyType, messageBody, session)
+    }
+
+    private void sendMessage(String messageType, List<Long> recipientsIds, String messageBodyType, String messageBody,
+                             SessionManager session) {
         serverMessageService.sendMessage(session, RestServiceObjects.sendMessageData(
                 messageType,
-                toIds,
+                recipientsIds,
                 messageBodyType,
                 messageBody
         ))
-        logout(session)
+    }
 
-        /* Чтение сообщения */
-        toArray.forEach {
-            assertNotNull(login(it, session))
-
-            def messages = serverMessageService.getMessages(session, RestServiceObjects.getMessageData(sender.id))
-            assertNotNull(messages)
-            assertTrue(messages.size() == 1)
+    private void assertNotNullAndNotEmpty(List... params) {
+        params.each {
+            assertTrue(it != null && !it.isEmpty())
         }
     }
 
     private Agent registration(SessionManager session) {
         def registrationData = RestServiceObjects.registrationData(environment.getProperty("agent.service.password"))
+        loginService.registration(registrationData, session)
+    }
+
+    private Agent registration(SessionManager session, RegistrationData registrationData) {
         loginService.registration(registrationData, session)
     }
 

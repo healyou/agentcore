@@ -32,17 +32,29 @@ class RestServiceObjects {
         new GetAgentsData()
     }
 
+    static def getAgentsDataWithType(String type) {
+        new GetAgentsData(type, null, null)
+    }
+
+    static def getAgentsDataWithName(String name) {
+        new GetAgentsData(null, null, name)
+    }
+
+    static def getAgentsDataWithIsDeleted(boolean isDeleted) {
+        new GetAgentsData(null, isDeleted, null)
+    }
+
     static def getMessageData() {
         new GetMessagesData()
     }
 
-    static def getMessageData(Long senderId) {
+    static def getMessageData(Long senderId, Boolean isViewed) {
         new GetMessagesData(
                 null,
                 null,
                 null,
                 senderId,
-                null,
+                isViewed,
                 null,
                 null
         )

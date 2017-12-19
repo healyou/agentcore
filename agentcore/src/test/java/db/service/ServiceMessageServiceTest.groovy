@@ -11,41 +11,45 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import testbase.AbstractServiceTest
-import java.util.*
-import kotlin.test.*
+
+import static junit.framework.Assert.assertEquals
+import static junit.framework.Assert.assertNull
+import static junit.framework.Assert.assertTrue
+import static junit.framework.TestCase.assertNotNull
+import static org.junit.Assert.assertNotEquals
 
 /**
  * @author Nikita Gorodilov
  */
-class ServiceMessageServiceTest : AbstractServiceTest() {
+class ServiceMessageServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private lateinit var messageService: ServiceMessageService
+    private ServiceMessageService messageService
     @Autowired
-    private lateinit var messageTypeService: ServiceMessageTypeService
+    private ServiceMessageTypeService messageTypeService
     @Autowired
-    private lateinit var systemAgentService: SystemAgentService
+    private SystemAgentService systemAgentService
 
     /* Параметры создаваемого сообщения */
-    private var id: Long? = null
-    private var jsonObject = "{}"
-    private lateinit var serviceMessageType: ServiceMessageType
-    private val sendAgentTypeCodes = arrayListOf(
+    private Long id = null
+    private def jsonObject = "{}"
+    private ServiceMessageType serviceMessageType
+    private def sendAgentTypeCodes = Arrays.asList(
             TypesObjects.testAgentType1().code,
             TypesObjects.testAgentType2().code
     )
-    private var createDate = Date(System.currentTimeMillis())
-    private var useDate: Date? = null
-    private var systemAgentId: Long = 0
-    private var messageType: String? = UUID.randomUUID().toString()
-    private var messageBodyType: String? = UUID.randomUUID().toString()
+    private def createDate = new Date(System.currentTimeMillis())
+    private Date useDate = null
+    private Long systemAgentId = 0L
+    private def messageType = UUID.randomUUID().toString()
+    private def messageBodyType = UUID.randomUUID().toString()
 
     @Before
-    fun setup() {
+    void setup() {
         serviceMessageType = messageTypeService.get(ServiceMessageType.Code.SEND)
         systemAgentId = createSystemAgent(true)
 
-        val message = ServiceMessage(
+        def message = new ServiceMessage(
                 jsonObject,
                 serviceMessageType,
                 sendAgentTypeCodes,
@@ -61,8 +65,8 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
 
     /* Проверка всех данных созданного сообщения */
     @Test
-    fun testGetCreateMessage() {
-        val message = getMessage(id!!)
+    void testGetCreateMessage() {
+        def message = getMessage(id)
 
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
@@ -70,35 +74,35 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(serviceMessageType.code, message.serviceMessageType.code)
         assertEquals(useDate, message.useDate)
         assertNotNull(message.createDate)
-        assertEquals(false, message.isUse)
+        assertEquals(false, message.isUse())
         assertEquals(systemAgentId, message.systemAgentId)
         assertEquals(messageType, message.messageType)
         assertEquals(messageBodyType, message.messageBodyType)
         assertNull(message.useDate)
         sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
-            assertTrue { message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+            assertTrue(message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it })
         }
     }
 
     /* Получение сообщения по id */
     @Test
-    fun getMessageById() {
-        val message = messageService.get(id!!)
+    void getMessageById() {
+        def message = messageService.get(id)
         assertEquals(message.id, id)
     }
 
     /* Обновление параметров сообщения */
     @Test
-    fun testUpdateMessage() {
-        val message = getMessage(id!!)
+    void testUpdateMessage() {
+        def message = getMessage(id)
 
         /* Параметры обновления */
-        val newJsonObject = "{123}"
-        val newServiceMessageType = messageTypeService.get(ServiceMessageType.Code.GET)
-        val newSendAgentTypeCodes = arrayListOf(TypesObjects.testAgentType1().code)
-        val newSystemAgentId: Long = createSystemAgent()
-        val newMessageType: String? = UUID.randomUUID().toString()
-        val newMessageBodyType: String? = UUID.randomUUID().toString()
+        def newJsonObject = "{123}"
+        def newServiceMessageType = messageTypeService.get(ServiceMessageType.Code.GET)
+        def newSendAgentTypeCodes = Arrays.asList(TypesObjects.testAgentType1().code)
+        def newSystemAgentId = createSystemAgent()
+        def newMessageType = UUID.randomUUID().toString()
+        def newMessageBodyType = UUID.randomUUID().toString()
         message.jsonObject = newJsonObject
         message.serviceMessageType = newServiceMessageType
         message.sendAgentTypeCodes = newSendAgentTypeCodes
@@ -108,7 +112,7 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
 
         /* Обновление сообщения */
         messageService.save(message)
-        val updateMessage = messageService.get(message.id!!)
+        def updateMessage = messageService.get(message.id)
 
         /* Проверка всех обновляемых значений */
         assertEquals(newJsonObject, updateMessage.jsonObject)
@@ -117,19 +121,19 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
         assertEquals(newMessageType, updateMessage.messageType)
         assertEquals(newMessageBodyType, updateMessage.messageBodyType)
         newSendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
-            assertTrue { updateMessage.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it } }
+            assertTrue(updateMessage.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it })
         }
     }
 
     /* Обновление типа сообщения */
     @Test
-    fun testUpdateMessageType() {
-        var message = getMessage(id!!)
+    void testUpdateMessageType() {
+        def message = getMessage(id)
 
         message.serviceMessageType = messageTypeService.get(ServiceMessageType.Code.GET)
 
         messageService.save(message)
-        message = getMessage(id!!)
+        message = getMessage(id)
 
         assertNotEquals(serviceMessageType.code, message.serviceMessageType.code)
         assertEquals(ServiceMessageType.Code.GET.code, message.serviceMessageType.code.code)
@@ -137,41 +141,41 @@ class ServiceMessageServiceTest : AbstractServiceTest() {
 
     /* Использование сообщения */
     @Test
-    fun testUseMessage() {
-        var message = getMessage(id!!)
+    void testUseMessage() {
+        def message = getMessage(id)
 
         messageService.use(message)
-        message = getMessage(id!!)
+        message = getMessage(id)
 
-        assertEquals(true, message.isUse)
+        assertEquals(true, message.isUse())
         assertNotNull(message.useDate)
     }
 
     /* Обновление системного агента */
     @Test
-    fun testUpdateSystemAgent() {
-        var message = getMessage(id!!)
+    void testUpdateSystemAgent() {
+        def message = getMessage(id)
         message.systemAgentId = createSystemAgent()
 
         messageService.save(message)
-        message = getMessage(id!!)
+        message = getMessage(id)
 
         assertNotEquals(systemAgentId, message.systemAgentId)
     }
 
-    private fun getMessage(id: Long) : ServiceMessage {
+    private ServiceMessage getMessage(Long id)  {
         return messageService.get(id)
     }
 
-    private fun createSystemAgent(isSendAndGetMessages: Boolean): Long {
-        return systemAgentService.create(SystemAgent(
+    private Long createSystemAgent(Boolean isSendAndGetMessages) {
+        return systemAgentService.create(new SystemAgent(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 isSendAndGetMessages
         ))
     }
 
-    private fun createSystemAgent(): Long {
+    private Long createSystemAgent() {
         return createSystemAgent(true)
     }
 }

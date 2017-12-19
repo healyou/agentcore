@@ -9,31 +9,31 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.UncategorizedSQLException
 import testbase.AbstractServiceTest
-import java.util.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+
+import static junit.framework.Assert.assertEquals
+import static junit.framework.TestCase.assertNotNull
+import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertTrue
 
 /**
  * @author Nikita Gorodilov
  */
-class SystemAgentServiceTest : AbstractServiceTest() {
+class SystemAgentServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private lateinit var systemAgentService: SystemAgentService
+    private SystemAgentService systemAgentService
 
     /* Параметры создаваемого системного агента */
-    private var id: Long? = null
-    private var serviceLogin = "login"
-    private var servicePassword = "password"
-    private val updateDate: Date? = null
-    private val isDeleted: Boolean = false
-    private val isSendAndGetMessages = false
+    private Long id = null
+    private def serviceLogin = "login"
+    private def servicePassword = "password"
+    private Date updateDate = null
+    private def isDeleted = false
+    private def isSendAndGetMessages = false
 
     @Before
-    fun setup() {
-        val systemAgent = SystemAgent(
+    void setup() {
+        def systemAgent = new SystemAgent(
                 serviceLogin,
                 servicePassword,
                 isSendAndGetMessages
@@ -45,8 +45,8 @@ class SystemAgentServiceTest : AbstractServiceTest() {
 
     /* Получение созданного агента */
     @Test
-    fun testGetCreateSystemAgent() {
-        val systemAgent = systemAgentService.get(id!!)
+    void testGetCreateSystemAgent() {
+        def systemAgent = systemAgentService.get(id)
 
         /* проверка всех значений создания агента */
         assertEquals(id, systemAgent.id)
@@ -60,9 +60,9 @@ class SystemAgentServiceTest : AbstractServiceTest() {
 
     /* Получение удалённых агентов */
     @Test
-    fun testSystemAgentScIsDeleted() {
+    void testSystemAgentScIsDeleted() {
         createAgentByIdDeletedArgs(true, false)
-        val sc = SystemAgentSC()
+        def sc = new SystemAgentSC()
         sc.isDeleted = false
 
         systemAgentService.get(sc).forEach {
@@ -77,9 +77,9 @@ class SystemAgentServiceTest : AbstractServiceTest() {
 
     /* Получение агентов для отправки сообщений */
     @Test
-    fun testSystemAgentScIsSendAndGetMessages() {
+    void testSystemAgentScIsSendAndGetMessages() {
         createAgentBySendAndGetMessagesArgs(true, false)
-        val sc = SystemAgentSC()
+        def sc = new SystemAgentSC()
         sc.isSendAndGetMessages = false
 
         systemAgentService.get(sc).forEach {
@@ -94,16 +94,16 @@ class SystemAgentServiceTest : AbstractServiceTest() {
 
     /* Получение агента по логину в сервисе */
     @Test
-    fun testGetSystemAgentByServiceName() {
-        val agent = systemAgentService.getByServiceLogin(serviceLogin)
+    void testGetSystemAgentByServiceName() {
+        def agent = systemAgentService.getByServiceLogin(serviceLogin)
 
         assertTrue(agent.serviceLogin == serviceLogin)
     }
 
     /* Нельзя создать двух агентов с одинаковый service_login */
-    @Test(expected = UncategorizedSQLException::class)
-    fun testCreateTwoAgentWithOneServiceName() {
-        val systemAgent = SystemAgent(
+    @Test(expected = UncategorizedSQLException.class)
+    void testCreateTwoAgentWithOneServiceName() {
+        def systemAgent = new SystemAgent(
                 serviceLogin,
                 servicePassword,
                 isSendAndGetMessages
@@ -113,13 +113,13 @@ class SystemAgentServiceTest : AbstractServiceTest() {
 
     /* Проверка существования агента */
     @Test()
-    fun testIsExistsAgent() {
+    void testIsExistsAgent() {
         assertTrue(systemAgentService.isExistsAgent(serviceLogin))
         assertFalse(systemAgentService.isExistsAgent(UUID.randomUUID().toString()))
     }
 
-    private fun createAgent(isDeleted: Boolean, isSendAndGetMessages: Boolean): SystemAgent {
-        val systemAgent = SystemAgent(
+    private SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages) {
+        def systemAgent = new SystemAgent(
                 StringObjects.randomString(),
                 StringObjects.randomString(),
                 isSendAndGetMessages
@@ -129,14 +129,14 @@ class SystemAgentServiceTest : AbstractServiceTest() {
         return systemAgentService.get(systemAgentService.create(systemAgent))
     }
 
-    private fun createAgentByIdDeletedArgs(vararg isDeletedArgs: Boolean) {
-        isDeletedArgs.forEach {
+    private def createAgentByIdDeletedArgs(Boolean... isDeletedArgs) {
+        isDeletedArgs.each {
             createAgent(it, true)
         }
     }
 
-    private fun createAgentBySendAndGetMessagesArgs(vararg isSendAngGetMessagesArgs: Boolean) {
-        isSendAngGetMessagesArgs.forEach {
+    private def createAgentBySendAndGetMessagesArgs(Boolean... isSendAngGetMessagesArgs) {
+        isSendAngGetMessagesArgs.each {
             createAgent(false, it)
         }
     }
