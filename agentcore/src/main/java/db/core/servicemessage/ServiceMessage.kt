@@ -1,6 +1,5 @@
 package db.core.servicemessage
 
-import service.objects.AgentType
 import service.objects.Entity
 import java.util.*
 
