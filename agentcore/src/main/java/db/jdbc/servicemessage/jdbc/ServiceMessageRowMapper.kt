@@ -19,7 +19,6 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         val message = ServiceMessage(
                 getString(rs, "json_object"),
                 mapMessageType(rs),
-                getString(rs, "send_agent_type_codes").sqlite_toAgentCodes(),
                 getLong(rs, "system_agent_id")
         )
 
@@ -27,6 +26,7 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         message.getMessageSenderCode = getNullString(rs, "sender_code")
         message.createDate = getDate(rs, "create_date")
         message.useDate = getNullDate(rs, "use_date")
+        message.sendAgentTypeCodes = getNullString(rs, "send_agent_type_codes")?.sqlite_toAgentCodes()
         message.sendMessageType = getNullString(rs, "message_type")
         message.sendMessageBodyType = getNullString(rs, "message_body_type")
 

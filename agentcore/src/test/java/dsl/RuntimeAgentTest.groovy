@@ -150,9 +150,9 @@ class RuntimeAgentTest extends AbstractServiceTest {
         def message = new ServiceMessage(
                 "{}",
                 messageTypeService.get(ServiceMessageType.Code.SEND),
-                Collections.emptyList(),
                 agent.systemAgent.id
         )
+        message.sendAgentTypeCodes = Collections.emptyList()
         message.getMessageSenderCode = agent.senderCode
         messageService.save(message)
 

@@ -118,7 +118,6 @@ class ServiceTask @Autowired constructor(
                     val serviceMessage = ServiceMessage(
                         AbstractAgentService.toJson(it),
                         messageTypeService.get(ServiceMessageType.Code.GET),
-                        arrayListOf(),
                         systemAgent.id!!
                     )
                     serviceMessage.getMessageSenderCode = it.sender?.type?.code
@@ -171,7 +170,7 @@ class ServiceTask @Autowired constructor(
         val agentCodes = serviceMessage.sendAgentTypeCodes
         val recipients = arrayListOf<Long>()
 
-        agentCodes.forEach { itAgentCode ->
+        agentCodes!!.forEach { itAgentCode ->
             serverAgentService
                     .getAgents(
                             sessionManager,

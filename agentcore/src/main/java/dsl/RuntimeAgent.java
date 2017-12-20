@@ -104,9 +104,9 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         ServiceMessage serviceMessage = new ServiceMessage(
                 jsonObject,
                 getMessageTypeService().get(ServiceMessageType.Code.SEND),
-                agentTypeCodes,
                 systemAgent.getId()
         );
+        serviceMessage.setSendAgentTypeCodes(agentTypeCodes);
         serviceMessage.setSendMessageType(messageTypeCode);
         serviceMessage.setSendMessageBodyType(messageBodyTypeCode);
         messageService.save(serviceMessage);

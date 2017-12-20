@@ -29,7 +29,7 @@ CREATE TABLE if not exists service_message
   id INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL, -- Идетификатор
   json_object     TEXT                    NOT NULL, -- Объект, полученный или отправляемый сообщением
   message_type_id INTEGER                 NOT NULL, -- Тип сообщения
-  send_agent_type_codes TEXT              NOT NULL, -- Типы агентов, которым отправляется сообщение(через знак '!')
+  send_agent_type_codes TEXT              , -- Типы агентов, которым отправляется сообщение(через знак '!')
   sender_code     TEXT                    , -- Тип агента, отправившего сообщение
   message_type    TEXT                    , -- Тип сообщения в RestApi
   message_body_type TEXT                  , -- Тип тела сообщения

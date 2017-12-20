@@ -13,8 +13,6 @@ open class ServiceMessage(
         var jsonObject: String,
         /* Тип сообщения */
         var serviceMessageType: ServiceMessageType,
-        /* Типы агентов, которым отправляется сообщение */
-        var sendAgentTypeCodes: List<String>,
         /* Агент, которому принадлежит сообщение */
         var systemAgentId: Long
 ) : Entity {
@@ -26,6 +24,8 @@ open class ServiceMessage(
     var useDate: Date? = null
     /* Тип отправителя сообщения(получение сообщения) */
     var getMessageSenderCode: String? = null
+    /* Типы агентов, которым отправляется сообщение */
+    var sendAgentTypeCodes: List<String>? = null
     /* Тип сообщения на Rest сервисе(отправка сообщения) */
     var sendMessageType: String? = null
     /* Тип тела сообщения(отправка сообщения) */

@@ -52,11 +52,11 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         def message = new ServiceMessage(
                 jsonObject,
                 serviceMessageType,
-                sendAgentTypeCodes,
                 systemAgentId
         )
         message.createDate = createDate
         message.useDate = useDate
+        message.sendAgentTypeCodes = sendAgentTypeCodes
         message.sendMessageType = sendMessageType
         message.sendMessageBodyType = sendMessageBodyType
 
