@@ -2,6 +2,7 @@ package dsl
 
 import dsl.objects.DslImage
 import dsl.objects.DslMessage
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
@@ -13,11 +14,15 @@ import java.util.concurrent.Executors
 abstract class ThreadPoolRuntimeAgent(path: String) : RuntimeAgent(path) {
 
     companion object {
-        val executorService = Executors.newFixedThreadPool(4, { r ->
-            val t = Executors.defaultThreadFactory().newThread(r)
-            t.isDaemon = true
-            t
-        })
+        var executorService: ExecutorService = createExecutors()
+
+        fun createExecutors(): ExecutorService {
+            return Executors.newFixedThreadPool(4, { r ->
+                val t = Executors.defaultThreadFactory().newThread(r)
+                t.isDaemon = true
+                t
+            })
+        }
     }
 
     override fun onGetMessage(message: DslMessage) {

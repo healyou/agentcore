@@ -74,7 +74,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     @Nullable
     @Override
-    protected SystemAgent getSystemAgent() {
+    public SystemAgent getSystemAgent() {
         return systemAgent;
     }
 

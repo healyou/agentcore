@@ -10,6 +10,7 @@ import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
 import dsl.ThreadPoolRuntimeAgent
+import dsl.loader.RuntimeAgentLoader
 import dsl.objects.DslImage
 import dsl.objects.DslMessage
 import gui.table.AgentComboBoxRenderer
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Component
 import service.LoginService
 import service.ServerTypeService
 import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -47,8 +49,9 @@ class AgentGuiController {
     @Autowired
     private lateinit var loginService: LoginService
 
+    private val agentLoader = RuntimeAgentLoader()
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
-    private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+    private val agentsData = FXCollections.observableArrayList<SystemAgent>()
 
     @FXML
     lateinit var agentComboBox: ComboBox<SystemAgent>
@@ -65,8 +68,14 @@ class AgentGuiController {
 
     private fun configureLoadAgentsButton() {
         loadAgentsButton.setOnAction {
-            /* Для теста чисто 1 файл загрузим - а так надо сканировать все файлы в папке*/
-            val runtimeAgent = object : ThreadPoolRuntimeAgent("data/dsl/manual_test_agent_1.groovy") {
+            loadAgents()
+        }
+    }
+
+    private fun loadAgents() {
+        agentLoader.stop()
+        agentLoader.load { path ->
+            return@load object : ThreadPoolRuntimeAgent(path) {
 
                 override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
                 override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
@@ -75,10 +84,9 @@ class AgentGuiController {
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
             }
-            runtimeAgent.onGetMessage(DslMessage("worker", DslImage("testName", byteArrayOf(1, 2, 3))))
-            runtimeAgent.onLoadImage(DslImage("testName", byteArrayOf(1, 2, 3)))
-            runtimeAgent.onEndImageTask(DslImage("testName", byteArrayOf(1, 2, 3)))
         }
+        agentLoader.start()
+        updateUiData()
     }
 
     private fun configureMessageTable() {
@@ -87,23 +95,34 @@ class AgentGuiController {
                 .addColumn(PropertyTableColumn("Собственник", "systemAgentId"))
                 .addColumn(DateTimeTableColumn("Дата создания", "createDate"))
                 .addColumn(DateTimeTableColumn("Дата использования", "useDate"))
-                .addColumn(DictionaryTableColumn<ServiceMessage, ServiceMessageType>("Тип сообщения", "messageType"))
-                .addColumn(PropertyTableColumn("Тело сообщения", "jsonObject"))
+                .addColumn(DictionaryTableColumn<ServiceMessage, ServiceMessageType>("Локальный тип сообщения", "serviceMessageType"))
+                .addColumn(PropertyTableColumn("Тип сообщения", "messageType"))
                 .withTable(messageTable)
                 .withItems(messagesData)
                 .build()
     }
 
     private fun configureAgentChoiceBox() {
-        agentComboBox.items = FXCollections.observableArrayList(getSystemAgents())
+        agentComboBox.items = agentsData
         agentComboBox.tooltip = Tooltip("Выберите агента")
         agentComboBox.buttonCell = AgentComboBoxRenderer()
         agentComboBox.cellFactory = Callback<ListView<SystemAgent>, ListCell<SystemAgent>> {
             AgentComboBoxRenderer()
         }
         agentComboBox.selectionModel.selectedIndexProperty().addListener { observable, oldValue, newValue ->
-            messagesData.setAll(loadServiceMessages(agentComboBox.items[newValue.toInt()]))
+            if (newValue.toInt() >= 0) {
+                messagesData.setAll(loadServiceMessages(agentComboBox.items[newValue.toInt()]))
+            }
         }
+    }
+
+    /**
+     * Обновление данных интерфейса
+     */
+    private fun updateUiData() {
+        agentComboBox.selectionModel.clearSelection()
+        messagesData.clear()
+        agentsData.setAll(getSystemAgents())
     }
 
     private fun getSystemAgents(): List<SystemAgent> {

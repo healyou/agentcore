@@ -1,7 +1,7 @@
 init = {
-    type = MANUAL_TEST_AGENT_TYPE_1_AT
-    name = "Тестовый агент 1(Ручное тестировние)"
-    masId = "manual_test_agent_1_masId"
+    type = MANUAL_TEST_AGENT_TYPE_2_AT
+    name = "Тестовый агент 2(Ручное тестировние)"
+    masId = "manual_test_agent_2_masId"
     defaultBodyType = JSON_MBT
     defaultGoalType = MANUAL_TEST_MESSAGE_GOAL_TYPE_1_MGT
 }
@@ -17,9 +17,9 @@ onGetMessage = { message ->
 onLoadImage = { image ->
     executeCondition 'Вызов функции 2', {
         execute {
-            sendMessage messageType: MANUAL_TEST_MESSAGE_TYPE_1_TEST_GOAL_2_MT,
+            sendMessage messageType: MANUAL_TEST_MESSAGE_TYPE_2_TEST_GOAL_2_MT,
                     image: image,
-                    agentTypes: [MANUAL_TEST_AGENT_TYPE_2_AT]
+                    agentTypes: [MANUAL_TEST_AGENT_TYPE_1_AT]
             testImageFun2()
         }
     }

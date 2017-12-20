@@ -25,11 +25,16 @@ abstract class ARuntimeAgent : IRuntimeAgent {
 
     private var systemAgent: SystemAgent? = null
     private var getMessagesTimer: Timer? = null
+    private var isRun = false
 
-    init {
+    override fun start() {
         getMessagesTimer = timer("hello-timer", true, 1000, 2000) {
             searchMessages()
         }
+    }
+
+    override fun stop() {
+        getMessagesTimer?.cancel()
     }
 
     /**
@@ -53,7 +58,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     protected abstract fun getSystemAgentService(): SystemAgentService
     protected abstract fun getServiceMessageService(): ServiceMessageService
     protected abstract fun getMessageTypeService(): ServiceMessageTypeService
-    protected abstract fun getSystemAgent(): SystemAgent?
+    abstract fun getSystemAgent(): SystemAgent?
 
     /**
      * Получаем сообщение, которые легко испоьзовать в dsl

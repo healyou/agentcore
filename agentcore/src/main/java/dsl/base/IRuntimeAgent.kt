@@ -7,7 +7,11 @@ import dsl.objects.DslMessage
  * @author Nikita Gorodilov
  */
 interface IRuntimeAgent {
-    
+
+    fun start()
+
+    fun stop()
+
     fun onLoadImage(image: DslImage)
 
     fun onGetMessage(message: DslMessage)
