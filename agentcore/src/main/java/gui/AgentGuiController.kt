@@ -66,7 +66,7 @@ class AgentGuiController {
     private fun configureLoadAgentsButton() {
         loadAgentsButton.setOnAction {
             /* Для теста чисто 1 файл загрузим - а так надо сканировать все файлы в папке*/
-            val runtimeAgent = object : ThreadPoolRuntimeAgent("data/dsl/testagent.groovy") {
+            val runtimeAgent = object : ThreadPoolRuntimeAgent("data/dsl/manual_test_agent_1.groovy") {
 
                 override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
                 override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
