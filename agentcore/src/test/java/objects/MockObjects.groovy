@@ -1,9 +1,11 @@
 package objects
 
 import org.easymock.Capture
+import org.easymock.IAnswer
 import service.LoginService
 import service.ServerTypeService
 import service.SessionManager
+import service.objects.Agent
 import service.objects.LoginData
 import service.objects.RegistrationData
 
@@ -21,8 +23,19 @@ class MockObjects {
         Capture<SessionManager> sessionManagerCapture = newCapture()
         Capture<LoginData> loginDataCapture = newCapture()
 
-        expect(loginService.login(capture(loginDataCapture), capture(sessionManagerCapture))).andStubReturn(null)
-        expect(loginService.registration(capture(registrationDataCapture), capture(sessionManagerCapture))).andStubReturn(null)
+        expect(loginService.login(capture(loginDataCapture), capture(sessionManagerCapture))).andStubAnswer(new IAnswer<Agent>() {
+            @Override
+            Agent answer() throws Throwable {
+                OtherObjects.agent(loginDataCapture.value)
+            }
+        })
+        expect(loginService.registration(capture(registrationDataCapture), capture(sessionManagerCapture))).andStubAnswer(new IAnswer<Agent>() {
+            @Override
+            Agent answer() throws Throwable {
+                OtherObjects.agent(registrationDataCapture.value)
+            }
+        })
+        expect(loginService.logout(capture(sessionManagerCapture))).andStubReturn(true)
         replay(loginService)
 
         loginService
