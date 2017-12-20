@@ -67,7 +67,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
         val jsonDslImage = parseServiceMessage(serviceMessage.jsonObject).body
 
         return DslMessage(
-                serviceMessage.senderCode!!,
+                serviceMessage.getMessageSenderCode!!,
                 AbstractAgentService.fromJson(jsonDslImage, object : TypeReference<DslImage>() {})
         )
     }

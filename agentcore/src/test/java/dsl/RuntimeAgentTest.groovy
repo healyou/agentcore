@@ -15,7 +15,6 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import service.LoginService
 import service.ServerTypeService
-import service.objects.AgentType
 import testbase.AbstractServiceTest
 import objects.MockObjects
 import objects.OtherObjects
@@ -154,11 +153,11 @@ class RuntimeAgentTest extends AbstractServiceTest {
                 Collections.emptyList(),
                 agent.systemAgent.id
         )
-        message.senderCode = agent.senderCode
+        message.getMessageSenderCode = agent.senderCode
         messageService.save(message)
 
         new DslMessage(
-                message.senderCode,
+                message.getMessageSenderCode,
                 new DslImage("testImage", [1, 2, 3] as byte[])
         )
     }

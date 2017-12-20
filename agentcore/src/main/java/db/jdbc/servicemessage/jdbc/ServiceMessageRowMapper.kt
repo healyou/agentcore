@@ -24,11 +24,11 @@ class ServiceMessageRowMapper : AbstractRowMapper<ServiceMessage>() {
         )
 
         message.id = getLong(rs, "id")
-        message.senderCode = getNullString(rs, "sender_code")
+        message.getMessageSenderCode = getNullString(rs, "sender_code")
         message.createDate = getDate(rs, "create_date")
         message.useDate = getNullDate(rs, "use_date")
-        message.messageType = getNullString(rs, "message_type")
-        message.messageBodyType = getNullString(rs, "message_body_type")
+        message.sendMessageType = getNullString(rs, "message_type")
+        message.sendMessageBodyType = getNullString(rs, "message_body_type")
 
         return message
     }

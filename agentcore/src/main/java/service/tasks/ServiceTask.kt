@@ -121,7 +121,7 @@ class ServiceTask @Autowired constructor(
                         arrayListOf(),
                         systemAgent.id!!
                     )
-                    serviceMessage.senderCode = it.sender?.type?.code
+                    serviceMessage.getMessageSenderCode = it.sender?.type?.code
                     serviceMessage
                 }}
                 ?.forEach { it ->
@@ -144,13 +144,13 @@ class ServiceTask @Autowired constructor(
 
         /* Отправка сообщений */
         messages.forEach {
-            if (!Utils.isOneNull(it.messageType, it.messageBodyType)) {
+            if (!Utils.isOneNull(it.sendMessageType, it.sendMessageBodyType)) {
                 serverMessageService.sendMessage(
                         sessionManager,
                         SendMessageData(
-                                it.messageType!!,
+                                it.sendMessageType!!,
                                 getMessageRecipientsIds(it, systemAgent, sessionManager),
-                                it.messageBodyType!!,
+                                it.sendMessageBodyType!!,
                                 it.jsonObject
                         )
                 )

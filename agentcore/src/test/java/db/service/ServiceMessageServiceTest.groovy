@@ -41,8 +41,8 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
     private def createDate = new Date(System.currentTimeMillis())
     private Date useDate = null
     private Long systemAgentId = 0L
-    private def messageType = UUID.randomUUID().toString()
-    private def messageBodyType = UUID.randomUUID().toString()
+    private def sendMessageType = UUID.randomUUID().toString()
+    private def sendMessageBodyType = UUID.randomUUID().toString()
 
     @Before
     void setup() {
@@ -57,8 +57,8 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         )
         message.createDate = createDate
         message.useDate = useDate
-        message.messageType = messageType
-        message.messageBodyType = messageBodyType
+        message.sendMessageType = sendMessageType
+        message.sendMessageBodyType = sendMessageBodyType
 
         id = messageService.save(message)
     }
@@ -76,8 +76,8 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         assertNotNull(message.createDate)
         assertEquals(false, message.isUse())
         assertEquals(systemAgentId, message.systemAgentId)
-        assertEquals(messageType, message.messageType)
-        assertEquals(messageBodyType, message.messageBodyType)
+        assertEquals(sendMessageType, message.sendMessageType)
+        assertEquals(sendMessageBodyType, message.sendMessageBodyType)
         assertNull(message.useDate)
         sendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
             assertTrue(message.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it })
@@ -107,8 +107,8 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         message.serviceMessageType = newServiceMessageType
         message.sendAgentTypeCodes = newSendAgentTypeCodes
         message.systemAgentId = newSystemAgentId
-        message.messageType = newMessageType
-        message.messageBodyType = newMessageBodyType
+        message.sendMessageType = newMessageType
+        message.sendMessageBodyType = newMessageBodyType
 
         /* Обновление сообщения */
         messageService.save(message)
@@ -118,8 +118,8 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         assertEquals(newJsonObject, updateMessage.jsonObject)
         assertEquals(newServiceMessageType.code, updateMessage.serviceMessageType.code)
         assertEquals(newSystemAgentId, updateMessage.systemAgentId)
-        assertEquals(newMessageType, updateMessage.messageType)
-        assertEquals(newMessageBodyType, updateMessage.messageBodyType)
+        assertEquals(newMessageType, updateMessage.sendMessageType)
+        assertEquals(newMessageBodyType, updateMessage.sendMessageBodyType)
         newSendAgentTypeCodes.forEach {  itGetMessageTypeCode ->
             assertTrue(updateMessage.sendAgentTypeCodes.stream().anyMatch { itGetMessageTypeCode == it })
         }

@@ -34,6 +34,7 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
+      <Button fx:id="loadImageButton" disable="true" mnemonicParsing="false" text="Загрузить изображение" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button fx:id="loadAgentsButton" mnemonicParsing="false" text="Загрузить конфигурации агентов" GridPane.columnIndex="2" GridPane.rowIndex="1" />
    </children>
 </GridPane>

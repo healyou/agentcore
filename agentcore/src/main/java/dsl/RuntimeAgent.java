@@ -107,8 +107,8 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 agentTypeCodes,
                 systemAgent.getId()
         );
-        serviceMessage.setMessageType(messageTypeCode);
-        serviceMessage.setMessageBodyType(messageBodyTypeCode);
+        serviceMessage.setSendMessageType(messageTypeCode);
+        serviceMessage.setSendMessageBodyType(messageBodyTypeCode);
         messageService.save(serviceMessage);
     }
 

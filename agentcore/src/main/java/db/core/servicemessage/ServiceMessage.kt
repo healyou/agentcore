@@ -24,12 +24,12 @@ open class ServiceMessage(
     var createDate: Date? = null
     /* Дата использования(отправки или чтения агентом) */
     var useDate: Date? = null
-    /* Тип отправителя сообщения */
-    var senderCode: String? = null
-    /* Тип сообщения на Rest сервисе */
-    var messageType: String? = null
-    /* Тип тела сообщения */
-    var messageBodyType: String? = null
+    /* Тип отправителя сообщения(получение сообщения) */
+    var getMessageSenderCode: String? = null
+    /* Тип сообщения на Rest сервисе(отправка сообщения) */
+    var sendMessageType: String? = null
+    /* Тип тела сообщения(отправка сообщения) */
+    var sendMessageBodyType: String? = null
 
     /**
      * Использовалось ли уже данные сообщение
