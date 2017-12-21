@@ -49,3 +49,14 @@ CREATE TABLE if not exists service_message_type
   name    TEXT                              NOT NULL, -- Читаемое имя
   is_deleted TEXT NOT NULL DEFAULT ('N') CHECK(is_deleted='N' OR is_deleted='Y') -- Удалено ли значение
 );
+
+----------------------- system agent event history -----------------------
+CREATE TABLE if not exists system_agent_event_history
+  -- Таблицы истории поведения агента
+(
+  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
+  agent_id       TEXT                              NOT NULL, -- Идентификатор системного агента
+  create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
+  message        TEXT                              NOT NULL,-- Сообщение
+  FOREIGN KEY(agent_id) REFERENCES system_agent(id)
+);
