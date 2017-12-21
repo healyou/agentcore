@@ -13,7 +13,7 @@ import dsl.objects.DslMessage
  */
 open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAgentEventHistoryService): ARuntimeAgentBehavior() {
 
-    lateinit var runtimeAgent: RuntimeAgent
+    protected lateinit var runtimeAgent: RuntimeAgent
 
     override fun bing(runtimeAgent: RuntimeAgent) {
         super.bing(runtimeAgent)
@@ -66,7 +66,7 @@ open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAg
         onEvent("Конец dsl функции onEndImageTask")
     }
 
-    protected fun onEvent(message: String) {
+    open protected fun onEvent(message: String) {
         createSystemAgentHistory(message)
     }
 

@@ -12,6 +12,7 @@ import db.core.systemagent.SystemAgentEventHistoryService
 import db.core.systemagent.SystemAgentService
 import dsl.ThreadPoolRuntimeAgent
 import dsl.base.behavior.RuntimeAgentHistoryEventBehavior
+import dsl.base.behavior.RuntimeAgentUpdateUiEventHistoryBehavior
 import dsl.loader.RuntimeAgentLoader
 import dsl.objects.DslImage
 import gui.table.AgentComboBoxRenderer
@@ -44,6 +45,10 @@ class AgentGuiController {
 
     companion object {
         val IMAGE_REGEX = "^(.*jpg$)|(.*jpeg$)|(.*png$)$"
+        /**
+         * Количество записей истории поведения агента выбираемых из бд
+         */
+        val HISTORY_RECORDS_SIZE = 15
     }
 
     @Autowired
@@ -73,12 +78,23 @@ class AgentGuiController {
     lateinit var loadAgentsButton: Button
     @FXML
     lateinit var loadImageButton: Button
+    @FXML
+    lateinit var eventHistoryUpdateButton: Button;
+    @FXML
+    lateinit var eventHistoryTextArea: TextArea;
 
     fun initialize() {
         configureLoadImageButton()
         configureLoadAgentsButton()
+        configureEventHistoryUpdateButton()
         configureMessageTable()
         configureAgentChoiceBox()
+    }
+
+    private fun configureEventHistoryUpdateButton() {
+        eventHistoryUpdateButton.setOnAction {
+            updateEventHistoryText()
+        }
     }
 
     private fun configureLoadImageButton() {
@@ -93,7 +109,7 @@ class AgentGuiController {
             if (IMAGE_REGEX.toRegex().matches(imageFile.name)) {
                 val dslImage = configureDslImage(imageFile)
                 val selectedAgent = getSelectedAgent()
-                agentLoader.onLoadImage(selectedAgent, dslImage)
+                agentLoader.onLoadImage(selectedAgent!!, dslImage)
             }
         }
     }
@@ -108,7 +124,7 @@ class AgentGuiController {
         )
     }
 
-    private fun getSelectedAgent(): SystemAgent {
+    private fun getSelectedAgent(): SystemAgent? {
         return agentComboBox.selectionModel.selectedItem
     }
 
@@ -131,6 +147,14 @@ class AgentGuiController {
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
             }
             runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
+            runtimeAgent.add(RuntimeAgentUpdateUiEventHistoryBehavior(historyService, { systemAgent, message ->
+                val selectedAgent = getSelectedAgent()
+                if (selectedAgent != null) {
+                    if (selectedAgent.id == systemAgent.id) {
+                        eventHistoryTextArea.text += message
+                    }
+                }
+            }))
             return@load runtimeAgent
         }
         agentLoader.start()
@@ -157,12 +181,32 @@ class AgentGuiController {
         agentComboBox.cellFactory = Callback<ListView<SystemAgent>, ListCell<SystemAgent>> {
             AgentComboBoxRenderer()
         }
-        agentComboBox.selectionModel.selectedIndexProperty().addListener { observable, oldValue, newValue ->
+        agentComboBox.selectionModel.selectedIndexProperty().addListener { _, _, newValue ->
             if (newValue.toInt() >= 0) {
+                val systemAgent = agentComboBox.items[newValue.toInt()]
+                eventHistoryTextArea.text = getHistoryAsTextAreaString(systemAgent, HISTORY_RECORDS_SIZE)
                 loadImageButton.isDisable = false
-                messagesData.setAll(loadServiceMessages(agentComboBox.items[newValue.toInt()]))
+                messagesData.setAll(loadServiceMessages(systemAgent))
             }
         }
+    }
+
+    /**
+     * Обновление истории поведения агента
+     */
+    private fun updateEventHistoryText() {
+        val selectedAgent = getSelectedAgent()
+        if (selectedAgent != null) {
+            eventHistoryTextArea.text = getHistoryAsTextAreaString(selectedAgent, HISTORY_RECORDS_SIZE)
+        }
+    }
+
+    private fun getHistoryAsTextAreaString(systemAgent: SystemAgent, size: Int): String {
+        val historyText = StringBuilder()
+        historyService.getLastNumberItems(systemAgent.id!!, size.toLong()).asReversed().forEach {
+            historyText.append(it.createDate).append(' ').append(it.message).append("\n")
+        }
+        return historyText.toString()
     }
 
     /**
