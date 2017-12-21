@@ -22,7 +22,6 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
-import javafx.scene.layout.AnchorPane
 import javafx.stage.FileChooser
 import javafx.stage.Window
 import javafx.util.Callback
@@ -30,13 +29,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import service.LoginService
 import service.ServerTypeService
-import java.awt.image.DataBufferByte
+import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.imageio.ImageIO
-import java.io.ByteArrayOutputStream
-import java.awt.image.BufferedImage
-
-
 
 
 /**

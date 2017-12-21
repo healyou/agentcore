@@ -8,6 +8,7 @@ import db.core.systemagent.SystemAgent;
 import db.core.systemagent.SystemAgentService;
 import dsl.base.ARuntimeAgent;
 import dsl.base.SendMessageParameters;
+import dsl.base.behavior.ARuntimeAgentBehavior;
 import dsl.objects.DslImage;
 import dsl.objects.DslMessage;
 import groovy.lang.Closure;
@@ -19,10 +20,7 @@ import service.SessionManager;
 import service.objects.*;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Класс java, тк использующий его kotlin класс ничего не должен знать про groovy
@@ -34,6 +32,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     private RuntimeAgentService runtimeAgentService = createRuntimeAgentService();
     private SystemAgent systemAgent = null;
+    private List<ARuntimeAgentBehavior> behaviors = new ArrayList<>();
 
     public RuntimeAgent(String path) {
         super();
@@ -46,9 +45,27 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
+    public void start() {
+        super.start();
+        behaviors.forEach(ARuntimeAgentBehavior::onStart);
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        behaviors.forEach(ARuntimeAgentBehavior::onStop);
+    }
+
+    @Override
     public void onLoadImage(@NotNull DslImage image) {
         try {
+            behaviors.forEach(it -> {
+                it.beforeOnLoadImage(image);
+            });
             runtimeAgentService.applyOnLoadImage(image);
+            behaviors.forEach(it -> {
+                it.afterOnLoadImage(image);
+            });
         } catch (Exception e) {
             System.out.println("Ошибка работы агента");
         }
@@ -57,19 +74,44 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     @Override
     public void onGetMessage(@NotNull DslMessage message) {
         try {
+            behaviors.forEach(it -> {
+                it.beforeOnGetMessage(message);
+            });
             runtimeAgentService.applyOnGetMessage(message);
+            behaviors.forEach(it -> {
+                it.afterOnGetMessage(message);
+            });
         } catch (Exception e) {
             System.out.println("Ошибка работы агента");
         }
     }
 
     @Override
-    public void onEndImageTask(@Nullable DslImage updateImage) {
+    public void onEndImageTask(@NotNull DslImage updateImage) {
         try {
+            behaviors.forEach(it -> {
+                it.beforeOnEndImageTask(updateImage);
+            });
             runtimeAgentService.applyOnEndImageTask(updateImage);
+            behaviors.forEach(it -> {
+                it.afterOnEndImageTask(updateImage);
+            });
         } catch (Exception e) {
             System.out.println("Ошибка работы агента");
         }
+    }
+
+    public RuntimeAgent add(ARuntimeAgentBehavior behavior) {
+        behaviors.add(behavior);
+        behavior.bing();
+        return this;
+    }
+
+    public RuntimeAgent remove(ARuntimeAgentBehavior behavior)  {
+        if (behaviors.remove(behavior)) {
+            behavior.unbind();
+        }
+        return this;
     }
 
     @Nullable

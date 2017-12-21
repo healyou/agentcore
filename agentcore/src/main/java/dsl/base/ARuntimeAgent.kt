@@ -25,7 +25,6 @@ abstract class ARuntimeAgent : IRuntimeAgent {
 
     private var systemAgent: SystemAgent? = null
     private var getMessagesTimer: Timer? = null
-    private var isRun = false
 
     override fun start() {
         getMessagesTimer = timer("hello-timer", true, 1000, 2000) {
