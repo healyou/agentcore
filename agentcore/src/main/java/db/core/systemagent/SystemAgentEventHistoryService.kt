@@ -7,5 +7,5 @@ interface SystemAgentEventHistoryService {
 
     fun create(history: SystemAgentEventHistory): Long
 
-    fun getLastNumberItems(size: Long): List<SystemAgentEventHistory>
+    fun getLastNumberItems(systemAgentId: Long, size: Long): List<SystemAgentEventHistory>
 }

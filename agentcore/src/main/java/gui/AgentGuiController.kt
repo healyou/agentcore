@@ -8,8 +8,10 @@ import db.core.servicemessage.ServiceMessageService
 import db.core.servicemessage.ServiceMessageType
 import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
+import db.core.systemagent.SystemAgentEventHistoryService
 import db.core.systemagent.SystemAgentService
 import dsl.ThreadPoolRuntimeAgent
+import dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import dsl.loader.RuntimeAgentLoader
 import dsl.objects.DslImage
 import gui.table.AgentComboBoxRenderer
@@ -56,6 +58,8 @@ class AgentGuiController {
     private lateinit var environment: Environment
     @Autowired
     private lateinit var loginService: LoginService
+    @Autowired
+    private lateinit var historyService: SystemAgentEventHistoryService
 
     private val agentLoader = RuntimeAgentLoader()
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
@@ -117,7 +121,7 @@ class AgentGuiController {
     private fun loadAgents() {
         agentLoader.stop()
         agentLoader.load { path ->
-            return@load object : ThreadPoolRuntimeAgent(path) {
+            val runtimeAgent = object : ThreadPoolRuntimeAgent(path) {
 
                 override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
                 override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
@@ -126,6 +130,8 @@ class AgentGuiController {
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
             }
+            runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
+            return@load runtimeAgent
         }
         agentLoader.start()
         updateUiData()

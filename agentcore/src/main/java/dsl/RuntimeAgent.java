@@ -103,7 +103,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     public RuntimeAgent add(ARuntimeAgentBehavior behavior) {
         behaviors.add(behavior);
-        behavior.bing();
+        behavior.bing(this);
         return this;
     }
 
@@ -114,7 +114,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         return this;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public SystemAgent getSystemAgent() {
         return systemAgent;

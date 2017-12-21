@@ -21,10 +21,11 @@ class JdbcSystemAgentEventHistoryDao : AbstractDao(), SystemAgentEventHistoryDao
         return getSequence("system_agent_event_history")
     }
 
-    override fun getLastNumberItems(size: Long): List<SystemAgentEventHistory> {
+    override fun getLastNumberItems(systemAgentId: Long, size: Long): List<SystemAgentEventHistory> {
         return jdbcTemplate.query(
-                "select * from system_agent_event_history ORDER BY create_date limit 0, ?",
+                "select * from system_agent_event_history where agent_id = ? ORDER BY create_date limit 0, ?",
                 SystemAgentEventHistoryRowMapper(),
+                systemAgentId,
                 size
         )
     }

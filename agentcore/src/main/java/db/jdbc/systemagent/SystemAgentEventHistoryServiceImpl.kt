@@ -18,7 +18,7 @@ class SystemAgentEventHistoryServiceImpl: SystemAgentEventHistoryService {
         return dao.create(history)
     }
 
-    override fun getLastNumberItems(size: Long): List<SystemAgentEventHistory> {
-        return dao.getLastNumberItems(size)
+    override fun getLastNumberItems(systemAgentId: Long, size: Long): List<SystemAgentEventHistory> {
+        return dao.getLastNumberItems(systemAgentId, size)
     }
 }

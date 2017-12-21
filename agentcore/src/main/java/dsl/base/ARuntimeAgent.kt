@@ -57,7 +57,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     protected abstract fun getSystemAgentService(): SystemAgentService
     protected abstract fun getServiceMessageService(): ServiceMessageService
     protected abstract fun getMessageTypeService(): ServiceMessageTypeService
-    abstract fun getSystemAgent(): SystemAgent?
+    abstract fun getSystemAgent(): SystemAgent
 
     /**
      * Получаем сообщение, которые легко испоьзовать в dsl

@@ -1,5 +1,7 @@
 package dsl.base.behavior
 
+import db.core.systemagent.SystemAgent
+import dsl.RuntimeAgent
 import dsl.objects.DslImage
 import dsl.objects.DslMessage
 
@@ -8,7 +10,7 @@ import dsl.objects.DslMessage
  */
 abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
 
-    override fun bing() {
+    override fun bing(runtimeAgent: RuntimeAgent) {
     }
 
     override fun unbind() {

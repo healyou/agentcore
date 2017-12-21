@@ -1,5 +1,7 @@
 package dsl.base.behavior
 
+import db.core.systemagent.SystemAgent
+import dsl.RuntimeAgent
 import dsl.objects.DslImage
 import dsl.objects.DslMessage
 
@@ -13,7 +15,7 @@ interface IRuntimeAgentBehaviorEventSink {
     /**
      * Прикрепление поведения к агенту
      */
-    fun bing()
+    fun bing(runtimeAgent: RuntimeAgent)
 
     /**
      * Открепление поведения от агенту

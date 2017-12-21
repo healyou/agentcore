@@ -26,10 +26,11 @@ class SystemAgentHistoryServiceTest extends AbstractServiceTest {
      */
     @Test
     void testCreatedHistory() {
-        def historyId = createHistory()
-        def historyList = systemAgentEventHistoryService.getLastNumberItems(1L)
+        def createAgentId = createAgent().id
+        def historyId = createHistory(createAgentId)
+        def historyList = systemAgentEventHistoryService.getLastNumberItems(createAgentId, 1L)
 
-        assertTrue(historyList.size() == 1 && historyId == historyList[0].id)
+        assertTrue(historyList.size() == 1 && historyId == historyList[0].id && createAgentId == historyList[0].systemAgentId)
     }
 
     /**
@@ -38,28 +39,29 @@ class SystemAgentHistoryServiceTest extends AbstractServiceTest {
     @Test
     void testGetLastNumberCreatedHistory() {
         def historySize = 5
-        def createHistoryIds = createHistory(historySize)
-        def historyList = systemAgentEventHistoryService.getLastNumberItems(historySize)
+        def createAgentId = createAgent().id
+        def createHistoryIds = createHistory(createAgentId, historySize)
+        def historyList = systemAgentEventHistoryService.getLastNumberItems(createAgentId, historySize)
 
         assertTrue(historyList.size() == createHistoryIds.size())
         historyList.forEach {
             assertTrue(createHistoryIds.any { createHistoryId ->
                 createHistoryId == it.id
-            })
+            } && createAgentId == it.systemAgentId)
         }
     }
 
-    private def createHistory(Long size) {
+    private def createHistory(Long systemAgentId, Long size) {
         List<Long> historyIds = new ArrayList<>()
         for (i in 0..size - 1) {
-            historyIds.add(createHistory())
+            historyIds.add(createHistory(systemAgentId))
         }
         historyIds
     }
 
-    private def createHistory() {
+    private def createHistory(Long systemAgentId) {
         def history = new SystemAgentEventHistory(
-                createAgent().id,
+                systemAgentId,
                 StringObjects.randomString()
         )
         systemAgentEventHistoryService.create(history)
