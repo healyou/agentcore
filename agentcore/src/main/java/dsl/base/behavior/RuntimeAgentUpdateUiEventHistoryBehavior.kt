@@ -20,6 +20,11 @@ class RuntimeAgentUpdateUiEventHistoryBehavior(
         onEvent("Добавление RuntimeAgentUpdateUiEventHistoryBehavior к агенту")
     }
 
+    override fun unbind() {
+        super.unbind()
+        onEvent("Отсоединение RuntimeAgentUpdateUiEventHistoryBehavior от агента")
+    }
+
     override fun onEvent(message: String) {
         appendHistoryText(runtimeAgent.getSystemAgent(), "$message\n")
     }
