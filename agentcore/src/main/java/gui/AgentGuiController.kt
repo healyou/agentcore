@@ -105,8 +105,8 @@ class AgentGuiController {
             fileChooser.initialDirectory = File(System.getProperty("user.home"));
             fileChooser.extensionFilters.add(extFilter)
 
-            val imageFile = fileChooser.showOpenDialog(getWindow(event))
-            if (IMAGE_REGEX.toRegex().matches(imageFile.name)) {
+            val imageFile: File? = fileChooser.showOpenDialog(getWindow(event))
+            if (imageFile != null && IMAGE_REGEX.toRegex().matches(imageFile.name)) {
                 val dslImage = configureDslImage(imageFile)
                 val selectedAgent = getSelectedAgent()
                 agentLoader.onLoadImage(selectedAgent!!, dslImage)
