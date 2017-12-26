@@ -10,6 +10,8 @@ interface SystemAgentDao {
 
     fun create(systemAgent: SystemAgent): Long
 
+    fun update(systemAgent: SystemAgent): Long
+
     fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 
     fun get(sc: SystemAgentSC): List<SystemAgent>

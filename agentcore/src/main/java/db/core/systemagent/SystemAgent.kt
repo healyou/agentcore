@@ -1,5 +1,6 @@
 package db.core.systemagent
 
+import db.core.file.dslfile.DslFileAttachment
 import service.objects.Entity
 import java.util.*
 
@@ -23,6 +24,8 @@ class SystemAgent(
     var createDate: Date? = null
     /* Дата изменения */
     var updateDate: Date? = null
+    /* Файл для работы агента */
+    var dslFile: DslFileAttachment? = null
     /* Удалено ли значение */
     var isDeleted: Boolean? = null
 }

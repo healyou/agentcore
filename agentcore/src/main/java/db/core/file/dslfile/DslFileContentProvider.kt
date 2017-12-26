@@ -1,4 +1,6 @@
-package db.core.file
+package db.core.file.dslfile
+
+import db.core.file.FileContent
 
 /**
  * Получение данных из бд

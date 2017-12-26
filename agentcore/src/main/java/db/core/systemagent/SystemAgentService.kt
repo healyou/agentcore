@@ -7,7 +7,7 @@ import db.core.sc.SystemAgentSC
  */
 interface SystemAgentService {
 
-    fun create(systemAgent: SystemAgent): Long
+    fun save(systemAgent: SystemAgent): Long
 
     fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 

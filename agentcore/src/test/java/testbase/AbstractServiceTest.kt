@@ -17,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional
 abstract class AbstractServiceTest:  AbstractTransactionalJUnit4SpringContextTests() {
 
     @Autowired
-    private lateinit var createFilesDao: CreateFilesDao
+    private lateinit var createDataDao: CreateDatabaseDataDao
 
     @Before
     fun init() {
-        createFilesDao.createFiles()
+        createDataDao.createData()
     }
 }

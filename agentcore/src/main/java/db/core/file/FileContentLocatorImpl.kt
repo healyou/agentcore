@@ -1,5 +1,7 @@
 package db.core.file
 
+import db.core.file.dslfile.DslFileContentProvider
+import db.core.file.dslfile.DslFileContentRef
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 

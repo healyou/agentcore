@@ -1,4 +1,9 @@
-package db.core.file
+package db.core.file.dslfile
+
+import db.core.file.AbstractByIdFileContentRef
+import db.core.file.FileContent
+import db.core.file.FileContentLocator
+import db.core.file.FileContentRef
 
 /**
  * Ссылка на данные файла в бд - посетитель получит данные, когда ему станет это надо

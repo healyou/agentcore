@@ -1,6 +1,10 @@
-package db.core.file
+package db.jdbc.file.dslfile
 
 import db.base.AbstractDao
+import db.core.file.ByteArrayFileContent
+import db.core.file.FileContent
+import db.core.file.dslfile.DslFileContentProvider
+import db.core.file.dslfile.DslFileContentRef
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.support.lob.DefaultLobHandler
 import org.springframework.stereotype.Component

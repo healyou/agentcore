@@ -40,7 +40,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         )
         systemAgent.isDeleted = isDeleted
 
-        id = systemAgentService.create(systemAgent)
+        id = systemAgentService.save(systemAgent)
     }
 
     /* Получение созданного агента */
@@ -108,7 +108,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
                 servicePassword,
                 isSendAndGetMessages
         )
-        systemAgentService.create(systemAgent)
+        systemAgentService.save(systemAgent)
     }
 
     /* Проверка существования агента */
@@ -126,7 +126,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         )
         systemAgent.isDeleted = isDeleted
 
-        return systemAgentService.get(systemAgentService.create(systemAgent))
+        return systemAgentService.get(systemAgentService.save(systemAgent))
     }
 
     private def createAgentByIdDeletedArgs(Boolean... isDeletedArgs) {

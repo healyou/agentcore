@@ -168,7 +168,7 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
     }
 
     private Long createSystemAgent(Boolean isSendAndGetMessages) {
-        return systemAgentService.create(new SystemAgent(
+        return systemAgentService.save(new SystemAgent(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 isSendAndGetMessages

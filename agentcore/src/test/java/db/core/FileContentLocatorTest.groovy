@@ -2,8 +2,7 @@ package db.core
 
 import com.google.common.io.ByteStreams
 import db.core.file.FileContentLocator
-import objects.FilesObjects
-import org.junit.Before
+import objects.initdbobjects.FilesObjects
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import testbase.AbstractServiceTest

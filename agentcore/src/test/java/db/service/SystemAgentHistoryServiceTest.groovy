@@ -75,6 +75,6 @@ class SystemAgentHistoryServiceTest extends AbstractServiceTest {
         )
         systemAgent.isDeleted = false
 
-        return systemAgentService.get(systemAgentService.create(systemAgent))
+        return systemAgentService.get(systemAgentService.save(systemAgent))
     }
 }

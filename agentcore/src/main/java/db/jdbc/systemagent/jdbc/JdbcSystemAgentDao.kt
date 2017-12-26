@@ -6,7 +6,9 @@ import db.base.Utils
 import db.base.toSqlite
 import db.core.sc.SystemAgentSC
 import db.core.systemagent.SystemAgent
+import db.jdbc.file.dslfile.DslFileAttachmentDao
 import db.jdbc.systemagent.SystemAgentDao
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
 /**
@@ -14,6 +16,9 @@ import org.springframework.stereotype.Component
  */
 @Component
 open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
+
+    @Autowired
+    private lateinit var dslFileAttachmentDao: DslFileAttachmentDao
 
     override fun create(systemAgent: SystemAgent): Long {
         jdbcTemplate.update(
@@ -24,14 +29,22 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING
         )
 
+        // TODO create dsl_file
+
         /* id последней введённой записи */
         return getSequence("system_agent")
+    }
+
+    override fun update(systemAgent: SystemAgent): Long {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        // todo обновление dsl записи
     }
 
     override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> {
         return jdbcTemplate.query(
                 "SELECT * FROM system_agent WHERE is_deleted = ? AND is_sendandget_messages = ?",
-                SystemAgentRowMapper(),
+                SystemAgentRowMapper(dslFileAttachmentDao),
                 isDeleted.toSqlite(),
                 isSendAndGetMessages.toSqlite()
         )
@@ -43,17 +56,21 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         /* Конфигурация поискового запроса */
         applyCondition(sql, sc)
 
-        return jdbcTemplate.query(sql.toString(), SystemAgentRowMapper())
+        return jdbcTemplate.query(sql.toString(), SystemAgentRowMapper(dslFileAttachmentDao))
     }
 
     override fun get(id: Long): SystemAgent {
-        return jdbcTemplate.queryForObject("SELECT * FROM system_agent WHERE id = ?", SystemAgentRowMapper(), id)
+        return jdbcTemplate.queryForObject(
+                "SELECT * FROM system_agent WHERE id = ?",
+                SystemAgentRowMapper(dslFileAttachmentDao),
+                id
+        )
     }
 
     override fun getByServiceLogin(serviceLogin: String): SystemAgent {
         return jdbcTemplate.queryForObject(
                 "SELECT * FROM system_agent WHERE service_login = ?",
-                SystemAgentRowMapper(),
+                SystemAgentRowMapper(dslFileAttachmentDao),
                 serviceLogin
         )
     }

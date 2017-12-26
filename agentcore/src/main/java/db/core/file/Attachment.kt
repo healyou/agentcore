@@ -7,7 +7,7 @@ import service.objects.Entity
  *
  * @author Nikita Gorodilov
  */
-class Attachment(
+open class Attachment(
         val filename: String,
         val content: FileContentRef
 ): Entity {

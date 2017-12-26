@@ -19,7 +19,6 @@ import service.ServerTypeService;
 import service.SessionManager;
 import service.objects.*;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -232,7 +231,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         String agentMasId = String.valueOf(runtimeAgentService.getAgentMasId());
         SystemAgentService systemAgentService = getSystemAgentService();
         if (!systemAgentService.isExistsAgent(agentMasId)) {
-            systemAgentService.create(new SystemAgent(
+            systemAgentService.save(new SystemAgent(
                     agentMasId,
                     getEnvironment().getProperty("agent.service.password"),
                     true

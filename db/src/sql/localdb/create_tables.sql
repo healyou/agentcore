@@ -18,10 +18,8 @@ CREATE TABLE if not exists system_agent
   service_password  TEXT                  NOT NULL, -- Пароль от сервиса
   create_date       TEXT                  NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
   update_date       TEXT                  , -- Дата редактирования
-  dsl_file_id       INTEGER               , -- Файл с данными для выполнения агента
   is_deleted TEXT NOT NULL DEFAULT ('N') CHECK(is_deleted='N' OR is_deleted='Y'), -- Удалено ли значение
-  is_sendandget_messages TEXT NOT NULL DEFAULT ('Y') CHECK(is_deleted='N' OR is_deleted='Y'), -- Необходимо ли для этого агента получать и отправлять сообщения в сервисе
-  FOREIGN KEY(dsl_file_id) REFERENCES dsl_file(id)
+  is_sendandget_messages TEXT NOT NULL DEFAULT ('Y') CHECK(is_deleted='N' OR is_deleted='Y') -- Необходимо ли для этого агента получать и отправлять сообщения в сервисе
 );
 
 ------------------ service message table ------------------
@@ -65,13 +63,14 @@ CREATE TABLE if not exists system_agent_event_history
 
 ----------------------- dsl file -----------------------
 CREATE TABLE if not exists dsl_file
-  -- Таблицы истории поведения агента
+  -- Таблицы с файлами работы агента
 (
   id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
   agent_id       TEXT                              NOT NULL, -- Идентификатор системного агента
   filename       TEXT                              NOT NULL, -- Имя файла
   data           BLOB                              NOT NULL, -- Данные
+  length         INTEGER                           NOT NULL, -- Размер данных
   create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
-  update_date    TEXT                              , -- Дата редактирования
+  end_date       TEXT                              , -- Дата завершения работы текущего файла
   FOREIGN KEY(agent_id) REFERENCES system_agent(id)
 );
