@@ -39,6 +39,8 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     private SystemAgent systemAgent = null;
     private List<ARuntimeAgentBehavior> behaviors = new ArrayList<>();
 
+    // TODO - конструктор с новым dsl файлом - его надо обновить в бд
+    // TODO - конструктор с существующим агентом(был уже создан в бд) - проверки получается не тут будут
     /**
      * @param dslFileAttachment dsl файл агента
      */
@@ -49,7 +51,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
         runtimeAgentService.applyInit();
-        configureAgentWithError();
+        configureAgentWithError(dslFileAttachment);
     }
 
     @Override
@@ -206,9 +208,9 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         };
     }
 
-    private void configureAgentWithError() {
+    private void configureAgentWithError(DslFileAttachment dslFileAttachment) {
         if (isSuccessLogin()) {
-            configureSystemAgent();
+            configureSystemAgent(dslFileAttachment);
         } else {
             throw new RuntimeException("Невозможно зарегистрировать агента в сервисе");
         }
@@ -245,17 +247,25 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     /**
      * Создание и получение системного агента(из локальной бд)
      */
-    private void configureSystemAgent() {
+    private void configureSystemAgent(DslFileAttachment dslFileAttachment) {
+        SystemAgentService agentService = getSystemAgentService();
         String agentMasId = String.valueOf(runtimeAgentService.getAgentMasId());
-        SystemAgentService systemAgentService = getSystemAgentService();
+        SystemAgentService systemAgentService = agentService;
         if (!systemAgentService.isExistsAgent(agentMasId)) {
-            systemAgentService.save(new SystemAgent(
+            SystemAgent systemAgent = new SystemAgent(
                     agentMasId,
                     getEnvironment().getProperty("agent.service.password"),
                     true
-            ));
+            );
+            systemAgent.setDslFile(dslFileAttachment);
+            systemAgentService.save(systemAgent);
+        } else {
+            /* Обновляем dsl файл */
+            systemAgent = agentService.getByServiceLogin(agentMasId);
+            systemAgent.setDslFile(dslFileAttachment);
+            agentService.save(systemAgent);
         }
-        systemAgent = getSystemAgentService().getByServiceLogin(agentMasId);
+        systemAgent = agentService.getByServiceLogin(agentMasId);
     }
 
     private void loadServiceTypes(RuntimeAgentService runtimeAgentService) {

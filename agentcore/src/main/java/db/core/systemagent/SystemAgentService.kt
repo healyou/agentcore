@@ -9,6 +9,8 @@ interface SystemAgentService {
 
     fun save(systemAgent: SystemAgent): Long
 
+    // TODO обновление dsl файла
+
     fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 
     fun get(sc: SystemAgentSC): List<SystemAgent>
