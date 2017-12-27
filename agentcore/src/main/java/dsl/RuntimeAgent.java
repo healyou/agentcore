@@ -2,9 +2,7 @@ package dsl;
 
 import db.base.Environment;
 import db.core.file.FileContentLocator;
-import db.core.file.FileContentRef;
 import db.core.file.dslfile.DslFileAttachment;
-import db.core.file.dslfile.DslFileContentRef;
 import db.core.servicemessage.ServiceMessage;
 import db.core.servicemessage.ServiceMessageService;
 import db.core.servicemessage.ServiceMessageType;
@@ -13,6 +11,7 @@ import db.core.systemagent.SystemAgentService;
 import dsl.base.ARuntimeAgent;
 import dsl.base.SendMessageParameters;
 import dsl.base.behavior.ARuntimeAgentBehavior;
+import dsl.exceptions.RuntimeAgentException;
 import dsl.objects.DslImage;
 import dsl.objects.DslMessage;
 import groovy.lang.Closure;
@@ -23,8 +22,6 @@ import service.ServerTypeService;
 import service.SessionManager;
 import service.objects.*;
 
-import java.io.File;
-import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -39,19 +36,39 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     private SystemAgent systemAgent = null;
     private List<ARuntimeAgentBehavior> behaviors = new ArrayList<>();
 
-    // TODO - конструктор с новым dsl файлом - его надо обновить в бд
-    // TODO - конструктор с существующим агентом(был уже создан в бд) - проверки получается не тут будут
+    // TODO данный конструктор будет полезен, когда появятся пользователи и агенты
     /**
+     * Конструктор без создания dsl файла агента
+     *      Агент должен быть создан
+     *      Dsl файл будет взят из бд
+     *
+     * @param serviceLogin идентификатор агента относительно многоагентной системы(логин для входа в сервис)
+     */
+    public RuntimeAgent(String serviceLogin) throws RuntimeAgentException {
+        super();
+        DslFileAttachment dslFileAttachment = loadDslFileAttachment(serviceLogin);
+        loadServiceTypes(runtimeAgentService);
+        runtimeAgentService.setRuntimeAgent(this);
+        runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
+        runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
+        runtimeAgentService.applyInit();
+    }
+
+    /**
+     * Конструктор с созданием нового dsl файла агента
+     *      Агент может быть ещё не создан
+     *      Новый dsl(isNew) файл будет записан в бд и станет текущий для агента
+     *
      * @param dslFileAttachment dsl файл агента
      */
-    public RuntimeAgent(DslFileAttachment dslFileAttachment) {
+    public RuntimeAgent(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         super();
         loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setRuntimeAgent(this);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
         runtimeAgentService.applyInit();
-        configureAgentWithError(dslFileAttachment);
+        systemAgent = configureAgentWithError(dslFileAttachment);
     }
 
     @Override
@@ -165,11 +182,22 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         messageService.save(serviceMessage);
     }
 
+    /**
+     * Получение dsl файла агента, агент должен уже существовать
+     */
+    private DslFileAttachment loadDslFileAttachment(String agentServiceLogin) {
+        SystemAgentService agentService = getSystemAgentService();
+        if (!agentService.isExistsAgent(agentServiceLogin)) {
+            throw new RuntimeAgentException("Нельзя создать агента ");
+        }
+        return agentService.getDslAttachment(agentServiceLogin);
+    }
+
     private String getRules(DslFileAttachment dslFileAttachment) {
         try {
             return new String(dslFileAttachment.contentAsByteArray(getFileContentLocator()), "UTF-8");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeAgentException("Ошибка преобразования byte[] данных dsl файла в строку");
         }
     }
 
@@ -208,11 +236,11 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         };
     }
 
-    private void configureAgentWithError(DslFileAttachment dslFileAttachment) {
+    private SystemAgent configureAgentWithError(DslFileAttachment dslFileAttachment) {
         if (isSuccessLogin()) {
-            configureSystemAgent(dslFileAttachment);
+            return configureSystemAgent(dslFileAttachment);
         } else {
-            throw new RuntimeException("Невозможно зарегистрировать агента в сервисе");
+            throw new RuntimeAgentException("Невозможно зарегистрировать агента в сервисе");
         }
     }
 
@@ -247,25 +275,24 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     /**
      * Создание и получение системного агента(из локальной бд)
      */
-    private void configureSystemAgent(DslFileAttachment dslFileAttachment) {
+    private SystemAgent configureSystemAgent(DslFileAttachment dslFileAttachment) {
         SystemAgentService agentService = getSystemAgentService();
         String agentMasId = String.valueOf(runtimeAgentService.getAgentMasId());
-        SystemAgentService systemAgentService = agentService;
-        if (!systemAgentService.isExistsAgent(agentMasId)) {
+        if (!agentService.isExistsAgent(agentMasId)) {
             SystemAgent systemAgent = new SystemAgent(
                     agentMasId,
                     getEnvironment().getProperty("agent.service.password"),
                     true
             );
             systemAgent.setDslFile(dslFileAttachment);
-            systemAgentService.save(systemAgent);
+            agentService.save(systemAgent);
         } else {
             /* Обновляем dsl файл */
             systemAgent = agentService.getByServiceLogin(agentMasId);
             systemAgent.setDslFile(dslFileAttachment);
             agentService.save(systemAgent);
         }
-        systemAgent = agentService.getByServiceLogin(agentMasId);
+        return agentService.getByServiceLogin(agentMasId);
     }
 
     private void loadServiceTypes(RuntimeAgentService runtimeAgentService) {

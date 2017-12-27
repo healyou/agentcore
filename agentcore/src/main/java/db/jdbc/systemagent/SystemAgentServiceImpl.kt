@@ -1,8 +1,10 @@
 package db.jdbc.systemagent
 
+import db.core.file.dslfile.DslFileAttachment
 import db.core.sc.SystemAgentSC
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
+import db.jdbc.file.dslfile.DslFileAttachmentDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -14,6 +16,8 @@ open class SystemAgentServiceImpl : SystemAgentService {
 
     @Autowired
     private lateinit var dao: SystemAgentDao
+    @Autowired
+    private lateinit var dslDao: DslFileAttachmentDao
 
     override fun save(systemAgent: SystemAgent): Long {
         return if (systemAgent.isNew) {
@@ -23,6 +27,10 @@ open class SystemAgentServiceImpl : SystemAgentService {
             dao.update(systemAgent)
             systemAgent.id!!
         }
+    }
+
+    override fun getDslAttachment(systemAgentServiceLogin: String): DslFileAttachment? {
+        return dslDao.getDslWorkingFileBySystemAgentServiceLogin(systemAgentServiceLogin)
     }
 
     override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> =

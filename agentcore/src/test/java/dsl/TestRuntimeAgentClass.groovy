@@ -7,6 +7,10 @@ import db.core.file.dslfile.DslFileAttachment
  */
 abstract class TestRuntimeAgentClass extends RuntimeAgent {
 
+    TestRuntimeAgentClass(String serviceLogin) {
+        super(serviceLogin);
+    }
+
     TestRuntimeAgentClass(DslFileAttachment dslFileAttachment) {
         super(dslFileAttachment)
     }

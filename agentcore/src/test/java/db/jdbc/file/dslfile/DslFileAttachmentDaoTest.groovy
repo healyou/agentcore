@@ -29,12 +29,31 @@ class DslFileAttachmentDaoTest extends AbstractServiceTest {
     FileContentLocator fileContentLocator
 
     @Test
-    void "Получение текущего экземпляра dsl файла"() {
+    void "Получение текущего экземпляра dsl файла по id агента"() {
         def agent = AgentObjects.testAgentWithManyDslAttachment()
 
         def dslFile = dslFileAttachmentDao.getDslWorkingFileBySystemAgentId(agent.id)
         assertNotNull(dslFile)
         assertEquals(agent.dslFile.id, dslFile.id)
+    }
+
+    @Test
+    void "Получение текущего экземпляра dsl файла по serviceLogin агента"() {
+        def agent = AgentObjects.testAgentWithManyDslAttachment()
+
+        def dslFile = dslFileAttachmentDao.getDslWorkingFileBySystemAgentServiceLogin(agent.serviceLogin)
+        assertNotNull(dslFile)
+        assertEquals(agent.dslFile.id, dslFile.id)
+    }
+
+    @Test
+    void "Неудачное получение текущего экземпляра dsl файла по serviceLogin и id агента"() {
+        def agent = AgentObjects.testAgentWithOneDslAttachment()
+        def dslFile = dslFileAttachmentDao.getDslWorkingFileBySystemAgentId(agent.id)
+        dslFileAttachmentDao.endDslFile(dslFile.id)
+
+        assertNull(dslFileAttachmentDao.getDslWorkingFileBySystemAgentId(agent.id))
+        assertNull(dslFileAttachmentDao.getDslWorkingFileBySystemAgentServiceLogin(agent.serviceLogin))
     }
 
     @Test

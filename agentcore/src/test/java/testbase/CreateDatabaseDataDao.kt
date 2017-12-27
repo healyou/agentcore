@@ -18,9 +18,21 @@ class CreateDatabaseDataDao : AbstractDao() {
     private lateinit var agentService: SystemAgentService
 
     companion object {
-        val testDskFileContentRef1Data = byteArrayOf(1,2,3)
+        val testDskFileContentRef1Data = """
+            init = {}
+            onGetMessage = { _ ->}
+            onLoadImage = { _ ->}
+            onEndImageTask = { _ ->}
+        """.trimIndent().toByteArray()
         var testDslFileContentRef1: DslFileContentRef? = null
-        val testDskFileContentRef2Data = byteArrayOf(1,2,3,4,5)
+        val testDskFileContentRef2Data = """
+            init = {
+                masId = ${UUID.randomUUID()}
+            }
+            onGetMessage = { _ ->}
+            onLoadImage = { _ ->}
+            onEndImageTask = { _ ->}
+        """.trimIndent().toByteArray()
         var testDslFileContentRef2: DslFileContentRef? = null
 
         var testAgentWithOneDslAttachment: SystemAgent? = null

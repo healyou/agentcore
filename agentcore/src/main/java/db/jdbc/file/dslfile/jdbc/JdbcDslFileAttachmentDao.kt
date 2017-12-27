@@ -28,6 +28,18 @@ class JdbcDslFileAttachmentDao: AbstractDao(), DslFileAttachmentDao {
         }
     }
 
+    override fun getDslWorkingFileBySystemAgentServiceLogin(systemAgentServiceLogin: String): DslFileAttachment? {
+        return try {
+            jdbcTemplate.queryForObject(
+                    "SELECT * FROM dsl_file WHERE end_date is null and agent_id = (SELECT id FROM system_agent WHERE service_login = ?)",
+                    DslFileAttachmentRowMapper(),
+                    systemAgentServiceLogin
+            )
+        } catch (ignored: Exception) {
+            null
+        }
+    }
+
     override fun endDslFile(dslFileId: Long) {
         jdbcTemplate.update(
                 "UPDATE dsl_file SET end_date = strftime('%Y-%m-%d %H:%M:%f') WHERE id = ?",

@@ -1,5 +1,6 @@
 package db.core.systemagent
 
+import db.core.file.dslfile.DslFileAttachment
 import db.core.sc.SystemAgentSC
 
 /**
@@ -9,7 +10,7 @@ interface SystemAgentService {
 
     fun save(systemAgent: SystemAgent): Long
 
-    // TODO обновление dsl файла
+    fun getDslAttachment(systemAgentServiceLogin: String): DslFileAttachment?
 
     fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent>
 

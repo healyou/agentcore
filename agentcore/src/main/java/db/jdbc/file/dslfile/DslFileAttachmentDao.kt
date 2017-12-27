@@ -13,6 +13,11 @@ interface DslFileAttachmentDao {
     fun getDslWorkingFileBySystemAgentId(systemAgentId: Long): DslFileAttachment?
 
     /**
+     * Получаем текущую рабочую версию dsl файла - end_date != null
+     */
+    fun getDslWorkingFileBySystemAgentServiceLogin(systemAgentServiceLogin: String): DslFileAttachment?
+
+    /**
      * Проставление даты окончания работы dsl файла
      */
     fun endDslFile(dslFileId: Long)

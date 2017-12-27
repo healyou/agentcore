@@ -29,7 +29,6 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING
         )
 
-        // TODO test
         val agentId = getSequence("system_agent")
         if (systemAgent.dslFile != null) {
             dslFileAttachmentDao.create(systemAgent.dslFile!!, agentId)
@@ -38,7 +37,6 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         return agentId
     }
 
-    // TODO test
     override fun update(systemAgent: SystemAgent): Long {
         jdbcTemplate.update(
                 "update system_agent set service_login=?,service_password=?,update_date=strftime('%Y-%m-%d %H:%M:%f'),is_deleted=?,is_sendandget_messages=? where id = ?",
