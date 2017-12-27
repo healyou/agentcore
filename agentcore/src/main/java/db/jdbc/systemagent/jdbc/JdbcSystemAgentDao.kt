@@ -29,16 +29,30 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING
         )
 
-        // TODO create dsl_file
+        // TODO test
+        val agentId = getSequence("system_agent")
+        if (systemAgent.dslFile != null) {
+            dslFileAttachmentDao.create(systemAgent.dslFile!!, agentId)
+        }
+
+        return agentId
+    }
+
+    // TODO test
+    override fun update(systemAgent: SystemAgent): Long {
+        jdbcTemplate.update(
+                "update system_agent set service_login=?,service_password=?,update_date=strftime('%Y-%m-%d %H:%M:%f'),is_deleted=?,is_sendandget_messages=? where id = ?",
+                systemAgent.serviceLogin,
+                systemAgent.servicePassword,
+                systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING,
+                systemAgent.isSendAndGetMessages.toSqlite(),
+                systemAgent.id!!
+        )
+
+        updateAgentDslFile(systemAgent)
 
         /* id последней введённой записи */
         return getSequence("system_agent")
-    }
-
-    override fun update(systemAgent: SystemAgent): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-        // todo обновление dsl записи
     }
 
     override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> {
@@ -81,6 +95,26 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 Boolean::class.java,
                 serviceLogin
         )
+    }
+
+    /**
+     * Обновление рабочей dsl
+     */
+    private fun updateAgentDslFile(systemAgent: SystemAgent) {
+        val workingDsl = dslFileAttachmentDao.getDslWorkingFileBySystemAgentId(systemAgent.id!!)
+        val newDsl = systemAgent.dslFile
+        /* Если была создана новая dsl для агента */
+        if (newDsl != null && newDsl.isNew) {
+            /* Если у агента уже была рабочая dsl */
+            if (workingDsl != null) {
+                dslFileAttachmentDao.endDslFile(workingDsl.id!!)
+            }
+            dslFileAttachmentDao.create(newDsl, systemAgent.id!!)
+
+        } else if (workingDsl != null) {
+            /* Если была удалена dsl агента */
+            dslFileAttachmentDao.endDslFile(workingDsl.id!!)
+        }
     }
 
     /* Делаем поисковых запрос */

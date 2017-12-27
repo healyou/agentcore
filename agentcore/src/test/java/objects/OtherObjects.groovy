@@ -1,8 +1,14 @@
 package objects
 
 import db.base.ExtensionsKt
+import db.core.file.ByteArrayFileContent
+import db.core.file.FileContent
+import db.core.file.FileContentLocator
+import db.core.file.FileContentRef
+import db.core.file.dslfile.DslFileAttachment
 import dsl.RuntimeAgentServiceTest
 import dsl.objects.DslImage
+import org.jetbrains.annotations.NotNull
 import service.objects.Agent
 import service.objects.AgentType
 import service.objects.LoginData
@@ -17,6 +23,23 @@ import java.text.SimpleDateFormat
  * @author Nikita Gorodilov
  */
 class OtherObjects {
+
+    static def dslFileAttachment(String filename, byte[] content) {
+        new DslFileAttachment(
+                filename,
+                new FileContentRef() {
+                    @Override
+                    FileContent getContent(@NotNull FileContentLocator visitor) {
+                        return new ByteArrayFileContent(content)
+                    }
+                    @Override
+                    String getName() {
+                        return filename
+                    }
+                },
+                content.length
+        )
+    }
 
     static DslImage image() {
         new DslImage(
