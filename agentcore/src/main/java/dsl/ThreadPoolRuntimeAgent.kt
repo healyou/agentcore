@@ -1,5 +1,6 @@
 package dsl
 
+import db.core.file.dslfile.DslFileAttachment
 import dsl.objects.DslImage
 import dsl.objects.DslMessage
 import java.util.concurrent.ExecutorService
@@ -11,7 +12,7 @@ import java.util.concurrent.Executors
  *
  * @author Nikita Gorodilov
  */
-abstract class ThreadPoolRuntimeAgent(path: String) : RuntimeAgent(path) {
+abstract class ThreadPoolRuntimeAgent(dslFileAttachment: DslFileAttachment) : RuntimeAgent(dslFileAttachment) {
 
     companion object {
         var executorService: ExecutorService = createExecutors()

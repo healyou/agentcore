@@ -1,6 +1,8 @@
 package dsl
 
 import db.base.Environment
+import db.core.file.FileContentLocator
+import db.core.file.dslfile.DslFileAttachment
 import db.core.sc.ServiceMessageSC
 import db.core.servicemessage.ServiceMessage
 import db.core.servicemessage.ServiceMessageService
@@ -18,6 +20,8 @@ import service.ServerTypeService
 import testbase.AbstractServiceTest
 import objects.MockObjects
 import objects.OtherObjects
+
+import java.nio.file.Files
 
 /**
  * Тестирование работы двух агентов, где роль сервера и вызова функций происходит в тестовом режиме
@@ -38,6 +42,8 @@ class RuntimeAgentTest extends AbstractServiceTest {
     ServerTypeService serverTypeService = MockObjects.serverTypeService()
     @Autowired
     Environment environment
+    @Autowired
+    FileContentLocator fileContentLocator
     LoginService loginService = MockObjects.loginService()
 
     TestRuntimeAgentClass workerAgent_a1
@@ -45,7 +51,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
 
     @Before
     void setup() {
-        workerAgent_a1 = new TestRuntimeAgentClass(getClass().getResource("a1_testdsl.groovy").toURI().path) {
+        workerAgent_a1 = new TestRuntimeAgentClass(createDslAttachment("a1_testdsl.groovy")) {
 
             def senderCode = TypesObjects.testAgent1TypeCode()
 
@@ -78,8 +84,13 @@ class RuntimeAgentTest extends AbstractServiceTest {
             protected ServiceMessageTypeService getMessageTypeService() {
                 return RuntimeAgentTest.this.messageTypeService
             }
+
+            @Override
+            protected FileContentLocator getFileContentLocator() {
+                return RuntimeAgentTest.this.fileContentLocator
+            }
         }
-        serverAgent_a2 = new TestRuntimeAgentClass(getClass().getResource("a2_testdsl.groovy").toURI().path) {
+        serverAgent_a2 = new TestRuntimeAgentClass(createDslAttachment("a2_testdsl.groovy")) {
 
             def senderCode = TypesObjects.testAgent2TypeCode()
 
@@ -111,6 +122,11 @@ class RuntimeAgentTest extends AbstractServiceTest {
             @Override
             protected ServiceMessageTypeService getMessageTypeService() {
                 return RuntimeAgentTest.this.messageTypeService
+            }
+
+            @Override
+            protected FileContentLocator getFileContentLocator() {
+                return RuntimeAgentTest.this.fileContentLocator
             }
         }
     }
@@ -160,5 +176,12 @@ class RuntimeAgentTest extends AbstractServiceTest {
                 message.getMessageSenderCode,
                 new DslImage("testImage", [1, 2, 3] as byte[])
         )
+    }
+
+    private static DslFileAttachment createDslAttachment(String resourceFileName) {
+        def path = RuntimeAgent.class.getResource(resourceFileName).toURI().path
+        def file = new File(String.valueOf(path))
+
+        OtherObjects.dslFileAttachment(resourceFileName, Files.readAllBytes(file.toPath()))
     }
 }

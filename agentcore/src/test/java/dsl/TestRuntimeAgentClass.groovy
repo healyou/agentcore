@@ -1,12 +1,14 @@
 package dsl
 
+import db.core.file.dslfile.DslFileAttachment
+
 /**
  * @author Nikita Gorodilov
  */
 abstract class TestRuntimeAgentClass extends RuntimeAgent {
 
-    TestRuntimeAgentClass(String path) {
-        super(path)
+    TestRuntimeAgentClass(DslFileAttachment dslFileAttachment) {
+        super(dslFileAttachment)
     }
 
     @Override

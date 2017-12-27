@@ -1,6 +1,7 @@
 package gui
 
 import db.base.Environment
+import db.core.file.FileContentLocator
 import db.core.sc.ServiceMessageSC
 import db.core.sc.SystemAgentSC
 import db.core.servicemessage.ServiceMessage
@@ -65,6 +66,8 @@ class AgentGuiController {
     private lateinit var loginService: LoginService
     @Autowired
     private lateinit var historyService: SystemAgentEventHistoryService
+    @Autowired
+    private lateinit var fileContentLocator: FileContentLocator
 
     private val agentLoader = RuntimeAgentLoader()
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
@@ -136,8 +139,8 @@ class AgentGuiController {
 
     private fun loadAgents() {
         agentLoader.stop()
-        agentLoader.load { path ->
-            val runtimeAgent = object : ThreadPoolRuntimeAgent(path) {
+        agentLoader.load { dslFile ->
+            val runtimeAgent = object : ThreadPoolRuntimeAgent(dslFile) {
 
                 override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
                 override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
@@ -145,6 +148,7 @@ class AgentGuiController {
                 override fun getLoginService(): LoginService = this@AgentGuiController.loginService
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
+                override fun getFileContentLocator(): FileContentLocator = this@AgentGuiController.fileContentLocator
             }
             runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
             runtimeAgent.add(RuntimeAgentUpdateUiEventHistoryBehavior(historyService, { systemAgent, message ->

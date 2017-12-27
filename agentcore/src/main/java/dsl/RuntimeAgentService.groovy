@@ -42,11 +42,11 @@ class RuntimeAgentService {
     boolean agent_send_message_provided = false
     def agentSendMessage = {}
 
-    void loadExecuteRules(path) {
+    void loadExecuteRules(String rules) {
         Binding binding = createLoadBindings()
 
         GroovyShell shell = new GroovyShell(binding)
-        shell.evaluate(new File(String.valueOf(path)))
+        shell.evaluate(rules)
 
         checkLoadRules(binding)
     }

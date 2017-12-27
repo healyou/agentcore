@@ -1,5 +1,6 @@
 package dsl.loader
 
+import db.core.file.dslfile.DslFileAttachment
 import db.core.systemagent.SystemAgent
 import dsl.ThreadPoolRuntimeAgent
 import dsl.objects.DslImage
@@ -9,7 +10,7 @@ import dsl.objects.DslImage
  */
 interface IRuntimeAgentLoader {
 
-    fun load(createAgent: (path: String) -> ThreadPoolRuntimeAgent)
+    fun load(createAgent: (dslFile: DslFileAttachment) -> ThreadPoolRuntimeAgent)
     fun start()
     fun stop()
     fun onLoadImage(agent: SystemAgent, image: DslImage)

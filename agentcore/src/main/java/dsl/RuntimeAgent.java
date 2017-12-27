@@ -1,6 +1,10 @@
 package dsl;
 
 import db.base.Environment;
+import db.core.file.FileContentLocator;
+import db.core.file.FileContentRef;
+import db.core.file.dslfile.DslFileAttachment;
+import db.core.file.dslfile.DslFileContentRef;
 import db.core.servicemessage.ServiceMessage;
 import db.core.servicemessage.ServiceMessageService;
 import db.core.servicemessage.ServiceMessageType;
@@ -19,6 +23,8 @@ import service.ServerTypeService;
 import service.SessionManager;
 import service.objects.*;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -33,12 +39,15 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     private SystemAgent systemAgent = null;
     private List<ARuntimeAgentBehavior> behaviors = new ArrayList<>();
 
-    public RuntimeAgent(String path) {
+    /**
+     * @param dslFileAttachment dsl файл агента
+     */
+    public RuntimeAgent(DslFileAttachment dslFileAttachment) {
         super();
         loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setRuntimeAgent(this);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
-        runtimeAgentService.loadExecuteRules(path);
+        runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
         runtimeAgentService.applyInit();
         configureAgentWithError();
     }
@@ -126,6 +135,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected abstract ServerTypeService getServerTypeService();
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
+    protected abstract FileContentLocator getFileContentLocator();
 
     /* для облегчения тестирования */
     protected RuntimeAgentService createRuntimeAgentService() {
@@ -151,6 +161,14 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         serviceMessage.setSendMessageType(messageTypeCode);
         serviceMessage.setSendMessageBodyType(messageBodyTypeCode);
         messageService.save(serviceMessage);
+    }
+
+    private String getRules(DslFileAttachment dslFileAttachment) {
+        try {
+            return new String(dslFileAttachment.contentAsByteArray(getFileContentLocator()), "UTF-8");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String imageToJsonWithThrowError(DslImage image) {

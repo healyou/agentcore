@@ -1,9 +1,15 @@
 package dsl.loader
 
+import db.core.file.ByteArrayFileContent
+import db.core.file.FileContent
+import db.core.file.FileContentLocator
+import db.core.file.FileContentRef
+import db.core.file.dslfile.DslFileAttachment
 import db.core.systemagent.SystemAgent
 import dsl.ThreadPoolRuntimeAgent
 import dsl.objects.DslImage
 import java.io.File
+import java.nio.file.Files
 
 /**
  * Класс, выполняющий загрузку, запуск и остановку выполнения работы агентов
@@ -19,10 +25,10 @@ class RuntimeAgentLoader: IRuntimeAgentLoader {
 
     private val agents = arrayListOf<ThreadPoolRuntimeAgent>()
 
-    override fun load(createAgent: (path: String) -> ThreadPoolRuntimeAgent) {
+    override fun load(createAgent: (dslFile: DslFileAttachment) -> ThreadPoolRuntimeAgent) {
         File(AGENT_DSL_PATH).walk().forEach {
             if (GROOVY_FILE_REGEX.toRegex().matches(it.name)) {
-                agents.add(createAgent(it.path))
+                agents.add(createAgent(createDslFile(it.path, it.name)))
             }
         }
     }
@@ -44,11 +50,30 @@ class RuntimeAgentLoader: IRuntimeAgentLoader {
 
     override fun onLoadImage(agent: SystemAgent, image: DslImage) {
         val filterAgents = agents.filter {
-            it.getSystemAgent()!!.id == agent.id
+            it.getSystemAgent().id == agent.id
         }
         if (filterAgents.isNotEmpty() && filterAgents.size == 1) {
             filterAgents[0].onLoadImage(image)
         }
+    }
+
+    private fun createDslFile(path: String, filename: String): DslFileAttachment {
+        val file = File(path)
+        val content = Files.readAllBytes(file.toPath())
+        return DslFileAttachment(
+                filename,
+                object : FileContentRef {
+                    @Override
+                    override fun getContent(visitor: FileContentLocator): FileContent {
+                        return ByteArrayFileContent(content)
+                    }
+                    @Override
+                    override fun getName(): String {
+                        return filename
+                    }
+                },
+                content.size.toLong()
+        )
     }
 
     private fun createExecutors() {
