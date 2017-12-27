@@ -19,9 +19,9 @@ class DslFileAttachmentRowMapper: AbstractRowMapper<DslFileAttachment>() {
         val attachment = DslFileAttachment(
                 attachmentName,
                 mapContent(attachmentId, attachmentName),
-                getLong(rs, "length"),
-                getDate(rs, "create_date")
+                getLong(rs, "length")
         )
+        attachment.createDate = getDate(rs, "create_date")
         attachment.id = attachmentId
 
         return attachment

@@ -26,6 +26,7 @@ class CreateDatabaseDataDao : AbstractDao() {
         var testAgentWithOneDslAttachment: SystemAgent? = null
         /* 1 рабочая, другие старые - не используются */
         var testAgentWithManyDslAttachment: SystemAgent? = null
+        var testAgentWithoutDslAttachment: SystemAgent? = null
     }
 
     /**
@@ -43,6 +44,7 @@ class CreateDatabaseDataDao : AbstractDao() {
 
         testAgentWithOneDslAttachment = agentService.get(agentId)
         testAgentWithManyDslAttachment = agentService.get(attachmentsAgentId)
+        testAgentWithoutDslAttachment = agentService.get(createAgent())
     }
 
     private fun createDslFileContentRef(agentId: Long, contentRefData: ByteArray): DslFileContentRef {

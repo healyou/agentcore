@@ -29,10 +29,21 @@ class JdbcDslFileAttachmentDao: AbstractDao(), DslFileAttachmentDao {
     }
 
     override fun endDslFile(dslFileId: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        jdbcTemplate.update(
+                "UPDATE dsl_file SET end_date = strftime('%Y-%m-%d %H:%M:%f') WHERE id = ?",
+                dslFileId
+        )
     }
 
-    override fun save(attachment: DslFileAttachment): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun create(attachment: DslFileAttachment, systemAgentId: Long): Long {
+        jdbcTemplate.update(
+                "insert into dsl_file (agent_id, filename, data, length) values (?, ?, ?, ?)",
+                systemAgentId,
+                attachment.filename,
+                attachment.contentAsByteArray(fileContentLocator),
+                attachment.fileSize
+        )
+
+        return getSequence("dsl_file")
     }
 }

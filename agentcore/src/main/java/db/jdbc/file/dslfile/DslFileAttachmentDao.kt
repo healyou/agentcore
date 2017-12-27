@@ -17,5 +17,5 @@ interface DslFileAttachmentDao {
      */
     fun endDslFile(dslFileId: Long)
 
-    fun save(attachment: DslFileAttachment): Long
+    fun create(attachment: DslFileAttachment, systemAgentId: Long): Long
 }

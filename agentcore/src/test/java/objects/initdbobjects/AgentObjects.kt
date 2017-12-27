@@ -7,7 +7,7 @@ import testbase.CreateDatabaseDataDao
 /**
  * @author Nikita Gorodilov
  */
-class AgentsObjects {
+class AgentObjects {
 
     companion object {
         @JvmStatic
@@ -18,6 +18,11 @@ class AgentsObjects {
         @JvmStatic
         fun testAgentWithManyDslAttachment(): SystemAgent {
             return CreateDatabaseDataDao.testAgentWithManyDslAttachment!!
+        }
+
+        @JvmStatic
+        fun testAgentWithoutDslAttachment(): SystemAgent {
+            return CreateDatabaseDataDao.testAgentWithoutDslAttachment!!
         }
     }
 }

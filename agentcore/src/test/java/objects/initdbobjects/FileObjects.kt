@@ -6,7 +6,7 @@ import testbase.CreateDatabaseDataDao
 /**
  * @author Nikita Gorodilov
  */
-class FilesObjects {
+class FileObjects {
 
     companion object {
         @JvmStatic

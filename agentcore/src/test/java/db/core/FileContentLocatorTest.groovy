@@ -2,7 +2,7 @@ package db.core
 
 import com.google.common.io.ByteStreams
 import db.core.file.FileContentLocator
-import objects.initdbobjects.FilesObjects
+import objects.initdbobjects.FileObjects
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import testbase.AbstractServiceTest
@@ -19,8 +19,8 @@ class FileContentLocatorTest extends AbstractServiceTest {
 
     @Test
     void "Получение данных DslFileContent"() {
-        def content = fileContentLocator.getContent(FilesObjects.testDslFile1ContentRef())
-        def contentExpectedData = FilesObjects.testDslFile1Data()
+        def content = fileContentLocator.getContent(FileObjects.testDslFile1ContentRef())
+        def contentExpectedData = FileObjects.testDslFile1Data()
 
         byte[] bytes = ByteStreams.toByteArray(content.stream)
         assertEquals(contentExpectedData.size(), content.stream.available())
