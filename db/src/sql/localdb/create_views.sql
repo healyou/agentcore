@@ -1,5 +1,6 @@
------------ message type view -----------
+----------- service message view -----------
 CREATE VIEW IF NOT EXISTS service_message_v
+  -- Сообщения в системе
   AS
     SELECT
       service_message.id,
@@ -18,3 +19,23 @@ CREATE VIEW IF NOT EXISTS service_message_v
     FROM
       service_message
       INNER JOIN service_message_type as smt ON service_message.message_type_id = smt.id;
+
+----------- user privileges view -----------
+CREATE VIEW IF NOT EXISTS user_privileges_v
+  -- Текущие привилегии пользователя
+  AS
+    SELECT
+      u.id,
+      u.login,
+      priv.privilege_id,
+      p.code AS privilege_code,
+      p.name AS privilege_name
+    FROM (((SELECT DISTINCT
+              ur.user_id,
+              rp.privilege_id
+            FROM ((user_role ur
+              JOIN role r ON ((r.id = ur.role_id)))
+              JOIN role_privilege rp ON ((rp.role_id = ur.role_id)))
+            WHERE ((strftime('%Y-%m-%d %H:%M:%f') >= ur.start_date) AND (strftime('%Y-%m-%d %H:%M:%f') <= ur.end_date OR ur.end_date IS NULL))) priv
+      JOIN users u ON ((u.id = priv.user_id)))
+      JOIN privilege p ON ((p.id = priv.privilege_id)));

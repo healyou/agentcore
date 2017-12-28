@@ -20,3 +20,40 @@ INSERT INTO parameter (key, value) VALUES
 INSERT INTO service_message_type (code, name) VALUES
   ('send', 'Отправка сообщения'),
   ('get', 'Получение сообщения');
+
+----------------------------- ПОЛЬЗОВАТЕЛИ И ПРИВИЛЕГИИ ----------------------------------------------------------------
+------------------ privilege data ------------------
+INSERT INTO privilege (code, name, description) VALUES
+  ('create_agent', 'Создание агента', 'Возможность создания агента'),--1
+  ('view_all_agents', 'Просмотр списка всех агентов', 'Возможность просмотра списка всех агентов'),--2
+  ('view_own_agents', 'Просмотр списка своих агентов', 'Возможность просмотра списка своих агентов'),--3
+  ('edit_own_agent', 'Редактирование данных своего агента', 'Возможность редактирование данных своего агента'),--4
+  ('login', 'Вход в систему', 'Возможность входа в систему');--5
+
+------------------ role data ------------------
+INSERT INTO role (name, description) VALUES
+  ('Администратор', 'Выполнение всех действий'),--1
+  ('Наблюдатель', 'Просмотр данных без внесения изменений');--2
+
+------------------ role privilege data ------------------
+INSERT INTO role_privilege (role_id, privilege_id) VALUES
+  --Администратор
+  (1, 1),--create_agent
+  (1, 2),--view_all_agents
+  (1, 3),--view_own_agents
+  (1, 4),--edit_own_agent
+  (1, 5),--login
+  --Наблюдатель
+  (2, 2),--view_all_agents
+  (2, 3),--view_own_agents
+  (2, 5);--login
+
+------------------ users data ------------------
+INSERT INTO users (login, password) VALUES
+  ('admin', 'admin'),--1
+  ('viewer', 'viewer');--2
+
+------------------ user role ------------------
+INSERT INTO user_role (user_id, role_id) VALUES
+  (1, 1),--admin
+  (2, 2);--viewer

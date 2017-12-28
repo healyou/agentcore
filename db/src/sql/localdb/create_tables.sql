@@ -74,3 +74,65 @@ CREATE TABLE if not exists dsl_file
   end_date       TEXT                              , -- Дата завершения работы текущего файла
   FOREIGN KEY(agent_id) REFERENCES system_agent(id)
 );
+
+----------------------------- ПОЛЬЗОВАТЕЛИ -----------------------------------------------------------------------------
+
+----------------------- users -----------------------
+CREATE TABLE if not exists users
+  -- Таблица пользователей
+(
+  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
+  login          TEXT                              NOT NULL, -- Идентификатор системного агента
+  password       TEXT                              NOT NULL, -- Имя файла
+  create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
+  end_date       TEXT                              -- Дата отключения пользователя
+);
+
+----------------------- role -----------------------
+CREATE TABLE if not exists role
+  -- Таблица ролей
+(
+  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
+  name           TEXT                              NOT NULL UNIQUE, -- Наименование роли
+  description    TEXT                              NOT NULL, -- Описание роли
+  create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')) -- Дата создания роли
+);
+
+----------------------- user role -----------------------
+CREATE TABLE if not exists user_role
+  -- Таблица ролей пользователя
+(
+  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
+  user_id        INTEGER                           NOT NULL, -- Идентификатор пользователя
+  role_id        INTEGER                           NOT NULL, -- Идентификатор роли
+  create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания роли пользователя
+  start_date     TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата начала действия роли
+  end_date       TEXT                              , -- Окончание действия роли
+  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY(role_id) REFERENCES user_role(id)
+);
+
+----------------------- privilege -----------------------
+CREATE TABLE if not exists privilege
+  -- Таблица привилегий
+(
+  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
+  code           TEXT                              NOT NULL UNIQUE, -- Код привилегии
+  name           TEXT                              NOT NULL, -- Наименование привилегии
+  description    TEXT                              , -- Описание привилегии
+  create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')) -- Дата создания привилегии
+);
+
+----------------------- role privilege -----------------------
+CREATE TABLE if not exists role_privilege
+  -- Таблица привилегий для ролей
+(
+  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, -- Идентификатор
+  role_id        INTEGER                           NOT NULL, -- Идентификатор роли
+  privilege_id   INTEGER                           NOT NULL, -- Идентификатор привилегии
+  create_date    TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания привилегии для роли
+  start_date     TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата начала привилегии для роли
+  end_date       TEXT                              , -- Окончание действия привилегии для роли
+  FOREIGN KEY(role_id) REFERENCES user_role(id),
+  FOREIGN KEY(privilege_id) REFERENCES privilege(id)
+);
