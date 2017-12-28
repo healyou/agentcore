@@ -8,7 +8,7 @@ import java.util.*
 /**
  * @author Nikita Gorodilov
  */
-abstract class AbstractRowMapper<T: Entity>: RowMapper<T> {
+abstract class AbstractRowMapper<T>: RowMapper<T> {
 
     protected fun getBoolean(resultSet: ResultSet, columnName: String): Boolean = resultSet.getBoolean(columnName)
     
