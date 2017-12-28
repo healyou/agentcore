@@ -11,8 +11,8 @@ interface PrincipalDao {
     /**
      * Получить пользователя по имени
      *
-     * @param username имя пользователя
+     * @param login логин для входа пользователя
      * @return пользователь
      */
-    fun getPrincipal(username: String): Principal
+    fun getPrincipal(login: String): Principal
 }

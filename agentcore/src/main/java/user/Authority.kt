@@ -25,10 +25,5 @@ enum class Authority(override val code: String): Codable<String> {
     /**
      * Просмотр списка своих агентов
      */
-    VEW_OWN_AGENT("view_own_agents"),
-
-    /**
-     * Вход в систему
-     */
-    LOGIN("login");
+    VEW_OWN_AGENT("view_own_agents");
 }

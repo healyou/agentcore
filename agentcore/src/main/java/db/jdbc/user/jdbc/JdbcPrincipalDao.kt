@@ -18,8 +18,8 @@ import java.util.*
 @Component
 class JdbcPrincipalDao: AbstractDao(), PrincipalDao {
 
-    override fun getPrincipal(username: String): Principal {
-        return jdbcTemplate.queryForObject("select * from users where upper(login) = upper(?)",
+    override fun getPrincipal(login: String): Principal {
+        return jdbcTemplate.queryForObject("select * from users where UPPER(login) = UPPER(?)",
                 object : AbstractRowMapper<Principal>() {
 
                     @Throws(SQLException::class)
@@ -28,19 +28,25 @@ class JdbcPrincipalDao: AbstractDao(), PrincipalDao {
                         val user = User(getString(rs, "login"), getString(rs, "password"))
                         user.id = userId
                         user.createDate = getDate(rs, "create_date")
-                        user.endDate = getNullDate(rs, "end_date")
+                        user.endDate = getNullDate(rs, "end_date")// todo проставляется дата окончания
                         return Principal(user, readAuthorities(userId))
                     }
-                }, username)
+                }, login)
     }
 
     private fun readAuthorities(userId: Long): Set<Authority> {
-        return EnumSet.copyOf(jdbcTemplate.query("SELECT * FROM user_privileges_v WHERE id = ?",
+        val authorities = jdbcTemplate.query("SELECT * FROM user_privileges_v WHERE id = ?",
                 object : AbstractRowMapper<Authority>() {
                     @Throws(SQLException::class)
                     override fun mapRow(rs: ResultSet, i: Int): Authority {
                         return Codable.find(Authority::class.java, getString(rs, "privilege_code"))
                     }
-                }, userId))
+                }, userId)
+
+        return if (authorities.isEmpty()) {
+            EnumSet.noneOf(Authority::class.java)
+        } else {
+            EnumSet.copyOf(authorities)
+        }
     }
 }

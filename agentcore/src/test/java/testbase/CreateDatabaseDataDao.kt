@@ -44,8 +44,8 @@ class CreateDatabaseDataDao : AbstractDao() {
         var testAgentWithoutDslAttachment: SystemAgent? = null
 
         /* Пользователи */
-        var testUserWithLoginPrivilege: User? = null
-        var testUserWithoutLoginPrivilege: User? = null
+        var testNotDeletedUser: User? = null
+        var testDeletedUser: User? = null
     }
 
     /**
@@ -65,39 +65,22 @@ class CreateDatabaseDataDao : AbstractDao() {
         testAgentWithoutDslAttachment = agentService.get(createAgent())
 
         /* Пользователи */
-        testUserWithLoginPrivilege = createUserWithLoginPrivilege()
-        testUserWithoutLoginPrivilege = createUserWithoutLoginPrivilege()
+        testNotDeletedUser = createNotDeletedUser()
+        testDeletedUser = createDeletedUser()
     }
 
-    private fun createUserWithLoginPrivilege(): User {
-        val testRoleName = StringObjects.randomString()
-        val selectTestRoleIdSql = "(select id from role where NAME = '$testRoleName')"
-        jdbcTemplate.update(
-                "INSERT INTO role (name, description) VALUES (?, ?)",
-                testRoleName,
-                StringObjects.randomString()
+    private fun createDeletedUser(): User {
+        val user = createNotDeletedUser()
+        jdbcTemplate.update("UPDATE users SET end_date = strftime('%Y-%m-%d %H:%M:%f') WHERE login = '${user.login}'")
+        user.endDate = jdbcTemplate.queryForObject(
+                "select end_date from users where login = ?",
+                Date::class.java,
+                user.login
         )
-        jdbcTemplate.update(
-                "INSERT INTO role_privilege (role_id, privilege_id) VALUES ($selectTestRoleIdSql, (select id from privilege where upper(code) = upper('${Authority.LOGIN.code}')))"
-        )
-        val login = StringObjects.randomString()
-        val password = StringObjects.randomString()
-        jdbcTemplate.update(
-                "INSERT INTO users (login, password) VALUES (?, ?)",
-                login,
-                password
-        )
-        jdbcTemplate.update(
-                "INSERT INTO user_role (user_id, role_id) VALUES ((select id from users where login = '$login'), $selectTestRoleIdSql)"
-        )
-
-        val user = User(login, password)
-        user.id = getSequence("users")
-        user.createDate = jdbcTemplate.queryForObject("select create_date from users where login = ?", Date::class.java, login)
         return user
     }
 
-    private fun createUserWithoutLoginPrivilege(): User {
+    private fun createNotDeletedUser(): User {
         val login = StringObjects.randomString()
         val password = StringObjects.randomString()
         jdbcTemplate.update(
