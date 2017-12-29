@@ -14,13 +14,19 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
  */
 class AgentGui : Application() {
 
-    private lateinit var applicationContext: ClassPathXmlApplicationContext;
+    companion object {
+        val applicationContext = ClassPathXmlApplicationContext("context.xml")
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+            launch(AgentGui::class.java)
+        }
+    }
 
     override fun start(primaryStage: Stage?) {
-        applicationContext = ClassPathXmlApplicationContext("context.xml")
         val loader = applicationContext.getBean(AgentSpringFxmlLoader::class.java)
-        val root = loader.load(javaClass.getResourceAsStream("gui.fxml"))
-        primaryStage?.title = "Сообщения агента"
+        val root = loader.load(javaClass.getResourceAsStream("login.fxml"))
+        primaryStage?.title = "Авторизация"
         primaryStage?.scene = Scene(root, 800.0, 600.0)
         primaryStage?.show()
     }
@@ -31,12 +37,5 @@ class AgentGui : Application() {
         val scheduler = applicationContext.getBean(ThreadPoolTaskScheduler::class.java)
         scheduler.shutdown()
         executor.shutdown()
-    }
-
-    companion object {
-        @JvmStatic
-        fun main(args: Array<String>) {
-            launch(AgentGui::class.java)
-        }
     }
 }
