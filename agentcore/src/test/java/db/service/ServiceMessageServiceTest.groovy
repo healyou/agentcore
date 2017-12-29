@@ -7,6 +7,7 @@ import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
 import objects.TypesObjects
+import objects.initdbobjects.UserObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -171,7 +172,9 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         return systemAgentService.save(new SystemAgent(
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
-                isSendAndGetMessages
+                isSendAndGetMessages,
+                UserObjects.testActiveUser().id,
+                UserObjects.testActiveUser().id
         ))
     }
 

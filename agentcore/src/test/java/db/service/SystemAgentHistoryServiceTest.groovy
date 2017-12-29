@@ -5,6 +5,7 @@ import db.core.systemagent.SystemAgentEventHistory
 import db.core.systemagent.SystemAgentEventHistoryService
 import db.core.systemagent.SystemAgentService
 import objects.StringObjects
+import objects.initdbobjects.UserObjects
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import testbase.AbstractServiceTest
@@ -71,7 +72,9 @@ class SystemAgentHistoryServiceTest extends AbstractServiceTest {
         def systemAgent = new SystemAgent(
                 StringObjects.randomString(),
                 StringObjects.randomString(),
-                true
+                true,
+                UserObjects.testActiveUser().id,
+                UserObjects.testActiveUser().id
         )
         systemAgent.isDeleted = false
 

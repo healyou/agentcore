@@ -1,17 +1,13 @@
 package db.service
 
-import db.core.file.ByteArrayFileContent
-import db.core.file.FileContent
 import db.core.file.FileContentLocator
-import db.core.file.FileContentRef
 import db.core.file.dslfile.DslFileAttachment
-import db.core.file.dslfile.DslFileContentRef
 import db.core.sc.SystemAgentSC
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
 import objects.OtherObjects
 import objects.StringObjects
-import org.jetbrains.annotations.NotNull
+import objects.initdbobjects.UserObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -44,13 +40,21 @@ class SystemAgentServiceTest extends AbstractServiceTest {
     private def dslFileContent = [0, 1, 2] as byte[]
     private def dslFilename = StringObjects.randomString()
     private def dslFile = OtherObjects.dslFileAttachment(dslFilename, dslFileContent)
+    private def owner
+    private def createUser
 
     @Before
     void setup() {
+        /* Пользователи создаются в @Before родителя */
+        owner = UserObjects.testActiveUser()
+        createUser = UserObjects.testActiveUser()
+
         def systemAgent = new SystemAgent(
                 serviceLogin,
                 servicePassword,
-                isSendAndGetMessages
+                isSendAndGetMessages,
+                owner.id,
+                createUser.id
         )
         systemAgent.dslFile = dslFile
         systemAgent.isDeleted = isDeleted
@@ -74,12 +78,14 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         def newDslFile = OtherObjects.dslFileAttachment(StringObjects.randomString(), [0, 1, 2, 3, 4] as byte[])
         def newIsDeleted = !isDeleted
         def newIsSendAndGetMessages = !isSendAndGetMessages
+        def newOwnerId = UserObjects.testDeletedUser().id
 
         systemAgent.serviceLogin = newLogin
         systemAgent.servicePassword = newPassword
         systemAgent.dslFile = newDslFile
         systemAgent.isDeleted = newIsDeleted
         systemAgent.isSendAndGetMessages = newIsSendAndGetMessages
+        systemAgent.ownerId = newOwnerId
 
         systemAgentService.save(systemAgent)
         def updateAgent = systemAgentService.get(id)
@@ -88,6 +94,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertDslFiles(newDslFile, systemAgent.dslFile)
         assertEquals(newIsDeleted, updateAgent.isDeleted)
         assertEquals(newIsSendAndGetMessages, updateAgent.isSendAndGetMessages)
+        assertEquals(newOwnerId, systemAgent.ownerId)
     }
 
     @Test
@@ -123,14 +130,15 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertEquals(servicePassword, systemAgent.servicePassword)
         assertNotNull(systemAgent.createDate)
         assertNotNull(systemAgent.dslFile)
+        assertEquals(owner.id, systemAgent.ownerId)
+        assertEquals(createUser.id, systemAgent.createUserId)
         assertEquals(updateDate, systemAgent.updateDate)
         assertEquals(isDeleted, systemAgent.isDeleted)
         assertEquals(isSendAndGetMessages, systemAgent.isSendAndGetMessages)
     }
 
-    /* Получение удалённых агентов */
     @Test
-    void testSystemAgentScIsDeleted() {
+    void "Получение удалённых агентов"() {
         createAgentByIdDeletedArgs(true, false)
         def sc = new SystemAgentSC()
         sc.isDeleted = false
@@ -145,9 +153,8 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         }
     }
 
-    /* Получение агентов для отправки сообщений */
     @Test
-    void testSystemAgentScIsSendAndGetMessages() {
+    void "Получение агентов для отправки сообщений"() {
         createAgentBySendAndGetMessagesArgs(true, false)
         def sc = new SystemAgentSC()
         sc.isSendAndGetMessages = false
@@ -162,6 +169,19 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         }
     }
 
+    @Test
+    void "Получение агентов по владельцу"() {
+        def ownerId = UserObjects.testActiveUser().id
+        createAgentByOwnerId(ownerId)
+        createAgentByOwnerId(UserObjects.testActiveUser().id)
+        def sc = new SystemAgentSC()
+        sc.ownerId = ownerId
+
+        systemAgentService.get(sc).forEach {
+            assertTrue(it.ownerId == sc.ownerId)
+        }
+    }
+
     /* Получение агента по логину в сервисе */
     @Test
     void testGetSystemAgentByServiceName() {
@@ -170,13 +190,14 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertTrue(agent.serviceLogin == serviceLogin)
     }
 
-    /* Нельзя создать двух агентов с одинаковый service_login */
     @Test(expected = UncategorizedSQLException.class)
-    void testCreateTwoAgentWithOneServiceName() {
+    void "Нельзя создать двух агентов с одинаковый service_login"() {
         def systemAgent = new SystemAgent(
                 serviceLogin,
                 servicePassword,
-                isSendAndGetMessages
+                isSendAndGetMessages,
+                UserObjects.testActiveUser().id,
+                UserObjects.testActiveUser().id
         )
         systemAgentService.save(systemAgent)
     }
@@ -205,14 +226,24 @@ class SystemAgentServiceTest extends AbstractServiceTest {
     }
 
     private SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages) {
+        return createAgent(isDeleted, isSendAndGetMessages, UserObjects.testActiveUser().id)
+    }
+
+    private SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages, Long ownerId) {
         def systemAgent = new SystemAgent(
                 StringObjects.randomString(),
                 StringObjects.randomString(),
-                isSendAndGetMessages
+                isSendAndGetMessages,
+                ownerId,
+                UserObjects.testActiveUser().id
         )
         systemAgent.isDeleted = isDeleted
 
         return systemAgentService.get(systemAgentService.save(systemAgent))
+    }
+
+    private def createAgentByOwnerId(Long ownerId) {
+        return createAgent(false, true, ownerId)
     }
 
     private def createAgentByIdDeletedArgs(Boolean... isDeletedArgs) {

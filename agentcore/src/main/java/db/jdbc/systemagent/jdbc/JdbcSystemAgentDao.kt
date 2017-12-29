@@ -22,9 +22,11 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun create(systemAgent: SystemAgent): Long {
         jdbcTemplate.update(
-                "insert into system_agent (service_login, service_password, is_sendandget_messages, is_deleted) VALUES (?, ?, ?, ?)",
+                "insert into system_agent (service_login, service_password, owner_id, create_user_id, is_sendandget_messages, is_deleted) VALUES (?, ?, ?, ?, ?, ?)",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
+                systemAgent.ownerId,
+                systemAgent.createUserId,
                 systemAgent.isSendAndGetMessages.toSqlite(),
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING
         )
@@ -39,17 +41,16 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun update(systemAgent: SystemAgent): Long {
         jdbcTemplate.update(
-                "update system_agent set service_login=?,service_password=?,update_date=strftime('%Y-%m-%d %H:%M:%f'),is_deleted=?,is_sendandget_messages=? where id = ?",
+                "update system_agent set service_login=?,service_password=?,owner_id=?,update_date=strftime('%Y-%m-%d %H:%M:%f'),is_deleted=?,is_sendandget_messages=? where id = ?",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
+                systemAgent.ownerId,
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING,
                 systemAgent.isSendAndGetMessages.toSqlite(),
                 systemAgent.id!!
         )
-
         updateAgentDslFile(systemAgent)
 
-        /* id последней введённой записи */
         return getSequence("system_agent")
     }
 
@@ -122,7 +123,8 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         /* параметры запроса */
         if (Utils.isOneNotNull(
                 sc.isDeleted,
-                sc.isSendAndGetMessages
+                sc.isSendAndGetMessages,
+                sc.ownerId
         )) {
             sql.append(" where ")
         }
@@ -131,6 +133,9 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         }
         if (sc.isSendAndGetMessages != null) {
             addSqlList.add(" is_sendandget_messages = '${sc.isSendAndGetMessages!!.toSqlite()}' ")
+        }
+        if (sc.ownerId != null) {
+            addSqlList.add(" owner_id = ${sc.ownerId} ")
         }
 
         /* объединяем условия запроса */

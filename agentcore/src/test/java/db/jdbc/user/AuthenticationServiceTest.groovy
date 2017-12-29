@@ -21,7 +21,7 @@ class AuthenticationServiceTest extends AbstractServiceTest {
 
     @Test
     void "Не удалённый пользователь авторизуется успешно"() {
-        def user = UserObjects.testNotDeletedUser()
+        def user = UserObjects.testActiveUser()
         try {
             def principal = authenticationService.authenticate(user.login, user.password)
             assertUsers(principal.user, user)

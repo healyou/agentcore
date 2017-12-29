@@ -13,6 +13,7 @@ import dsl.objects.DslMessage
 import dsl.objects.DslImage
 import objects.TypesObjects
 import objects.initdbobjects.AgentObjects
+import objects.initdbobjects.UserObjects
 import org.junit.Before
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,7 @@ import service.ServerTypeService
 import testbase.AbstractServiceTest
 import objects.MockObjects
 import objects.OtherObjects
+import user.User
 
 import java.nio.file.Files
 
@@ -184,6 +186,16 @@ class RuntimeAgentTest extends AbstractServiceTest {
         @Override
         protected FileContentLocator getFileContentLocator() {
             return RuntimeAgentTest.this.fileContentLocator
+        }
+
+        @Override
+        protected User getOwner() {
+            return UserObjects.testActiveUser()
+        }
+
+        @Override
+        protected User getCreateUser() {
+            return UserObjects.testActiveUser()
         }
     }
 }

@@ -21,6 +21,8 @@ import service.LoginService;
 import service.ServerTypeService;
 import service.SessionManager;
 import service.objects.*;
+import user.Principal;
+import user.User;
 
 import java.util.*;
 
@@ -155,6 +157,9 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
     protected abstract FileContentLocator getFileContentLocator();
+    // TODO - надо разобраться, как правильно создавать и обновлять агентов
+    protected abstract User getOwner();
+    protected abstract User getCreateUser();
 
     /* для облегчения тестирования */
     protected RuntimeAgentService createRuntimeAgentService() {
@@ -282,7 +287,9 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             SystemAgent systemAgent = new SystemAgent(
                     agentMasId,
                     getEnvironment().getProperty("agent.service.password"),
-                    true
+                    true,
+                    getOwner().getId(),
+                    getCreateUser().getId()
             );
             systemAgent.setDslFile(dslFileAttachment);
             agentService.save(systemAgent);

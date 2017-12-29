@@ -16,10 +16,14 @@ CREATE TABLE if not exists system_agent
   id INTEGER PRIMARY KEY AUTOINCREMENT    NOT NULL, -- Идетификатор
   service_login     TEXT                  NOT NULL UNIQUE, -- Логин от сервиса
   service_password  TEXT                  NOT NULL, -- Пароль от сервиса
+  owner_id          INTEGER               NOT NULL, -- Владелец агента
+  create_user_id    INTEGER               NOT NULL, -- Пользователь, создавший агента
   create_date       TEXT                  NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата создания
   update_date       TEXT                  , -- Дата редактирования
   is_deleted TEXT NOT NULL DEFAULT ('N') CHECK(is_deleted='N' OR is_deleted='Y'), -- Удалено ли значение
-  is_sendandget_messages TEXT NOT NULL DEFAULT ('Y') CHECK(is_deleted='N' OR is_deleted='Y') -- Необходимо ли для этого агента получать и отправлять сообщения в сервисе
+  is_sendandget_messages TEXT NOT NULL DEFAULT ('Y') CHECK(is_deleted='N' OR is_deleted='Y'), -- Необходимо ли для этого агента получать и отправлять сообщения в сервисе
+  FOREIGN KEY(owner_id) REFERENCES users(id),
+  FOREIGN KEY(create_user_id) REFERENCES users(id)
 );
 
 ------------------ service message table ------------------

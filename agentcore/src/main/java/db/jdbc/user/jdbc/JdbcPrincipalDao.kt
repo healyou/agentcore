@@ -28,7 +28,7 @@ class JdbcPrincipalDao: AbstractDao(), PrincipalDao {
                         val user = User(getString(rs, "login"), getString(rs, "password"))
                         user.id = userId
                         user.createDate = getDate(rs, "create_date")
-                        user.endDate = getNullDate(rs, "end_date")// todo проставляется дата окончания
+                        user.endDate = getNullDate(rs, "end_date")
                         return Principal(user, readAuthorities(userId))
                     }
                 }, login)

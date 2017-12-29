@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import service.LoginService
 import service.ServerTypeService
+import user.Principal
+import user.User
 import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.imageio.ImageIO
@@ -68,6 +70,8 @@ class AgentGuiController {
     private lateinit var historyService: SystemAgentEventHistoryService
     @Autowired
     private lateinit var fileContentLocator: FileContentLocator
+    @Autowired
+    private lateinit var javaFxSession: AuthenticatedJavaFxSession
 
     private val agentLoader = RuntimeAgentLoader()
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
@@ -149,6 +153,8 @@ class AgentGuiController {
                 override fun getEnvironment(): Environment = this@AgentGuiController.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
                 override fun getFileContentLocator(): FileContentLocator = this@AgentGuiController.fileContentLocator
+                override fun getOwner(): User = this@AgentGuiController.javaFxSession.principal.user
+                override fun getCreateUser(): User = this@AgentGuiController.javaFxSession.principal.user
             }
             runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
             runtimeAgent.add(RuntimeAgentUpdateUiEventHistoryBehavior(historyService, { systemAgent, message ->

@@ -16,8 +16,8 @@ class UserObjects {
         }
 
         @JvmStatic
-        fun testNotDeletedUser(): User {
-            return CreateDatabaseDataDao.testNotDeletedUser!!
+        fun testActiveUser(): User {
+            return CreateDatabaseDataDao.testActiveUser!!
         }
     }
 }

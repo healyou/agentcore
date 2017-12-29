@@ -15,7 +15,11 @@ class SystemAgent(
         /* Пароль от сервиса агентов */
         var servicePassword: String,
         /* Нужно ли получать сообщения от сервиса агентов */
-        var isSendAndGetMessages: Boolean
+        var isSendAndGetMessages: Boolean,
+        /* Владелец агента */
+        var ownerId: Long,
+        /* Создатель агента */
+        var createUserId: Long
 ) : Entity {
 
     /* Идентификатор */

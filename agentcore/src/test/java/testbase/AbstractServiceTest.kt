@@ -1,5 +1,6 @@
 package testbase
 
+import org.junit.After
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,5 +23,10 @@ abstract class AbstractServiceTest:  AbstractTransactionalJUnit4SpringContextTes
     @Before
     fun init() {
         createDataDao.createData()
+    }
+
+    @After
+    fun clear() {
+        createDataDao.clearData()
     }
 }

@@ -4,10 +4,8 @@ import db.base.AbstractDao
 import db.core.file.dslfile.DslFileContentRef
 import db.core.systemagent.SystemAgent
 import db.core.systemagent.SystemAgentService
-import objects.StringObjects
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import user.Authority
 import user.User
 import java.util.*
 
@@ -44,29 +42,40 @@ class CreateDatabaseDataDao : AbstractDao() {
         var testAgentWithoutDslAttachment: SystemAgent? = null
 
         /* Пользователи */
-        var testNotDeletedUser: User? = null
+        var testActiveUser: User? = null
         var testDeletedUser: User? = null
+    }
+
+    fun clearData() {
+        testActiveUser = null
+        testDeletedUser = null
+        testDslFileContentRef1 = null
+        testDslFileContentRef2 = null
+        testAgentWithOneDslAttachment = null
+        testAgentWithManyDslAttachment = null
+        testAgentWithoutDslAttachment = null
     }
 
     /**
      * Создаём тестовые файлы
      */
     fun createData() {
+        /* Пользователи */
+        testActiveUser = createNotDeletedUser()
+        testDeletedUser = createDeletedUser()
+        val notDeletedUserId = testActiveUser!!.id!!
+
         /* Агенты */
         /* Агент с 1 прикреплением */
-        val agentId = createAgent()
+        val agentId = createAgent(notDeletedUserId, notDeletedUserId)
         testDslFileContentRef1 = createDslFileContentRef(agentId, testDskFileContentRef1Data)
         /* Агент с 2 и более прикреплениями */
-        val attachmentsAgentId = createAgent()
+        val attachmentsAgentId = createAgent(notDeletedUserId, notDeletedUserId)
         testDslFileContentRef2 = createDslFileContentRefWithEndDate(attachmentsAgentId, testDskFileContentRef1Data)
         testDslFileContentRef2 = createDslFileContentRef(attachmentsAgentId, testDskFileContentRef2Data)
         testAgentWithOneDslAttachment = agentService.get(agentId)
         testAgentWithManyDslAttachment = agentService.get(attachmentsAgentId)
-        testAgentWithoutDslAttachment = agentService.get(createAgent())
-
-        /* Пользователи */
-        testNotDeletedUser = createNotDeletedUser()
-        testDeletedUser = createDeletedUser()
+        testAgentWithoutDslAttachment = agentService.get(createAgent(notDeletedUserId, notDeletedUserId))
     }
 
     private fun createDeletedUser(): User {
@@ -81,8 +90,8 @@ class CreateDatabaseDataDao : AbstractDao() {
     }
 
     private fun createNotDeletedUser(): User {
-        val login = StringObjects.randomString()
-        val password = StringObjects.randomString()
+        val login = randomString()
+        val password = randomString()
         jdbcTemplate.update(
                 "INSERT INTO users (login, password) VALUES (?, ?)",
                 login,
@@ -119,8 +128,8 @@ class CreateDatabaseDataDao : AbstractDao() {
         return DslFileContentRef(getSequence("dsl_file"), filename)
     }
 
-    private fun createAgent(): Long {
-        return agentService.save(SystemAgent(randomString(), randomString(), true))
+    private fun createAgent(ownerId: Long, createUserId: Long): Long {
+        return agentService.save(SystemAgent(randomString(), randomString(), true, ownerId, createUserId))
     }
 
     private fun randomString(): String {

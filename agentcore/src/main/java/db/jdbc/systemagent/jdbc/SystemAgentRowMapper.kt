@@ -18,7 +18,9 @@ class SystemAgentRowMapper(private val dslFileAttachmentDao: DslFileAttachmentDa
         val systemAgent = SystemAgent(
                 getString(rs, "service_login"),
                 getString(rs, "service_password"),
-                getString(rs, "is_sendandget_messages").sqlite_toBoolean()
+                getString(rs, "is_sendandget_messages").sqlite_toBoolean(),
+                getLong(rs, "owner_id"),
+                getLong(rs, "create_user_id")
         )
         systemAgent.id = getLong(rs, "id")
         systemAgent.createDate = getDate(rs, "create_date")

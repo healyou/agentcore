@@ -8,6 +8,7 @@ import db.core.servicemessage.ServiceMessageTypeService
 import db.core.systemagent.SystemAgentService
 import dsl.RuntimeAgent
 import objects.OtherObjects
+import objects.initdbobjects.UserObjects
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -18,6 +19,7 @@ import service.ServerMessageService
 import service.ServerTypeService
 import service.tasks.ServiceTask
 import testbase.AbstractServiceTest
+import user.User
 
 import java.nio.file.Files
 
@@ -92,6 +94,16 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
             protected FileContentLocator getFileContentLocator() {
                 return IntegrationRuntimeAgentTest.this.fileContentLocator
             }
+
+            @Override
+            protected User getOwner() {
+                return UserObjects.testActiveUser()
+            }
+
+            @Override
+            protected User getCreateUser() {
+                return UserObjects.testActiveUser()
+            }
         }
         testAgent2 = new RuntimeAgent(createDslAttachment("integration_test_agent_2_dsl.groovy")) {
 
@@ -128,6 +140,16 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
             @Override
             protected FileContentLocator getFileContentLocator() {
                 return IntegrationRuntimeAgentTest.this.fileContentLocator
+            }
+
+            @Override
+            protected User getOwner() {
+                return UserObjects.testActiveUser()
+            }
+
+            @Override
+            protected User getCreateUser() {
+                return UserObjects.testActiveUser()
             }
         }
         serviceTask = new ServiceTask(
