@@ -1,8 +1,8 @@
 import com.company.AgentImageFunctions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import service.*;
-import service.objects.*;
+import com.mycompany.service.*;
+import com.mycompany.service.objects.*;
 
 import java.util.ArrayList;
 import java.util.List;

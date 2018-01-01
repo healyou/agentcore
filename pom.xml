@@ -61,7 +61,7 @@
     </dependencyManagement>
 
     <modules>
-        <module>db</module>
+        <module>com.mycompany.db</module>
         <module>agentcore</module>
         <module>agentimagelib</module>
         <module>webapp</module>

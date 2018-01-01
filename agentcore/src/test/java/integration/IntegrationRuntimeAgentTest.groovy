@@ -1,25 +1,25 @@
 package integration
 
-import db.base.Environment
-import db.core.file.FileContentLocator
-import db.core.file.dslfile.DslFileAttachment
-import db.core.servicemessage.ServiceMessageService
-import db.core.servicemessage.ServiceMessageTypeService
-import db.core.systemagent.SystemAgentService
-import dsl.RuntimeAgent
+import com.mycompany.db.base.Environment
+import com.mycompany.db.core.file.FileContentLocator
+import com.mycompany.db.core.file.dslfile.DslFileAttachment
+import com.mycompany.db.core.servicemessage.ServiceMessageService
+import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
+import com.mycompany.db.core.systemagent.SystemAgentService
+import com.mycompany.dsl.RuntimeAgent
 import objects.OtherObjects
 import objects.initdbobjects.UserObjects
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import service.LoginService
-import service.ServerAgentService
-import service.ServerMessageService
-import service.ServerTypeService
-import service.tasks.ServiceTask
+import com.mycompany.service.LoginService
+import com.mycompany.service.ServerAgentService
+import com.mycompany.service.ServerMessageService
+import com.mycompany.service.ServerTypeService
+import com.mycompany.service.tasks.ServiceTask
 import testbase.AbstractServiceTest
-import user.User
+import com.mycompany.user.User
 
 import java.nio.file.Files
 

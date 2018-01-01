@@ -1,7 +1,7 @@
 package integration.objects
 
 import objects.StringObjects
-import service.objects.*
+import com.mycompany.service.objects.*
 
 /**
  * @author Nikita Gorodilov

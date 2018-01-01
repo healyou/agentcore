@@ -1,22 +1,18 @@
 package objects
 
-import db.base.ExtensionsKt
-import db.core.file.ByteArrayFileContent
-import db.core.file.FileContent
-import db.core.file.FileContentLocator
-import db.core.file.FileContentRef
-import db.core.file.dslfile.DslFileAttachment
-import dsl.RuntimeAgentServiceTest
-import dsl.objects.DslImage
+import com.mycompany.db.base.ExtensionsKt
+import com.mycompany.db.core.file.ByteArrayFileContent
+import com.mycompany.db.core.file.FileContent
+import com.mycompany.db.core.file.FileContentLocator
+import com.mycompany.db.core.file.FileContentRef
+import com.mycompany.db.core.file.dslfile.DslFileAttachment
+import com.mycompany.service.objects.Agent
+import com.mycompany.service.objects.AgentType
+import com.mycompany.service.objects.LoginData
+import com.mycompany.service.objects.RegistrationData
+import com.mycompany.dsl.objects.DslImage
 import org.jetbrains.annotations.NotNull
-import service.objects.Agent
-import service.objects.AgentType
-import service.objects.LoginData
-import service.objects.RegistrationData
 
-import javax.imageio.ImageIO
-import java.awt.Image
-import java.awt.image.BufferedImage
 import java.text.SimpleDateFormat
 
 /**

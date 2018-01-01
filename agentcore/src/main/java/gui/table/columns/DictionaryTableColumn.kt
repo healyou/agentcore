@@ -1,8 +1,8 @@
 package gui.table.columns
 
-import db.base.Codable
+import com.mycompany.db.base.Codable
 import com.sun.javafx.property.PropertyReference
-import db.base.IDictionary
+import com.mycompany.db.base.IDictionary
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.TableColumn

@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:annotation-config/>
-    <context:component-scan base-package="testbase, service, db, gui, dsl">
+    <context:component-scan base-package="testbase, com.mycompany, gui">
         <context:exclude-filter expression="service.tasks.ServiceTask" type="regex"/>
     </context:component-scan>
     <context:property-placeholder location="context.properties"/>

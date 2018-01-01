@@ -17,6 +17,7 @@ class MyApplicationInitializer : WebApplicationInitializer {
     override fun onStartup(servletContext: ServletContext) {
         val rootContext = AnnotationConfigWebApplicationContext()
         rootContext.register(JdbcConfig::class.java)
+        rootContext.register(ApplicationConfig::class.java)
         servletContext.addListener(ContextLoaderListener(rootContext))
 
         val wicketFilter = object : WicketFilter(MyAuthenticatedWebApplication()) {
@@ -27,6 +28,6 @@ class MyApplicationInitializer : WebApplicationInitializer {
             }
         }
         val registration = servletContext.addFilter("wicketFilter", wicketFilter)
-        registration.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType::class.java), true, "*")
+        registration.addMappingForUrlPatterns(null, true, "*")
     }
 }

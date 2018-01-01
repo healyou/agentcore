@@ -1,10 +1,10 @@
 package gui
 
-import db.core.user.AuthenticationService
-import dsl.exceptions.AuthenticationException
+import com.mycompany.db.core.user.AuthenticationService
+import com.mycompany.dsl.exceptions.AuthenticationException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import user.Principal
+import com.mycompany.user.Principal
 
 /**
  * Данные передаваемые между javaFx формами после авторизации пользователя

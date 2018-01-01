@@ -1,9 +1,9 @@
 package objects
 
-import service.objects.AgentType
-import service.objects.MessageBodyType
-import service.objects.MessageGoalType
-import service.objects.MessageType
+import com.mycompany.service.objects.AgentType
+import com.mycompany.service.objects.MessageBodyType
+import com.mycompany.service.objects.MessageGoalType
+import com.mycompany.service.objects.MessageType
 
 /**
  * @author Nikita Gorodilov

@@ -1,7 +1,6 @@
 package objects.initdbobjects
 
-import db.core.file.dslfile.DslFileContentRef
-import db.core.systemagent.SystemAgent
+import com.mycompany.db.core.systemagent.SystemAgent
 import testbase.CreateDatabaseDataDao
 
 /**

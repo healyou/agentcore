@@ -1,7 +1,7 @@
 package objects.initdbobjects
 
 import testbase.CreateDatabaseDataDao
-import user.User
+import com.mycompany.user.User
 
 /**
  * @author Nikita Gorodilov

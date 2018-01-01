@@ -2,12 +2,12 @@ package objects
 
 import org.easymock.Capture
 import org.easymock.IAnswer
-import service.LoginService
-import service.ServerTypeService
-import service.SessionManager
-import service.objects.Agent
-import service.objects.LoginData
-import service.objects.RegistrationData
+import com.mycompany.service.LoginService
+import com.mycompany.service.ServerTypeService
+import com.mycompany.service.SessionManager
+import com.mycompany.service.objects.Agent
+import com.mycompany.service.objects.LoginData
+import com.mycompany.service.objects.RegistrationData
 
 import static org.easymock.EasyMock.*
 

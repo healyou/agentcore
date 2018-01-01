@@ -1,6 +1,6 @@
 package objects.initdbobjects
 
-import db.core.file.dslfile.DslFileContentRef
+import com.mycompany.db.core.file.dslfile.DslFileContentRef
 import testbase.CreateDatabaseDataDao
 
 /**

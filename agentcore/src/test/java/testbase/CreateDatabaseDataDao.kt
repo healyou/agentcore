@@ -1,12 +1,12 @@
 package testbase
 
-import db.base.AbstractDao
-import db.core.file.dslfile.DslFileContentRef
-import db.core.systemagent.SystemAgent
-import db.core.systemagent.SystemAgentService
+import com.mycompany.db.base.AbstractDao
+import com.mycompany.db.core.file.dslfile.DslFileContentRef
+import com.mycompany.db.core.systemagent.SystemAgent
+import com.mycompany.db.core.systemagent.SystemAgentService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import user.User
+import com.mycompany.user.User
 import java.util.*
 
 /**

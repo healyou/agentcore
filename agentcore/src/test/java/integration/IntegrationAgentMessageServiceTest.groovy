@@ -1,6 +1,6 @@
 package integration
 
-import db.base.Environment
+import com.mycompany.db.base.Environment
 import objects.OtherObjects
 import integration.objects.RestServiceObjects
 import objects.StringObjects
@@ -8,13 +8,13 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import service.*
-import service.objects.Agent
-import service.objects.GetAgentsData
-import service.objects.Message
-import service.objects.MessageBodyType
-import service.objects.MessageType
-import service.objects.RegistrationData
+import com.mycompany.service.*
+import com.mycompany.service.objects.Agent
+import com.mycompany.service.objects.GetAgentsData
+import com.mycompany.service.objects.Message
+import com.mycompany.service.objects.MessageBodyType
+import com.mycompany.service.objects.MessageType
+import com.mycompany.service.objects.RegistrationData
 import testbase.AbstractServiceTest
 
 import java.util.stream.Collectors

@@ -10,7 +10,7 @@ import javafx.scene.control.TextField
 import javafx.stage.Stage
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import user.Authority
+import com.mycompany.user.Authority
 
 /**
  * Сцена авторизации пользователя

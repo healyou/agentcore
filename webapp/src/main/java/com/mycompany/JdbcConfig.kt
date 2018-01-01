@@ -14,7 +14,7 @@ import javax.sql.DataSource
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan(value = ["com.mycompany", "db", "dsl", "gui", "service", "user"])
+@ComponentScan("com.mycompany")
 class JdbcConfig {
 
     @Bean

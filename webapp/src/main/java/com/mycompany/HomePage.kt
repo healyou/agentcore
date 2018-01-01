@@ -1,8 +1,6 @@
 package com.mycompany
 
-import db.base.Environment
-import db.core.sc.SystemAgentSC
-import db.core.systemagent.SystemAgentService
+import com.mycompany.db.base.Environment
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.markup.html.basic.Label
@@ -14,12 +12,8 @@ class HomePage(parameters: PageParameters? = null) : AuthBasePage(parameters) {
 
     @SpringBean
     lateinit var testBean: TestBean
-    // TODO в пакете com.company находит jdbcTemplate
     @SpringBean
     lateinit var test: Environment
-    // TODO вне пакете com.company jdbcTemplate не подставляет
-    @SpringBean
-    lateinit var test2: test
 
     override fun onInitialize() {
         super.onInitialize()

@@ -1,6 +1,6 @@
 package gui.table
 
-import db.core.systemagent.SystemAgent
+import com.mycompany.db.core.systemagent.SystemAgent
 import javafx.scene.control.ListCell
 
 /**

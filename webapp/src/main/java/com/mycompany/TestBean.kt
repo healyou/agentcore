@@ -1,6 +1,6 @@
 package com.mycompany
 
-import db.base.Environment
+import com.mycompany.db.base.Environment
 import org.apache.wicket.spring.injection.annot.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.JdbcTemplate
