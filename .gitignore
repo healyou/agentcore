@@ -2,6 +2,7 @@
 **/*.iml
 **/logs/
 **/target
+**/startbootstrap-sb-admin-gh-pages/*
 
 **/inputdb.s3db
 **/localdb.s3db
