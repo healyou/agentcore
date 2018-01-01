@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>com.mycompany.db</artifactId>
+    <artifactId>db</artifactId>
     <parent>
         <groupId>com.company</groupId>
         <artifactId>root</artifactId>
@@ -12,12 +12,12 @@
     </parent>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>com.mycompany.db</name>
+    <name>db</name>
 
     <properties>
         <!-- первая папка прокта -->
         <parent.project.basedir>${pom.parent.basedir}</parent.project.basedir>
-        <com.mycompany.db.source.basedir>${project.basedir}</com.mycompany.db.source.basedir>
+        <db.source.basedir>${project.basedir}</db.source.basedir>
     </properties>
 
     <build>
@@ -37,7 +37,7 @@
                 </executions>
                 <configuration>
                     <properties>
-                        <!-- local com.mycompany.db -->
+                        <!-- local db -->
                         <property>
                             <name>addrDB_local</name>
                             <value>\data\localdb\</value>
@@ -49,7 +49,7 @@
 
                         <property>
                             <name>sourceDir</name>
-                            <value>${com.mycompany.db.source.basedir}</value>
+                            <value>${db.source.basedir}</value>
                         </property>
 
                         <property>
@@ -60,7 +60,7 @@
                     <scripts>
 
                         <!-- Создание БД  -->
-                        <script>file:///${com.mycompany.db.source.basedir}/src/groovy/create_local_db.groovy</script>
+                        <script>file:///${db.source.basedir}/src/groovy/create_local_db.groovy</script>
 
                     </scripts>
                 </configuration>

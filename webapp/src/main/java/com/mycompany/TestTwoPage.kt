@@ -1,5 +1,6 @@
 package com.mycompany
 
+import com.mycompany.user.Principal
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
 

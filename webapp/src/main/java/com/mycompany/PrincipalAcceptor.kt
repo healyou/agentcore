@@ -1,5 +1,6 @@
 package com.mycompany
 
+import com.mycompany.user.Principal
 import java.io.Serializable
 
 /**

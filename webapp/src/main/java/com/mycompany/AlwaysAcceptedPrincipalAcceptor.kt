@@ -1,5 +1,7 @@
 package com.mycompany
 
+import com.mycompany.user.Principal
+
 /**
  * @author Nikita Gorodilov
  */

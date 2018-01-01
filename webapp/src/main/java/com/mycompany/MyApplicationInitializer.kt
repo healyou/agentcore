@@ -28,6 +28,8 @@ class MyApplicationInitializer : WebApplicationInitializer {
             }
         }
         val registration = servletContext.addFilter("wicketFilter", wicketFilter)
+        registration.initParameters["wicketFilter"] = "/*"
+        registration.initParameters["applicationClassName"] = MyAuthenticatedWebApplication::class.java.name
         registration.addMappingForUrlPatterns(null, true, "*")
     }
 }

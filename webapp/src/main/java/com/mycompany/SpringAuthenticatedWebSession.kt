@@ -1,9 +1,13 @@
 package com.mycompany
 
+import com.mycompany.db.core.user.AuthenticationService
+import com.mycompany.dsl.exceptions.AuthenticationException
+import com.mycompany.user.Principal
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession
 import org.apache.wicket.authroles.authorization.strategies.role.Roles
 import org.apache.wicket.injection.Injector
 import org.apache.wicket.request.Request
+import org.apache.wicket.spring.injection.annot.SpringBean
 
 /**
  * @author Nikita Gorodilov
@@ -13,8 +17,8 @@ class SpringAuthenticatedWebSession(request: Request) : AuthenticatedWebSession(
     /**
      * авторизация
      */
-//    @SpringBean
-//    private AuthenticationService authenticationService;
+    @SpringBean
+    private lateinit var authenticationService: AuthenticationService;
 
     /**
      * У него внутри там права доступа
@@ -30,22 +34,13 @@ class SpringAuthenticatedWebSession(request: Request) : AuthenticatedWebSession(
         Injector.get().inject(this)
     }
 
-    override fun authenticate(username: String, password: String): Boolean {
-        //        try {
-        //            principal = authenticationService.authenticate(username, password);
-        //            return true;
-        //        } catch (AuthenticationException e) {
-        //            error(getString(e.getClass().getSimpleName(), e.getMessage()));
-        //            logger.info("Error while authenticating user {}: ", username, e);
-        //            return false;
-        //        }
-
-        val WICKET = "wicket"
-        if (WICKET == username && WICKET == password) {
-            principal = Principal()
-            return true
+    override fun authenticate(login: String, password: String): Boolean {
+        return try {
+            principal = authenticationService.authenticate(login, password)
+            true
+        } catch (e: AuthenticationException) {
+            false
         }
-        return false
     }
 
     override fun getRoles(): Roles {

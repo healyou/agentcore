@@ -9,7 +9,7 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="testbase, com.mycompany, gui">
-        <context:exclude-filter expression="service.tasks.ServiceTask" type="regex"/>
+        <context:exclude-filter expression="com.mycompany.service.tasks.ServiceTask" type="regex"/>
     </context:component-scan>
     <context:property-placeholder location="context.properties"/>
     <util:properties id="properties" location="testJdbc.properties" />

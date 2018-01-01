@@ -5,6 +5,7 @@ import com.mycompany.dsl.exceptions.AuthenticationException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import com.mycompany.user.Principal
+import org.springframework.dao.EmptyResultDataAccessException
 
 /**
  * @author Nikita Gorodilov
@@ -17,14 +18,18 @@ class AuthenticationServiceImpl: AuthenticationService {
 
     @Throws(AuthenticationException::class)
     override fun authenticate(username: String, password: String): Principal {
-        val principal = principalDao.getPrincipal(username)
-        if (principal.user.password == password) {
-            if (!principal.user.isDeleted) {
-                return principal
+        try {
+            val principal = principalDao.getPrincipal(username)
+            if (principal.user.password == password) {
+                if (!principal.user.isDeleted) {
+                    return principal
+                } else {
+                    throw AuthenticationException("Пользователь удалён")
+                }
             } else {
-                throw AuthenticationException("Пользователь удалён")
+                throw AuthenticationException("Неверные данные для входа")
             }
-        } else {
+        } catch (e: EmptyResultDataAccessException) {
             throw AuthenticationException("Неверные данные для входа")
         }
     }
