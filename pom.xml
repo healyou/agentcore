@@ -64,5 +64,6 @@
         <module>db</module>
         <module>agentcore</module>
         <module>agentimagelib</module>
+        <module>webapp</module>
     </modules>
 </project>

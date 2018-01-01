@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configure class="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
+    <New id="postgreDS" class="org.eclipse.jetty.plus.jndi.Resource">
+        <Arg>jdbc/agetwebappDS</Arg>
+        <Arg>
+            <New class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+                <Set name="driverClassName">
+                    <SystemProperty name="db.driverClassName" default="org.sqlite.JDBC"/>
+                </Set>
+                <Set name="url">
+                    <SystemProperty name="db.url" default="jdbc:sqlite:C:/Users/lappi/Intellij IDEA/Projects/agentproject/data/localdb/localdb.s3db"/>
+                </Set>
+            </New>
+        </Arg>
+    </New>
+</Configure>
