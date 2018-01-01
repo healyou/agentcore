@@ -5,6 +5,7 @@ import org.apache.wicket.Page
 import org.apache.wicket.application.IComponentInstantiationListener
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication
+import org.apache.wicket.injection.Injector
 import org.apache.wicket.markup.html.WebPage
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector
 
@@ -16,12 +17,6 @@ class MyAuthenticatedWebApplication : AuthenticatedWebApplication() {
     override fun init() {
         super.init()
         componentInstantiationListeners.add(SpringComponentInjector(this))
-        componentInstantiationListeners.add(object : IComponentInstantiationListener {
-
-            override fun onInstantiation(component: Component) {
-                //component.
-            }
-        })
         debugSettings.isDevelopmentUtilitiesEnabled = true
 
         mountPage("/login", LoginPage::class.java)

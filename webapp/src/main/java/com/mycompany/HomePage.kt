@@ -13,7 +13,6 @@ class HomePage(parameters: PageParameters? = null) : AuthBasePage(parameters) {
 
     @SpringBean
     lateinit var testBean: TestBean
-    // TODO - не видит jdbcTemplate только тут - autowired видит нормально + из другого модуля
     @SpringBean
     lateinit var test: Environment
 
@@ -26,7 +25,7 @@ class HomePage(parameters: PageParameters? = null) : AuthBasePage(parameters) {
                 setResponsePage(TestTwoPage::class.java)
             }
         })
-        add(Label("test", Model.of("агент"))) //${test.getProperty("agent.service.base.url")}
+        add(Label("test", Model.of("агент ${test.getProperty("agent.service.base.url")}")))
     }
 
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
