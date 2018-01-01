@@ -31,4 +31,8 @@ class HomePage(parameters: PageParameters? = null) : AuthBasePage(parameters) {
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
         return AlwaysAcceptedPrincipalAcceptor()
     }
+
+    override fun getPageName(): String {
+        return getString("pageName")
+    }
 }

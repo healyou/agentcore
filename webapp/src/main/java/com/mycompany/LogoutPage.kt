@@ -12,6 +12,6 @@ class LogoutPage : WebPage() {
         super.onInitialize()
 
         session.invalidate()
-        setResponsePage(Application.get().homePage)
+        setResponsePage(application.homePage)
     }
 }

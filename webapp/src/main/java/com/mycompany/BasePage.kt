@@ -1,9 +1,13 @@
 package com.mycompany
 
+import org.apache.wicket.ajax.AjaxRequestTarget
+import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.markup.head.CssHeaderItem
 import org.apache.wicket.markup.head.IHeaderResponse
 import org.apache.wicket.markup.head.JavaScriptHeaderItem
 import org.apache.wicket.markup.html.WebPage
+import org.apache.wicket.markup.html.basic.Label
+import org.apache.wicket.model.Model
 import org.apache.wicket.request.mapper.parameter.PageParameters
 import org.apache.wicket.request.resource.CssResourceReference
 import org.apache.wicket.request.resource.JavaScriptResourceReference
@@ -16,7 +20,13 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
     // TODO - класс на каждый из Reference
     override fun onInitialize() {
         super.onInitialize()
-        add(LogoutLink("logout"));
+        add(LogoutLink("logout"))
+        add(Label("pageName", Model.of(getPageName())))
+        add(object : AjaxLink<Any>("homePage") {
+            override fun onClick(target: AjaxRequestTarget) {
+                setResponsePage(application.homePage)
+            }
+        })
     }
 
     override fun renderHead(response: IHeaderResponse) {
@@ -45,4 +55,6 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
         //response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-datatables.min.js")))
         //response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-charts.min.js")))
     }
+
+    abstract fun getPageName(): String
 }

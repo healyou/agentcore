@@ -13,6 +13,6 @@ class LogoutLink(id: String): AjaxLink<Any>(id) {
 
     override fun onClick(target: AjaxRequestTarget) {
         session.invalidate()
-        (Application.get() as MyAuthenticatedWebApplication).restartResponseAtSignInPage()
+        (application as MyAuthenticatedWebApplication).restartResponseAtSignInPage()
     }
 }

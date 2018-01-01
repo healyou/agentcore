@@ -25,4 +25,8 @@ class TestTwoPage : AuthBasePage() {
             }
         }
     }
+
+    override fun getPageName(): String {
+        return "TestTwoPage name"
+    }
 }
