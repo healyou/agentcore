@@ -321,7 +321,7 @@ class RuntimeAgentServiceTest extends Assert {
         assertEquals(ras.agentType, type)
     }
 
-    TestRuntimeAgentServiceClass createTestRuntimeAgentServiceClass() {
+    static TestRuntimeAgentServiceClass createTestRuntimeAgentServiceClass() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
         runtimeAgentService.setAgentTypes(TypesObjects.agentTypes)
@@ -332,7 +332,7 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService
     }
 
-    boolean runExpectedFunctionError(Closure c) {
+    static boolean runExpectedFunctionError(Closure c) {
         try {
             c()
             false

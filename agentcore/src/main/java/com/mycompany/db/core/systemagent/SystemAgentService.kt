@@ -1,12 +1,13 @@
 package com.mycompany.db.core.systemagent
 
+import com.mycompany.db.base.ITableDataProvider
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.sc.SystemAgentSC
 
 /**
  * @author Nikita Gorodilov
  */
-interface SystemAgentService {
+interface SystemAgentService: ITableDataProvider<SystemAgent> {
 
     fun save(systemAgent: SystemAgent): Long
 
@@ -16,7 +17,7 @@ interface SystemAgentService {
 
     fun get(sc: SystemAgentSC): List<SystemAgent>
 
-    fun get(id: Long): SystemAgent
+    fun getById(id: Long): SystemAgent
 
     fun getByServiceLogin(serviceLogin: String): SystemAgent
 

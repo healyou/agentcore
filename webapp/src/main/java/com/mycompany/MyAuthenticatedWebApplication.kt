@@ -1,5 +1,6 @@
 package com.mycompany
 
+import com.mycompany.agent.AgentsPage
 import org.apache.wicket.Component
 import org.apache.wicket.Page
 import org.apache.wicket.application.IComponentInstantiationListener
@@ -21,6 +22,7 @@ class MyAuthenticatedWebApplication : AuthenticatedWebApplication() {
 
         mountPage("/login", LoginPage::class.java)
         mountPage("/logout", LogoutPage::class.java)
+        mountPage("/agents", AgentsPage::class.java)
     }
 
     override fun getWebSessionClass(): Class<out AbstractAuthenticatedWebSession> {

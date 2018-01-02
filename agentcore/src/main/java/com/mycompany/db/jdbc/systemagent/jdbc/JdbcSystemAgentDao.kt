@@ -72,7 +72,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         return jdbcTemplate.query(sql.toString(), SystemAgentRowMapper(dslFileAttachmentDao))
     }
 
-    override fun get(id: Long): SystemAgent {
+    override fun getById(id: Long): SystemAgent {
         return jdbcTemplate.queryForObject(
                 "SELECT * FROM system_agent WHERE id = ?",
                 SystemAgentRowMapper(dslFileAttachmentDao),
@@ -93,6 +93,18 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 "SELECT EXISTS (SELECT 1 FROM system_agent WHERE service_login = ?)",
                 Boolean::class.java,
                 serviceLogin
+        )
+    }
+
+    override fun size(): Long {
+        return jdbcTemplate.queryForObject("select count(*) from system_agent", Long::class.java)
+    }
+
+    override fun get(size: Long): List<SystemAgent> {
+        return jdbcTemplate.query(
+                "SELECT * FROM system_agent ORDER BY create_date ASC LIMIT 0,? ",
+                SystemAgentRowMapper(dslFileAttachmentDao),
+                size
         )
     }
 

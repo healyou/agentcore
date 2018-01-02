@@ -73,9 +73,9 @@ class CreateDatabaseDataDao : AbstractDao() {
         val attachmentsAgentId = createAgent(notDeletedUserId, notDeletedUserId)
         testDslFileContentRef2 = createDslFileContentRefWithEndDate(attachmentsAgentId, testDskFileContentRef1Data)
         testDslFileContentRef2 = createDslFileContentRef(attachmentsAgentId, testDskFileContentRef2Data)
-        testAgentWithOneDslAttachment = agentService.get(agentId)
-        testAgentWithManyDslAttachment = agentService.get(attachmentsAgentId)
-        testAgentWithoutDslAttachment = agentService.get(createAgent(notDeletedUserId, notDeletedUserId))
+        testAgentWithOneDslAttachment = agentService.getById(agentId)
+        testAgentWithManyDslAttachment = agentService.getById(attachmentsAgentId)
+        testAgentWithoutDslAttachment = agentService.getById(createAgent(notDeletedUserId, notDeletedUserId))
     }
 
     private fun createDeletedUser(): User {

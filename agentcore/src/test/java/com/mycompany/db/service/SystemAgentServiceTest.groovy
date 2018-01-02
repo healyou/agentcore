@@ -64,14 +64,14 @@ class SystemAgentServiceTest extends AbstractServiceTest {
 
     @Test
     void "Проверка создания dsl"() {
-        def saveAgent = systemAgentService.get(id)
+        def saveAgent = systemAgentService.getById(id)
         def actualDsl = saveAgent.dslFile
         assertDslFiles(dslFile, actualDsl)
     }
 
     @Test
     void "Обновление данных агента"() {
-        def systemAgent = systemAgentService.get(id)
+        def systemAgent = systemAgentService.getById(id)
 
         def newLogin = StringObjects.randomString()
         def newPassword = StringObjects.randomString()
@@ -88,7 +88,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         systemAgent.ownerId = newOwnerId
 
         systemAgentService.save(systemAgent)
-        def updateAgent = systemAgentService.get(id)
+        def updateAgent = systemAgentService.getById(id)
         assertEquals(newLogin, updateAgent.serviceLogin)
         assertEquals(newPassword, updateAgent.servicePassword)
         assertDslFiles(newDslFile, systemAgent.dslFile)
@@ -103,26 +103,26 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         def newFilename = StringObjects.randomString()
         def newDslFile = OtherObjects.dslFileAttachment(newFilename, newFileContent)
 
-        def systemAgent = systemAgentService.get(id)
+        def systemAgent = systemAgentService.getById(id)
         systemAgent.dslFile = newDslFile
         systemAgentService.save(systemAgent)
 
-        def actualDslFile = systemAgentService.get(id).dslFile
+        def actualDslFile = systemAgentService.getById(id).dslFile
         assertDslFiles(newDslFile, actualDslFile)
     }
 
     @Test
     void "Удаление рабочего dsl файла агента"() {
-        def systemAgent = systemAgentService.get(id)
+        def systemAgent = systemAgentService.getById(id)
         systemAgent.dslFile = null
         systemAgentService.save(systemAgent)
 
-        assertNull(systemAgentService.get(id).dslFile)
+        assertNull(systemAgentService.getById(id).dslFile)
     }
 
     @Test
     void "В бд сохраняются актуальные данные агента"() {
-        def systemAgent = systemAgentService.get(id)
+        def systemAgent = systemAgentService.getById(id)
 
         /* проверка всех значений создания агента */
         assertEquals(id, systemAgent.id)
@@ -209,6 +209,32 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertFalse(systemAgentService.isExistsAgent(UUID.randomUUID().toString()))
     }
 
+    @Test
+    void "Функция size возвращает количество записей без ошибок"() {
+        def createAgentSize = createAgents(3)
+        assertTrue(systemAgentService.size() >= createAgentSize)
+    }
+
+    @Test
+    void "Функция get(size) возвращает size записей"() {
+        def createAgentSize = createAgents(3)
+        assertEquals(createAgentSize, systemAgentService.get(createAgentSize).size())
+        assertEquals(1, systemAgentService.get(1).size())
+    }
+
+    /**
+     * Создание size агентов
+     *
+     * @param size количество создаваемых агентов
+     * @return количество созданных агентов
+     */
+    private Long createAgents(Long size) {
+        for (i in 0..size - 1) {
+            createAgent(true, true)
+        }
+        size
+    }
+
     /**
      * Сравнение двух dsl файлов на равенство
      */
@@ -239,7 +265,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         )
         systemAgent.isDeleted = isDeleted
 
-        return systemAgentService.get(systemAgentService.save(systemAgent))
+        return systemAgentService.getById(systemAgentService.save(systemAgent))
     }
 
     private def createAgentByOwnerId(Long ownerId) {

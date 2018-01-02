@@ -27,14 +27,16 @@
                             <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" aria-label="Start date: activate to sort column ascending" style="width: 184px;">Удалён</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr role="row" class="odd">
-                            <td>Airi Satou</td>
-                            <td>Accountant</td>
-                            <td>Tokyo</td>
-                            <td>33</td>
-                            <td>2008/11/28</td>
-                        </tr>
+                    <tbody wicket:id="listViewContainer">
+                        <div wicket:id="listView">
+                            <tr role="row" class="odd">
+                                <td><a wicket:id="id"><span wicket:id="idLabel">[idLabel]</span></a></td>
+                                <td><span wicket:id="login">[login]</span></td>
+                                <td><span wicket:id="createBy">[createBy]</span></td>
+                                <td><span wicket:id="createDate">[createDate]</span></td>
+                                <td><span wicket:id="isDeleted">[isDeleted]</span></td>
+                            </tr>
+                        </div>
                     </tbody>
                 </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Показаны с 1 по <span wicket:id="tableNumberLabel">[tableShowNumberLabel]</span> из <span wicket:id="tableSizeLabel">[tableSizeLabel]</span> записей</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate"></div></div></div></div>
             </div>
