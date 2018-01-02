@@ -58,7 +58,7 @@ class LoginGuiController {
 
     private fun isHasAgentSceneAuthority(): Boolean {
         return authenticatedSession.principal.authorities.containsAll(
-                arrayListOf(Authority.CREATE_AGENT, Authority.EDIT_OWN_AGENT, Authority.VEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
+                arrayListOf(Authority.CREATE_AGENT, Authority.EDIT_OWN_AGENT, Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
         )
     }
 

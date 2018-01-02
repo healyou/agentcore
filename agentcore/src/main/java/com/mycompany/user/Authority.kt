@@ -3,6 +3,8 @@ package com.mycompany.user
 import com.mycompany.db.base.Codable
 
 /**
+ * Привилегии пользователя
+ *
  * @author Nikita Gorodilov
  */
 enum class Authority(override val code: String): Codable<String> {
@@ -25,5 +27,5 @@ enum class Authority(override val code: String): Codable<String> {
     /**
      * Просмотр списка своих агентов
      */
-    VEW_OWN_AGENT("view_own_agents");
+    VIEW_OWN_AGENT("view_own_agents");
 }

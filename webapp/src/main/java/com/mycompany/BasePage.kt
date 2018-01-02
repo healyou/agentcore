@@ -1,5 +1,9 @@
 package com.mycompany
 
+import com.mycompany.agent.AgentsPage
+import com.mycompany.base.AjaxLambdaLink
+import com.mycompany.security.PrincipalSupport
+import com.mycompany.user.Authority
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.markup.head.CssHeaderItem
@@ -15,7 +19,7 @@ import org.apache.wicket.request.resource.JavaScriptResourceReference
 /**
  * @author Nikita Gorodilov
  */
-abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters) {
+abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters), PrincipalSupport {
 
     // TODO - класс на каждый из Reference
     override fun onInitialize() {
@@ -25,6 +29,12 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
         add(object : AjaxLink<Any>("homePage") {
             override fun onClick(target: AjaxRequestTarget) {
                 setResponsePage(application.homePage)
+            }
+        })
+        add(object : AjaxLambdaLink<Any>("agentsPage", this::agentsPageClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                isVisible = isPrincipalHasAnyAuthority(Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
             }
         })
     }
@@ -56,5 +66,11 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
         //response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-charts.min.js")))
     }
 
-    abstract fun getPageName(): String
+    protected open fun getPageName(): String {
+        return getString("pageName")
+    }
+
+    private fun agentsPageClick(target: AjaxRequestTarget) {
+        setResponsePage(AgentsPage::class.java)
+    }
 }

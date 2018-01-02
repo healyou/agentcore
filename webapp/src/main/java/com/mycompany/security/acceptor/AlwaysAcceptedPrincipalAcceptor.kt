@@ -1,4 +1,4 @@
-package com.mycompany
+package com.mycompany.security.acceptor
 
 import com.mycompany.user.Principal
 

@@ -48,7 +48,8 @@ INSERT INTO role_privilege (role_id, privilege_id) VALUES
 ------------------ users data ------------------
 INSERT INTO users (login, password) VALUES
   ('admin', 'admin'),--1
-  ('viewer', 'viewer');--2
+  ('viewer', 'viewer'),--2
+  ('login', 'login');--3
 
 ------------------ user role ------------------
 INSERT INTO user_role (user_id, role_id) VALUES

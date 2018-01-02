@@ -1,9 +1,10 @@
 package com.mycompany
 
 import com.mycompany.db.base.Environment
+import com.mycompany.security.acceptor.AlwaysAcceptedPrincipalAcceptor
+import com.mycompany.security.acceptor.PrincipalAcceptor
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
-import org.apache.wicket.injection.Injector
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.model.Model
 import org.apache.wicket.request.mapper.parameter.PageParameters
@@ -30,9 +31,5 @@ class HomePage(parameters: PageParameters? = null) : AuthBasePage(parameters) {
 
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
         return AlwaysAcceptedPrincipalAcceptor()
-    }
-
-    override fun getPageName(): String {
-        return getString("pageName")
     }
 }

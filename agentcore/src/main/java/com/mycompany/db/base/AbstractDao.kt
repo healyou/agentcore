@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate
 abstract class AbstractDao {
 
     @Autowired
-    protected open lateinit var jdbcTemplate: JdbcTemplate
+    open lateinit var jdbcTemplate: JdbcTemplate
 
     /**
      * Возвращает идентификатор последней введённой в таблицу записи

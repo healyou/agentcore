@@ -1,5 +1,7 @@
 package com.mycompany
 
+import com.mycompany.security.PrincipalSupport
+import com.mycompany.security.acceptor.PrincipalAcceptor
 import org.apache.wicket.RestartResponseAtInterceptPageException
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow
