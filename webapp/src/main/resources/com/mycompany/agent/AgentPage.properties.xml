@@ -2,6 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="pageName">Страница агента</entry>
+    <entry key="dslFile">Dsl файл</entry>
     <entry key="serviceLogin">Логин в сервисе обмена сообщениями</entry>
     <entry key="ownerId">Владелец</entry>
     <entry key="createUserId">Создатель</entry>
