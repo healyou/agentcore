@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html"
+      xmlns:wicket="https://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master"
+      xml:lang="ru" lang="ru">
+<body>
+<wicket:extend>
+    <div class="mb-0 mt-4">
+        <i class="fa fa-newspaper-o"></i> <span wicket:id="agentInfoLabel">[pageInfoLabel]</span></div>
+    <hr class="mt-2">
+    <div class="col-8">
+        <form wicket:id="form">
+            <div class="form-group row">
+                <label class="col-3 col-form-label" wicket:for="serviceLogin">
+                    <wicket:label>[serviceLogin]</wicket:label>
+                </label>
+                <input wicket:id="serviceLogin" type="text" class="form-control">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" wicket:for="ownerId">
+                    <wicket:label>[ownerId]</wicket:label>
+                </label>
+                <input wicket:id="ownerId" type="text" class="form-control">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" wicket:for="createUserId">
+                    <wicket:label>[createUserName]</wicket:label>
+                </label>
+                <input wicket:id="createUserId" type="text" class="form-control">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" wicket:for="createDate">
+                    <wicket:label>[createDate]</wicket:label>
+                </label>
+                <input wicket:id="createDate" data-inputmask-alias="date" type="text" class="form-control">
+            </div>
+            <div class="form-group row">
+                <label class="col-3 col-form-label" wicket:for="updateDate">
+                    <wicket:label>[updateDate]</wicket:label>
+                </label>
+                <input wicket:id="updateDate" data-inputmask-alias="date" type="text" class="form-control">
+            </div>
+            <div class="form-check form-check-inline row col-6">
+                <label class="form-check-label">
+                    <input wicket:id="isDeleted" type="checkbox" class="form-check-input">
+                    <span wicket:id="isDeletedLabel">[isDeletedLabel]</span>
+                </label>
+            </div>
+            <div class="form-check form-check-inline row col-6">
+                <label class="form-check-label">
+                    <input wicket:id="isSendAndGetMessages" type="checkbox" class="form-check-input">
+                    <span wicket:id="isSendAngGetMessagesLabel">[isSendAngGetMessagesLabel]</span>
+                </label>
+            </div>
+            <div class="float-right row">
+                <a wicket:id="save" href="#" class="btn btn-primary">Сохранить</a>
+            </div>
+        </form>
+    </div>
+</wicket:extend>
+</body>
+</html>

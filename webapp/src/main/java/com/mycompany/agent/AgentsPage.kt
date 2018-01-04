@@ -11,6 +11,7 @@ import com.mycompany.security.acceptor.HasAnyAuthorityPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
 import com.mycompany.user.Authority
 import org.apache.wicket.ajax.AjaxRequestTarget
+import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink
 import org.apache.wicket.markup.head.CssHeaderItem
 import org.apache.wicket.markup.head.IHeaderResponse
@@ -103,7 +104,7 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
             override fun populateItem(item: ListItem<SystemAgent>) {
                 val agent = item.modelObject
 
-                item.add(object : AjaxLambdaLink<Any>("id", this@AgentsPage::agentClick) {
+                item.add(object : AjaxLink<Any>("id") {
                     override fun onConfigure() {
                         super.onConfigure()
                         isEnabled = isPrincipalHasAnyAuthority(Authority.VIEW_OWN_AGENT, Authority.EDIT_OWN_AGENT)
@@ -112,6 +113,10 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
                     override fun onInitialize() {
                         super.onInitialize()
                         add(Label("idLabel", PropertyModel.of<Long>(agent, "id")))
+                    }
+
+                    override fun onClick(target: AjaxRequestTarget) {
+                        agentClick(agent)
                     }
                 })
                 item.add(Label("login", PropertyModel.of<String>(agent, "serviceLogin")))
@@ -162,7 +167,9 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
         return agentService.get(tableShowNumber.toLong())
     }
 
-    private fun agentClick(target: AjaxRequestTarget) {
-        // TODO
+    private fun agentClick(agent: SystemAgent) {
+        val parameters = PageParameters()
+        parameters.set(AgentPage.AGENT_ID_PARAMETER_NAME, agent.id!!)
+        setResponsePage(AgentPage::class.java, parameters)
     }
 }
