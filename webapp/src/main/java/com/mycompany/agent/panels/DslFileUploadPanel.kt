@@ -7,12 +7,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.markup.html.WebMarkupContainer
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.FormComponentPanel
-import org.apache.wicket.markup.html.form.upload.FileUpload
 import org.apache.wicket.markup.html.form.upload.FileUploadField
 import org.apache.wicket.model.AbstractReadOnlyModel
-import org.apache.wicket.model.Model
 import org.apache.wicket.model.util.ListModel
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Панель загрузки dsl файла
@@ -47,12 +45,13 @@ class DslFileUploadPanel(id: String): FormComponentPanel<DslFileAttachment>(id) 
     }
 
     override fun convertInput() {
-        if (modelObject != null) {
+        val fileUpload = upload.fileUpload
+        if (modelObject != null || fileUpload == null) {
             return
         }
 
-        val filename = upload.fileUpload.clientFileName
-        val data = upload.fileUpload.bytes
+        val filename = fileUpload.clientFileName
+        val data = fileUpload.bytes
         convertedInput = DslFileAttachment(
                 filename,
                 ByteArrayFileContentRef(filename, data),

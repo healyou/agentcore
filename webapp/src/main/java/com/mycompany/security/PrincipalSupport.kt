@@ -1,6 +1,8 @@
 package com.mycompany.security
 
 import com.mycompany.SpringAuthenticatedWebSession
+import com.mycompany.db.core.systemagent.SystemAgent
+import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.security.acceptor.HasAllAuthoritiesPrincipalAcceptor
 import com.mycompany.security.acceptor.HasAnyAuthorityPrincipalAcceptor
 import com.mycompany.user.Authority
@@ -26,5 +28,10 @@ interface PrincipalSupport {
 
     fun isPrincipalHasAllAuthorities(vararg authorities: Authority): Boolean {
         return HasAllAuthoritiesPrincipalAcceptor(*authorities).accept(getPrincipal());
+    }
+
+    // todo
+    fun isOwnAgent(agent: SystemAgent, service: SystemAgentService):Boolean {
+        return true
     }
 }

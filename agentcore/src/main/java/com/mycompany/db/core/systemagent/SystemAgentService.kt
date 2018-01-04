@@ -22,4 +22,6 @@ interface SystemAgentService: ITableDataProvider<SystemAgent> {
     fun getByServiceLogin(serviceLogin: String): SystemAgent
 
     fun isExistsAgent(serviceLogin: String): Boolean
+
+    // todo isOwnAgent(agent, user)
 }

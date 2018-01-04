@@ -3,13 +3,16 @@ package com.mycompany.agent
 import com.mycompany.AuthBasePage
 import com.mycompany.BootstrapFeedbackPanel
 import com.mycompany.agent.panels.DslFileUploadPanel
+import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.security.acceptor.AlwaysAcceptedPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
+import com.mycompany.user.Authority
 import org.apache.wicket.RestartResponseAtInterceptPageException
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink
+import org.apache.wicket.markup.html.WebMarkupContainer
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.CheckBox
 import org.apache.wicket.markup.html.form.Form
@@ -35,12 +38,18 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         val AGENT_ID_PARAMETER_NAME = "id"
     }
 
+    private enum class PageMode {
+        EDIT, VIEW
+    }
+
     @SpringBean
     private lateinit var agentService: SystemAgentService
 
     private lateinit var feedback: BootstrapFeedbackPanel
+    private lateinit var buttons: WebMarkupContainer
 
     private val agent: SystemAgent
+    private var mode = PageMode.VIEW
 
     init {
         val idParameter = parameters.get(AGENT_ID_PARAMETER_NAME)
@@ -68,9 +77,13 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         feedback = BootstrapFeedbackPanel("feedback")
         add(feedback)
 
-        // agent summary panel
         val form = Form<SystemAgent>("form", CompoundPropertyModel(agent))
-        add(form.setEnabled(true))
+        add(form)
+        form.isMultiPart = true
+        form.fileMaxSize = Bytes.megabytes(1)
+        form.maxSize = Bytes.megabytes(1.5)
+
+        // agent summary panel
         form.add(TextField<String>("serviceLogin"))
         form.add(DslFileUploadPanel("dslFile"))
         form.add(TextField<String>("ownerId"))
@@ -81,12 +94,18 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         form.add(CheckBox("isSendAndGetMessages"))
         form.add(Label("isDeletedLabel", Model.of(getString("isDeleted"))))
         form.add(Label("isSendAngGetMessagesLabel", Model.of(getString("isSendAndGetMessages"))))
-        form.add(object : AjaxSubmitLink("save") {
+
+        buttons = WebMarkupContainer("buttons")
+        form.add(buttons.setOutputMarkupId(true))
+        buttons.add(object : AjaxSubmitLink("save") {
+            override fun onConfigure() {
+                super.onConfigure()
+                isVisible = isEditMode()
+            }
+
             override fun onSubmit(target: AjaxRequestTarget, form: Form<*>) {
                 super.onSubmit(target, form)
-                // todo save +
-                // todo кнопки управления(изменить-сохранить-отмена) +
-                // todo видимость кнопок в зависимости от прав пользователя
+                saveButtonClick(target)
             }
 
             override fun onError(target: AjaxRequestTarget, form: Form<*>) {
@@ -94,8 +113,41 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
                 target.add(feedback)
             }
         })
-        form.isMultiPart = true
-        form.fileMaxSize = Bytes.megabytes(1)
-        form.maxSize = Bytes.megabytes(1.5)
+        buttons.add(object : AjaxLambdaLink<Any>("edit", this::editButtonClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                isVisible = (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)/* todo редактирование всех агентов-привелегия */) && isViewMode()
+            }
+        })
+        buttons.add(object : AjaxLambdaLink<Any>("cancel", this::cancelButtonClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                isVisible = isEditMode()
+            }
+        })
+    }
+
+    // todo save
+    private fun saveButtonClick(target: AjaxRequestTarget) {
+        mode = PageMode.VIEW
+        target.add(buttons)
+    }
+
+    private fun editButtonClick(target: AjaxRequestTarget) {
+        mode = PageMode.EDIT
+        target.add(buttons)
+    }
+
+    private fun cancelButtonClick(target: AjaxRequestTarget) {
+        mode = PageMode.VIEW
+        target.add(buttons)
+    }
+
+    private fun isEditMode():Boolean {
+        return mode == PageMode.EDIT
+    }
+
+    private fun isViewMode():Boolean {
+        return mode == PageMode.VIEW
     }
 }
