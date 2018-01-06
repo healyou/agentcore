@@ -2,6 +2,7 @@ package com.mycompany.db.jdbc.systemagent
 
 import com.mycompany.db.core.sc.SystemAgentSC
 import com.mycompany.db.core.systemagent.SystemAgent
+import com.mycompany.user.User
 
 /**
  * @author Nikita Gorodilov
@@ -21,6 +22,8 @@ interface SystemAgentDao {
     fun getByServiceLogin(serviceLogin: String): SystemAgent
 
     fun isExistsAgent(serviceLogin: String): Boolean
+
+    fun isOwnAgent(agent: SystemAgent, user: User): Boolean
 
     fun size(): Long
 

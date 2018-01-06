@@ -20,6 +20,11 @@ enum class Authority(override val code: String): Codable<String> {
     EDIT_OWN_AGENT("edit_own_agent"),
 
     /**
+     * Редактирование данных всех агентов
+     */
+    EDIT_ALL_AGENTS("edit_all_agent"),
+
+    /**
      * Просмотр списка всех агентов
      */
     VIEW_ALL_AGENTS("view_all_agents"),

@@ -236,6 +236,16 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertEquals(1, systemAgentService.get(1).size())
     }
 
+    @Test
+    void "Функция isOwnAgent корректно определяет является ли user владельцем агента"() {
+        def owner = UserObjects.testActiveUser()
+        def notOwner = UserObjects.testDeletedUser()
+        def agent = createAgentByOwnerId(owner.id)
+
+        assertTrue(systemAgentService.isOwnAgent(agent, owner))
+        assertFalse(systemAgentService.isOwnAgent(agent, notOwner))
+    }
+
     /**
      * Создание size агентов
      *

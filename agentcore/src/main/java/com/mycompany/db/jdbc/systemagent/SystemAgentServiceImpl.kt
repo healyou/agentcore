@@ -5,6 +5,7 @@ import com.mycompany.db.core.sc.SystemAgentSC
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.db.jdbc.file.dslfile.DslFileAttachmentDao
+import com.mycompany.user.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -45,6 +46,10 @@ open class SystemAgentServiceImpl : SystemAgentService {
     override fun getByServiceLogin(serviceLogin: String): SystemAgent = dao.getByServiceLogin(serviceLogin)
 
     override fun isExistsAgent(serviceLogin: String): Boolean = dao.isExistsAgent(serviceLogin)
+
+    override fun isOwnAgent(agent: SystemAgent, user: User): Boolean {
+        return dao.isOwnAgent(agent, user)
+    }
 
     override fun size(): Long {
         return dao.size()

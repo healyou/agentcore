@@ -135,7 +135,8 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         buttons.add(object : AjaxLambdaLink<Any>("edit", this::editButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                isVisible = (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)/* todo редактирование всех агентов-привелегия */) && isViewMode()
+                isVisible = (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
+                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS)) && isViewMode()
             }
         })
         buttons.add(object : AjaxLambdaLink<Any>("cancel", this::cancelButtonClick) {

@@ -8,6 +8,7 @@ import com.mycompany.db.core.sc.SystemAgentSC
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.jdbc.file.dslfile.DslFileAttachmentDao
 import com.mycompany.db.jdbc.systemagent.SystemAgentDao
+import com.mycompany.user.User
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -93,6 +94,21 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 "SELECT EXISTS (SELECT 1 FROM system_agent WHERE service_login = ?)",
                 Boolean::class.java,
                 serviceLogin
+        )
+    }
+
+    override fun isOwnAgent(agent: SystemAgent, user: User): Boolean {
+        return jdbcTemplate.queryForObject(
+                "SELECT CASE WHEN owner_id = ? AND id = ?\n" +
+                    "  THEN 1\n" +
+                    "       ELSE 0\n" +
+                    "       END AS isOwnAgent\n" +
+                    "FROM system_agent\n" +
+                    "WHERE id = ?",
+                Boolean::class.java,
+                user.id,
+                agent.id,
+                agent.id
         )
     }
 

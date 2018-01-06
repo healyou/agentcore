@@ -30,8 +30,7 @@ interface PrincipalSupport {
         return HasAllAuthoritiesPrincipalAcceptor(*authorities).accept(getPrincipal());
     }
 
-    // todo
     fun isOwnAgent(agent: SystemAgent, service: SystemAgentService):Boolean {
-        return true
+        return service.isOwnAgent(agent, getPrincipal().user)
     }
 }

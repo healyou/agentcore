@@ -27,7 +27,8 @@ INSERT INTO privilege (code, name, description) VALUES
   ('create_agent', 'Создание агента', 'Возможность создания агента'),--1
   ('view_all_agents', 'Просмотр списка всех агентов', 'Возможность просмотра списка всех агентов'),--2
   ('view_own_agents', 'Просмотр списка своих агентов', 'Возможность просмотра списка своих агентов'),--3
-  ('edit_own_agent', 'Редактирование данных своего агента', 'Возможность редактирование данных своего агента');--4
+  ('edit_own_agent', 'Редактирование данных своего агента', 'Возможность редактирование данных своего агента'),--4
+  ('edit_all_agent', 'Редактирование данных всех агентов', 'Возможность редактирование данных всех агентов');--5
 
 ------------------ role data ------------------
 INSERT INTO role (name, description) VALUES
@@ -41,6 +42,7 @@ INSERT INTO role_privilege (role_id, privilege_id) VALUES
   (1, 2),--view_all_agents
   (1, 3),--view_own_agents
   (1, 4),--edit_own_agent
+  (1, 5),--edit_all_agent
   --Наблюдатель
   (2, 2),--view_all_agents
   (2, 3);--view_own_agents

@@ -3,6 +3,7 @@ package com.mycompany.db.core.systemagent
 import com.mycompany.db.base.ITableDataProvider
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.sc.SystemAgentSC
+import com.mycompany.user.User
 
 /**
  * @author Nikita Gorodilov
@@ -23,5 +24,8 @@ interface SystemAgentService: ITableDataProvider<SystemAgent> {
 
     fun isExistsAgent(serviceLogin: String): Boolean
 
-    // todo isOwnAgent(agent, user)
+    /**
+     * Пользователь является владельцем агента
+     */
+    fun isOwnAgent(agent: SystemAgent, user: User): Boolean
 }
