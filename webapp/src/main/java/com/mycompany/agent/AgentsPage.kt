@@ -68,8 +68,6 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
         return HasAnyAuthorityPrincipalAcceptor(Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
     }
 
-    // todo загрузка самих данных через listview
-
     override fun onInitialize() {
         super.onInitialize()
 

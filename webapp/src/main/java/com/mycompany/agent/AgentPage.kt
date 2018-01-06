@@ -17,10 +17,8 @@ import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.CheckBox
 import org.apache.wicket.markup.html.form.Form
 import org.apache.wicket.markup.html.form.TextField
-import org.apache.wicket.markup.html.form.upload.FileUploadField
 import org.apache.wicket.model.CompoundPropertyModel
 import org.apache.wicket.model.Model
-import org.apache.wicket.model.PropertyModel
 import org.apache.wicket.request.mapper.parameter.PageParameters
 import org.apache.wicket.spring.injection.annot.SpringBean
 import org.apache.wicket.util.lang.Bytes
@@ -47,8 +45,9 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     private lateinit var feedback: BootstrapFeedbackPanel
     private lateinit var buttons: WebMarkupContainer
+    private lateinit var form: Form<SystemAgent>
 
-    private val agent: SystemAgent
+    private var agent: SystemAgent
     private var mode = PageMode.VIEW
 
     init {
@@ -77,21 +76,41 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         feedback = BootstrapFeedbackPanel("feedback")
         add(feedback)
 
-        val form = Form<SystemAgent>("form", CompoundPropertyModel(agent))
+        form = Form<SystemAgent>("form", CompoundPropertyModel(agent))
         add(form)
         form.isMultiPart = true
         form.fileMaxSize = Bytes.megabytes(1)
         form.maxSize = Bytes.megabytes(1.5)
 
         // agent summary panel
-        form.add(TextField<String>("serviceLogin"))
-        form.add(DslFileUploadPanel("dslFile"))
-        form.add(TextField<String>("ownerId"))
-        form.add(TextField<String>("createUserId"))
-        form.add(TextField<Date>("createDate"))
-        form.add(TextField<Date>("updateDate"))
-        form.add(CheckBox("isDeleted"))
-        form.add(CheckBox("isSendAndGetMessages"))
+        form.add(object : TextField<String>("serviceLogin") {
+            override fun onConfigure() {
+                super.onConfigure()
+                isEnabled = isEditMode()
+            }
+        })
+        form.add(object : DslFileUploadPanel("dslFile") {
+            override fun onConfigure() {
+                super.onConfigure()
+                isEnabled = isEditMode()
+            }
+        })
+        form.add(TextField<String>("ownerId").setEnabled(false))
+        form.add(TextField<String>("createUserId").setEnabled(false))
+        form.add(TextField<Date>("createDate").setEnabled(false))
+        form.add(TextField<Date>("updateDate").setEnabled(false))
+        form.add(object : CheckBox("isDeleted") {
+            override fun onConfigure() {
+                super.onConfigure()
+                isEnabled = isEditMode()
+            }
+        })
+        form.add(object : CheckBox("isSendAndGetMessages") {
+            override fun onConfigure() {
+                super.onConfigure()
+                isEnabled = isEditMode()
+            }
+        })
         form.add(Label("isDeletedLabel", Model.of(getString("isDeleted"))))
         form.add(Label("isSendAngGetMessagesLabel", Model.of(getString("isSendAndGetMessages"))))
 
@@ -127,20 +146,28 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         })
     }
 
-    // todo save
     private fun saveButtonClick(target: AjaxRequestTarget) {
+        agentService.save(agent)
+        agent = agentService.getById(agent.id!!)
+        form.model = CompoundPropertyModel<SystemAgent>(agent)
+
         mode = PageMode.VIEW
-        target.add(buttons)
+        updatePage(target)
     }
 
     private fun editButtonClick(target: AjaxRequestTarget) {
         mode = PageMode.EDIT
-        target.add(buttons)
+        updatePage(target)
     }
 
     private fun cancelButtonClick(target: AjaxRequestTarget) {
         mode = PageMode.VIEW
+        updatePage(target)
+    }
+
+    private fun updatePage(target: AjaxRequestTarget) {
         target.add(buttons)
+        target.add(form)
     }
 
     private fun isEditMode():Boolean {

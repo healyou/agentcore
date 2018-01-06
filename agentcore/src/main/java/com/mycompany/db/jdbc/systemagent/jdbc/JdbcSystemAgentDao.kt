@@ -122,7 +122,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
             }
             dslFileAttachmentDao.create(newDsl, systemAgent.id!!)
 
-        } else if (workingDsl != null) {
+        } else if (workingDsl != null && newDsl == null) {
             /* Если была удалена dsl агента */
             dslFileAttachmentDao.endDslFile(workingDsl.id!!)
         }

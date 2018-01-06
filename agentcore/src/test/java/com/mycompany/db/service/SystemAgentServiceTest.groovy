@@ -70,6 +70,20 @@ class SystemAgentServiceTest extends AbstractServiceTest {
     }
 
     @Test
+    void "При сохранении объекта без изменений, данные не теряются"() {
+        def systemAgent = systemAgentService.getById(id)
+
+        systemAgentService.save(systemAgent)
+        def updateAgent = systemAgentService.getById(id)
+        assertEquals(systemAgent.serviceLogin, updateAgent.serviceLogin)
+        assertEquals(systemAgent.servicePassword, updateAgent.servicePassword)
+        assertDslFiles(systemAgent.dslFile, updateAgent.dslFile)
+        assertEquals(systemAgent.isDeleted, updateAgent.isDeleted)
+        assertEquals(systemAgent.isSendAndGetMessages, updateAgent.isSendAndGetMessages)
+        assertEquals(systemAgent.ownerId, updateAgent.ownerId)
+    }
+
+    @Test
     void "Обновление данных агента"() {
         def systemAgent = systemAgentService.getById(id)
 

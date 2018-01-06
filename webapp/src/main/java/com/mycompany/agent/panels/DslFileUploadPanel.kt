@@ -12,12 +12,13 @@ import org.apache.wicket.model.AbstractReadOnlyModel
 import org.apache.wicket.model.util.ListModel
 import java.util.*
 
+
 /**
  * Панель загрузки dsl файла
  *
  * @author Nikita Gorodilov
  */
-class DslFileUploadPanel(id: String): FormComponentPanel<DslFileAttachment>(id) {
+open class DslFileUploadPanel(id: String): FormComponentPanel<DslFileAttachment>(id) {
 
     private lateinit var fileInfo: WebMarkupContainer
     private lateinit var upload: FileUploadField
@@ -32,6 +33,7 @@ class DslFileUploadPanel(id: String): FormComponentPanel<DslFileAttachment>(id) 
             }
         }
         add(fileInfo.setOutputMarkupPlaceholderTag(true))
+        // todo - почему то работает в браузере клик и удаление fileInfo - но в java нажатие не проходит
         fileInfo.add(AjaxLambdaLink<Any>("remove", this::dslFileRemoveClick))
         fileInfo.add(Label("filename", configureFilenameModel()))
 
@@ -47,6 +49,7 @@ class DslFileUploadPanel(id: String): FormComponentPanel<DslFileAttachment>(id) 
     override fun convertInput() {
         val fileUpload = upload.fileUpload
         if (modelObject != null || fileUpload == null) {
+            convertedInput = modelObject
             return
         }
 
