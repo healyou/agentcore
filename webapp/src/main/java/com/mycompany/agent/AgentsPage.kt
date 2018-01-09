@@ -167,7 +167,7 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
 
     private fun agentClick(agent: SystemAgent) {
         val parameters = PageParameters()
-        //parameters.set(AgentPage.AGENT_ID_PARAMETER_NAME, agent.id!!)
+        parameters.set(AgentPage.AGENT_ID_PARAMETER_NAME, agent.id!!)
         setResponsePage(AgentPage::class.java, parameters)
     }
 }

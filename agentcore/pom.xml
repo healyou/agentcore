@@ -25,7 +25,6 @@
     <properties>
         <jvmSource.version>1.8</jvmSource.version>
         <jvmTarget.version>1.8</jvmTarget.version>
-        <quava.version>21.0</quava.version>
         <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
         <wtp.version>none</wtp.version>
         <findbugs.version>3.0.2</findbugs.version>
@@ -205,7 +204,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>${quava.version}</version>
         </dependency>
 
     </dependencies>

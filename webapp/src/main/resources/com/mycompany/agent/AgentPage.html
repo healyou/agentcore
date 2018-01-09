@@ -9,13 +9,19 @@
         <i class="fa fa-newspaper-o"></i> <span wicket:id="agentInfoLabel">[pageInfoLabel]</span></div>
     <hr class="mt-2">
     <div class="col-8">
-        <div wicket:id="feedback"></div>
+        <div class="alert alert-danger alert-custom" wicket:id="feedback"></div>
         <form wicket:id="form">
             <div class="form-group row">
                 <label class="col-3 col-form-label" wicket:for="serviceLogin">
                     <wicket:label>[serviceLogin]</wicket:label>
                 </label>
                 <input wicket:id="serviceLogin" type="text" class="form-control">
+            </div>
+            <div class="form-group row" wicket:id="servicePasswordBlock">
+                <label class="col-3 col-form-label" wicket:for="servicePassword">
+                    <wicket:label>[servicePassword]</wicket:label>
+                </label>
+                <input wicket:id="servicePassword" type="text" class="form-control">
             </div>
             <div class="form-group row">
                 <label class="col-3 col-form-label" wicket:for="dslFile">

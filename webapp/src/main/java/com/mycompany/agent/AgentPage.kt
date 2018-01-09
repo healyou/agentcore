@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.CheckBox
 import org.apache.wicket.markup.html.form.Form
 import org.apache.wicket.markup.html.form.TextField
+import org.apache.wicket.model.AbstractReadOnlyModel
 import org.apache.wicket.model.CompoundPropertyModel
 import org.apache.wicket.model.Model
 import org.apache.wicket.request.mapper.parameter.PageParameters
@@ -46,6 +47,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     private lateinit var feedback: BootstrapFeedbackPanel
     private lateinit var buttons: WebMarkupContainer
     private lateinit var form: Form<SystemAgent>
+    private lateinit var agentInfoLabel: Label
 
     private var agent: SystemAgent
     private var mode: PageMode
@@ -71,13 +73,18 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     }
 
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
-        return AlwaysAcceptedPrincipalAcceptor()
+        return AlwaysAcceptedPrincipalAcceptor() // TODO
     }
 
     override fun onInitialize() {
         super.onInitialize()
 
-        add(Label("agentInfoLabel", Model.of("Агент № ${agent.id}")))
+        agentInfoLabel = Label("agentInfoLabel", object : AbstractReadOnlyModel<String>() {
+            override fun getObject(): String {
+                return getInfoLabelText()
+            }
+        })
+        add(agentInfoLabel.setOutputMarkupId(true))
         feedback = BootstrapFeedbackPanel("feedback")
         add(feedback)
 
@@ -88,17 +95,25 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         form.maxSize = Bytes.megabytes(1.5)
 
         // agent summary panel
+        // TODO - login validator -> должен быть уникален
         form.add(object : TextField<String>("serviceLogin") {
             override fun onConfigure() {
                 super.onConfigure()
-                isEnabled = isEditMode()
+                isEnabled = isEditMode() || isCreateMode()
             }
         }.setRequired(true))
-        // TODO поле пароля
+        val servicePasswordBlock = object : WebMarkupContainer("servicePasswordBlock") {
+            override fun onConfigure() {
+                super.onConfigure()
+                isVisible = isCreateMode()
+            }
+        }
+        servicePasswordBlock.add(TextField<String>("servicePassword").setRequired(true))
+        form.add(servicePasswordBlock)
         form.add(object : DslFileUploadPanel("dslFile") {
             override fun onConfigure() {
                 super.onConfigure()
-                isEnabled = isEditMode()
+                isEnabled = isEditMode() || isCreateMode()
             }
         }.setRequired(true))
         form.add(TextField<Long>("ownerId").setRequired(true).setEnabled(false))
@@ -108,13 +123,13 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         form.add(object : CheckBox("isDeleted") {
             override fun onConfigure() {
                 super.onConfigure()
-                isEnabled = isEditMode()
+                isEnabled = isEditMode() || isCreateMode()
             }
         })
         form.add(object : CheckBox("isSendAndGetMessages") {
             override fun onConfigure() {
                 super.onConfigure()
-                isEnabled = isEditMode()
+                isEnabled = isEditMode() || isCreateMode()
             }
         })
         form.add(Label("isDeletedLabel", Model.of(getString("isDeleted"))))
@@ -154,7 +169,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     }
 
     private fun saveButtonClick(target: AjaxRequestTarget) {
-        agentService.save(agent)
+        agent.id = agentService.save(agent)
         agent = agentService.getById(agent.id!!)
         form.model = CompoundPropertyModel<SystemAgent>(agent)
 
@@ -175,6 +190,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     private fun updatePage(target: AjaxRequestTarget) {
         target.add(buttons)
         target.add(form)
+        target.add(agentInfoLabel)
     }
 
     private fun isEditMode(): Boolean {
@@ -187,5 +203,9 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     private fun isCreateMode(): Boolean {
         return mode == PageMode.CREATE
+    }
+
+    private fun getInfoLabelText(): String {
+        return if (isCreateMode()) "Создание агента" else "Агент № ${agent.id}"
     }
 }

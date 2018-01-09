@@ -3,7 +3,8 @@
 <properties>
     <entry key="pageName">Страница агента</entry>
     <entry key="dslFile">Dsl файл</entry>
-    <entry key="serviceLogin">Логин в сервисе обмена сообщениями</entry>
+    <entry key="serviceLogin">Логин</entry>
+    <entry key="servicePassword">Пароль</entry>
     <entry key="ownerId">Владелец</entry>
     <entry key="createUserId">Создатель</entry>
     <entry key="createDate">Дата создания</entry>
