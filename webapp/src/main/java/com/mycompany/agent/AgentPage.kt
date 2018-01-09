@@ -26,7 +26,7 @@ import org.apache.wicket.util.string.StringValueConversionException
 import java.util.*
 
 /**
- * Страница агента
+ * Страница просмотра/редактирование агента
  *
  * @author Nikita Gorodilov
  */
@@ -37,7 +37,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     }
 
     private enum class PageMode {
-        EDIT, VIEW
+        CREATE, EDIT, VIEW
     }
 
     @SpringBean
@@ -48,20 +48,25 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     private lateinit var form: Form<SystemAgent>
 
     private var agent: SystemAgent
-    private var mode = PageMode.VIEW
+    private var mode: PageMode
 
     init {
         val idParameter = parameters.get(AGENT_ID_PARAMETER_NAME)
 
         if (!idParameter.isEmpty) {
+            // EDIT
             try {
                 val agentId = idParameter.toLongObject()
                 agent = agentService.getById(agentId)
+                mode = PageMode.VIEW
             } catch (e: StringValueConversionException) {
                 throw RestartResponseAtInterceptPageException(application.homePage)
             }
         } else {
-            throw RestartResponseAtInterceptPageException(application.homePage)
+            // CREATE
+            val currentUserId = getPrincipal().user.id!!
+            agent = SystemAgent("", "", true, currentUserId, currentUserId)
+            mode = PageMode.CREATE
         }
     }
 
@@ -88,15 +93,16 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
                 super.onConfigure()
                 isEnabled = isEditMode()
             }
-        })
+        }.setRequired(true))
+        // TODO поле пароля
         form.add(object : DslFileUploadPanel("dslFile") {
             override fun onConfigure() {
                 super.onConfigure()
                 isEnabled = isEditMode()
             }
-        })
-        form.add(TextField<String>("ownerId").setEnabled(false))
-        form.add(TextField<String>("createUserId").setEnabled(false))
+        }.setRequired(true))
+        form.add(TextField<Long>("ownerId").setRequired(true).setEnabled(false))
+        form.add(TextField<Long>("createUserId").setRequired(true).setEnabled(false))
         form.add(TextField<Date>("createDate").setEnabled(false))
         form.add(TextField<Date>("updateDate").setEnabled(false))
         form.add(object : CheckBox("isDeleted") {
@@ -119,7 +125,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         buttons.add(object : AjaxSubmitLink("save") {
             override fun onConfigure() {
                 super.onConfigure()
-                isVisible = isEditMode()
+                isVisible = isEditMode() || isCreateMode()
             }
 
             override fun onSubmit(target: AjaxRequestTarget, form: Form<*>) {
@@ -135,8 +141,8 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         buttons.add(object : AjaxLambdaLink<Any>("edit", this::editButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                isVisible = (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
-                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS)) && isViewMode()
+                isVisible = isViewMode() && !isCreateMode() && (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
+                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS))
             }
         })
         buttons.add(object : AjaxLambdaLink<Any>("cancel", this::cancelButtonClick) {
@@ -171,11 +177,15 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         target.add(form)
     }
 
-    private fun isEditMode():Boolean {
+    private fun isEditMode(): Boolean {
         return mode == PageMode.EDIT
     }
 
-    private fun isViewMode():Boolean {
+    private fun isViewMode(): Boolean {
         return mode == PageMode.VIEW
+    }
+
+    private fun isCreateMode(): Boolean {
+        return mode == PageMode.CREATE
     }
 }
