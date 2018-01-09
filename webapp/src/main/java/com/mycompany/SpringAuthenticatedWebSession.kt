@@ -3,6 +3,8 @@ package com.mycompany
 import com.mycompany.db.core.user.AuthenticationService
 import com.mycompany.dsl.exceptions.AuthenticationException
 import com.mycompany.user.Principal
+import org.apache.wicket.Application
+import org.apache.wicket.Localizer
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession
 import org.apache.wicket.authroles.authorization.strategies.role.Roles
 import org.apache.wicket.injection.Injector
@@ -39,6 +41,7 @@ class SpringAuthenticatedWebSession(request: Request) : AuthenticatedWebSession(
             principal = authenticationService.authenticate(login, password)
             true
         } catch (e: AuthenticationException) {
+            error(e.message)
             false
         }
     }
