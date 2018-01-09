@@ -27,6 +27,7 @@
         <gmavenplus-plugin.version>1.6</gmavenplus-plugin.version>
         <spock.version>1.1-groovy-2.4</spock.version>
         <sqlite.version>3.19.3</sqlite.version>
+        <jackson.version>2.9.3</jackson.version>
     </properties>
 
     <dependencyManagement>
@@ -68,6 +69,11 @@
                 <artifactId>spock-core</artifactId>
                 <version>${spock.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
