@@ -122,6 +122,24 @@ class AgentMonitoringPage : AuthBasePage() {
             }
         }
         add(buttons)
+
+        buttons.add(object : AjaxLambdaLink<Any>("showServiceMessages", this::showServiceMessagesClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                // TODO - если выбран только 1 агент
+//                isVisible = isViewMode() && !isCreateMode() && (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
+//                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS))
+            }
+        })
+        buttons.add(object : AjaxLambdaLink<Any>("showEventHistory", this::showEventHistoryClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                // TODO - если выбран только 1 агент
+//                isVisible = isViewMode() && !isCreateMode() && (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
+//                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS))
+            }
+        })
+
         buttons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
@@ -137,6 +155,14 @@ class AgentMonitoringPage : AuthBasePage() {
                 //isVisible = isEditMode()
             }
         })
+    }
+
+    private fun showServiceMessagesClick(target: AjaxRequestTarget) {
+        // TODO
+    }
+
+    private fun showEventHistoryClick(target: AjaxRequestTarget) {
+        // TODO
     }
 
     private fun startButtonClick(target: AjaxRequestTarget) {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<body>
+<wicket:panel>
+    <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+        <thead>
+        <tr role="row">
+            <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 50px;" aria-sort="ascending">Идентификатор</th>
+            <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 250px;">Дата создания</th>
+            <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 189px;">Сообщение</th>
+        </tr>
+        </thead>
+        <tbody wicket:id="listViewContainer">
+        <div wicket:id="listView">
+            <tr role="row" class="odd">
+                <td><span wicket:id="id">[id]</span></td>
+                <td><span wicket:id="createDate">[createDate]</span></td>
+                <td><span wicket:id="message">[message]</span></td>
+            </tr>
+        </div>
+        </tbody>
+    </table>
+</wicket:panel>
+</body>
+</html>
