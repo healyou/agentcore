@@ -3,6 +3,7 @@ package com.mycompany.agent
 import com.mycompany.AuthBasePage
 import com.mycompany.BootstrapFeedbackPanel
 import com.mycompany.agent.panels.DslFileUploadPanel
+import com.mycompany.agent.validator.ServiceLoginValidator
 import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
@@ -95,13 +96,12 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         form.maxSize = Bytes.megabytes(1.5)
 
         // agent summary panel
-        // TODO - login validator -> должен быть уникален
         form.add(object : TextField<String>("serviceLogin") {
             override fun onConfigure() {
                 super.onConfigure()
                 isEnabled = isEditMode() || isCreateMode()
             }
-        }.setRequired(true))
+        }.add(ServiceLoginValidator()).setRequired(true))
         val servicePasswordBlock = object : WebMarkupContainer("servicePasswordBlock") {
             override fun onConfigure() {
                 super.onConfigure()

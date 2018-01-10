@@ -11,4 +11,5 @@
     <entry key="updateDate">Дата обновления</entry>
     <entry key="isDeleted">Удалён</entry>
     <entry key="isSendAndGetMessages">Отправка сообщений через сервис</entry>
+    <entry key="ServiceLoginValidator.incorrectServiceLogin">Агент с заданным логином уже существует</entry>
 </properties>
