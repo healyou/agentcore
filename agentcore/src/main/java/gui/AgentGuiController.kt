@@ -212,7 +212,7 @@ class AgentGuiController {
 
     private fun getHistoryAsTextAreaString(systemAgent: SystemAgent, size: Int): String {
         val historyText = StringBuilder()
-        historyService.getLastNumberItems(systemAgent.id!!, size.toLong()).asReversed().forEach {
+        historyService.getLastNumberItems(systemAgent.id!!, size.toLong()).forEach {
             historyText.append(it.createDate).append(' ').append(it.message).append("\n")
         }
         return historyText.toString()
