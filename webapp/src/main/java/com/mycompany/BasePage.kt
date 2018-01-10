@@ -1,6 +1,7 @@
 package com.mycompany
 
 import com.mycompany.agent.AgentsPage
+import com.mycompany.agent.monitoring.AgentMonitoringPage
 import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.security.PrincipalSupport
 import com.mycompany.user.Authority
@@ -35,6 +36,13 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
             override fun onConfigure() {
                 super.onConfigure()
                 isVisible = isPrincipalHasAnyAuthority(Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
+            }
+        })
+        add(object : AjaxLambdaLink<Any>("monitoringPage", this::monitoringPageClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                // TODO - видимость
+                //isVisible = isPrincipalHasAnyAuthority(Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
             }
         })
     }
@@ -72,5 +80,9 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
 
     private fun agentsPageClick(target: AjaxRequestTarget) {
         setResponsePage(AgentsPage::class.java)
+    }
+
+    private fun monitoringPageClick(target: AjaxRequestTarget) {
+        setResponsePage(AgentMonitoringPage::class.java)
     }
 }

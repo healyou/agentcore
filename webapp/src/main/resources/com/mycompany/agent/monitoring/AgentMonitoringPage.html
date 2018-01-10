@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html"
+      xmlns:wicket="https://git-wip-us.apache.org/repos/asf/wicket/repo?p=wicket.git;a=blob_plain;f=wicket-core/src/main/resources/META-INF/wicket-1.5.xsd;hb=master"
+      xml:lang="ru" lang="ru">
+<body>
+<wicket:extend>
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fa fa-table"></i> Список агентов</div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <div id="dataTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dataTable_length">
+                    <label>
+                        <div class="alert alert-danger alert-custom" wicket:id="feedback"></div>
+                    </label></div></div><div class="col-sm-12 col-md-6"><div id="dataTable_filter" class="dataTables_filter"></div></div></div><div class="row"><div class="col-sm-12"><table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                    <thead>
+                    <tr role="row">
+                        <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 20px;" aria-sort="ascending"></th>
+                        <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 250px;">Идентификатор</th>
+                        <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 189px;">Логин</th>
+                        <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 250px;">Удалён</th>
+                        <th tabindex="0" aria-controls="dataTable" rowspan="1" colspan="1" style="width: 184px;">Статус</th>
+                    </tr>
+                    </thead>
+                    <tbody wicket:id="listViewContainer">
+                    <div wicket:id="listView">
+                        <tr role="row" class="odd">
+                            <td><input wicket:id="check" type="checkbox"/></td>
+                            <td><a wicket:id="id"><span wicket:id="idLabel">[idLabel]</span></a></td>
+                            <td><span wicket:id="login">[login]</span></td>
+                            <td><span wicket:id="isDeleted">[isDeleted]</span></td>
+                            <td><span wicket:id="status">[status]</span></td>
+                        </tr>
+                    </div>
+                    </tbody>
+                </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Показаны с 1 по <span wicket:id="tableNumberLabel">[tableShowNumberLabel]</span> из <span wicket:id="tableSizeLabel">[tableSizeLabel]</span> записей</div></div><div class="col-sm-12 col-md-7">
+                    <div wicket:id="buttons" class="float-right row">
+                        <div>
+                            <a wicket:id="start" href="#" class="btn btn-primary mr-2">Старт</a>
+                        </div>
+                        <div>
+                            <a wicket:id="stop" href="#" class="btn btn-primary">Стоп</a>
+                        </div>
+                    </div>
+                </div></div></div>
+            </div>
+        </div>
+    </div>
+</wicket:extend>
+</body>
+</html>
