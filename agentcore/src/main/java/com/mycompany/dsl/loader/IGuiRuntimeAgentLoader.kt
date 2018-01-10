@@ -8,7 +8,7 @@ import com.mycompany.dsl.objects.DslImage
 /**
  * @author Nikita Gorodilov
  */
-interface IRuntimeAgentLoader {
+interface IGuiRuntimeAgentLoader {
 
     fun load(createAgent: (dslFile: DslFileAttachment) -> ThreadPoolRuntimeAgent)
     fun start()

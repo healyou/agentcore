@@ -16,7 +16,7 @@ import java.nio.file.Files
  *
  * @author Nikita Gorodilov
  */
-class RuntimeAgentLoader: IRuntimeAgentLoader {
+class RuntimeAgentLoader: IGuiRuntimeAgentLoader {
 
     companion object {
         private val AGENT_DSL_PATH = "data/dsl/"
