@@ -4,10 +4,18 @@ import com.mycompany.AuthBasePage
 import com.mycompany.BootstrapFeedbackPanel
 import com.mycompany.HomePage
 import com.mycompany.agent.AgentPage
+import com.mycompany.agent.panels.AgentEventHistoryPanel
+import com.mycompany.agent.panels.ServiceMessagesPanel
 import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.base.converter.BooleanYesNoConverter
+import com.mycompany.db.core.sc.ServiceMessageSC
+import com.mycompany.db.core.servicemessage.ServiceMessage
+import com.mycompany.db.core.servicemessage.ServiceMessageService
 import com.mycompany.db.core.systemagent.SystemAgent
+import com.mycompany.db.core.systemagent.SystemAgentEventHistory
+import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
+import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
 import com.mycompany.security.acceptor.AlwaysAcceptedPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
 import com.mycompany.user.Authority
@@ -21,15 +29,14 @@ import org.apache.wicket.markup.html.WebMarkupContainer
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.list.ListItem
 import org.apache.wicket.markup.html.list.ListView
-import org.apache.wicket.model.AbstractReadOnlyModel
-import org.apache.wicket.model.IModel
-import org.apache.wicket.model.Model
-import org.apache.wicket.model.PropertyModel
 import org.apache.wicket.request.mapper.parameter.PageParameters
 import org.apache.wicket.request.resource.CssResourceReference
 import org.apache.wicket.request.resource.JavaScriptResourceReference
 import org.apache.wicket.spring.injection.annot.SpringBean
 import org.apache.wicket.util.convert.IConverter
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow
+import org.apache.wicket.model.*
+
 
 /**
  * Страница мониторинга состояния агентов
@@ -40,12 +47,22 @@ class AgentMonitoringPage : AuthBasePage() {
 
     companion object {
         private val TABLE_MAX_SHOW_SIZE = 10
+        private val MODAL_COOKIE_NAME = "modal" + this::class.java.name
+        private val SHOW_LAST_SYSTEM_MESSAGES_NUMBER = 10
+        private val SHOW_LAST_EVENT_HISTORY_NUMBER = 10
     }
 
     @SpringBean
     private lateinit var agentService: SystemAgentService
+    @SpringBean
+    private lateinit var serviceMessageService: ServiceMessageService
+    @SpringBean
+    private lateinit var eventHistoryService: SystemAgentEventHistoryService
+    @SpringBean
+    private lateinit var agentWorkControl: IRuntimeAgentWorkControl
 
     // TODO - общий класс для таблиц
+    /* Количество отображаемых объектов */
     private var tableSizeNumber: Long = agentService.size()
     private var tableShowNumber: Integer =
             if (tableSizeNumber < TABLE_MAX_SHOW_SIZE) Integer(tableSizeNumber.toInt()) else Integer(TABLE_MAX_SHOW_SIZE)
@@ -54,6 +71,11 @@ class AgentMonitoringPage : AuthBasePage() {
     private lateinit var buttons: WebMarkupContainer
     private lateinit var listViewContainer: WebMarkupContainer
     private lateinit var tableNumberLabel: Label
+    private lateinit var modal: ModalWindow
+
+    /* Выделение объектов в таблице */
+    private val checkedAgentsIds = HashSet<Long>()
+    private var searchResult: List<SystemAgent> = arrayListOf()
 
     override fun renderHead(response: IHeaderResponse) {
         super.renderHead(response)
@@ -71,6 +93,8 @@ class AgentMonitoringPage : AuthBasePage() {
     override fun onInitialize() {
         super.onInitialize()
 
+        modal = ModalWindow("modal")
+        add(modal)
         feedback = BootstrapFeedbackPanel("feedback")
         val showNumberModel = PropertyModel.of<Integer>(this, "tableShowNumber")
         tableNumberLabel = Label("tableNumberLabel", showNumberModel)
@@ -121,22 +145,18 @@ class AgentMonitoringPage : AuthBasePage() {
                 //isVisible = isEditMode()
             }
         }
-        add(buttons)
+        add(buttons.setOutputMarkupId(true))
 
         buttons.add(object : AjaxLambdaLink<Any>("showServiceMessages", this::showServiceMessagesClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                // TODO - если выбран только 1 агент
-//                isVisible = isViewMode() && !isCreateMode() && (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
-//                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS))
+                isVisible = checkedAgentsIds.size == 1
             }
         })
         buttons.add(object : AjaxLambdaLink<Any>("showEventHistory", this::showEventHistoryClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                // TODO - если выбран только 1 агент
-//                isVisible = isViewMode() && !isCreateMode() && (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
-//                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS))
+                isVisible = checkedAgentsIds.size == 1
             }
         })
 
@@ -157,12 +177,47 @@ class AgentMonitoringPage : AuthBasePage() {
         })
     }
 
+    /**
+     * Можно открыть, если выделен 1 агент
+     */
     private fun showServiceMessagesClick(target: AjaxRequestTarget) {
-        // TODO
+        modal.setContent(ServiceMessagesPanel(modal.contentId, configureServiceMessagesModel()))
+        modal.setTitle(getString("serviceMessageModalName"))
+        modal.cookieName = MODAL_COOKIE_NAME
+        modal.show(target)
     }
 
+    private fun configureServiceMessagesModel(): IModel<List<ServiceMessage>> {
+        return object : LoadableDetachableModel<List<ServiceMessage>>() {
+            override fun load(): List<ServiceMessage> {
+                /* Последние сообщения агента */
+                // TODO метод для получения последних n сообщений
+                val sc = ServiceMessageSC()
+                sc.systemAgentId = checkedAgentsIds.elementAt(0)
+                return serviceMessageService.get(sc)
+            }
+        }
+    }
+
+    /**
+     * Можно открыть, если выделен 1 агент
+     */
     private fun showEventHistoryClick(target: AjaxRequestTarget) {
-        // TODO
+        // TODO - размер шрифта у титула изменить
+        modal.setContent(AgentEventHistoryPanel(modal.contentId, configureEventHistoryModel()))
+        modal.setTitle(getString("eventHistoryModalName"))
+        modal.cookieName = MODAL_COOKIE_NAME
+        modal.show(target)
+    }
+
+    private fun configureEventHistoryModel(): IModel<List<SystemAgentEventHistory>> {
+        return object : LoadableDetachableModel<List<SystemAgentEventHistory>>() {
+            override fun load(): List<SystemAgentEventHistory> {
+                /* Последние действия агента */
+                val agentId = checkedAgentsIds.elementAt(0)
+                return eventHistoryService.getLastNumberItems(agentId, SHOW_LAST_EVENT_HISTORY_NUMBER.toLong())
+            }
+        }
     }
 
     private fun startButtonClick(target: AjaxRequestTarget) {
@@ -177,7 +232,7 @@ class AgentMonitoringPage : AuthBasePage() {
      * Текст указывающий текущий статус агента
      */
     private fun configureAgentStatusLabel(agent: SystemAgent): String {
-        return "Не запущен" // TODO выбор статуса из системы запуска агентов
+        return if (agentWorkControl.isStarted(agent)) "Работает" else "Не запущен"
     }
 
     private fun configureAgentListModel(): IModel<List<SystemAgent>> {
@@ -189,11 +244,18 @@ class AgentMonitoringPage : AuthBasePage() {
     }
 
     private fun loadTableData(): List<SystemAgent> {
-        return agentService.get(tableShowNumber.toLong())
+        searchResult = agentService.get(tableShowNumber.toLong())
+        return searchResult
     }
 
     private fun checkAgent(target: AjaxRequestTarget, agent: SystemAgent, check: Boolean) {
-        // TODO таблицу надо перегрузить и кнопки(можно запускать или нельзя для проверки)
+        if (check) {
+            checkedAgentsIds.add(agent.id!!)
+        } else {
+            checkedAgentsIds.remove(agent.id!!)
+        }
+
+        target.add(buttons)
     }
 
     private fun agentClick(agent: SystemAgent) {
@@ -203,10 +265,21 @@ class AgentMonitoringPage : AuthBasePage() {
     }
 
     /**
-     * Выбран ли агент на страницу
+     * Выбран ли агент на странице
      */
     private fun isCheck(agent: SystemAgent): Boolean {
-        // TODO
-        return false
+        return checkedAgentsIds.contains(agent.id!!)
+    }
+
+    /**
+     * Поиск выделенного на странице агента(его может и не быть на странице)
+     */
+    private fun getAgent(id: Long): SystemAgent {
+        val agents = searchResult.filter { it.id == id }
+        if (!agents.isEmpty()) {
+            return agents[0]
+        }
+
+        throw RuntimeException("Агента с id = $id не найден на странице")
     }
 }

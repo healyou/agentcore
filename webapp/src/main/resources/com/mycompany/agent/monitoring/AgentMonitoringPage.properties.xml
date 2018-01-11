@@ -2,4 +2,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
     <entry key="pageName">Мониторинг состояния агентов</entry>
+    <entry key="serviceMessageModalName">Последние сообщения агента</entry>
+    <entry key="eventHistoryModalName">Последние действия агента</entry>
 </properties>
