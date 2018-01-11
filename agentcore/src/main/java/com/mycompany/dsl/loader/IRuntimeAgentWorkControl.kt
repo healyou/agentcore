@@ -1,6 +1,7 @@
 package com.mycompany.dsl.loader
 
 import com.mycompany.db.core.systemagent.SystemAgent
+import com.mycompany.dsl.exceptions.RuntimeAgentException
 import com.mycompany.dsl.objects.DslImage
 
 /**
@@ -23,11 +24,13 @@ interface IRuntimeAgentWorkControl {
     /**
      * Начало работы указанного агента
      */
+    @Throws(RuntimeAgentException::class)
     fun start(agent: SystemAgent)
 
     /**
      * Окончание выполнения работы указанного агента
      */
+    @Throws(RuntimeAgentException::class)
     fun stop(agent: SystemAgent)
 
     /**

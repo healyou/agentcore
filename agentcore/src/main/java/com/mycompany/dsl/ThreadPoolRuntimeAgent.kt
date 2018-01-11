@@ -12,7 +12,9 @@ import java.util.concurrent.Executors
  *
  * @author Nikita Gorodilov
  */
-abstract class ThreadPoolRuntimeAgent(dslFileAttachment: DslFileAttachment) : RuntimeAgent(dslFileAttachment) {
+abstract class ThreadPoolRuntimeAgent : RuntimeAgent {
+    constructor(serviceLogin: String): super(serviceLogin)
+    constructor(dslFileAttachment: DslFileAttachment): super(dslFileAttachment)
 
     companion object {
         var executorService: ExecutorService = createExecutors()
