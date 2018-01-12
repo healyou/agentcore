@@ -37,17 +37,21 @@
                     </tbody>
                 </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Показаны с 1 по <span wicket:id="tableNumberLabel">[tableShowNumberLabel]</span> из <span wicket:id="tableSizeLabel">[tableSizeLabel]</span> записей</div></div><div class="col-sm-12 col-md-7">
                     <div wicket:id="buttons" class="float-right row">
-                        <div>
-                            <a wicket:id="showServiceMessages" href="#" class="btn btn-primary mr-2">Показать последние сообщения</a>
+                        <div wicket:id="agentShowDataButtons" class="row mr-3">
+                            <div>
+                                <a wicket:id="showServiceMessages" href="#" class="btn btn-primary mr-2">Показать последние сообщения</a>
+                            </div>
+                            <div>
+                                <a wicket:id="showEventHistory" href="#" class="btn btn-primary mr-2">Показать последние действия</a>
+                            </div>
                         </div>
-                        <div>
-                            <a wicket:id="showEventHistory" href="#" class="btn btn-primary mr-2">Показать последние действия</a>
-                        </div>
-                        <div>
-                            <a wicket:id="start" href="#" class="btn btn-primary mr-2">Старт</a>
-                        </div>
-                        <div>
-                            <a wicket:id="stop" href="#" class="btn btn-primary">Стоп</a>
+                        <div wicket:id="startAgentButtons" class="row">
+                            <div>
+                                <a wicket:id="start" href="#" class="btn btn-primary mr-2">Старт</a>
+                            </div>
+                            <div>
+                                <a wicket:id="stop" href="#" class="btn btn-primary">Стоп</a>
+                            </div>
                         </div>
                     </div>
                 </div></div></div>

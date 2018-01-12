@@ -18,6 +18,13 @@ interface SystemAgentService: ITableDataProvider<SystemAgent> {
 
     fun get(sc: SystemAgentSC): List<SystemAgent>
 
+    /**
+     * Получеть n агентов указанного владельца
+     * @param size количество записей
+     * @param ownerId владелец агента
+     */
+    fun get(size: Long, ownerId: Long): List<SystemAgent>
+
     fun getById(id: Long): SystemAgent
 
     fun getByServiceLogin(serviceLogin: String): SystemAgent

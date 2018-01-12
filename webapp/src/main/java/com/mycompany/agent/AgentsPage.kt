@@ -142,6 +142,20 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
         add(tableUpdateTime.setOutputMarkupId(true))
         add(tableNumberLabel.setOutputMarkupId(true))
         add(Label("tableSizeLabel", PropertyModel.of<Long>(this, "tableSizeNumber")))
+
+        val buttons = WebMarkupContainer("buttons")
+        add(buttons)
+        buttons.add(object : AjaxLambdaLink<Any>("createAgent", this::createAgent) {
+            override fun onConfigure() {
+                super.onConfigure()
+                // todo если есть право создавать агентов
+                isVisible = isPrincipalHasAnyAuthority()
+            }
+        })
+    }
+
+    private fun createAgent(target: AjaxRequestTarget) {
+        setResponsePage(AgentPage::class.java)
     }
 
     private fun updateTable(target: AjaxRequestTarget) {

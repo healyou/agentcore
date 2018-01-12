@@ -15,6 +15,8 @@ import org.springframework.jdbc.UncategorizedSQLException
 import testbase.AbstractServiceTest
 
 import static junit.framework.Assert.assertEquals
+import static junit.framework.Assert.assertTrue
+import static junit.framework.Assert.assertTrue
 import static junit.framework.TestCase.assertNotNull
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertNull
@@ -246,6 +248,33 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertFalse(systemAgentService.isOwnAgent(agent, notOwner))
     }
 
+    @Test
+    void "Функция get(size, ownerId) корректно возвращает результат"() {
+        def findSize = 5
+        def ownerId = UserObjects.testActiveUser().id
+        def agentIds = createAgents(findSize, ownerId)
+        def findAgents = systemAgentService.get(findSize, ownerId)
+
+        assertTrue(agentIds.size() == findAgents.size())
+        findAgents.forEach {
+            assertTrue(ownerId == it.ownerId)
+        }
+    }
+
+    /**
+     * Создание size агентов
+     *
+     * @param size количество создаваемых агентов
+     * @return количество созданных агентов
+     */
+    private List<Long> createAgents(Long size, Long ownerId) {
+        List<Long> agentIds = new ArrayList<>()
+        for (i in 0..size - 1) {
+            agentIds.add(createAgentByOwnerId(ownerId).id)
+        }
+        agentIds
+    }
+
     /**
      * Создание size агентов
      *
@@ -292,7 +321,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         return systemAgentService.getById(systemAgentService.save(systemAgent))
     }
 
-    private def createAgentByOwnerId(Long ownerId) {
+    private SystemAgent createAgentByOwnerId(Long ownerId) {
         return createAgent(false, true, ownerId)
     }
 

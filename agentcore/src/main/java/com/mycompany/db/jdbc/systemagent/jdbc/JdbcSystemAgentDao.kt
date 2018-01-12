@@ -73,12 +73,21 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         return jdbcTemplate.query(sql.toString(), SystemAgentRowMapper(dslFileAttachmentDao))
     }
 
+    override fun get(size: Long, ownerId: Long): List<SystemAgent> {
+        return jdbcTemplate.query(
+                "SELECT * FROM system_agent where owner_id = ? ORDER BY create_date ASC LIMIT 0,? ",
+                SystemAgentRowMapper(dslFileAttachmentDao),
+                ownerId,
+                size
+        )
+    }
+
     override fun getById(id: Long): SystemAgent {
         return jdbcTemplate.queryForObject(
                 "SELECT * FROM system_agent WHERE id = ?",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 id
-        )
+        )!!
     }
 
     override fun getByServiceLogin(serviceLogin: String): SystemAgent {
@@ -86,7 +95,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 "SELECT * FROM system_agent WHERE service_login = ?",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 serviceLogin
-        )
+        )!!
     }
 
     override fun isExistsAgent(serviceLogin: String): Boolean {

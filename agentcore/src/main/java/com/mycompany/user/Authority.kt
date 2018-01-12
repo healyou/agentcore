@@ -10,9 +10,9 @@ import com.mycompany.db.base.Codable
 enum class Authority(override val code: String): Codable<String> {
 
     /**
-     * Создание агента
+     * Создание агентов для текущего пользователя
      */
-    CREATE_AGENT("create_agent"),
+    CREATE_OWN_AGENT("create_own_agent"),
 
     /**
      * Редактирование данных своего агента
@@ -23,6 +23,11 @@ enum class Authority(override val code: String): Codable<String> {
      * Редактирование данных всех агентов
      */
     EDIT_ALL_AGENTS("edit_all_agent"),
+
+    /**
+     * Запуск и остановка своих агентов
+     */
+    STARTED_OWN_AGENT("started_own_agent"),
 
     /**
      * Просмотр списка всех агентов

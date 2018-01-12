@@ -6,6 +6,7 @@ import com.mycompany.db.base.toSqlite
 import com.mycompany.db.core.sc.ServiceMessageSC
 import com.mycompany.db.core.servicemessage.ServiceMessage
 import com.mycompany.db.jdbc.servicemessage.ServiceMessageDao
+import com.mycompany.db.jdbc.systemagent.jdbc.SystemAgentEventHistoryRowMapper
 import org.springframework.stereotype.Component
 
 /**
@@ -67,6 +68,15 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
                 "select * from service_message_v where id = ?",
                 ServiceMessageRowMapper(),
                 id
+        )!!
+    }
+
+    override fun getLastNumberItems(systemAgentId: Long, size: Long): List<ServiceMessage> {
+        return jdbcTemplate.query(
+                "select * from service_message_v where system_agent_id = ? ORDER BY create_date ASC limit 0, ?",
+                ServiceMessageRowMapper(),
+                systemAgentId,
+                size
         )
     }
 

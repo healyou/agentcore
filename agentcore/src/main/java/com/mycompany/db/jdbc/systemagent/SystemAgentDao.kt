@@ -17,6 +17,8 @@ interface SystemAgentDao {
 
     fun get(sc: SystemAgentSC): List<SystemAgent>
 
+    fun get(size: Long, ownerId: Long): List<SystemAgent>
+
     fun getById(id: Long): SystemAgent
 
     fun getByServiceLogin(serviceLogin: String): SystemAgent

@@ -39,6 +39,10 @@ open class SystemAgentServiceImpl : SystemAgentService {
 
     override fun get(sc: SystemAgentSC): List<SystemAgent> = dao.get(sc)
 
+    override fun get(size: Long, ownerId: Long): List<SystemAgent> {
+        return dao.get(size, ownerId)
+    }
+
     override fun getById(id: Long): SystemAgent {
         return dao.getById(id)
     }

@@ -38,7 +38,15 @@
                             </tr>
                         </div>
                     </tbody>
-                </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Показаны с 1 по <span wicket:id="tableNumberLabel">[tableShowNumberLabel]</span> из <span wicket:id="tableSizeLabel">[tableSizeLabel]</span> записей</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate"></div></div></div></div>
+                </table></div></div><div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Показаны с 1 по <span wicket:id="tableNumberLabel">[tableShowNumberLabel]</span> из <span wicket:id="tableSizeLabel">[tableSizeLabel]</span> записей</div></div><div class="col-sm-12 col-md-7">
+                    <div wicket:id="buttons" class="float-right row">
+                        <div>
+                            <a wicket:id="createAgent" href="#" class="btn btn-primary mr-2">
+                                <wicket:message key="createAgent"/>
+                            </a>
+                        </div>
+                    </div>
+                </div></div></div>
             </div>
         </div>
         <div class="card-footer small text-muted">Обновлено <span wicket:id="tableUpdateTime">[tableUpdateTime]</span></div>

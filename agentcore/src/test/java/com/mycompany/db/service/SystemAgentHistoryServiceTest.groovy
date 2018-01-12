@@ -46,6 +46,7 @@ class SystemAgentHistoryServiceTest extends AbstractServiceTest {
 
         assertTrue(historyList.size() == createHistoryIds.size())
         historyList.forEach {
+            // проверяем id тк последние записи добавили мы
             assertTrue(createHistoryIds.any { createHistoryId ->
                 createHistoryId == it.id
             } && createAgentId == it.systemAgentId)

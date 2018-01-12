@@ -28,4 +28,9 @@ interface ServiceMessageService {
      * Получения сообщения по id
      */
     fun get(id: Long): ServiceMessage
+
+    /**
+     * Получить последние n записей для агента
+     */
+    fun getLastNumberItems(systemAgentId: Long, size: Long): List<ServiceMessage>
 }

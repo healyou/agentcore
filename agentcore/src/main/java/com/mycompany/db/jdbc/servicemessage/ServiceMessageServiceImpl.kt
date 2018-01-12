@@ -35,4 +35,8 @@ open class ServiceMessageServiceImpl : ServiceMessageService {
     override fun get(id: Long): ServiceMessage {
         return dao.get(id)
     }
+
+    override fun getLastNumberItems(systemAgentId: Long, size: Long): List<ServiceMessage> {
+        return dao.getLastNumberItems(systemAgentId, size)
+    }
 }

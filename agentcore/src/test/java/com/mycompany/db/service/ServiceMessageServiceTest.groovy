@@ -6,6 +6,7 @@ import com.mycompany.db.core.servicemessage.ServiceMessageType
 import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
+import objects.StringObjects
 import objects.TypesObjects
 import objects.initdbobjects.UserObjects
 import org.junit.Before
@@ -164,6 +165,30 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         assertNotEquals(systemAgentId, message.systemAgentId)
     }
 
+    @Test
+    void "Получение последних n сообщений агента"() {
+        def findSize = 5
+        def agentId = createSystemAgent()
+        def createMessageIds = createMessage(agentId, findSize)
+        def messageList = messageService.getLastNumberItems(agentId, findSize)
+
+        assertTrue(messageList.size() == createMessageIds.size())
+        messageList.forEach {
+            // проверяем id тк последние записи добавили мы
+            assertTrue(createMessageIds.any { createHistoryId ->
+                createHistoryId == it.id
+            } && agentId == it.systemAgentId)
+        }
+    }
+
+    private List<Long> createMessage(Long systemAgentId, Long size) {
+        List<Long> messageIds = new ArrayList<>()
+        for (i in 0..size - 1) {
+            messageIds.add(createMessage(systemAgentId))
+        }
+        messageIds
+    }
+
     private ServiceMessage getMessage(Long id)  {
         return messageService.get(id)
     }
@@ -180,5 +205,15 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
 
     private Long createSystemAgent() {
         return createSystemAgent(true)
+    }
+
+    private Long createMessage(Long systemAgentId) {
+        def serviceMessageType = messageTypeService.get(ServiceMessageType.Code.SEND)
+        def message = new ServiceMessage(
+                StringObjects.randomString(),
+                serviceMessageType,
+                systemAgentId
+        )
+        messageService.save(message)
     }
 }

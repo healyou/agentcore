@@ -39,7 +39,7 @@ import org.apache.wicket.model.*
 
 
 /**
- * Страница мониторинга состояния агентов
+ * Страница мониторинга состояния агентов(только свои агенты)
  *
  * @author Nikita Gorodilov
  */
@@ -138,43 +138,58 @@ class AgentMonitoringPage : AuthBasePage() {
         add(feedback)
         add(Label("tableSizeLabel", PropertyModel.of<Long>(this, "tableSizeNumber")))
 
-        buttons = object : WebMarkupContainer("buttons") {
-            override fun onConfigure() {
-                super.onConfigure()
-                // TODO - если есть права на старт стоп агентов
-                //isVisible = isEditMode()
-            }
-        }
+        buttons = WebMarkupContainer("buttons")
         add(buttons.setOutputMarkupId(true))
 
-        buttons.add(object : AjaxLambdaLink<Any>("showServiceMessages", this::showServiceMessagesClick) {
+        val agentShowDataButtons = object : WebMarkupContainer("agentShowDataButtons") {
             override fun onConfigure() {
                 super.onConfigure()
                 isVisible = checkedAgentsIds.size == 1
             }
-        })
-        buttons.add(object : AjaxLambdaLink<Any>("showEventHistory", this::showEventHistoryClick) {
-            override fun onConfigure() {
-                super.onConfigure()
-                isVisible = checkedAgentsIds.size == 1
-            }
-        })
+        }
+        buttons.add(agentShowDataButtons)
+        agentShowDataButtons.add(AjaxLambdaLink<Any>("showServiceMessages", this::showServiceMessagesClick))
+        agentShowDataButtons.add(AjaxLambdaLink<Any>("showEventHistory", this::showEventHistoryClick))
 
-        buttons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
+        val startAgentButtons = object : WebMarkupContainer("startAgentButtons") {
             override fun onConfigure() {
                 super.onConfigure()
-                // TODO - если всех агентов можно запустить
-//                isVisible = isViewMode() && !isCreateMode() && (isPrincipalHasAnyAuthority(Authority.EDIT_OWN_AGENT) && isOwnAgent(agent, agentService)
-//                        || isPrincipalHasAnyAuthority(Authority.EDIT_ALL_AGENTS))
+                isVisible = isPrincipalHasAnyAuthority(Authority.STARTED_OWN_AGENT)
             }
-        })
-        buttons.add(object : AjaxLambdaLink<Any>("stop", this::stopButtonClick) {
+        }
+        buttons.add(startAgentButtons)
+        startAgentButtons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                // TODO - если всех агентов можно остановить в работе
-                //isVisible = isEditMode()
+                isVisible = isStartAllCheckedAgents()
             }
         })
+        startAgentButtons.add(object : AjaxLambdaLink<Any>("stop", this::stopButtonClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                isVisible = isStopAllCheckedAgents()
+            }
+        })
+    }
+
+    /**
+     * Все выбранные агенты могут завершить работу
+     */
+    private fun isStopAllCheckedAgents(): Boolean {
+        return checkedAgentsIds.all { agentId ->
+            val agent = getAgent(agentId)
+            return agentWorkControl.isStarted(agent)
+        } && checkedAgentsIds.isNotEmpty()
+    }
+
+    /**
+     * Все выбранные агенты могут начать работу
+     */
+    private fun isStartAllCheckedAgents(): Boolean {
+        return checkedAgentsIds.all { agentId ->
+            val agent = getAgent(agentId)
+            return agentWorkControl.isStart(agent)
+        } && checkedAgentsIds.isNotEmpty()
     }
 
     /**
@@ -191,10 +206,8 @@ class AgentMonitoringPage : AuthBasePage() {
         return object : LoadableDetachableModel<List<ServiceMessage>>() {
             override fun load(): List<ServiceMessage> {
                 /* Последние сообщения агента */
-                // TODO метод для получения последних n сообщений
-                val sc = ServiceMessageSC()
-                sc.systemAgentId = checkedAgentsIds.elementAt(0)
-                return serviceMessageService.get(sc)
+                val agentId = checkedAgentsIds.elementAt(0)
+                return serviceMessageService.getLastNumberItems(agentId, SHOW_LAST_SYSTEM_MESSAGES_NUMBER.toLong())
             }
         }
     }
@@ -203,7 +216,6 @@ class AgentMonitoringPage : AuthBasePage() {
      * Можно открыть, если выделен 1 агент
      */
     private fun showEventHistoryClick(target: AjaxRequestTarget) {
-        // TODO - размер шрифта у титула изменить
         modal.setContent(AgentEventHistoryPanel(modal.contentId, configureEventHistoryModel()))
         modal.setTitle(getString("eventHistoryModalName"))
         modal.cookieName = MODAL_COOKIE_NAME
@@ -220,12 +232,42 @@ class AgentMonitoringPage : AuthBasePage() {
         }
     }
 
+    /**
+     * Начало работы агентов
+     */
     private fun startButtonClick(target: AjaxRequestTarget) {
-        // TODO
+        getCheckedAgents().forEach {
+            // todo не видит классы jar из другого модуля
+            //agentWorkControl.start(it)
+        }
+        checkedAgentsIds.clear()
+        updatePage(target)
     }
 
+    /**
+     * Конец работы агентов
+     */
     private fun stopButtonClick(target: AjaxRequestTarget) {
-        // TODO
+        getCheckedAgents().forEach {
+            // todo не видит классы jar из другого модуля
+            // agentWorkControl.stop(it)
+        }
+        checkedAgentsIds.clear()
+        updatePage(target)
+    }
+
+    private fun updatePage(target: AjaxRequestTarget) {
+        target.add(listViewContainer)
+        target.add(buttons)
+    }
+
+    /**
+     * Список всех выбранных агентов
+     */
+    private fun getCheckedAgents(): List<SystemAgent> {
+        return checkedAgentsIds.map {
+            getAgent(it)
+        }
     }
 
     /**
@@ -244,7 +286,7 @@ class AgentMonitoringPage : AuthBasePage() {
     }
 
     private fun loadTableData(): List<SystemAgent> {
-        searchResult = agentService.get(tableShowNumber.toLong())
+        searchResult = agentService.get(tableShowNumber.toLong(), getPrincipal().user.id!!)
         return searchResult
     }
 

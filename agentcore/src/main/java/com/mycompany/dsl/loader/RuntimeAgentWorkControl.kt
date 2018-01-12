@@ -111,6 +111,14 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
         return startedAgents.containsKey(agentId)
     }
 
+    override fun isStart(agent: SystemAgent): Boolean {
+        if (agent.isNew || agent.dslFile == null) {
+            // если агент не создан или у него нет dsl файла, то он не может начать работу
+            return false;
+        }
+        return true
+    }
+
     override fun onLoadImage(agent: SystemAgent, image: DslImage) {
         if (agent.isNew) {
             throw RuntimeAgentException("Агент ещё не создан")

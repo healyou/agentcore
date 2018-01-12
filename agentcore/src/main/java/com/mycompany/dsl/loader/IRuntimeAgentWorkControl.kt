@@ -39,6 +39,11 @@ interface IRuntimeAgentWorkControl {
     fun isStarted(agent: SystemAgent): Boolean
 
     /**
+     * @return true - указанный агент может начать работу, false - агенту не хватает данных для начала работы
+     */
+    fun isStart(agent: SystemAgent): Boolean
+
+    /**
      * Метод для вызова функции загрузки изображения агента
      * @param agent агент
      * @param image загружаемое изображения

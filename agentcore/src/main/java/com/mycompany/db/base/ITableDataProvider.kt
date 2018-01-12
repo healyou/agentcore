@@ -13,7 +13,8 @@ interface ITableDataProvider<out T> {
     fun size(): Long
 
     /**
-     *
+     * Загрузка n записей
+     * @param size количество записей
      */
     fun get(size: Long): List<T>
 }

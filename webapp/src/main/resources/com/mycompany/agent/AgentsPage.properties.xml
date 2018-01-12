@@ -3,4 +3,5 @@
 <properties>
     <entry key="pageName">Реестр агентов</entry>
     <entry key="tableShowNumber">Количество отображаемых записей</entry>
+    <entry key="createAgent">Создать агента</entry>
 </properties>
