@@ -32,7 +32,12 @@ interface SystemAgentService: ITableDataProvider<SystemAgent> {
     fun isExistsAgent(serviceLogin: String): Boolean
 
     /**
-     * Пользователь является владельцем агента
+     * @return true - Пользователь является владельцем агента
      */
     fun isOwnAgent(agent: SystemAgent, user: User): Boolean
+
+    /**
+     * @return Количество агентов для указанного пользователя
+     */
+    fun size(ownerId: Long): Long
 }

@@ -7,6 +7,7 @@ package com.mycompany.db.base
  */
 interface ITableDataProvider<out T> {
 
+    // todo исправить его или удалить - пока возможно не нужен
     /**
      * Количество записей в таблице
      */

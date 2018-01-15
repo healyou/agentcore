@@ -59,15 +59,6 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
     private lateinit var feedback: BootstrapFeedbackPanel
     private lateinit var listViewContainer: WebMarkupContainer
 
-    override fun renderHead(response: IHeaderResponse) {
-        super.renderHead(response)
-        // <!-- Page level plugin CSS-->
-        response.render(CssHeaderItem.forReference(CssResourceReference(HomePage::class.java, "resource/vendor/datatables/dataTables.bootstrap4.css")))
-
-        // <!-- Custom scripts for this page - index -->
-        response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-datatables.min.js")))
-    }
-
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
         return HasAnyAuthorityPrincipalAcceptor(Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
     }
@@ -148,8 +139,7 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
         buttons.add(object : AjaxLambdaLink<Any>("createAgent", this::createAgent) {
             override fun onConfigure() {
                 super.onConfigure()
-                // todo если есть право создавать агентов
-                isVisible = isPrincipalHasAnyAuthority()
+                isVisible = isPrincipalHasAnyAuthority(Authority.CREATE_OWN_AGENT)
             }
         })
     }

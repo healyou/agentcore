@@ -4,4 +4,5 @@
     <entry key="pageName">Мониторинг состояния агентов</entry>
     <entry key="serviceMessageModalName">Последние сообщения агента</entry>
     <entry key="eventHistoryModalName">Последние действия агента</entry>
+    <entry key="loadImageModalName">Загрузка изображения</entry>
 </properties>

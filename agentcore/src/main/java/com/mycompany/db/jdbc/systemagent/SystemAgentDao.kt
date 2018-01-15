@@ -27,6 +27,8 @@ interface SystemAgentDao {
 
     fun isOwnAgent(agent: SystemAgent, user: User): Boolean
 
+    fun size(ownerId: Long): Long
+
     fun size(): Long
 
     fun get(size: Long): List<SystemAgent>

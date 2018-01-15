@@ -10,6 +10,7 @@ import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.markup.head.CssHeaderItem
 import org.apache.wicket.markup.head.IHeaderResponse
 import org.apache.wicket.markup.head.JavaScriptHeaderItem
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem
 import org.apache.wicket.markup.html.WebPage
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.model.Model
@@ -73,6 +74,17 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
         // <!-- Custom scripts for this page - index -->
         //response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-datatables.min.js")))
         //response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-charts.min.js")))
+
+        // todo - что-то не так с подключением файлов
+        response.render(OnDomReadyHeaderItem.forScript(
+                "// Toggle the side navigation\n" +
+                "  \$(\"#sidenavToggler\").click(function(e) {\n" +
+                "    e.preventDefault();\n" +
+                "    \$(\"body\").toggleClass(\"sidenav-toggled\");\n" +
+                "    \$(\".navbar-sidenav .nav-link-collapse\").addClass(\"collapsed\");\n" +
+                "    \$(\".navbar-sidenav .sidenav-second-level, .navbar-sidenav .sidenav-third-level\").removeClass(\"show\");\n" +
+                "  });"
+        ))
     }
 
     protected open fun getPageName(): String {

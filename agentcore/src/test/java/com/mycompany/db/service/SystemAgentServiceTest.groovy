@@ -261,6 +261,16 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         }
     }
 
+    @Test
+    void "Функция size(ownerId) корректно возвращает результат"() {
+        def ownerId = UserObjects.testActiveUser().id
+        def prevCreateAgentSize = systemAgentService.size(ownerId)
+        def createAgentSize = 3
+        createAgents(createAgentSize, ownerId)
+
+        assertEquals(prevCreateAgentSize + createAgentSize, systemAgentService.size(ownerId))
+    }
+
     /**
      * Создание size агентов
      *

@@ -121,6 +121,14 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
         )
     }
 
+    override fun size(ownerId: Long): Long {
+        return jdbcTemplate.queryForObject(
+                "select count(*) from system_agent where owner_id = ?",
+                Long::class.java,
+                ownerId
+        )
+    }
+
     override fun size(): Long {
         return jdbcTemplate.queryForObject("select count(*) from system_agent", Long::class.java)
     }

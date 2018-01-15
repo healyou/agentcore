@@ -67,6 +67,9 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
             }
         } else {
             // CREATE
+            if (!isPrincipalHasAnyAuthority(Authority.CREATE_OWN_AGENT)) {
+                throw RestartResponseAtInterceptPageException(application.homePage)
+            }
             val currentUserId = getPrincipal().user.id!!
             agent = SystemAgent("", "", true, currentUserId, currentUserId)
             mode = PageMode.CREATE

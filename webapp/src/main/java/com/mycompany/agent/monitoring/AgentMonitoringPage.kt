@@ -2,13 +2,12 @@ package com.mycompany.agent.monitoring
 
 import com.mycompany.AuthBasePage
 import com.mycompany.BootstrapFeedbackPanel
-import com.mycompany.HomePage
 import com.mycompany.agent.AgentPage
 import com.mycompany.agent.panels.AgentEventHistoryPanel
+import com.mycompany.agent.panels.ModalUploadImagePanel
 import com.mycompany.agent.panels.ServiceMessagesPanel
 import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.base.converter.BooleanYesNoConverter
-import com.mycompany.db.core.sc.ServiceMessageSC
 import com.mycompany.db.core.servicemessage.ServiceMessage
 import com.mycompany.db.core.servicemessage.ServiceMessageService
 import com.mycompany.db.core.systemagent.SystemAgent
@@ -16,26 +15,22 @@ import com.mycompany.db.core.systemagent.SystemAgentEventHistory
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
-import com.mycompany.security.acceptor.AlwaysAcceptedPrincipalAcceptor
+import com.mycompany.dsl.objects.DslImage
+import com.mycompany.security.acceptor.HasAnyAuthorityPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
 import com.mycompany.user.Authority
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox
-import org.apache.wicket.markup.head.CssHeaderItem
-import org.apache.wicket.markup.head.IHeaderResponse
-import org.apache.wicket.markup.head.JavaScriptHeaderItem
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow
 import org.apache.wicket.markup.html.WebMarkupContainer
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.list.ListItem
 import org.apache.wicket.markup.html.list.ListView
+import org.apache.wicket.model.*
 import org.apache.wicket.request.mapper.parameter.PageParameters
-import org.apache.wicket.request.resource.CssResourceReference
-import org.apache.wicket.request.resource.JavaScriptResourceReference
 import org.apache.wicket.spring.injection.annot.SpringBean
 import org.apache.wicket.util.convert.IConverter
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow
-import org.apache.wicket.model.*
 
 
 /**
@@ -63,7 +58,7 @@ class AgentMonitoringPage : AuthBasePage() {
 
     // TODO - общий класс для таблиц
     /* Количество отображаемых объектов */
-    private var tableSizeNumber: Long = agentService.size()
+    private var tableSizeNumber: Long = agentService.size(getPrincipal().user.id!!)
     private var tableShowNumber: Integer =
             if (tableSizeNumber < TABLE_MAX_SHOW_SIZE) Integer(tableSizeNumber.toInt()) else Integer(TABLE_MAX_SHOW_SIZE)
 
@@ -77,23 +72,18 @@ class AgentMonitoringPage : AuthBasePage() {
     private val checkedAgentsIds = HashSet<Long>()
     private var searchResult: List<SystemAgent> = arrayListOf()
 
-    override fun renderHead(response: IHeaderResponse) {
-        super.renderHead(response)
-        // <!-- Page level plugin CSS-->
-        response.render(CssHeaderItem.forReference(CssResourceReference(HomePage::class.java, "resource/vendor/datatables/dataTables.bootstrap4.css")))
-
-        // <!-- Custom scripts for this page - index -->
-        response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/js/sb-admin-datatables.min.js")))
-    }
-
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
-        return AlwaysAcceptedPrincipalAcceptor()
+        return HasAnyAuthorityPrincipalAcceptor(Authority.VIEW_OWN_AGENT)
     }
 
     override fun onInitialize() {
         super.onInitialize()
 
-        modal = ModalWindow("modal")
+        modal = object : ModalWindow("modal") {
+            override fun showUnloadConfirmation(): Boolean {
+                return false
+            }
+        }
         add(modal)
         feedback = BootstrapFeedbackPanel("feedback")
         val showNumberModel = PropertyModel.of<Integer>(this, "tableShowNumber")
@@ -151,25 +141,39 @@ class AgentMonitoringPage : AuthBasePage() {
         agentShowDataButtons.add(AjaxLambdaLink<Any>("showServiceMessages", this::showServiceMessagesClick))
         agentShowDataButtons.add(AjaxLambdaLink<Any>("showEventHistory", this::showEventHistoryClick))
 
-        val startAgentButtons = object : WebMarkupContainer("startAgentButtons") {
+        val agentWorkButtons = object : WebMarkupContainer("agentWorkButtons") {
             override fun onConfigure() {
                 super.onConfigure()
                 isVisible = isPrincipalHasAnyAuthority(Authority.STARTED_OWN_AGENT)
             }
         }
-        buttons.add(startAgentButtons)
-        startAgentButtons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
+        buttons.add(agentWorkButtons)
+        agentWorkButtons.add(object : AjaxLambdaLink<Any>("loadImage", this::loadImageClick) {
+            override fun onConfigure() {
+                super.onConfigure()
+                //isVisible = isCheckOneStartedAgent()
+            }
+        })
+        agentWorkButtons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
                 isVisible = isStartAllCheckedAgents()
             }
         })
-        startAgentButtons.add(object : AjaxLambdaLink<Any>("stop", this::stopButtonClick) {
+        agentWorkButtons.add(object : AjaxLambdaLink<Any>("stop", this::stopButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
                 isVisible = isStopAllCheckedAgents()
             }
         })
+    }
+
+    /**
+     * Выбран 1 агент и он работает
+     */
+    private fun isCheckOneStartedAgent(): Boolean {
+        return checkedAgentsIds.size == 1 &&
+                agentWorkControl.isStarted(getAgent(checkedAgentsIds.elementAt(0)))
     }
 
     /**
@@ -230,6 +234,22 @@ class AgentMonitoringPage : AuthBasePage() {
                 return eventHistoryService.getLastNumberItems(agentId, SHOW_LAST_EVENT_HISTORY_NUMBER.toLong())
             }
         }
+    }
+
+    /**
+     * Загрузка изображения агента
+     */
+    private fun loadImageClick(target: AjaxRequestTarget) {
+        modal.setContent(object : ModalUploadImagePanel(modal.contentId, modal) {
+            override fun save(target: AjaxRequestTarget, image: DslImage) {
+                // todo не видит классы jar из другого модуля
+                //agentWorkControl.onLoadImage(getAgent(checkedAgentsIds.elementAt(0)), image)
+                modal.close(target)
+            }
+        })
+        modal.setTitle(getString("loadImageModalName"))
+        modal.cookieName = MODAL_COOKIE_NAME
+        modal.show(target)
     }
 
     /**

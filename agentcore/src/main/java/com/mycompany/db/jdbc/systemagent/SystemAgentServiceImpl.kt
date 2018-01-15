@@ -55,6 +55,10 @@ open class SystemAgentServiceImpl : SystemAgentService {
         return dao.isOwnAgent(agent, user)
     }
 
+    override fun size(ownerId: Long): Long {
+        return dao.size(ownerId)
+    }
+
     override fun size(): Long {
         return dao.size()
     }
