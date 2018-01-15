@@ -151,7 +151,7 @@ class AgentMonitoringPage : AuthBasePage() {
         agentWorkButtons.add(object : AjaxLambdaLink<Any>("loadImage", this::loadImageClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                //isVisible = isCheckOneStartedAgent()
+                isVisible = isCheckOneStartedAgent()
             }
         })
         agentWorkButtons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
