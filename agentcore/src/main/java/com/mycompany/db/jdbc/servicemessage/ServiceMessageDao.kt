@@ -13,5 +13,6 @@ interface ServiceMessageDao {
     fun use(message: ServiceMessage)
     fun get(sc: ServiceMessageSC) : List<ServiceMessage>
     fun get(id: Long): ServiceMessage
+    // TODO неверно грузит данные - сортировать надо наоборот
     fun getLastNumberItems(systemAgentId: Long, size: Long): List<ServiceMessage>
 }

@@ -14,7 +14,7 @@ interface IRuntimeAgentBehaviorEventSink {
     /**
      * Прикрепление поведения к агенту
      */
-    fun bing(runtimeAgent: RuntimeAgent)
+    fun bind(runtimeAgent: RuntimeAgent)
 
     /**
      * Открепление поведения от агенту

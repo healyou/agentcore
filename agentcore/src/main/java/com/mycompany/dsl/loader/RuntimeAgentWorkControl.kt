@@ -112,8 +112,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
     }
 
     override fun isStart(agent: SystemAgent): Boolean {
-        if (agent.isNew || agent.dslFile == null) {
-            // если агент не создан или у него нет dsl файла, то он не может начать работу
+        if (agent.isNew || agent.dslFile == null || isStarted(agent)) {
             return false;
         }
         return true

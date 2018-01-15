@@ -9,7 +9,7 @@ import com.mycompany.dsl.objects.DslMessage
  */
 abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
 
-    override fun bing(runtimeAgent: RuntimeAgent) {
+    override fun bind(runtimeAgent: RuntimeAgent) {
     }
 
     override fun unbind() {

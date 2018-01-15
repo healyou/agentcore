@@ -48,11 +48,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     public RuntimeAgent(String serviceLogin) throws RuntimeAgentException {
         super();
         DslFileAttachment dslFileAttachment = loadDslFileAttachment(serviceLogin);
-        loadServiceTypes(runtimeAgentService);
-        runtimeAgentService.setRuntimeAgent(this);
-        runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
-        runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
-        runtimeAgentService.applyInit();
+        init(dslFileAttachment);
     }
 
     /**
@@ -64,6 +60,10 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      */
     public RuntimeAgent(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         super();
+        init(dslFileAttachment);
+    }
+
+    private void init(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setRuntimeAgent(this);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
@@ -131,7 +131,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     public RuntimeAgent add(ARuntimeAgentBehavior behavior) {
         behaviors.add(behavior);
-        behavior.bing(this);
+        behavior.bind(this);
         return this;
     }
 

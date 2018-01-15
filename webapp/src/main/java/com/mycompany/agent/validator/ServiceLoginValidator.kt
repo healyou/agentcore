@@ -8,7 +8,7 @@ import org.apache.wicket.validation.IValidator
 import org.apache.wicket.validation.ValidationError
 
 /**
- * Валидация логина агента(должен быть уникален)
+ * Валидация логина агента(должен быть уникален todo - если новый агент)
  * Поиск текста ошибки - ServiceLoginValidator + .key
  *
  * @author Nikita Gorodilov

@@ -15,8 +15,8 @@ open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAg
 
     protected lateinit var runtimeAgent: RuntimeAgent
 
-    override fun bing(runtimeAgent: RuntimeAgent) {
-        super.bing(runtimeAgent)
+    override fun bind(runtimeAgent: RuntimeAgent) {
+        super.bind(runtimeAgent)
         this.runtimeAgent = runtimeAgent
         onEvent("Добавление RuntimeAgentHistoryEventBehavior к агенту")
     }

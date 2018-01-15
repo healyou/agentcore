@@ -14,8 +14,8 @@ class RuntimeAgentUpdateUiEventHistoryBehavior(
         private val appendHistoryText: (systemAgent: SystemAgent, message: String) -> Unit
 ) : RuntimeAgentHistoryEventBehavior(historyService) {
 
-    override fun bing(runtimeAgent: RuntimeAgent) {
-        super.bing(runtimeAgent)
+    override fun bind(runtimeAgent: RuntimeAgent) {
+        super.bind(runtimeAgent)
         this.runtimeAgent = runtimeAgent
         onEvent("Добавление RuntimeAgentUpdateUiEventHistoryBehavior к агенту")
     }

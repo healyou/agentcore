@@ -240,10 +240,10 @@ class AgentMonitoringPage : AuthBasePage() {
      * Загрузка изображения агента
      */
     private fun loadImageClick(target: AjaxRequestTarget) {
+        // todo - навести красоту на панели в модалке
         modal.setContent(object : ModalUploadImagePanel(modal.contentId, modal) {
             override fun save(target: AjaxRequestTarget, image: DslImage) {
-                // todo не видит классы jar из другого модуля
-                //agentWorkControl.onLoadImage(getAgent(checkedAgentsIds.elementAt(0)), image)
+                agentWorkControl.onLoadImage(getAgent(checkedAgentsIds.elementAt(0)), image)
                 modal.close(target)
             }
         })
@@ -257,8 +257,7 @@ class AgentMonitoringPage : AuthBasePage() {
      */
     private fun startButtonClick(target: AjaxRequestTarget) {
         getCheckedAgents().forEach {
-            // todo не видит классы jar из другого модуля
-            //agentWorkControl.start(it)
+            agentWorkControl.start(it)
         }
         checkedAgentsIds.clear()
         updatePage(target)
@@ -269,8 +268,7 @@ class AgentMonitoringPage : AuthBasePage() {
      */
     private fun stopButtonClick(target: AjaxRequestTarget) {
         getCheckedAgents().forEach {
-            // todo не видит классы jar из другого модуля
-            // agentWorkControl.stop(it)
+            agentWorkControl.stop(it)
         }
         checkedAgentsIds.clear()
         updatePage(target)
