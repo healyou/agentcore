@@ -37,7 +37,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     private SystemAgent systemAgent = null;
     private List<ARuntimeAgentBehavior> behaviors = new ArrayList<>();
 
-    // TODO данный конструктор будет полезен, когда появятся пользователи и агенты
     /**
      * Конструктор без создания dsl файла агента
      *      Агент должен быть создан
@@ -156,7 +155,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     protected abstract LoginService getLoginService();
     protected abstract Environment getEnvironment();
     protected abstract FileContentLocator getFileContentLocator();
-    // TODO - надо разобраться, как правильно создавать и обновлять агентов
     protected abstract User getOwner();
     protected abstract User getCreateUser();
 

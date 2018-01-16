@@ -8,6 +8,7 @@ import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.security.acceptor.AlwaysAcceptedPrincipalAcceptor
+import com.mycompany.security.acceptor.HasAnyAuthorityPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
 import com.mycompany.user.Authority
 import org.apache.wicket.RestartResponseAtInterceptPageException
@@ -77,7 +78,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     }
 
     override fun getPrincipalAcceptor(): PrincipalAcceptor {
-        return AlwaysAcceptedPrincipalAcceptor() // TODO
+        return HasAnyAuthorityPrincipalAcceptor(Authority.VIEW_OWN_AGENT, Authority.EDIT_OWN_AGENT)
     }
 
     override fun onInitialize() {
@@ -92,7 +93,8 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         feedback = BootstrapFeedbackPanel("feedback")
         add(feedback)
 
-        form = Form<SystemAgent>("form", CompoundPropertyModel(agent))
+        val agentModel = CompoundPropertyModel(agent)
+        form = Form<SystemAgent>("form", agentModel)
         add(form)
         form.isMultiPart = true
         form.fileMaxSize = Bytes.megabytes(1)
@@ -104,7 +106,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
                 super.onConfigure()
                 isEnabled = isEditMode() || isCreateMode()
             }
-        }.add(ServiceLoginValidator()).setRequired(true))
+        }.add(ServiceLoginValidator(agentModel)).setRequired(true))
         val servicePasswordBlock = object : WebMarkupContainer("servicePasswordBlock") {
             override fun onConfigure() {
                 super.onConfigure()

@@ -34,6 +34,8 @@
         <jcl.slf4j.version>1.7.12</jcl.slf4j.version>
         <easymock.version>3.4</easymock.version>
         <surefire.version>2.19.1</surefire.version>
+        <jackson.version>2.9.3</jackson.version>
+        <quava.version>21.0</quava.version>
     </properties>
 
     <repositories>
@@ -112,6 +114,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
 
         <!-- spring test -->
@@ -206,8 +209,8 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <version>${quava.version}</version>
         </dependency>
-
     </dependencies>
 
     <build>

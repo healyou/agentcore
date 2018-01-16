@@ -73,7 +73,7 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
 
     override fun getLastNumberItems(systemAgentId: Long, size: Long): List<ServiceMessage> {
         return jdbcTemplate.query(
-                "select * from service_message_v where system_agent_id = ? ORDER BY create_date ASC limit 0, ?",
+                "select * from service_message_v where system_agent_id = ? ORDER BY create_date DESC limit 0, ?",
                 ServiceMessageRowMapper(),
                 systemAgentId,
                 size

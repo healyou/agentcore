@@ -42,8 +42,7 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
         add(object : AjaxLambdaLink<Any>("monitoringPage", this::monitoringPageClick) {
             override fun onConfigure() {
                 super.onConfigure()
-                // TODO - видимость
-                //isVisible = isPrincipalHasAnyAuthority(Authority.VIEW_OWN_AGENT, Authority.VIEW_ALL_AGENTS)
+                isVisible = isPrincipalHasAnyAuthority(Authority.VIEW_OWN_AGENT)
             }
         })
     }

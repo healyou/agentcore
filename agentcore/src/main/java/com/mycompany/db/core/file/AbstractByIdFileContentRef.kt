@@ -1,5 +1,7 @@
 package com.mycompany.db.core.file
 
+import java.io.Serializable
+
 /**
  * Ссылка на файл в бд
  *
@@ -8,7 +10,7 @@ package com.mycompany.db.core.file
 open class AbstractByIdFileContentRef(
         private val id: Long,
         private val name: String
-) {
+): Serializable {
 
     fun getId(): Long {
         return id

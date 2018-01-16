@@ -1,6 +1,5 @@
 package com.mycompany.db.core.systemagent
 
-import com.mycompany.db.base.ITableDataProvider
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.sc.SystemAgentSC
 import com.mycompany.user.User
@@ -8,7 +7,7 @@ import com.mycompany.user.User
 /**
  * @author Nikita Gorodilov
  */
-interface SystemAgentService: ITableDataProvider<SystemAgent> {
+interface SystemAgentService {
 
     fun save(systemAgent: SystemAgent): Long
 
@@ -40,4 +39,15 @@ interface SystemAgentService: ITableDataProvider<SystemAgent> {
      * @return Количество агентов для указанного пользователя
      */
     fun size(ownerId: Long): Long
+
+    /**
+     * Количество записей в таблице
+     */
+    fun size(): Long
+
+    /**
+     * Загрузка n записей
+     * @param size количество записей
+     */
+    fun get(size: Long): List<SystemAgent>
 }

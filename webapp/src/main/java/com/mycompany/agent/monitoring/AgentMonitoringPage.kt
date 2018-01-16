@@ -212,6 +212,7 @@ class AgentMonitoringPage : AuthBasePage() {
                 /* Последние сообщения агента */
                 val agentId = checkedAgentsIds.elementAt(0)
                 return serviceMessageService.getLastNumberItems(agentId, SHOW_LAST_SYSTEM_MESSAGES_NUMBER.toLong())
+                        .asReversed()
             }
         }
     }
@@ -232,6 +233,7 @@ class AgentMonitoringPage : AuthBasePage() {
                 /* Последние действия агента */
                 val agentId = checkedAgentsIds.elementAt(0)
                 return eventHistoryService.getLastNumberItems(agentId, SHOW_LAST_EVENT_HISTORY_NUMBER.toLong())
+                        .asReversed()
             }
         }
     }
@@ -240,7 +242,6 @@ class AgentMonitoringPage : AuthBasePage() {
      * Загрузка изображения агента
      */
     private fun loadImageClick(target: AjaxRequestTarget) {
-        // todo - навести красоту на панели в модалке
         modal.setContent(object : ModalUploadImagePanel(modal.contentId, modal) {
             override fun save(target: AjaxRequestTarget, image: DslImage) {
                 agentWorkControl.onLoadImage(getAgent(checkedAgentsIds.elementAt(0)), image)
