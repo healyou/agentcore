@@ -22,6 +22,6 @@ class DslFileContentProviderImpl: AbstractDao(), DslFileContentProvider {
                     val lobHandler = DefaultLobHandler()
                     val content = lobHandler.getBlobAsBytes(rs, "data")
                     ByteArrayFileContent(content ?: ByteArray(0))
-                }, ref.getId())
+                }, ref.getId())!!
     }
 }
