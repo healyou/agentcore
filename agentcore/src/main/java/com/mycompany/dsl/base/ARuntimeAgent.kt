@@ -23,6 +23,11 @@ import kotlin.concurrent.timer
  */
 abstract class ARuntimeAgent : IRuntimeAgent {
 
+    /**
+     * Начал ли агент свою работу
+     */
+    var isStarted = false
+
     private var systemAgent: SystemAgent? = null
     private var getMessagesTimer: Timer? = null
 
@@ -30,10 +35,12 @@ abstract class ARuntimeAgent : IRuntimeAgent {
         getMessagesTimer = timer("hello-timer", true, 1000, 2000) {
             searchMessages()
         }
+        isStarted = true
     }
 
     override fun stop() {
         getMessagesTimer?.cancel()
+        isStarted = false
     }
 
     /**

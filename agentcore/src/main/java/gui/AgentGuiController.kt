@@ -51,6 +51,10 @@ class AgentGuiController {
          * Количество записей истории поведения агента выбираемых из бд
          */
         val HISTORY_RECORDS_SIZE = 15
+        /**
+         * Количество загружаемых агентов
+         */
+        val AGENT_RECORDS_SIZE = 10
     }
 
     @Autowired
@@ -85,9 +89,9 @@ class AgentGuiController {
     @FXML
     lateinit var loadImageButton: Button
     @FXML
-    lateinit var eventHistoryUpdateButton: Button;
+    lateinit var eventHistoryUpdateButton: Button
     @FXML
-    lateinit var eventHistoryTextArea: TextArea;
+    lateinit var eventHistoryTextArea: TextArea
 
     fun initialize() {
         configureLoadImageButton()
@@ -229,11 +233,7 @@ class AgentGuiController {
     }
 
     private fun getSystemAgents(): List<SystemAgent> {
-        val sc = SystemAgentSC()
-        sc.isSendAndGetMessages = true
-        sc.isDeleted = false
-
-        return systemAgentService.get(sc)
+        return systemAgentService.get(AGENT_RECORDS_SIZE.toLong(), javaFxSession.principal.user.id!!)
     }
 
     private fun loadServiceMessages(systemAgent: SystemAgent): List<ServiceMessage> {

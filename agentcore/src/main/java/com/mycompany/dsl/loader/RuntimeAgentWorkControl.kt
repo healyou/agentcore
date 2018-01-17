@@ -7,7 +7,6 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
-import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.exceptions.RuntimeAgentException
@@ -22,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * @author Nikita Gorodilov
  */
-// TODO правка работы с многопоточностью
 // TODO тесты работы данного класса
 @Component
 class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
@@ -44,8 +42,11 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
     @Autowired
     private lateinit var fileContentLocator: FileContentLocator
 
-    // TODO - надо, чтобы одновременно не могли делать операции с одним агентом
-    private val startedAgents = ConcurrentHashMap<Long, RuntimeAgent>()
+    /**
+     * Используется ThreadPoolRuntimeAgent - чтобы вызов onLoadImage лишь давал сигнал начала выполнения функции агентом
+     * Поэтому в данном потоке время выполнения функции будет минимальным
+     */
+    private val startedAgents = ConcurrentHashMap<Long, ThreadPoolRuntimeAgent>()
 
     override fun start() {
         TODO("not implemented")
@@ -55,34 +56,40 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
         TODO("not implemented")
     }
 
+    /**
+     * одновременно может начать работу агентом лишь из 1-го потока
+     * поэтому нельзя будет добавить одновременно двух одинаковых агентов
+     */
     @Throws(RuntimeAgentException::class)
     override fun start(agent: SystemAgent) {
-        if (agent.isNew) {
-            throw RuntimeAgentException("Агент ещё не создан")
-        } else if(isStarted(agent)) {
-            throw RuntimeAgentException("Агент уже работает")
-        }
+        synchronized(this) {
+            if (agent.isNew) {
+                throw RuntimeAgentException("Агент ещё не создан")
+            } else if (isStarted(agent)) {
+                throw RuntimeAgentException("Агент уже работает")
+            }
 
-        val agentId = agent.id!!
-        val owner = User("", "")
-        val createUser = User("", "")
-        owner.id = agent.ownerId
-        createUser.id = agent.createUserId
-        val runtimeAgent = object : ThreadPoolRuntimeAgent(agent.serviceLogin) {
+            val agentId = agent.id!!
+            val owner = User("", "")
+            val createUser = User("", "")
+            owner.id = agent.ownerId
+            createUser.id = agent.createUserId
+            val runtimeAgent = object : ThreadPoolRuntimeAgent(agent.serviceLogin) {
 
-            override fun getSystemAgentService(): SystemAgentService = this@RuntimeAgentWorkControl.systemAgentService
-            override fun getServiceMessageService(): ServiceMessageService = this@RuntimeAgentWorkControl.serviceMessageService
-            override fun getServerTypeService(): ServerTypeService = this@RuntimeAgentWorkControl.serverTypeService
-            override fun getLoginService(): LoginService = this@RuntimeAgentWorkControl.loginService
-            override fun getEnvironment(): Environment = this@RuntimeAgentWorkControl.environment
-            override fun getMessageTypeService(): ServiceMessageTypeService = this@RuntimeAgentWorkControl.messageTypeService
-            override fun getFileContentLocator(): FileContentLocator = this@RuntimeAgentWorkControl.fileContentLocator
-            override fun getOwner(): User = owner
-            override fun getCreateUser(): User = createUser
+                override fun getSystemAgentService(): SystemAgentService = this@RuntimeAgentWorkControl.systemAgentService
+                override fun getServiceMessageService(): ServiceMessageService = this@RuntimeAgentWorkControl.serviceMessageService
+                override fun getServerTypeService(): ServerTypeService = this@RuntimeAgentWorkControl.serverTypeService
+                override fun getLoginService(): LoginService = this@RuntimeAgentWorkControl.loginService
+                override fun getEnvironment(): Environment = this@RuntimeAgentWorkControl.environment
+                override fun getMessageTypeService(): ServiceMessageTypeService = this@RuntimeAgentWorkControl.messageTypeService
+                override fun getFileContentLocator(): FileContentLocator = this@RuntimeAgentWorkControl.fileContentLocator
+                override fun getOwner(): User = owner
+                override fun getCreateUser(): User = createUser
+            }
+            runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
+            runtimeAgent.start()
+            startedAgents.put(agentId, runtimeAgent)
         }
-        runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
-        runtimeAgent.start()
-        startedAgents.put(agentId, runtimeAgent)
     }
 
     // TODO - у агента нельзя одновременно вызывать start - stop - onLoadImage -> надо это всё как-то синхронизировать
@@ -96,8 +103,12 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
         }
 
         val agentId = agent.id!!
-        startedAgents.getValue(agentId).apply {
-            stop()
+        val stoppedAgent = startedAgents.getValue(agentId)
+        /* операции над агентами не могут быть выполнены одновременно n потоками */
+        synchronized(stoppedAgent) {
+            if (stoppedAgent.isStarted) {
+                stoppedAgent.stop()
+            }
         }
         startedAgents.remove(agentId)
     }
@@ -126,8 +137,10 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
         }
 
         val agentId = agent.id!!
-        startedAgents.getValue(agentId).apply {
-            onLoadImage(image)
+        val operationAgent = startedAgents.getValue(agentId)
+        /* операции над агентами не могут быть выполнены одновременно n потоками */
+        synchronized(operationAgent) {
+            operationAgent.onLoadImage(image)
         }
     }
 }
