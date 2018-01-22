@@ -1,5 +1,6 @@
 package com.mycompany.dsl.loader
 
+import com.mycompany.agentworklibrary.ILibraryAgentWorkControl
 import com.mycompany.db.base.Environment
 import com.mycompany.db.core.file.FileContentLocator
 import com.mycompany.db.core.servicemessage.ServiceMessageService
@@ -23,7 +24,18 @@ import java.util.concurrent.ConcurrentHashMap
  */
 // TODO тесты работы данного класса
 @Component
-class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
+class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkControl {
+
+    companion object {
+
+        /**
+         * Получение реального экземпляра объекта
+         */
+        @JvmStatic
+        fun getInstance(): RuntimeAgentWorkControl {
+            return InstantiationTracingBeanPostProcessor.runtimeAgentLoader as RuntimeAgentWorkControl
+        }
+    }
 
     @Autowired
     private lateinit var systemAgentService: SystemAgentService
@@ -142,5 +154,9 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl {
         synchronized(operationAgent) {
             operationAgent.onLoadImage(image)
         }
+    }
+
+    override fun onAgentEvent(agentId: Long, event: String) {
+        println("fun onAgentEvent($agentId, $event) execute")
     }
 }

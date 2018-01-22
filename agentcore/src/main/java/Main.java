@@ -1,4 +1,3 @@
-import com.company.AgentImageFunctions;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.mycompany.service.*;
@@ -30,12 +29,6 @@ public class Main {
         List<MessageType> messageTypeList = serverTypeService.getMessageTypes(sessionManager);
 
         int k = 1;
-    }
-
-    private static void testFunctions() {
-        AgentImageFunctions.testImageFun1();
-        AgentImageFunctions.testImageFun2();
-        AgentImageFunctions.testImageFun3();
     }
 
     private static void testServiceFuncions() {

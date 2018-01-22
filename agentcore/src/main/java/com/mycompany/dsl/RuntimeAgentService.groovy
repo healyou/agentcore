@@ -1,5 +1,6 @@
 package com.mycompany.dsl
 
+import com.mycompany.agentworklibrary.AAgentWorkLibrary
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslMessage
 import com.mycompany.dsl.base.SendMessageParameters
@@ -41,6 +42,8 @@ class RuntimeAgentService {
 
     boolean agent_send_message_provided = false
     def agentSendMessage = {}
+
+    def agentWorkLibraryClass = AAgentWorkLibrary.findAgentWorkLibraryClass()
 
     void loadExecuteRules(String rules) {
         Binding binding = createLoadBindings()
@@ -241,7 +244,7 @@ class RuntimeAgentService {
             closure.delegate = delegate
 
             if (binding.result)
-                use(ImagesFunctions) {
+                use(agentWorkLibraryClass) {
                     closure()
                 }
         }

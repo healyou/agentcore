@@ -54,6 +54,11 @@
     <!--  вынести всё, что связано с gui - в другой модуль, чтобы тут не мешалось и не конфликтовало не с чем -->
 
     <dependencies>
+        <dependency>
+            <groupId>com.company</groupId>
+            <artifactId>agentworklibrary</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.company</groupId>

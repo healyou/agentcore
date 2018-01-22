@@ -77,5 +77,6 @@
         <module>agentcore</module>
         <module>agentimagelib</module>
         <module>webapp</module>
+        <module>agentworklibrary</module>
     </modules>
 </project>
