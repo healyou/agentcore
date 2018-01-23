@@ -2,7 +2,8 @@ package com.mycompany.dsl
 
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -28,9 +29,15 @@ abstract class ThreadPoolRuntimeAgent : RuntimeAgent {
         }
     }
 
-    override fun onGetMessage(message: DslMessage) {
+    override fun onGetServiceMessage(serviceMessage: DslServiceMessage) {
         executorService.execute {
-            super.onGetMessage(message)
+            super.onGetServiceMessage(serviceMessage)
+        }
+    }
+
+    override fun onGetLocalMessage(localMessage: DslLocalMessage) {
+        executorService.execute {
+            super.onGetLocalMessage(localMessage)
         }
     }
 

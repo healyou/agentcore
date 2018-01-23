@@ -9,13 +9,24 @@ init = {
     defaultBodyType = JSON_MBT
 }
 
-onGetMessage = { message ->
+onGetServiceMessage = { serviceMessage ->
     executeCondition ("Если пришло сообщение от 2 агента") {
         condition {
-            message.senderType == TEST_AGENT_TYPE_2_AT
+            serviceMessage.senderType == TEST_AGENT_TYPE_2_AT
         }
         execute {
-            a1_testOnGetMessageFun()
+            a1_testOnGetServiceMessageFun()
+        }
+    }
+}
+
+onGetLocalMessage = { localMessage ->
+    executeCondition ("Локальное сообщение агента") {
+        condition {
+            localMessage.event == "event"
+        }
+        execute {
+            a1_testOnGetLocalMessageFun()
         }
     }
 }

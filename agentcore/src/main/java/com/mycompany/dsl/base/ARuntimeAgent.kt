@@ -9,7 +9,7 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.service.AbstractAgentService
 import com.mycompany.service.objects.Message
 import java.util.*
@@ -57,7 +57,7 @@ abstract class ARuntimeAgent : IRuntimeAgent {
 
         messageService.get(sc).forEach {
             messageService.use(it)
-            onGetMessage(configureDslServiceMessage(it))
+            onGetServiceMessage(configureDslServiceMessage(it))
         }
     }
 
@@ -69,10 +69,10 @@ abstract class ARuntimeAgent : IRuntimeAgent {
     /**
      * Получаем сообщение, которые легко испоьзовать в dsl
      */
-    private fun configureDslServiceMessage(serviceMessage: ServiceMessage): DslMessage {
+    private fun configureDslServiceMessage(serviceMessage: ServiceMessage): DslServiceMessage {
         val jsonDslImage = parseServiceMessage(serviceMessage.jsonObject).body
 
-        return DslMessage(
+        return DslServiceMessage(
                 serviceMessage.getMessageSenderCode!!,
                 AbstractAgentService.fromJson(jsonDslImage, object : TypeReference<DslImage>() {})
         )

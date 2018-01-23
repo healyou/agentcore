@@ -4,7 +4,8 @@ import com.mycompany.db.core.systemagent.SystemAgentEventHistory
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 
 /**
  * Сохранение истории действий агента
@@ -46,14 +47,24 @@ open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAg
         onEvent("Конец dsl функции onLoadImage")
     }
 
-    override fun beforeOnGetMessage(message: DslMessage) {
-        super.beforeOnGetMessage(message)
-        onEvent("Начало dsl функции onGetMessage")
+    override fun beforeOnGetServiceMessage(serviceMessage: DslServiceMessage) {
+        super.beforeOnGetServiceMessage(serviceMessage)
+        onEvent("Начало dsl функции onGetServiceMessage")
     }
 
-    override fun afterOnGetMessage(message: DslMessage) {
-        super.afterOnGetMessage(message)
-        onEvent("Конец dsl функции onGetMessage")
+    override fun afterOnGetServiceMessage(serviceMessage: DslServiceMessage) {
+        super.afterOnGetServiceMessage(serviceMessage)
+        onEvent("Конец dsl функции onGetServiceMessage")
+    }
+
+    override fun beforeOnGetLocalMessage(localMessage: DslLocalMessage) {
+        super.beforeOnGetLocalMessage(localMessage)
+        onEvent("Начало dsl функции onGetLocalMessage")
+    }
+
+    override fun afterOnGetLocalMessage(localMessage: DslLocalMessage) {
+        super.afterOnGetLocalMessage(localMessage)
+        onEvent("Конец dsl функции onGetLocalMessage")
     }
 
     override fun beforeOnEndImageTask(updateImage: DslImage) {

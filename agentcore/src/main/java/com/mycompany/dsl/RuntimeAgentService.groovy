@@ -2,14 +2,13 @@ package com.mycompany.dsl
 
 import com.mycompany.agentworklibrary.AAgentWorkLibrary
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.base.SendMessageParameters
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.MessageBodyType
 import com.mycompany.service.objects.MessageGoalType
 import com.mycompany.service.objects.MessageType
-
-import java.awt.Image
 
 /**
  * @author Nikita Gorodilov
@@ -31,8 +30,11 @@ class RuntimeAgentService {
     boolean on_load_image_provided = false
     def onLoadImage = {}
 
-    boolean on_get_message_provided = false
-    def onGetMessage = {}
+    boolean on_get_service_message_provided = false
+    def onGetServiceMessage = {}
+
+    boolean on_get_local_message_provided = false
+    def onGetLocalMessage = {}
 
     boolean on_end_image_task_provided = false
     def onEndImageTask = {}
@@ -59,7 +61,8 @@ class RuntimeAgentService {
 
         binding.init = init
         binding.onLoadImage = onLoadImage
-        binding.onGetMessage = onGetMessage
+        binding.onGetServiceMessage = onGetServiceMessage
+        binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndImageTask = onEndImageTask
 
         return binding
@@ -74,11 +77,13 @@ class RuntimeAgentService {
         if (bindingFunctionCheck(binding)) {
             init = binding.init
             onLoadImage = binding.onLoadImage
-            onGetMessage = binding.onGetMessage
+            onGetServiceMessage = binding.onGetServiceMessage
+            onGetLocalMessage = binding.onGetLocalMessage
             onEndImageTask = binding.onEndImageTask
 
             on_load_image_provided = true
-            on_get_message_provided = true
+            on_get_service_message_provided = true
+            on_get_local_message_provided = true
             on_end_image_task_provided = true
             init_provided = true
         } else {
@@ -88,7 +93,9 @@ class RuntimeAgentService {
 
     /* Проверка функций */
     boolean bindingFunctionCheck(Binding binding) {
-        return binding.init != init && binding.onLoadImage != onLoadImage && binding.onGetMessage != onGetMessage && binding.onEndImageTask != onEndImageTask
+        return binding.init != init && binding.onLoadImage != onLoadImage &&
+                binding.onGetServiceMessage != onGetServiceMessage && binding.onEndImageTask != onEndImageTask &&
+                binding.onGetLocalMessage != onGetLocalMessage
     }
 
     void applyInit() {
@@ -137,19 +144,35 @@ class RuntimeAgentService {
         }
     }
 
-    void applyOnGetMessage(DslMessage message) {
-        if (on_get_message_provided) {
+    void applyOnGetServiceMessage(DslServiceMessage serviceMessage) {
+        if (on_get_service_message_provided) {
             Binding binding = new Binding()
 
             prepareTypes(binding)
             prepareClosures(binding)
 
-            binding.message = message
+            binding.serviceMessage = serviceMessage
 
             GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onGetMessage.delegate = this;onGetMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetMessage(message)")
+            shell.evaluate("onGetServiceMessage.delegate = this;onGetServiceMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetServiceMessage(serviceMessage)")
         } else {
-            throw new RuntimeException("Функция on_get_message не загружена")
+            throw new RuntimeException("Функция on_get_service_message не загружена")
+        }
+    }
+
+    void applyOnGetLocalMessage(DslLocalMessage localMessage) {
+        if (on_get_local_message_provided) {
+            Binding binding = new Binding()
+
+            prepareTypes(binding)
+            prepareClosures(binding)
+
+            binding.localMessage = localMessage
+
+            GroovyShell shell = new GroovyShell(binding)
+            shell.evaluate("onGetLocalMessage.delegate = this;onGetLocalMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetLocalMessage(localMessage)")
+        } else {
+            throw new RuntimeException("Функция on_get_local_message не загружена")
         }
     }
 
@@ -172,7 +195,8 @@ class RuntimeAgentService {
     private void prepareClosures(Binding binding) {
         binding.init = init
         binding.onLoadImage = onLoadImage
-        binding.onGetMessage = onGetMessage
+        binding.onGetServiceMessage = onGetServiceMessage
+        binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndImageTask = onEndImageTask
         binding.sendMessage = { Map map ->
             /* required fields */

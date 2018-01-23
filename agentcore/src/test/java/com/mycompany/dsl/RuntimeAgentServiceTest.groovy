@@ -2,12 +2,15 @@ package com.mycompany.dsl
 
 import com.mycompany.dsl.base.SendMessageParameters
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 import objects.DslObjects
 import objects.StringObjects
 import objects.TypesObjects
 import org.junit.Assert
 import org.junit.Test
+
+import java.util.stream.Collectors
 
 import static org.easymock.EasyMock.mock
 
@@ -45,7 +48,7 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(isExecuteSendMessage)
     }
 
-    /* Без обязательного поля(Image) будет ошибка */
+    /* Без обязательного поля Image будет ошибка */
     @Test
     void testSendMessageWithoutRequiredParams() {
         def runtimeAgentService = createTestRuntimeAgentServiceClass()
@@ -86,7 +89,8 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyInit() })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(DslImage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(DslImage.class)) })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetMessage(mock(DslMessage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class)) })
     }
 
     /* Если в dsl не предоставлены все функции - выходит ошибка */
@@ -94,7 +98,17 @@ class RuntimeAgentServiceTest extends Assert {
     void testLoadErrorsDsl() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
-        assertTrue(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(DslObjects.notInitBlockDsl)})
+        /**
+         * Запуск с ошибок без одного из блоков
+         */
+        def dslBlocks = DslObjects.allBlocksDslArray
+        for (i in 0..dslBlocks.size() - 1) {
+            def dslWithoutOneBlock = ""
+            dslBlocks.stream().filter( {it -> return it != dslBlocks[i]} ).collect(Collectors.toList()).toArray().each {
+                dslWithoutOneBlock += "$it\n "
+            }
+            assertTrue(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(dslWithoutOneBlock)})
+        }
         assertFalse(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)})
     }
 
@@ -127,7 +141,12 @@ class RuntimeAgentServiceTest extends Assert {
                 DslObjects.createDslWithExecuteConditionBlocks(
                         """
                             execute {
-                                testOnGetMessageFun()
+                                testOnGetServiceMessageFun()
+                            }
+                        """,
+                        """
+                            execute {
+                                testOnGetLocalMessageFun()
                             }
                         """,
                         """
@@ -145,10 +164,12 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
         runtimeAgentService.applyOnEndImageTask(mock(DslImage.class))
-        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
-        assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
@@ -158,18 +179,18 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteFunctionWithoutCondition() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.createDslWithOnGetMessageExecuteConditionBlock(
+                DslObjects.createDslWithOnGetServiceMessageExecuteConditionBlock(
                         """
                             execute {
-                                testOnGetMessageFun()
+                                testOnGetServiceMessageFun()
                             }
                         """
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
 
-        assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
     }
 
     /* Нельзя вызвать функцию execute вне executeCondition блока */
@@ -177,25 +198,25 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteFunctionWithoutExecuteConditionBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.createDslWithOnGetMessageBlock(
+                DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
                             execute {
-                                testOnGetMessageFun()
+                                testOnGetServiceMessageFun()
                             }
                         """
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
     }
 
     /* Нельзя вызвать функции библиотеки вне execute блока */
     @Test(expected = MissingMethodException)
     void testExecuteLibraryFunctionWithoutExecuteBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
-        runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetMessageBlock("testOnGetMessageFun()"))
+        runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetServiceMessageBlock("testOnGetMessageFun()"))
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
     }
 
     /* Выполнение двух и более функций в одном блоке dsl */
@@ -203,14 +224,14 @@ class RuntimeAgentServiceTest extends Assert {
     void testExecuteMoreOneConditionInOneBlock() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.createDslWithOnGetMessageBlock(
+                DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
                             executeCondition ("Выполняется всегда") {
                                 condition {
                                     true
                                 }
                                 execute {
-                                    testOnGetMessageFun()
+                                    testOnGetServiceMessageFun()
                                 }
                             }
                             executeCondition ("Выполняется всегда") {
@@ -233,9 +254,9 @@ class RuntimeAgentServiceTest extends Assert {
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
 
-        assertTrue(runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
@@ -243,13 +264,13 @@ class RuntimeAgentServiceTest extends Assert {
     /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */
     @Test
     void testDslExecuteConditionBlock() {
-        DslObjects.testDslConditionBlocksArray("testOnGetMessageFun()").forEach {
+        DslObjects.testDslConditionBlocksArray("testOnGetServiceMessageFun()").forEach {
             def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
             runtimeAgentService.testLoadExecuteRules(it.rules)
-            runtimeAgentService.applyOnGetMessage(mock(DslMessage.class))
+            runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
 
-            assertEquals(it.expectedExecute, runtimeAgentService.isExecuteTestOnGetMessages as Boolean)
+            assertEquals(it.expectedExecute, runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
         }
     }
 
@@ -264,37 +285,37 @@ class RuntimeAgentServiceTest extends Assert {
 
         /* Проверка выполнения условий с созданными типами */
         def testClosure = {
-            ras.applyOnGetMessage(mock(DslMessage.class))
-            assertEquals(true, ras.isExecuteTestOnGetMessages as Boolean)
-            ras.isExecuteTestOnGetMessages = false
+            ras.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+            assertEquals(true, ras.isExecuteTestOnGetServiceMessages as Boolean)
+            ras.isExecuteTestOnGetServiceMessages = false
         }
 
         /* Выполняется функция в dsl, которая проверяет условие СОЗДАННЫЙ_ТИП == "значение типа" */
         ras.agentTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
                     "${ras.getAgentTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetMessageFun()"
+                    "testOnGetServiceMessageFun()"
             ))
             testClosure()
         }
         ras.messageBodyTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
                     "${ras.getMessageBodyTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetMessageFun()"
+                    "testOnGetServiceMessageFun()"
             ))
             testClosure()
         }
         ras.messageGoalTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
                     "${ras.getMessageGoalTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetMessageFun()"
+                    "testOnGetServiceMessageFun()"
             ))
             testClosure()
         }
         ras.messageTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
                     "${ras.getMessaTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetMessageFun()"
+                    "testOnGetServiceMessageFun()"
             ))
             testClosure()
         }

@@ -24,6 +24,7 @@ class InstantiationTracingBeanPostProcessor: BeanPostProcessor {
 
     @Throws(BeansException::class)
     override fun postProcessAfterInitialization(bean: Any, beanName: String?): Any? {
+        // todo класс
         if (beanName == "runtimeAgentWorkControl") {
             runtimeAgentLoader = bean
         }

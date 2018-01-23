@@ -2,7 +2,8 @@ package com.mycompany.dsl.base.behavior
 
 import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 
 /**
  * @author Nikita Gorodilov
@@ -27,10 +28,16 @@ abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
     override fun afterOnLoadImage(image: DslImage) {
     }
 
-    override fun beforeOnGetMessage(message: DslMessage) {
+    override fun beforeOnGetServiceMessage(serviceMessage: DslServiceMessage) {
     }
 
-    override fun afterOnGetMessage(message: DslMessage) {
+    override fun afterOnGetServiceMessage(serviceMessage: DslServiceMessage) {
+    }
+
+    override fun beforeOnGetLocalMessage(localMessage: DslLocalMessage) {
+    }
+
+    override fun afterOnGetLocalMessage(localMessage: DslLocalMessage) {
     }
 
     override fun beforeOnEndImageTask(updateImage: DslImage) {

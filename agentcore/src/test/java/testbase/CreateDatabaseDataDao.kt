@@ -21,7 +21,8 @@ class CreateDatabaseDataDao : AbstractDao() {
     companion object {
         val testDskFileContentRef1Data = """
             init = {}
-            onGetMessage = { _ ->}
+            onGetServiceMessage = { _ ->}
+            onGetLocalMessage = { _->}
             onLoadImage = { _ ->}
             onEndImageTask = { _ ->}
         """.trimIndent().toByteArray()
@@ -30,7 +31,8 @@ class CreateDatabaseDataDao : AbstractDao() {
             init = {
                 masId = ${UUID.randomUUID()}
             }
-            onGetMessage = { _ ->}
+            onGetServiceMessage = { _ ->}
+            onGetLocalMessage = { _->}
             onLoadImage = { _ ->}
             onEndImageTask = { _ ->}
         """.trimIndent().toByteArray()

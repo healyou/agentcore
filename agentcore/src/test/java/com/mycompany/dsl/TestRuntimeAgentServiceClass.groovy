@@ -6,14 +6,17 @@ package com.mycompany.dsl
 class TestRuntimeAgentServiceClass extends RuntimeAgentService {
 
     def isExecuteInit = false
-    def isExecuteTestOnGetMessages = false
+    def isExecuteTestOnGetServiceMessages = false
+    def isExecuteTestOnGetLocalMessages = false
     def isExecuteTestOnLoadImage = false
     def isExecuteTestOnEndImageTask = false
 
-    def isExecuteA1_testOnGetMessageFun = false
+    def isExecuteA1_testOnGetServiceMessageFun = false
+    def isExecuteA1_testOnGetLocalMessageFun = false
     def isExecuteA1_testOnLoadImageFun = false
     def isExecuteA1_testOnEndImageTaskFun = false
-    def isExecuteA2_testOnGetMessageFun = false
+    def isExecuteA2_testOnGetServiceMessageFun = false
+    def isExecuteA2_testOnGetLocalMessageFun = false
     def isExecuteA2_testOnLoadImageFun = false
     def isExecuteA2_testOnEndImageTaskFun = false
 
@@ -37,8 +40,12 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
      * Функции - вызываемые из DSL
      */
 
-    void testOnGetMessageFun() {
-        isExecuteTestOnGetMessages = true
+    void testOnGetServiceMessageFun() {
+        isExecuteTestOnGetServiceMessages = true
+    }
+
+    void testOnGetLocalMessageFun() {
+        isExecuteTestOnGetLocalMessages = true
     }
 
     void testOnLoadImage() {
@@ -53,8 +60,11 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
      * Методы для тестирования работы двух агентов без интернета(инет - тестовые объекты)
      */
 
-    def a1_testOnGetMessageFun() {
-        isExecuteA1_testOnGetMessageFun = true
+    def a1_testOnGetServiceMessageFun() {
+        isExecuteA1_testOnGetServiceMessageFun = true
+    }
+    def a1_testOnGetLocalMessageFun() {
+        isExecuteA1_testOnGetLocalMessageFun = true
     }
     def a1_testOnLoadImageFun() {
         isExecuteA1_testOnLoadImageFun = true
@@ -63,8 +73,11 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
         isExecuteA1_testOnEndImageTaskFun = true
     }
 
-    def a2_testOnGetMessageFun() {
-        isExecuteA2_testOnGetMessageFun = true
+    def a2_testOnGetServiceMessageFun() {
+        isExecuteA2_testOnGetServiceMessageFun = true
+    }
+    def a2_testOnGetLocalMessageFun() {
+        isExecuteA2_testOnGetLocalMessageFun = true
     }
     def a2_testOnLoadImageFun() {
         isExecuteA2_testOnLoadImageFun = true

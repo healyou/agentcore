@@ -1,7 +1,8 @@
 package com.mycompany.dsl.base
 
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 
 /**
  * @author Nikita Gorodilov
@@ -14,7 +15,9 @@ interface IRuntimeAgent {
 
     fun onLoadImage(image: DslImage)
 
-    fun onGetMessage(message: DslMessage)
+    fun onGetServiceMessage(serviceMessage: DslServiceMessage)
+
+    fun onGetLocalMessage(localMessage: DslLocalMessage)
 
     fun onEndImageTask(updateImage: DslImage)
 }

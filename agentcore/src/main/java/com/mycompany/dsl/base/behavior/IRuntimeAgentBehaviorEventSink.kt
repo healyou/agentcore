@@ -2,7 +2,8 @@ package com.mycompany.dsl.base.behavior
 
 import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.objects.DslImage
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 
 /**
  * События, на которые может быть добавлено поведение агента
@@ -42,14 +43,24 @@ interface IRuntimeAgentBehaviorEventSink {
     fun afterOnLoadImage(image: DslImage)
 
     /**
-     * Вызывается перед началом события получения сообщения
+     * Вызывается перед началом события получения сервисного сообщения
      */
-    fun beforeOnGetMessage(message: DslMessage)
+    fun beforeOnGetServiceMessage(serviceMessage: DslServiceMessage)
 
     /**
-     * Вызывается после события получения сообщения
+     * Вызывается после события получения сервисного сообщения
      */
-    fun afterOnGetMessage(message: DslMessage)
+    fun afterOnGetServiceMessage(serviceMessage: DslServiceMessage)
+
+    /**
+     * Вызывается после события получения локального сообщения
+     */
+    fun beforeOnGetLocalMessage(localMessage: DslLocalMessage)
+
+    /**
+     * Вызывается после события получения локального сообщения
+     */
+    fun afterOnGetLocalMessage(localMessage: DslLocalMessage)
 
     /**
      * Вызывается перед началом события завершение работы с изображением

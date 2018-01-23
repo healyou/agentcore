@@ -12,6 +12,7 @@ import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.exceptions.RuntimeAgentException
 import com.mycompany.dsl.objects.DslImage
+import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.service.LoginService
 import com.mycompany.service.ServerTypeService
 import com.mycompany.user.User
@@ -23,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Nikita Gorodilov
  */
 // TODO тесты работы данного класса
+// TODO пк класс и web класс для работы агентов одинаковы
 @Component
 class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkControl {
 
@@ -30,6 +32,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
 
         /**
          * Получение реального экземпляра объекта
+         * Используется в библиоетеке функций агента
          */
         @JvmStatic
         fun getInstance(): RuntimeAgentWorkControl {
@@ -156,7 +159,20 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
         }
     }
 
+    /**
+     * Вызывается из библиотеки workLibrary
+     */
     override fun onAgentEvent(agentId: Long, event: String) {
-        println("fun onAgentEvent($agentId, $event) execute")
+        val operationAgent: ThreadPoolRuntimeAgent
+        try {
+            operationAgent  = startedAgents.getValue(agentId)
+        } catch (ignored: Exception) {
+            return
+        }
+
+        /* операции над агентами не могут быть выполнены одновременно n потоками */
+        synchronized(operationAgent) {
+            operationAgent.onGetLocalMessage(DslLocalMessage(event))
+        }
     }
 }

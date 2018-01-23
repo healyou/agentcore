@@ -1,13 +1,15 @@
 package objects
-
 /**
  * @author Nikita Gorodilov
  */
 class DslObjects {
 
+    static final def a_testdslConditionEventName = "event"
+
     static final def notInitBlockDsl =
         """
-            onGetMessage = { message -> }
+            onGetServiceMessage = { serviceMessage -> }
+            onGetLocalMessage = { localMessage -> }
             onLoadImage = { image -> }
             onEndImageTask = { updateImage -> }
         """
@@ -21,7 +23,8 @@ class DslObjects {
                 defaultBodyType = "${StringObjects.randomString()}"
                 defaultGoalType = "${StringObjects.randomString()}"
             }
-            onGetMessage = { message -> }
+            onGetServiceMessage = { serviceMessage -> }
+            onGetLocalMessage = { localMessage -> }
             onLoadImage = { image -> }
             onEndImageTask = { updateImage -> }
         """
@@ -35,55 +38,74 @@ class DslObjects {
                 masId = "$masId"
                 defaultBodyType = "$bodyType"
             }
-            onGetMessage = { message -> }
+            onGetServiceMessage = { serviceMessage -> }
+            onGetLocalMessage = { localMessage -> }
             onLoadImage = { image -> }
             onEndImageTask = { updateImage -> }
         """
     }
 
-    static final def allBlocksDsl =
-        """
-            ${randomInitBlock()}
-            onGetMessage = { message -> }
-            onLoadImage = { image -> }
-            onEndImageTask = { updateImage -> }
-        """
+    static final def allBlocksDslArray = [
+            "${randomInitBlock()}",
+            "onGetServiceMessage = { message -> }",
+            "onGetLocalMessage = { localMessage -> }",
+            "onLoadImage = { image -> }",
+            "onEndImageTask = { updateImage -> }"
+    ]
 
-    static def createDslWithOnGetMessageExecuteConditionBlock(executeConditionBlockBody) {
+    static final def allBlocksDsl = createAllBlocksDsl()
+    private static final def createAllBlocksDsl() {
+        def dsl = ""
+        allBlocksDslArray.each {
+            dsl += "$it\n "
+        }
+        dsl
+    }
+
+    static def createDslWithOnGetServiceMessageExecuteConditionBlock(executeConditionBlockBody) {
         """
             ${randomInitBlock()}
-            onGetMessage = {
+            onGetServiceMessage = {
                 executeCondition ("BlockBody") {
         """ +
                 executeConditionBlockBody +
                 """
                 }
             }
+            onGetLocalMessage = { localMessage -> }
             onLoadImage = {}
             onEndImageTask = {}
         """
     }
 
-    static def createDslWithOnGetMessageBlock(executeConditionBlockBody) {
+    static def createDslWithOnGetServiceMessageBlock(executeConditionBlockBody) {
         """
             ${randomInitBlock()}
-            onGetMessage = {
+            onGetServiceMessage = {
                 """ +
                 executeConditionBlockBody +
                 """
             }
+            onGetLocalMessage = { localMessage -> }
             onLoadImage = {}
             onEndImageTask = {}
         """
     }
 
-    static def createDslWithExecuteConditionBlocks(onGetMessageBlock, onLoadImageBlock, onEndImageBlock) {
+    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onLoadImageBlock, onEndImageBlock) {
         """
             ${randomInitBlock()}
-            onGetMessage = {
+            onGetServiceMessage = {
                 executeCondition ("BlockBody") {
                     """ +
-                onGetMessageBlock +
+                onGetServiceMessageBlock +
+                """
+                }
+            }
+            onGetLocalMessage = { localMessage -> 
+                executeCondition ("BlockBody") {
+                    """ +
+                onGetLocalMessageBlock +
                 """
                 }
             }
@@ -107,7 +129,8 @@ class DslObjects {
     static def createDslWithOnGetLoadImageBlock(executeConditionBlockBody) {
         """
             ${randomInitBlock()}
-            onGetMessage = {}
+            onGetServiceMessage = {}
+            onGetLocalMessage = {}
             onLoadImage = { image ->
                 executeCondition ("BlockBody") {
         """ +
@@ -122,7 +145,7 @@ class DslObjects {
     static def executeConditionDsl(condition, execute) {
         """
                 ${randomInitBlock()}
-                onGetMessage = {
+                onGetServiceMessage = {
                     executeCondition ("Успешное выполнение функции") {
                         condition() {
                             $condition
@@ -132,6 +155,7 @@ class DslObjects {
                         }
                     }
                 }
+                onGetLocalMessage = { localMessage -> }
                 onLoadImage = {}
                 onEndImageTask = {}
             """
@@ -153,7 +177,7 @@ class DslObjects {
                 new TestDslConditionBlocks( // все блоки вернут да
                         rules: """
                         ${randomInitBlock()}
-                        onGetMessage = { message ->
+                        onGetServiceMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 anyOf {
                                     allOf {
@@ -173,6 +197,7 @@ class DslObjects {
                                 }
                             }
                         }
+                        onGetLocalMessage = { localMessage -> }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
@@ -181,7 +206,7 @@ class DslObjects {
                 new TestDslConditionBlocks( // блоки allOf вернёт нет
                         rules: """
                         ${randomInitBlock()}
-                        onGetMessage = { message ->
+                        onGetServiceMessage = { message ->
                             executeCondition ("Нет выполнение функции") {
                                 anyOf {
                                     allOf {
@@ -201,6 +226,7 @@ class DslObjects {
                                 }
                             }
                         }
+                        onGetLocalMessage = { localMessage -> }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
@@ -209,7 +235,7 @@ class DslObjects {
                 new TestDslConditionBlocks( // блок вернёт нет
                         rules: """
                         ${randomInitBlock()}
-                        onGetMessage = { message ->
+                        onGetServiceMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 anyOf {
                                     allOf {
@@ -233,6 +259,7 @@ class DslObjects {
                                 }
                             }
                         }
+                        onGetLocalMessage = { localMessage -> }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
@@ -241,13 +268,14 @@ class DslObjects {
                 new TestDslConditionBlocks(
                         rules: """
                         ${randomInitBlock()}
-                        onGetMessage = { message ->
+                        onGetServiceMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 execute {
                                     $execute
                                 }
                             }
                         }
+                        onGetLocalMessage = { localMessage -> }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,
@@ -256,7 +284,7 @@ class DslObjects {
                 new TestDslConditionBlocks(
                         rules: """
                         ${randomInitBlock()}
-                        onGetMessage = { message ->
+                        onGetServiceMessage = { message ->
                             executeCondition ("Успешное выполнение функции") {
                                 condition {
                                     true
@@ -266,6 +294,7 @@ class DslObjects {
                                 }
                             }
                         }
+                        onGetLocalMessage = { localMessage -> }
                         onLoadImage = {}
                         onEndImageTask = {}
                     """,

@@ -9,8 +9,10 @@ import com.mycompany.db.core.servicemessage.ServiceMessageService
 import com.mycompany.db.core.servicemessage.ServiceMessageType
 import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgentService
-import com.mycompany.dsl.objects.DslMessage
+import com.mycompany.dsl.objects.DslLocalMessage
+import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslImage
+import objects.DslObjects
 import objects.TypesObjects
 import objects.initdbobjects.AgentObjects
 import objects.initdbobjects.UserObjects
@@ -81,10 +83,15 @@ class RuntimeAgentTest extends AbstractServiceTest {
     /* Выполнение функций агентами */
     @Test
     void testGetAgentMessage() {
-        workerAgent_a1.onGetMessage(createSystemSendMessage(serverAgent_a2))
-        serverAgent_a2.onGetMessage(createSystemSendMessage(workerAgent_a1))
-        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetMessageFun
-        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetMessageFun
+        workerAgent_a1.onGetServiceMessage(createSystemSendMessage(serverAgent_a2))
+        serverAgent_a2.onGetServiceMessage(createSystemSendMessage(workerAgent_a1))
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetServiceMessageFun
+        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetServiceMessageFun
+
+        workerAgent_a1.onGetLocalMessage(new DslLocalMessage(DslObjects.getA_testdslConditionEventName()))
+        serverAgent_a2.onGetLocalMessage(new DslLocalMessage(DslObjects.getA_testdslConditionEventName()))
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetLocalMessageFun
+        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetLocalMessageFun
 
         workerAgent_a1.onLoadImage(OtherObjects.image())
         serverAgent_a2.onLoadImage(OtherObjects.image())
@@ -113,7 +120,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         }
     }
 
-    DslMessage createSystemSendMessage(TestRuntimeAgentClass agent) {
+    DslServiceMessage createSystemSendMessage(TestRuntimeAgentClass agent) {
         def message = new ServiceMessage(
                 "{}",
                 messageTypeService.get(ServiceMessageType.Code.SEND),
@@ -123,7 +130,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         message.getMessageSenderCode = agent.senderCode
         messageService.save(message)
 
-        new DslMessage(
+        new DslServiceMessage(
                 message.getMessageSenderCode,
                 new DslImage("testImage", [1, 2, 3] as byte[])
         )

@@ -1,11 +1,11 @@
 package com.mycompany.dsl.objects
 
 /**
- * Класс сообщения, который используется в DSL(для лёгкости использования)
+ * Класс сервисного сообщения(свзяь между агентами), который используется в DSL(для лёгкости использования)
  *
  * @author Nikita Gorodilov
  */
-open class DslMessage(
+open class DslServiceMessage(
         /* Тип отправителя сообщения - AgentType.Code.code */
         val senderType: String,
         /* Изображение */

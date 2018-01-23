@@ -13,7 +13,8 @@ import com.mycompany.dsl.base.SendMessageParameters;
 import com.mycompany.dsl.base.behavior.ARuntimeAgentBehavior;
 import com.mycompany.dsl.exceptions.RuntimeAgentException;
 import com.mycompany.dsl.objects.DslImage;
-import com.mycompany.dsl.objects.DslMessage;
+import com.mycompany.dsl.objects.DslLocalMessage;
+import com.mycompany.dsl.objects.DslServiceMessage;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
 import com.mycompany.service.AbstractAgentService;
@@ -99,14 +100,29 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    public void onGetMessage(@NotNull DslMessage message) {
+    public void onGetServiceMessage(@NotNull DslServiceMessage serviceMessage) {
         try {
             behaviors.forEach(it -> {
-                it.beforeOnGetMessage(message);
+                it.beforeOnGetServiceMessage(serviceMessage);
             });
-            runtimeAgentService.applyOnGetMessage(message);
+            runtimeAgentService.applyOnGetServiceMessage(serviceMessage);
             behaviors.forEach(it -> {
-                it.afterOnGetMessage(message);
+                it.afterOnGetServiceMessage(serviceMessage);
+            });
+        } catch (Exception e) {
+            System.out.println("Ошибка работы агента");
+        }
+    }
+
+    @Override
+    public void onGetLocalMessage(@NotNull DslLocalMessage localMessage) {
+        try {
+            behaviors.forEach(it -> {
+                it.beforeOnGetLocalMessage(localMessage);
+            });
+            runtimeAgentService.applyOnGetLocalMessage(localMessage);
+            behaviors.forEach(it -> {
+                it.afterOnGetLocalMessage(localMessage);
             });
         } catch (Exception e) {
             System.out.println("Ошибка работы агента");
