@@ -1,11 +1,11 @@
 package com.mycompany.dsl.base
 
 /**
- * Параметры метода sendMessage в dsl
+ * Параметры метода sendServiceMessage в dsl
  *
  * @author Nikita Gorodilov
  */
-enum class SendMessageParameters(val paramName: String, val isRequired: Boolean) {
+enum class SendServiceMessageParameters(val paramName: String, val isRequired: Boolean) {
     /**
      * Тип сообщения
      */

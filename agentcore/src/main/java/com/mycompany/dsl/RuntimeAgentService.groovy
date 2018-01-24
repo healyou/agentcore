@@ -4,7 +4,7 @@ import com.mycompany.agentworklibrary.AAgentWorkLibrary
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
-import com.mycompany.dsl.base.SendMessageParameters
+import com.mycompany.dsl.base.SendServiceMessageParameters
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.MessageBodyType
 import com.mycompany.service.objects.MessageGoalType
@@ -42,7 +42,7 @@ class RuntimeAgentService {
     boolean init_provided = false
     def init = {}
     boolean agent_send_message_provided = false
-    def agentSendMessage = {}
+    def agentSendServiceMessage = {}
 
     /**
      * Класс, который содержит функции для работы агента
@@ -72,7 +72,7 @@ class RuntimeAgentService {
 
     void setAgentSendMessageClosure(Closure c) {
         agent_send_message_provided = true
-        agentSendMessage = c
+        agentSendServiceMessage = c
     }
 
     void checkLoadRules(Binding binding) {
@@ -202,26 +202,26 @@ class RuntimeAgentService {
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndImageTask = onEndImageTask
-        binding.sendMessage = { Map map ->
+        binding.sendServiceMessage = { Map map ->
             /* required fields */
-            SendMessageParameters.values().each {
+            SendServiceMessageParameters.values().each {
                 if (it.required && map[it.paramName] == null) {
                     throw new RuntimeException("Обязательный параметр '" + it.paramName + "' не найден")
                 }
             }
 
             /* default value fields */
-            def bodyTypeParamName = SendMessageParameters.BODY_TYPE.paramName
+            def bodyTypeParamName = SendServiceMessageParameters.BODY_TYPE.paramName
             def bodyType = map[bodyTypeParamName]
             if (bodyType == null) {
                 map[bodyTypeParamName] = defaultBodyType
             }
 
             if (agent_send_message_provided) {
-                agentSendMessage.call(map)
+                agentSendServiceMessage.call(map)
 
             } else {
-                throw new RuntimeException("Функция sendMessage не загружена")
+                throw new RuntimeException("Функция sendServiceMessage не загружена")
             }
         }
         binding.executeCondition = { spec, closure ->

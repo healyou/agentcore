@@ -1,6 +1,6 @@
 package com.mycompany.dsl
 
-import com.mycompany.dsl.base.SendMessageParameters
+import com.mycompany.dsl.base.SendServiceMessageParameters
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
@@ -20,7 +20,7 @@ import static org.easymock.EasyMock.mock
 class RuntimeAgentServiceTest extends Assert {
 
     /**
-     * Начало - Тестирование вызова метода sendMessage
+     * Начало - Тестирование вызова метода sendServiceMessage
      */
 
     @Test
@@ -35,9 +35,9 @@ class RuntimeAgentServiceTest extends Assert {
                 DslObjects.createDslWithOnGetLoadImageBlock(
                         """
                             execute {
-                                sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
-                                        ${SendMessageParameters.IMAGE.paramName}: image,
-                                        ${SendMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
+                                sendServiceMessage ${SendServiceMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
+                                        ${SendServiceMessageParameters.IMAGE.paramName}: image,
+                                        ${SendServiceMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
                             }
                         """
                 )
@@ -59,8 +59,8 @@ class RuntimeAgentServiceTest extends Assert {
                 DslObjects.createDslWithOnGetLoadImageBlock(
                         """
                             execute {
-                                sendMessage ${SendMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
-                                        ${SendMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
+                                sendServiceMessage ${SendServiceMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
+                                        ${SendServiceMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
                             }
                         """
                 )
@@ -76,7 +76,7 @@ class RuntimeAgentServiceTest extends Assert {
     }
 
     /**
-     * Конец - Тестирование вызова метода sendMessage
+     * Конец - Тестирование вызова метода sendServiceMessage
      */
 
     @Test
