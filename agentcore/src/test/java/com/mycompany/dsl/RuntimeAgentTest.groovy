@@ -68,9 +68,8 @@ class RuntimeAgentTest extends AbstractServiceTest {
         )
     }
 
-    /* Отправленное из dsl сообщение сохраняется в базе данных */
     @Test
-    void testSendMessage() {
+    void "Отправленное из dsl сообщение сохраняется в базе данных"() {
         /* отправка сообщения из onLoadImage */
         def sc = new ServiceMessageSC()
         sc.systemAgentId = workerAgent_a1.systemAgent.id
@@ -78,6 +77,16 @@ class RuntimeAgentTest extends AbstractServiceTest {
         workerAgent_a1.onLoadImage(OtherObjects.image())
         def updateSize = serviceMessageService.get(sc).size()
         assert prevSize != updateSize && prevSize + 1 == updateSize
+    }
+
+    @Test
+    void "Вызов startTask приводит к вызову onEndTask"() {
+        /* отправка сообщения из onLoadImage */
+        workerAgent_a1.onGetLocalMessage(new DslLocalMessage(DslObjects.getA1_testdslConditionEventName()))
+
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetLocalMessageFun
+        assert workerAgent_a1.runtimeAgentService.isExecuteTestOnGetLocalMessages
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndTask
     }
 
     @Test
@@ -91,6 +100,11 @@ class RuntimeAgentTest extends AbstractServiceTest {
         serverAgent_a2.onGetLocalMessage(new DslLocalMessage(DslObjects.getA2_testdslConditionEventName()))
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetLocalMessageFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetLocalMessageFun
+
+        workerAgent_a1.onEndTask(DslObjects.getA1_testdslTaskData())
+        serverAgent_a2.onEndTask(DslObjects.getA2_testdslTaskData())
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndTask
+        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndTask
 
         workerAgent_a1.onLoadImage(OtherObjects.image())
         serverAgent_a2.onLoadImage(OtherObjects.image())

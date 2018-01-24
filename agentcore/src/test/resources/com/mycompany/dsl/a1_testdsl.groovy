@@ -29,6 +29,9 @@ onGetLocalMessage = { localMessage ->
         }
         execute {
             a1_testOnGetLocalMessageFun()
+            startTask (A1_TT1_TT) {
+                testOnGetLocalMessageFun()
+            }
         }
     }
 }
@@ -43,6 +46,17 @@ onLoadImage = { image ->
                     image: image,
                     agentTypes: ["worker", "server"]
             a1_testOnLoadImageFun()
+        }
+    }
+}
+
+onEndTask = { taskData ->
+    executeCondition ("Выполним функцию над изображением") {
+        condition {
+            taskData.type == A1_TT1_TT && taskData.type == "a1_tt1"
+        }
+        execute {
+            a1_testOnEndTask()
         }
     }
 }

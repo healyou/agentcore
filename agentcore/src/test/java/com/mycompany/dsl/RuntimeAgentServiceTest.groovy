@@ -4,7 +4,9 @@ import com.mycompany.dsl.base.SendServiceMessageParameters
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
+import com.mycompany.dsl.objects.DslTaskData
 import objects.DslObjects
+import objects.OtherObjects
 import objects.StringObjects
 import objects.TypesObjects
 import org.junit.Assert
@@ -87,6 +89,7 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(DslImage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(DslImage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndTask(mock(DslTaskData.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class)) })
     }
 
@@ -158,6 +161,11 @@ class RuntimeAgentServiceTest extends Assert {
                         """,
                         """
                             execute {
+                                testOnEndTask()
+                            }
+                        """,
+                        """
+                            execute {
                                 testOnEndImageTask()
                             }
                         """
@@ -167,12 +175,14 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
         runtimeAgentService.applyOnEndImageTask(mock(DslImage.class))
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        runtimeAgentService.applyOnEndTask(mock(DslTaskData.class))
         runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnEndTask as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
 
@@ -190,11 +200,9 @@ class RuntimeAgentServiceTest extends Assert {
         )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
-
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
     }
 
-    /*  */
     @Test(expected = MissingPropertyException)
     void "Нельзя вызвать функцию execute вне executeCondition блока"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
@@ -209,6 +217,99 @@ class RuntimeAgentServiceTest extends Assert {
         )
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+    }
+
+    @Test(expected = MissingPropertyException)
+    void "Нельзя вызвать startTask вне execute блока"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        runtimeAgentService.testLoadExecuteRules(
+                DslObjects.createDslWithOnGetServiceMessageBlock(
+                        """
+                            startTask ("taskType") {
+                                testOnGetServiceMessageFun()
+                            }
+                        """
+                )
+        )
+        runtimeAgentService.applyInit()
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+    }
+
+    @Test
+    void "Вызов startTask в execute блоке"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        runtimeAgentService.testLoadExecuteRules(
+                DslObjects.createDslWithOnGetServiceMessageBlock(
+                        """
+                            executeCondition ("blockname") {
+                                execute {
+                                    startTask ("taskType") {
+                                        testOnGetServiceMessageFun()
+                                    }
+                                } 
+                            }       
+                        """
+                )
+        )
+        runtimeAgentService.setAgentOnEndTaskClosure {}
+        runtimeAgentService.applyInit()
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages)
+    }
+
+    @Test
+    void "После вызова startTask идёт вызов onEndTask"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def taskType = DslObjects.taskType
+        runtimeAgentService.testLoadExecuteRules(
+                DslObjects.createDslWithOnGetServiceMessageBlock(
+                        """
+                            executeCondition ("blockname") {
+                                execute {
+                                    startTask ("$taskType") {
+                                        testOnGetServiceMessageFun()
+                                    }
+                                } 
+                            }       
+                        """
+                )
+        )
+        def isExecuteOnEndTask = false
+        def executeTaskType = null
+        runtimeAgentService.setAgentOnEndTaskClosure { type ->
+            executeTaskType = type
+            isExecuteOnEndTask = true
+        }
+        runtimeAgentService.applyInit()
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages)
+        assertTrue(isExecuteOnEndTask)
+        assertEquals(taskType, executeTaskType)
+    }
+
+    @Test
+    void "Вызов функции sendServiceMessage вызывает указанный метод sendMessage"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        runtimeAgentService.testLoadExecuteRules(
+                DslObjects.createDslWithOnGetServiceMessageBlock(
+                        """
+                            executeCondition ("blockname") {
+                                execute {
+                                    sendServiceMessage messageType: "search_solution",
+                                        image: "image",
+                                        agentTypes: ["worker", "server"]
+                                }
+                            }       
+                        """
+                )
+        )
+        def isExecuteSendMessage = false
+        runtimeAgentService.setAgentSendMessageClosure { map ->
+            isExecuteSendMessage = true
+        }
+        runtimeAgentService.applyInit()
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        assertTrue(isExecuteSendMessage)
     }
 
     @Test(expected = MissingMethodException)

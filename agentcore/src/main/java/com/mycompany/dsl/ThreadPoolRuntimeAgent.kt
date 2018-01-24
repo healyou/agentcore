@@ -4,6 +4,7 @@ import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
+import com.mycompany.dsl.objects.DslTaskData
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -44,6 +45,12 @@ abstract class ThreadPoolRuntimeAgent : RuntimeAgent {
     override fun onLoadImage(image: DslImage) {
         executorService.execute {
             super.onLoadImage(image)
+        }
+    }
+
+    override fun onEndTask(taskData: DslTaskData) {
+        executorService.execute {
+            super.onEndTask(taskData)
         }
     }
 

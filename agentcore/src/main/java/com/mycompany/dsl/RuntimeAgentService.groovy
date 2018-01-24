@@ -5,6 +5,7 @@ import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.base.SendServiceMessageParameters
+import com.mycompany.dsl.objects.DslTaskData
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.MessageBodyType
 import com.mycompany.service.objects.MessageGoalType
@@ -14,8 +15,6 @@ import com.mycompany.service.objects.MessageType
  * @author Nikita Gorodilov
  */
 class RuntimeAgentService {
-
-    def runtimeAgent
 
     def agentType = null
     def agentName = null
@@ -37,12 +36,16 @@ class RuntimeAgentService {
     def onGetServiceMessage = {}
     boolean on_get_local_message_provided = false
     def onGetLocalMessage = {}
+    boolean on_end_task_provided = false
+    def onEndTask = {}
     boolean on_end_image_task_provided = false
     def onEndImageTask = {}
     boolean init_provided = false
     def init = {}
     boolean agent_send_message_provided = false
     def agentSendServiceMessage = {}
+    boolean agent_on_end_task_provided = false
+    def agentOnEndTask = {}
 
     /**
      * Класс, который содержит функции для работы агента
@@ -65,6 +68,7 @@ class RuntimeAgentService {
         binding.onLoadImage = onLoadImage
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
+        binding.onEndTask = onEndTask
         binding.onEndImageTask = onEndImageTask
 
         return binding
@@ -75,17 +79,24 @@ class RuntimeAgentService {
         agentSendServiceMessage = c
     }
 
+    void setAgentOnEndTaskClosure(Closure c) {
+        agent_on_end_task_provided = true
+        agentOnEndTask = c
+    }
+
     void checkLoadRules(Binding binding) {
         if (bindingFunctionCheck(binding)) {
             init = binding.init
             onLoadImage = binding.onLoadImage
             onGetServiceMessage = binding.onGetServiceMessage
             onGetLocalMessage = binding.onGetLocalMessage
+            onEndTask = binding.onEndTask
             onEndImageTask = binding.onEndImageTask
 
             on_load_image_provided = true
             on_get_service_message_provided = true
             on_get_local_message_provided = true
+            on_end_task_provided = true
             on_end_image_task_provided = true
             init_provided = true
         } else {
@@ -97,7 +108,7 @@ class RuntimeAgentService {
     boolean bindingFunctionCheck(Binding binding) {
         return binding.init != init && binding.onLoadImage != onLoadImage &&
                 binding.onGetServiceMessage != onGetServiceMessage && binding.onEndImageTask != onEndImageTask &&
-                binding.onGetLocalMessage != onGetLocalMessage
+                binding.onGetLocalMessage != onGetLocalMessage && binding.onEndTask != onEndTask
     }
 
     void applyInit() {
@@ -180,6 +191,22 @@ class RuntimeAgentService {
         }
     }
 
+    void applyOnEndTask(DslTaskData taskData) {
+        if (on_end_task_provided) {
+            Binding binding = new Binding()
+
+            prepareTypes(binding)
+            prepareClosures(binding)
+
+            binding.taskData = taskData
+
+            GroovyShell shell = new GroovyShell(binding)
+            shell.evaluate("onEndTask.delegate = this;onEndTask.resolveStrategy = Closure.DELEGATE_FIRST;onEndTask(taskData)")
+        } else {
+            throw new RuntimeException("Функция on_end_task не загружена")
+        }
+    }
+
     void applyOnEndImageTask(DslImage updateImage) {
         if (on_end_image_task_provided) {
             Binding binding = new Binding()
@@ -196,11 +223,12 @@ class RuntimeAgentService {
         }
     }
 
-    private void prepareClosures(Binding binding) {
+    void prepareClosures(Binding binding) {
         binding.init = init
         binding.onLoadImage = onLoadImage
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
+        binding.onEndTask = onEndTask
         binding.onEndImageTask = onEndImageTask
         binding.sendServiceMessage = { Map map ->
             /* required fields */
@@ -271,14 +299,29 @@ class RuntimeAgentService {
         binding.execute = { closure ->
             closure.delegate = delegate
 
-            if (binding.result)
+            if (binding.result) {
+                binding.isStartTask = true
                 use(agentWorkLibraryClass) {
+                    /* возможен вызов функции из библиотеки агента */
                     closure()
                 }
+            }
+        }
+        binding.startTask = { taskType, closure ->
+            closure.delegate = delegate
+
+            if (binding.isStartTask) {
+                closure()
+                if (agent_on_end_task_provided) {
+                    agentOnEndTask.call(taskType)
+                } else {
+                    throw new RuntimeException("Функция agentOnEndTask не загружена")
+                }
+            }
         }
     }
 
-    private void prepareTypes(Binding binding) {
+    void prepareTypes(Binding binding) {
         agentTypes.each {
             def code = it.getCode()
             binding."${getAgentTypeVariableByCode(code)}" = code

@@ -44,6 +44,17 @@ onLoadImage = { image ->
     }
 }
 
+onEndTask = { taskData ->
+    executeCondition ("Выполним функцию над изображением") {
+        condition {
+            taskData.type == A2_TT1_TT && taskData.type == "a2_tt1"
+        }
+        execute {
+            a2_testOnEndTask()
+        }
+    }
+}
+
 onEndImageTask = { updateImage ->
     executeCondition ("Выполним функцию над изображением") {
         condition {

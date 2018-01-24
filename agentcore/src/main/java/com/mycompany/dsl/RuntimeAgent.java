@@ -15,6 +15,7 @@ import com.mycompany.dsl.exceptions.RuntimeAgentException;
 import com.mycompany.dsl.objects.DslImage;
 import com.mycompany.dsl.objects.DslLocalMessage;
 import com.mycompany.dsl.objects.DslServiceMessage;
+import com.mycompany.dsl.objects.DslTaskData;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
 import com.mycompany.service.AbstractAgentService;
@@ -65,8 +66,8 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
     private void init(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         loadServiceTypes(runtimeAgentService);
-        runtimeAgentService.setRuntimeAgent(this);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
+        runtimeAgentService.setAgentOnEndTaskClosure(createOnEndClosure());
         runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
         runtimeAgentService.applyInit();
         systemAgent = configureAgentWithError(dslFileAttachment);
@@ -123,6 +124,21 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             runtimeAgentService.applyOnGetLocalMessage(localMessage);
             behaviors.forEach(it -> {
                 it.afterOnGetLocalMessage(localMessage);
+            });
+        } catch (Exception e) {
+            System.out.println("Ошибка работы агента");
+        }
+    }
+
+    @Override
+    public void onEndTask(@NotNull DslTaskData taskData) {
+        try {
+            behaviors.forEach(it -> {
+                it.beforeOnEndTask(taskData);
+            });
+            runtimeAgentService.applyOnEndTask(taskData);
+            behaviors.forEach(it -> {
+                it.afterOnEndTask(taskData);
             });
         } catch (Exception e) {
             System.out.println("Ошибка работы агента");
@@ -249,6 +265,26 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 String bodyTypeCode = (String) map.get(SendServiceMessageParameters.BODY_TYPE.getParamName());
 
                 sendServiceMessage(messageTypeCode, image, agentTypeCodes, bodyTypeCode);
+                return null;
+            }
+        };
+    }
+
+    /**
+     * Функция вызывается из groovy
+     * Выполняется при завершении работы агентом
+     */
+    private Closure<Void> createOnEndClosure() {
+        return new Closure<Void>(null) {
+
+            @Override
+            public Void call(Object arguments) {
+                if (!(arguments instanceof String)) return null;
+
+                // todo выенсти в какую нибудь константу имя параметра
+                DslTaskData taskData = new DslTaskData((String) arguments);
+
+                onEndTask(taskData);
                 return null;
             }
         };

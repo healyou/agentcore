@@ -4,6 +4,7 @@ import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
+import com.mycompany.dsl.objects.DslTaskData
 
 /**
  * События, на которые может быть добавлено поведение агента
@@ -61,6 +62,16 @@ interface IRuntimeAgentBehaviorEventSink {
      * Вызывается после события получения локального сообщения
      */
     fun afterOnGetLocalMessage(localMessage: DslLocalMessage)
+
+    /**
+     * Вызывается до начала вызова функции завершения задачи
+     */
+    fun beforeOnEndTask(taskData: DslTaskData)
+
+    /**
+     * Вызывается после вызова функции завершения задачи
+     */
+    fun afterOnEndTask(taskData: DslTaskData)
 
     /**
      * Вызывается перед началом события завершение работы с изображением

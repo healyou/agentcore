@@ -31,6 +31,7 @@ class CreateDatabaseDataDao : AbstractDao() {
             onGetServiceMessage = { _ ->}
             onGetLocalMessage = { _->}
             onLoadImage = { _ ->}
+            onEndTask = { _ ->}
             onEndImageTask = { _ ->}
         """.trimIndent().toByteArray()
         var testDslFileContentRef1: DslFileContentRef? = null
@@ -41,6 +42,7 @@ class CreateDatabaseDataDao : AbstractDao() {
             onGetServiceMessage = { _ ->}
             onGetLocalMessage = { _->}
             onLoadImage = { _ ->}
+            onEndTask = { _ ->}
             onEndImageTask = { _ ->}
         """.trimIndent().toByteArray()
         var testDslFileContentRef2: DslFileContentRef? = null

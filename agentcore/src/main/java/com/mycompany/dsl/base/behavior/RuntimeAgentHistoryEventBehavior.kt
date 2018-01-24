@@ -6,6 +6,7 @@ import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
+import com.mycompany.dsl.objects.DslTaskData
 
 /**
  * Сохранение истории действий агента
@@ -65,6 +66,16 @@ open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAg
     override fun afterOnGetLocalMessage(localMessage: DslLocalMessage) {
         super.afterOnGetLocalMessage(localMessage)
         onEvent("Конец dsl функции onGetLocalMessage")
+    }
+
+    override fun beforeOnEndTask(taskData: DslTaskData) {
+        super.beforeOnEndTask(taskData)
+        onEvent("Конец dsl функции onEndTask")
+    }
+
+    override fun afterOnEndTask(taskData: DslTaskData) {
+        super.afterOnEndTask(taskData)
+        onEvent("Конец dsl функции onEndTask")
     }
 
     override fun beforeOnEndImageTask(updateImage: DslImage) {

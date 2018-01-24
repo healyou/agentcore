@@ -9,14 +9,17 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def isExecuteTestOnGetServiceMessages = false
     def isExecuteTestOnGetLocalMessages = false
     def isExecuteTestOnLoadImage = false
+    def isExecuteTestOnEndTask = false
     def isExecuteTestOnEndImageTask = false
 
     def isExecuteA1_testOnGetServiceMessageFun = false
     def isExecuteA1_testOnGetLocalMessageFun = false
+    def isExecuteA1_testOnEndTask = false
     def isExecuteA1_testOnLoadImageFun = false
     def isExecuteA1_testOnEndImageTaskFun = false
     def isExecuteA2_testOnGetServiceMessageFun = false
     def isExecuteA2_testOnGetLocalMessageFun = false
+    def isExecuteA2_testOnEndTask = false
     def isExecuteA2_testOnLoadImageFun = false
     def isExecuteA2_testOnEndImageTaskFun = false
 
@@ -43,15 +46,15 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     void testOnGetServiceMessageFun() {
         isExecuteTestOnGetServiceMessages = true
     }
-
     void testOnGetLocalMessageFun() {
         isExecuteTestOnGetLocalMessages = true
     }
-
     void testOnLoadImage() {
         isExecuteTestOnLoadImage = true
     }
-
+    void testOnEndTask() {
+        isExecuteTestOnEndTask = true
+    }
     void testOnEndImageTask() {
         isExecuteTestOnEndImageTask = true
     }
@@ -66,6 +69,9 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def a1_testOnGetLocalMessageFun() {
         isExecuteA1_testOnGetLocalMessageFun = true
     }
+    def a1_testOnEndTask() {
+        isExecuteA1_testOnEndTask = true
+    }
     def a1_testOnLoadImageFun() {
         isExecuteA1_testOnLoadImageFun = true
     }
@@ -78,6 +84,9 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     }
     def a2_testOnGetLocalMessageFun() {
         isExecuteA2_testOnGetLocalMessageFun = true
+    }
+    def a2_testOnEndTask() {
+        isExecuteA2_testOnEndTask = true
     }
     def a2_testOnLoadImageFun() {
         isExecuteA2_testOnLoadImageFun = true

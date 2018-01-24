@@ -4,6 +4,7 @@ import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
+import com.mycompany.dsl.objects.DslTaskData
 
 /**
  * @author Nikita Gorodilov
@@ -38,6 +39,12 @@ abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
     }
 
     override fun afterOnGetLocalMessage(localMessage: DslLocalMessage) {
+    }
+
+    override fun beforeOnEndTask(taskData: DslTaskData) {
+    }
+
+    override fun afterOnEndTask(taskData: DslTaskData) {
     }
 
     override fun beforeOnEndImageTask(updateImage: DslImage) {
