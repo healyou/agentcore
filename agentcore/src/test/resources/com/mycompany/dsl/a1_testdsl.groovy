@@ -7,6 +7,8 @@ init = {
     name = "a1_testdsl"
     masId = "a1_testdsl"
     defaultBodyType = JSON_MBT
+    localMessageTypes = ["a1_lmt_event1"]
+    taskTypes = ["a1_tt1"]
 }
 
 onGetServiceMessage = { serviceMessage ->
@@ -23,7 +25,7 @@ onGetServiceMessage = { serviceMessage ->
 onGetLocalMessage = { localMessage ->
     executeCondition ("Локальное сообщение агента") {
         condition {
-            localMessage.event == "event"
+            localMessage.event == A1_LMT_EVENT1_LMT && localMessage.event == "a1_lmt_event1"
         }
         execute {
             a1_testOnGetLocalMessageFun()

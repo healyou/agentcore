@@ -18,6 +18,43 @@ class TypesObjects {
         new AgentType(2L, "test_agent_type_2", "Второй тип агента", false)
     }
 
+    static def localMessageTypes() {
+        ["testLocalMessageType1", "testLocalMessageType2", "testLocalMessageType3"]
+    }
+
+    /**
+     * @return Перевод массив String в строку формата ["1","2","3"]
+     */
+    static def typesAsStringArray(List<String> types) {
+        def ret = new StringBuilder("[")
+        types.indexed().each { index, value ->
+            ret.append("\"$value\"")
+            if (index != types.size() - 1) {
+                ret.append(",")
+            }
+        }
+        ret.append("]")
+        return ret.toString()
+    }
+
+    static def taskTypes() {
+        ["testTaskType1", "testTaskType2", "testTaskType1"]
+    }
+
+    /**
+     * @return Перевод массив String в строку формата ["1","2","3"]
+     */
+    static def localMessageTypesAsStringArray() {
+        typesAsStringArray(localMessageTypes())
+    }
+
+    /**
+     * @return Перевод массив String в строку формата ["1","2","3"]
+     */
+    static def taskTypesAsStringArray() {
+        typesAsStringArray(taskTypes())
+    }
+
     static def testAgent1TypeCode() {
         testAgentType1().code
     }

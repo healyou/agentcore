@@ -326,7 +326,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setAgentTypes(agentTypeList);
         runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
         runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
-        runtimeAgentService.setMessageTypes(messageTypes);
+        runtimeAgentService.setServiceMessageTypes(messageTypes);
 
         if (agentTypeList == null || messageBodyTypes == null || messageGoalTypes == null || messageTypes == null) {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
@@ -367,6 +367,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setAgentTypes(agentTypeList);
         runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
         runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
-        runtimeAgentService.setMessageTypes(messageTypes);
+        runtimeAgentService.setServiceMessageTypes(messageTypes);
     }
 }

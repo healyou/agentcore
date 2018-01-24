@@ -22,29 +22,31 @@ class RuntimeAgentService {
     def agentMasId = null
     def defaultBodyType = null
 
+    /* Типы данных сервиса обмена сообщениями */
     List<AgentType> agentTypes = []
     List<MessageBodyType> messageBodyTypes = []
     List<MessageGoalType> messageGoalTypes = []
-    List<MessageType> messageTypes = []
+    List<MessageType> serviceMessageTypes = []
+    /* Типы данных блока инициализации */
+    List<String> localMessageTypes = []
+    List<String> taskTypes = []
 
     boolean on_load_image_provided = false
     def onLoadImage = {}
-
     boolean on_get_service_message_provided = false
     def onGetServiceMessage = {}
-
     boolean on_get_local_message_provided = false
     def onGetLocalMessage = {}
-
     boolean on_end_image_task_provided = false
     def onEndImageTask = {}
-
     boolean init_provided = false
     def init = {}
-
     boolean agent_send_message_provided = false
     def agentSendMessage = {}
 
+    /**
+     * Класс, который содержит функции для работы агента
+     */
     def agentWorkLibraryClass = AAgentWorkLibrary.findAgentWorkLibraryClass()
 
     void loadExecuteRules(String rules) {
@@ -117,6 +119,8 @@ class RuntimeAgentService {
                 agentName = binding.name
                 agentMasId = binding.masId
                 defaultBodyType = binding.defaultBodyType
+                localMessageTypes = binding.localMessageTypes
+                taskTypes = binding.taskTypes
             } catch (ignored) {
                 throw new RuntimeException("Нет данных для инициализации агента")
             }
@@ -287,9 +291,15 @@ class RuntimeAgentService {
             def code = it.getCode()
             binding."${getMessageGoalTypeVariableByCode(code)}" = code
         }
-        messageTypes.each {
+        serviceMessageTypes.each {
             def code = it.getCode()
-            binding."${getMessaTypeVariableByCode(code)}" = code
+            binding."${getServiceMessageTypeVariableByCode(code)}" = code
+        }
+        localMessageTypes.each {
+            binding."${getLocalMessageTypeVariableByCode(it)}" = it
+        }
+        taskTypes.each {
+            binding."${getTaskTypeVariableByCode(it)}" = it
         }
     }
 
@@ -297,14 +307,20 @@ class RuntimeAgentService {
     String getAgentTypeVariableByCode(String code) {
         "${code.toUpperCase()}_AT"
     }
-    String getMessaTypeVariableByCode(String code) {
-        "${code.toUpperCase()}_MT"
+    String getServiceMessageTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_SMT"
     }
     String getMessageGoalTypeVariableByCode(String code) {
         "${code.toUpperCase()}_MGT"
     }
     String getMessageBodyTypeVariableByCode(String code) {
         "${code.toUpperCase()}_MBT"
+    }
+    String getLocalMessageTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_LMT"
+    }
+    String getTaskTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_TT"
     }
 
     /**
@@ -315,6 +331,8 @@ class RuntimeAgentService {
         binding.name = ""
         binding.masId = ""
         binding.defaultBodyType = ""
+        binding.localMessageTypes = null
+        binding.taskTypes = null
     }
 
     /**
@@ -322,9 +340,10 @@ class RuntimeAgentService {
      */
     private boolean initDataIsNullOrEmpty() {
         if (agentType == null || agentType.isEmpty() || agentName == null || agentName.isEmpty() ||
-                agentMasId == null || agentMasId.isEmpty() || defaultBodyType == null || defaultBodyType.isEmpty()) {
-            true
+                agentMasId == null || agentMasId.isEmpty() || defaultBodyType == null || defaultBodyType.isEmpty() ||
+                localMessageTypes == null || taskTypes == null) {
+            return true
         }
-        false
+        return false
     }
 }

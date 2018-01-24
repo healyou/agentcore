@@ -20,7 +20,14 @@ class CreateDatabaseDataDao : AbstractDao() {
 
     companion object {
         val testDskFileContentRef1Data = """
-            init = {}
+            init = {
+                type = "type"
+                name = "a1_testdsl"
+                masId = "a1_testdsl"
+                defaultBodyType = "json"
+                localMessageTypes = ["test_event1"]
+                taskTypes = ["test_task_type1"]
+            }
             onGetServiceMessage = { _ ->}
             onGetLocalMessage = { _->}
             onLoadImage = { _ ->}

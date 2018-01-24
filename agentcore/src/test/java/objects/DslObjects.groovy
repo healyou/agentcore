@@ -4,7 +4,8 @@ package objects
  */
 class DslObjects {
 
-    static final def a_testdslConditionEventName = "event"
+    static final def a1_testdslConditionEventName = "a1_lmt_event1"
+    static final def a2_testdslConditionEventName = "a2_lmt_event1"
 
     static final def notInitBlockDsl =
         """
@@ -22,6 +23,8 @@ class DslObjects {
                 masId = "${StringObjects.randomString()}"
                 defaultBodyType = "${StringObjects.randomString()}"
                 defaultGoalType = "${StringObjects.randomString()}"
+                localMessageTypes = ${TypesObjects.localMessageTypesAsStringArray()}
+                taskTypes = ${TypesObjects.taskTypesAsStringArray()}
             }
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
@@ -30,13 +33,15 @@ class DslObjects {
         """
     }
 
-    static def allBlocksDslWithInitParams(type, name, masId, bodyType) {
+    static def allBlocksDslWithInitParams(type, name, masId, bodyType, localMessageTypes, taskTypes) {
         """
             init = {
                 type = "$type"
                 name = "$name"
                 masId = "$masId"
                 defaultBodyType = "$bodyType"
+                localMessageTypes = $localMessageTypes
+                taskTypes = $taskTypes
             }
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
@@ -168,10 +173,17 @@ class DslObjects {
                 name = "${StringObjects.randomString()}"
                 masId = "${StringObjects.randomString()}"
                 defaultBodyType = "${StringObjects.randomString()}"
+                localMessageTypes = ${TypesObjects.localMessageTypesAsStringArray()}
+                taskTypes = ${TypesObjects.taskTypesAsStringArray()}
             }
         """
     }
 
+    /**
+     * Блоки dsl, где функция execute может выполнять и не выполняться
+     * @param execute выполняемая функция
+     * @return информация о выполнение функции
+     */
     static def testDslConditionBlocksArray(execute) {
         [
                 new TestDslConditionBlocks( // все блоки вернут да

@@ -80,16 +80,15 @@ class RuntimeAgentTest extends AbstractServiceTest {
         assert prevSize != updateSize && prevSize + 1 == updateSize
     }
 
-    /* Выполнение функций агентами */
     @Test
-    void testGetAgentMessage() {
+    void "Выполнение всех функций агента"() {
         workerAgent_a1.onGetServiceMessage(createSystemSendMessage(serverAgent_a2))
         serverAgent_a2.onGetServiceMessage(createSystemSendMessage(workerAgent_a1))
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetServiceMessageFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetServiceMessageFun
 
-        workerAgent_a1.onGetLocalMessage(new DslLocalMessage(DslObjects.getA_testdslConditionEventName()))
-        serverAgent_a2.onGetLocalMessage(new DslLocalMessage(DslObjects.getA_testdslConditionEventName()))
+        workerAgent_a1.onGetLocalMessage(new DslLocalMessage(DslObjects.getA1_testdslConditionEventName()))
+        serverAgent_a2.onGetLocalMessage(new DslLocalMessage(DslObjects.getA2_testdslConditionEventName()))
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetLocalMessageFun
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetLocalMessageFun
 

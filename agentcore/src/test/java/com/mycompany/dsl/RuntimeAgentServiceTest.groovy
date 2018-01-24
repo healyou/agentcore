@@ -23,9 +23,8 @@ class RuntimeAgentServiceTest extends Assert {
      * Начало - Тестирование вызова метода sendMessage
      */
 
-    /* Отправка сообщения с обязательными полями */
     @Test
-    void testSendMessageWithRequiredParams() {
+    void "Сообщение со всеми параметрами должно успешно отправляться"() {
         def runtimeAgentService = createTestRuntimeAgentServiceClass()
 
         def isExecuteSendMessage = false
@@ -48,9 +47,8 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(isExecuteSendMessage)
     }
 
-    /* Без обязательного поля Image будет ошибка */
     @Test
-    void testSendMessageWithoutRequiredParams() {
+    void "Отправка сообщения без обязательного параметра выдаст ошибку"() {
         def runtimeAgentService = createTestRuntimeAgentServiceClass()
 
         def isExecuteSendMessage = false
@@ -81,9 +79,8 @@ class RuntimeAgentServiceTest extends Assert {
      * Конец - Тестирование вызова метода sendMessage
      */
 
-    /* Без загрузки функций выходит ошибка при работе */
     @Test
-    void testErrorApplyNotLoadFunctions() {
+    void "Без загрузки функций выходит ошибка при работе"() {
         def runtimeAgentService = new RuntimeAgentService()
 
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyInit() })
@@ -95,7 +92,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     /* Если в dsl не предоставлены все функции - выходит ошибка */
     @Test
-    void testLoadErrorsDsl() {
+    void "Dsl без одного обязательного блока выдаст ошибку"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
         /**
@@ -112,17 +109,21 @@ class RuntimeAgentServiceTest extends Assert {
         assertFalse(runExpectedFunctionError { runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)})
     }
 
-    /* Тест загрузки данных из dsl */
     @Test
-    void testApplyInit() {
+    void "Блок init должен корректно инициализировать данные"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         def type = TypesObjects.testAgent1TypeCode()
         def name = StringObjects.randomString()
         def masId = StringObjects.randomString()
         def defaultBodyType = StringObjects.randomString()
+        def localMessageTypes = TypesObjects.localMessageTypes();
+        def taskTypes = TypesObjects.taskTypes();
 
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.allBlocksDslWithInitParams(type, name, masId, defaultBodyType)
+                DslObjects.allBlocksDslWithInitParams(type, name, masId, defaultBodyType,
+                        TypesObjects.typesAsStringArray(localMessageTypes.toList()),
+                        TypesObjects.typesAsStringArray(taskTypes.toList())
+                )
         )
         runtimeAgentService.applyInit()
 
@@ -130,11 +131,12 @@ class RuntimeAgentServiceTest extends Assert {
         assertEquals(runtimeAgentService.agentType, type)
         assertEquals(runtimeAgentService.agentMasId, masId)
         assertEquals(runtimeAgentService.defaultBodyType, defaultBodyType)
+        assertEquals(runtimeAgentService.localMessageTypes, localMessageTypes)
+        assertEquals(runtimeAgentService.taskTypes, taskTypes)
     }
 
-    /* Проходят все вызовы функций из dsl */
     @Test
-    void testExecuteDslFunction() {
+    void "Вызовы всех dsl функций проходят успешно"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
         runtimeAgentService.testLoadExecuteRules(
@@ -174,9 +176,8 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
 
-    /* Можно вызвать функцию execute в executeCondition без condition блока */
     @Test
-    void testExecuteFunctionWithoutCondition() {
+    void "Можно вызвать функцию execute в executeCondition без condition блока"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageExecuteConditionBlock(
@@ -193,9 +194,9 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
     }
 
-    /* Нельзя вызвать функцию execute вне executeCondition блока */
+    /*  */
     @Test(expected = MissingPropertyException)
-    void testExecuteFunctionWithoutExecuteConditionBlock() {
+    void "Нельзя вызвать функцию execute вне executeCondition блока"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
@@ -210,18 +211,16 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
     }
 
-    /* Нельзя вызвать функции библиотеки вне execute блока */
     @Test(expected = MissingMethodException)
-    void testExecuteLibraryFunctionWithoutExecuteBlock() {
+    void "Нельзя вызвать функции библиотеки вне execute блока"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetServiceMessageBlock("testOnGetMessageFun()"))
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
     }
 
-    /* Выполнение двух и более функций в одном блоке dsl */
     @Test
-    void testExecuteMoreOneConditionInOneBlock() {
+    void "В одном блоке можно записать несколько executeCondition блоков"() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
@@ -261,9 +260,9 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
 
-    /* Проверка выполнения функции в блоках allOf, anyOf, condition and other */
+    /*  */
     @Test
-    void testDslExecuteConditionBlock() {
+    void "Функция в блоке execute должна выполняться в зависимости от условий блоков allOf, anyOf, condition"() {
         DslObjects.testDslConditionBlocksArray("testOnGetServiceMessageFun()").forEach {
             def runtimeAgentService = new TestRuntimeAgentServiceClass()
 
@@ -274,14 +273,15 @@ class RuntimeAgentServiceTest extends Assert {
         }
     }
 
-    /* Проверка создания всех переменный из типов данных словарей(с сервиса) */
     @Test
-    void testCreateBindingTypeVariables() {
+    void "Переменные из типов данных должны успешно создаваться"() {
         def ras = new TestRuntimeAgentServiceClass()
         ras.agentTypes = TypesObjects.agentTypes
         ras.messageBodyTypes = TypesObjects.messageBodyTypes
         ras.messageGoalTypes = TypesObjects.messageGoalTypes
-        ras.messageTypes = TypesObjects.messageTypes
+        ras.serviceMessageTypes = TypesObjects.messageTypes
+        ras.localMessageTypes = TypesObjects.localMessageTypes()
+        ras.taskTypes = TypesObjects.taskTypes()
 
         /* Проверка выполнения условий с созданными типами */
         def testClosure = {
@@ -312,18 +312,31 @@ class RuntimeAgentServiceTest extends Assert {
             ))
             testClosure()
         }
-        ras.messageTypes.each {
+        ras.serviceMessageTypes.each {
             ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getMessaTypeVariableByCode(it.code)} == \"${it.code}\"",
+                    "${ras.getServiceMessageTypeVariableByCode(it.code)} == \"${it.code}\"",
+                    "testOnGetServiceMessageFun()"
+            ))
+            testClosure()
+        }
+        ras.localMessageTypes.each {
+            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                    "${ras.getLocalMessageTypeVariableByCode(it)} == \"${it}\"",
+                    "testOnGetServiceMessageFun()"
+            ))
+            testClosure()
+        }
+        ras.taskTypes.each {
+            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                    "${ras.getTaskTypeVariableByCode(it)} == \"${it}\"",
                     "testOnGetServiceMessageFun()"
             ))
             testClosure()
         }
     }
 
-    /* Блок инициализации можно задать как строкой, так и константным параметром */
     @Test
-    void testInitBlockWithTypeParameter() {
+    void "Тип агента можно задать как строкой, так и константным параметром"() {
         /* Константа */
         def ras = new TestRuntimeAgentServiceClass()
         ras.agentTypes = TypesObjects.agentTypes
@@ -348,7 +361,7 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.setAgentTypes(TypesObjects.agentTypes)
         runtimeAgentService.setMessageBodyTypes(TypesObjects.messageBodyTypes)
         runtimeAgentService.setMessageGoalTypes(TypesObjects.messageGoalTypes)
-        runtimeAgentService.setMessageTypes(TypesObjects.messageTypes)
+        runtimeAgentService.setServiceMessageTypes(TypesObjects.messageTypes)
 
         runtimeAgentService
     }
