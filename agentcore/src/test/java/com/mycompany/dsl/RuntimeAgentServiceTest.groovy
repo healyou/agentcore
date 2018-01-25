@@ -6,7 +6,6 @@ import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslTaskData
 import objects.DslObjects
-import objects.OtherObjects
 import objects.StringObjects
 import objects.TypesObjects
 import org.junit.Assert
@@ -34,17 +33,17 @@ class RuntimeAgentServiceTest extends Assert {
             isExecuteSendMessage = true
         })
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.createDslWithOnGetLoadImageBlock(
+                DslObjects.createDslWithOnGetServiceMessageExecuteConditionBlock(
                         """
                             execute {
                                 sendServiceMessage ${SendServiceMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
-                                        ${SendServiceMessageParameters.IMAGE.paramName}: image,
+                                        ${SendServiceMessageParameters.IMAGE.paramName}: "image",
                                         ${SendServiceMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
                             }
                         """
                 )
         )
-        runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
 
         assertTrue(isExecuteSendMessage)
     }
@@ -58,7 +57,7 @@ class RuntimeAgentServiceTest extends Assert {
             isExecuteSendMessage = true
         })
         runtimeAgentService.testLoadExecuteRules(
-                DslObjects.createDslWithOnGetLoadImageBlock(
+                DslObjects.createDslWithOnGetServiceMessageExecuteConditionBlock(
                         """
                             execute {
                                 sendServiceMessage ${SendServiceMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
@@ -69,7 +68,7 @@ class RuntimeAgentServiceTest extends Assert {
         )
         def isError = false
         try {
-            runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
+            runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
         } catch (ignored) {
             isError = true
         }
@@ -156,11 +155,6 @@ class RuntimeAgentServiceTest extends Assert {
                         """,
                         """
                             execute {
-                                testOnLoadImage()
-                            }
-                        """,
-                        """
-                            execute {
                                 testOnEndTask()
                             }
                         """,
@@ -172,7 +166,6 @@ class RuntimeAgentServiceTest extends Assert {
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnLoadImage(mock(DslImage.class))
         runtimeAgentService.applyOnEndImageTask(mock(DslImage.class))
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
         runtimeAgentService.applyOnEndTask(mock(DslTaskData.class))
@@ -183,7 +176,6 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndTask as Boolean)
-        assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
     }
 
     @Test
@@ -339,7 +331,7 @@ class RuntimeAgentServiceTest extends Assert {
                                     true
                                 }
                                 execute {
-                                    testOnLoadImage()
+                                    testOnGetLocalMessageFun()
                                 }
                             }
                             executeCondition ("Выполняется всегда") {
@@ -358,7 +350,7 @@ class RuntimeAgentServiceTest extends Assert {
 
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
-        assertTrue(runtimeAgentService.isExecuteTestOnLoadImage as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
     }
 
     /*  */

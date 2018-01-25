@@ -23,12 +23,6 @@ abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
     override fun onStop() {
     }
 
-    override fun beforeOnLoadImage(image: DslImage) {
-    }
-
-    override fun afterOnLoadImage(image: DslImage) {
-    }
-
     override fun beforeOnGetServiceMessage(serviceMessage: DslServiceMessage) {
     }
 

@@ -48,15 +48,6 @@ class RuntimeAgentLoader: IGuiRuntimeAgentLoader {
         agents.clear()
     }
 
-    override fun onLoadImage(agent: SystemAgent, image: DslImage) {
-        val filterAgents = agents.filter {
-            it.getSystemAgent().id == agent.id
-        }
-        if (filterAgents.isNotEmpty() && filterAgents.size == 1) {
-            filterAgents[0].onLoadImage(image)
-        }
-    }
-
     private fun createDslFile(path: String, filename: String): DslFileAttachment {
         val file = File(path)
         val content = Files.readAllBytes(file.toPath())

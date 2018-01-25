@@ -34,16 +34,6 @@ interface IRuntimeAgentBehaviorEventSink {
     fun onStop()
 
     /**
-     * Вызывается перед началом события загрузки изображения
-     */
-    fun beforeOnLoadImage(image: DslImage)
-
-    /**
-     * Вызывается после события загрузки изображения
-     */
-    fun afterOnLoadImage(image: DslImage)
-
-    /**
      * Вызывается перед началом события получения сервисного сообщения
      */
     fun beforeOnGetServiceMessage(serviceMessage: DslServiceMessage)

@@ -86,21 +86,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     @Override
-    public void onLoadImage(@NotNull DslImage image) {
-        try {
-            behaviors.forEach(it -> {
-                it.beforeOnLoadImage(image);
-            });
-            runtimeAgentService.applyOnLoadImage(image);
-            behaviors.forEach(it -> {
-                it.afterOnLoadImage(image);
-            });
-        } catch (Exception e) {
-            System.out.println("Ошибка работы агента");
-        }
-    }
-
-    @Override
     public void onGetServiceMessage(@NotNull DslServiceMessage serviceMessage) {
         try {
             behaviors.forEach(it -> {

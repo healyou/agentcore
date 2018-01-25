@@ -8,19 +8,16 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def isExecuteInit = false
     def isExecuteTestOnGetServiceMessages = false
     def isExecuteTestOnGetLocalMessages = false
-    def isExecuteTestOnLoadImage = false
     def isExecuteTestOnEndTask = false
     def isExecuteTestOnEndImageTask = false
 
     def isExecuteA1_testOnGetServiceMessageFun = false
     def isExecuteA1_testOnGetLocalMessageFun = false
     def isExecuteA1_testOnEndTask = false
-    def isExecuteA1_testOnLoadImageFun = false
     def isExecuteA1_testOnEndImageTaskFun = false
     def isExecuteA2_testOnGetServiceMessageFun = false
     def isExecuteA2_testOnGetLocalMessageFun = false
     def isExecuteA2_testOnEndTask = false
-    def isExecuteA2_testOnLoadImageFun = false
     def isExecuteA2_testOnEndImageTaskFun = false
 
     /* Повторяет функцию loadExecuteRules - но тут сразу строку передаем а не файл*/
@@ -49,9 +46,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     void testOnGetLocalMessageFun() {
         isExecuteTestOnGetLocalMessages = true
     }
-    void testOnLoadImage() {
-        isExecuteTestOnLoadImage = true
-    }
     void testOnEndTask() {
         isExecuteTestOnEndTask = true
     }
@@ -72,9 +66,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def a1_testOnEndTask() {
         isExecuteA1_testOnEndTask = true
     }
-    def a1_testOnLoadImageFun() {
-        isExecuteA1_testOnLoadImageFun = true
-    }
     def a1_testOnEndImageTaskFun() {
         isExecuteA1_testOnEndImageTaskFun = true
     }
@@ -87,9 +78,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     }
     def a2_testOnEndTask() {
         isExecuteA2_testOnEndTask = true
-    }
-    def a2_testOnLoadImageFun() {
-        isExecuteA2_testOnLoadImageFun = true
     }
     def a2_testOnEndImageTaskFun() {
         isExecuteA2_testOnEndImageTaskFun = true

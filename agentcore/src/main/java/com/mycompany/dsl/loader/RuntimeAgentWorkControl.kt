@@ -144,21 +144,6 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
         return true
     }
 
-    override fun onLoadImage(agent: SystemAgent, image: DslImage) {
-        if (agent.isNew) {
-            throw RuntimeAgentException("Агент ещё не создан")
-        } else if(!isStarted(agent)) {
-            throw RuntimeAgentException("Агент ещё не работает")
-        }
-
-        val agentId = agent.id!!
-        val operationAgent = startedAgents.getValue(agentId)
-        /* операции над агентами не могут быть выполнены одновременно n потоками */
-        synchronized(operationAgent) {
-            operationAgent.onLoadImage(image)
-        }
-    }
-
     /**
      * Вызывается из библиотеки workLibrary
      */

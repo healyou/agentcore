@@ -13,6 +13,7 @@ import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslImage
 import objects.DslObjects
+import objects.StringObjects
 import objects.TypesObjects
 import objects.initdbobjects.AgentObjects
 import objects.initdbobjects.UserObjects
@@ -74,7 +75,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
         def sc = new ServiceMessageSC()
         sc.systemAgentId = workerAgent_a1.systemAgent.id
         def prevSize = serviceMessageService.get(sc).size()
-        workerAgent_a1.onLoadImage(OtherObjects.image())
+        workerAgent_a1.onGetServiceMessage(new DslServiceMessage(TypesObjects.testAgentType2().code, OtherObjects.image()))
         def updateSize = serviceMessageService.get(sc).size()
         assert prevSize != updateSize && prevSize + 1 == updateSize
     }
@@ -105,11 +106,6 @@ class RuntimeAgentTest extends AbstractServiceTest {
         serverAgent_a2.onEndTask(DslObjects.getA2_testdslTaskData())
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndTask
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndTask
-
-        workerAgent_a1.onLoadImage(OtherObjects.image())
-        serverAgent_a2.onLoadImage(OtherObjects.image())
-        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnLoadImageFun
-        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnLoadImageFun
 
         workerAgent_a1.onEndImageTask(OtherObjects.image())
         serverAgent_a2.onEndImageTask(OtherObjects.image())

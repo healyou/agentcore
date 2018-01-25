@@ -14,8 +14,6 @@ interface IRuntimeAgent {
 
     fun stop()
 
-    fun onLoadImage(image: DslImage)
-
     fun onGetServiceMessage(serviceMessage: DslServiceMessage)
 
     fun onGetLocalMessage(localMessage: DslLocalMessage)

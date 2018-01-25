@@ -23,7 +23,6 @@ class DslObjects {
         """
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
-            onLoadImage = { image -> }
             onEndTask = { taskData -> }
             onEndImageTask = { updateImage -> }
         """
@@ -41,7 +40,6 @@ class DslObjects {
             }
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
-            onLoadImage = { image -> }
             onEndTask = { taskData -> }
             onEndImageTask = { updateImage -> }
         """
@@ -59,7 +57,6 @@ class DslObjects {
             }
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
-            onLoadImage = { image -> }
             onEndTask = { taskData -> }
             onEndImageTask = { updateImage -> }
         """
@@ -69,7 +66,6 @@ class DslObjects {
             "${randomInitBlock()}",
             "onGetServiceMessage = { message -> }",
             "onGetLocalMessage = { localMessage -> }",
-            "onLoadImage = { image -> }",
             "onEndTask = { taskData -> }",
             "onEndImageTask = { updateImage -> }"
     ]
@@ -94,7 +90,6 @@ class DslObjects {
                 }
             }
             onGetLocalMessage = { localMessage -> }
-            onLoadImage = {}
             onEndTask = { taskData -> }
             onEndImageTask = {}
         """
@@ -109,14 +104,13 @@ class DslObjects {
                 """
             }
             onGetLocalMessage = { localMessage -> }
-            onLoadImage = {}
             onEndTask = { taskData -> }
             onEndImageTask = {}
         """
     }
 
-    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onLoadImageBlock,
-                                                   onEndTaskBlock, onEndImageBlock) {
+    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onEndTaskBlock,
+                                                   onEndImageBlock) {
         """
             ${randomInitBlock()}
             onGetServiceMessage = {
@@ -140,13 +134,6 @@ class DslObjects {
                 """
                 }
             }
-            onLoadImage = {
-                executeCondition ("BlockBody") {
-                    """ +
-                onLoadImageBlock +
-                """
-                }
-            }
             onEndImageTask = {
                 executeCondition ("BlockBody") {
                     """ +
@@ -154,23 +141,6 @@ class DslObjects {
                 """
                 }
             }
-        """
-    }
-
-    static def createDslWithOnGetLoadImageBlock(executeConditionBlockBody) {
-        """
-            ${randomInitBlock()}
-            onGetServiceMessage = {}
-            onGetLocalMessage = {}
-            onLoadImage = { image ->
-                executeCondition ("BlockBody") {
-        """ +
-                executeConditionBlockBody +
-                """
-                }
-            }
-            onEndTask = { taskData -> }
-            onEndImageTask = {}
         """
     }
 
@@ -188,7 +158,6 @@ class DslObjects {
                     }
                 }
                 onGetLocalMessage = { localMessage -> }
-                onLoadImage = {}
                 onEndTask = { taskData -> }
                 onEndImageTask = {}
             """
@@ -238,7 +207,6 @@ class DslObjects {
                             }
                         }
                         onGetLocalMessage = { localMessage -> }
-                        onLoadImage = {}
                         onEndTask = { taskData -> }
                         onEndImageTask = {}
                     """,
@@ -268,7 +236,6 @@ class DslObjects {
                             }
                         }
                         onGetLocalMessage = { localMessage -> }
-                        onLoadImage = {}
                         onEndTask = { taskData -> }
                         onEndImageTask = {}
                     """,
@@ -302,7 +269,6 @@ class DslObjects {
                             }
                         }
                         onGetLocalMessage = { localMessage -> }
-                        onLoadImage = {}
                         onEndTask = { taskData -> }
                         onEndImageTask = {}
                     """,
@@ -319,7 +285,6 @@ class DslObjects {
                             }
                         }
                         onGetLocalMessage = { localMessage -> }
-                        onLoadImage = {}
                         onEndTask = { taskData -> }
                         onEndImageTask = {}
                     """,
@@ -339,7 +304,6 @@ class DslObjects {
                             }
                         }
                         onGetLocalMessage = { localMessage -> }
-                        onLoadImage = {}
                         onEndTask = { taskData -> }
                         onEndImageTask = {}
                     """,

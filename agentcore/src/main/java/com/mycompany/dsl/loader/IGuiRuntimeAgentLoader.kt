@@ -13,5 +13,4 @@ interface IGuiRuntimeAgentLoader {
     fun load(createAgent: (dslFile: DslFileAttachment) -> ThreadPoolRuntimeAgent)
     fun start()
     fun stop()
-    fun onLoadImage(agent: SystemAgent, image: DslImage)
 }

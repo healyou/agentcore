@@ -30,8 +30,6 @@ class RuntimeAgentService {
     List<String> localMessageTypes = []
     List<String> taskTypes = []
 
-    boolean on_load_image_provided = false
-    def onLoadImage = {}
     boolean on_get_service_message_provided = false
     def onGetServiceMessage = {}
     boolean on_get_local_message_provided = false
@@ -65,7 +63,6 @@ class RuntimeAgentService {
         Binding binding = new Binding()
 
         binding.init = init
-        binding.onLoadImage = onLoadImage
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndTask = onEndTask
@@ -87,13 +84,11 @@ class RuntimeAgentService {
     void checkLoadRules(Binding binding) {
         if (bindingFunctionCheck(binding)) {
             init = binding.init
-            onLoadImage = binding.onLoadImage
             onGetServiceMessage = binding.onGetServiceMessage
             onGetLocalMessage = binding.onGetLocalMessage
             onEndTask = binding.onEndTask
             onEndImageTask = binding.onEndImageTask
 
-            on_load_image_provided = true
             on_get_service_message_provided = true
             on_get_local_message_provided = true
             on_end_task_provided = true
@@ -106,9 +101,9 @@ class RuntimeAgentService {
 
     /* Проверка функций */
     boolean bindingFunctionCheck(Binding binding) {
-        return binding.init != init && binding.onLoadImage != onLoadImage &&
-                binding.onGetServiceMessage != onGetServiceMessage && binding.onEndImageTask != onEndImageTask &&
-                binding.onGetLocalMessage != onGetLocalMessage && binding.onEndTask != onEndTask
+        return binding.init != init && binding.onGetServiceMessage != onGetServiceMessage &&
+                binding.onEndImageTask != onEndImageTask && binding.onGetLocalMessage != onGetLocalMessage &&
+                binding.onEndTask != onEndTask
     }
 
     void applyInit() {
@@ -140,22 +135,6 @@ class RuntimeAgentService {
             }
         } else {
             throw new RuntimeException("Функция init не загружена")
-        }
-    }
-
-    void applyOnLoadImage(DslImage image) {
-        if (on_load_image_provided) {
-            Binding binding = new Binding()
-
-            prepareTypes(binding)
-            prepareClosures(binding)
-
-            binding.image = image
-
-            GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onLoadImage.delegate = this;onLoadImage.resolveStrategy = Closure.DELEGATE_FIRST;onLoadImage(image)")
-        } else {
-            throw new RuntimeException("Функция on_load_image не загружена")
         }
     }
 
@@ -225,7 +204,6 @@ class RuntimeAgentService {
 
     void prepareClosures(Binding binding) {
         binding.init = init
-        binding.onLoadImage = onLoadImage
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndTask = onEndTask

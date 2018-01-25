@@ -33,17 +33,6 @@ onGetLocalMessage = { localMessage ->
     }
 }
 
-onLoadImage = { image ->
-    executeCondition ("Выполним функцию над изображением") {
-        condition {
-            image != null
-        }
-        execute {
-            a2_testOnLoadImageFun()
-        }
-    }
-}
-
 onEndTask = { taskData ->
     executeCondition ("Выполним функцию над изображением") {
         condition {

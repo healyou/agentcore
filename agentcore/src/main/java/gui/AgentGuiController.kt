@@ -119,7 +119,8 @@ class AgentGuiController {
             if (imageFile != null && IMAGE_REGEX.toRegex().matches(imageFile.name)) {
                 val dslImage = configureDslImage(imageFile)
                 val selectedAgent = getSelectedAgent()
-                agentLoader.onLoadImage(selectedAgent!!, dslImage)
+                // загружать изображения уже ненадо
+                //agentLoader.onLoadImage(selectedAgent!!, dslImage)
             }
         }
     }

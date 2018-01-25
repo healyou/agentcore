@@ -18,6 +18,9 @@ onGetServiceMessage = { serviceMessage ->
         }
         execute {
             a1_testOnGetServiceMessageFun()
+            sendServiceMessage messageType: "search_solution",
+                    image: serviceMessage.image,
+                    agentTypes: ["worker", "server"]
         }
     }
 }
@@ -32,20 +35,6 @@ onGetLocalMessage = { localMessage ->
             startTask (A1_TT1_TT) {
                 testOnGetLocalMessageFun()
             }
-        }
-    }
-}
-
-onLoadImage = { image ->
-    executeCondition ("Выполним функцию над изображением") {
-        condition {
-            image != null
-        }
-        execute {
-            sendServiceMessage messageType: "search_solution",
-                    image: image,
-                    agentTypes: ["worker", "server"]
-            a1_testOnLoadImageFun()
         }
     }
 }
