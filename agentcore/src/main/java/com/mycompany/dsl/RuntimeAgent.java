@@ -166,17 +166,16 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     }
 
     protected void sendServiceMessage(String messageTypeCode,
-                                      DslImage image,
+                                      String messageBody,
                                       List<String> agentTypeCodes,
                                       String messageBodyTypeCode) {
         if (systemAgent.getId() == null) {
-            return;
+            throw new RuntimeException("Агент не инициализирован");
         }
-        String jsonObject = imageToJsonWithThrowError(image);
 
         ServiceMessageService messageService = getServiceMessageService();
         ServiceMessage serviceMessage = new ServiceMessage(
-                jsonObject,
+                messageBody,
                 getMessageTypeService().get(ServiceMessageType.Code.SEND),
                 systemAgent.getId()
         );
@@ -205,14 +204,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         }
     }
 
-    private String imageToJsonWithThrowError(DslImage image) {
-        try {
-            return AbstractAgentService.Companion.toJson(image);
-        } catch (Exception ignored) {
-            throw new RuntimeException("Невозможно преобразовать DslImage в json");
-        }
-    }
-
     /**
      * Функция вызывается из groovy
      * Идёт обработка всех параметров и передача управления самим функциям отправки сообщения
@@ -227,14 +218,14 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 Map map = (Map) arguments;
 
                 String messageTypeCode = (String) map.get(SendServiceMessageParameters.MESSAGE_TYPE.getParamName());
-                DslImage image = (DslImage) map.get(SendServiceMessageParameters.IMAGE.getParamName());
+                String messageBody = (String) map.get(SendServiceMessageParameters.MESSAGE_BODY.getParamName());
                 List<String> agentTypeCodes =
                         map.get(SendServiceMessageParameters.AGENT_TYPES.getParamName()) instanceof List ?
                                 (List<String>) map.get(SendServiceMessageParameters.AGENT_TYPES.getParamName()) :
                                 Collections.emptyList();
                 String bodyTypeCode = (String) map.get(SendServiceMessageParameters.BODY_TYPE.getParamName());
 
-                sendServiceMessage(messageTypeCode, image, agentTypeCodes, bodyTypeCode);
+                sendServiceMessage(messageTypeCode, messageBody, agentTypeCodes, bodyTypeCode);
                 return null;
             }
         };

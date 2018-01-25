@@ -37,7 +37,7 @@ class RuntimeAgentServiceTest extends Assert {
                         """
                             execute {
                                 sendServiceMessage ${SendServiceMessageParameters.MESSAGE_TYPE.paramName}: "${TypesObjects.messageTypes[0].code}",
-                                        ${SendServiceMessageParameters.IMAGE.paramName}: "image",
+                                        ${SendServiceMessageParameters.MESSAGE_BODY.paramName}: "thisismessagebody",
                                         ${SendServiceMessageParameters.AGENT_TYPES.paramName}: ["${TypesObjects.agentTypes[0].code}"]
                             }
                         """
@@ -281,7 +281,7 @@ class RuntimeAgentServiceTest extends Assert {
                             executeCondition ("blockname") {
                                 execute {
                                     sendServiceMessage messageType: "search_solution",
-                                        image: "image",
+                                        messageBody: "thisismessagebody",
                                         agentTypes: ["worker", "server"]
                                 }
                             }       

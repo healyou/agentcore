@@ -29,6 +29,7 @@ import com.mycompany.user.User
 
 import java.nio.file.Files
 
+import static junit.framework.Assert.assertEquals
 import static junit.framework.Assert.fail
 
 /**
@@ -78,6 +79,10 @@ class RuntimeAgentTest extends AbstractServiceTest {
         workerAgent_a1.onGetServiceMessage(new DslServiceMessage(TypesObjects.testAgentType2().code, OtherObjects.image()))
         def updateSize = serviceMessageService.get(sc).size()
         assert prevSize != updateSize && prevSize + 1 == updateSize
+
+        /* Тело сообщения должно быть равно типу агента(строка из a1_testdsl.groovy) */
+        def saveMessage = serviceMessageService.getLastNumberItems(workerAgent_a1.systemAgent.id, 1)[0]
+        assertEquals(TypesObjects.testAgentType2().code, saveMessage.jsonObject)
     }
 
     @Test

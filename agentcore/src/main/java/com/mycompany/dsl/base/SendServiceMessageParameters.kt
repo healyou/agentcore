@@ -13,7 +13,7 @@ enum class SendServiceMessageParameters(val paramName: String, val isRequired: B
     /**
      * Изображение
      */
-    IMAGE("image", true),
+    MESSAGE_BODY("messageBody", true),
     /**
      * Тип агентов, которым надо отправлять сообщение
      */

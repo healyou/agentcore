@@ -19,7 +19,7 @@ onGetServiceMessage = { serviceMessage ->
         execute {
             a1_testOnGetServiceMessageFun()
             sendServiceMessage messageType: "search_solution",
-                    image: serviceMessage.image,
+                    messageBody: serviceMessage.senderType,
                     agentTypes: ["worker", "server"]
         }
     }

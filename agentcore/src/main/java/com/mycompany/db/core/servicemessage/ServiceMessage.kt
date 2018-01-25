@@ -10,6 +10,7 @@ import java.util.*
  */
 open class ServiceMessage(
         /* Объект получаемый или передаваемый в сообщении */
+        // todo - body у сообщения - тут может быть и не json
         var jsonObject: String,
         /* Тип сообщения */
         var serviceMessageType: ServiceMessageType,
