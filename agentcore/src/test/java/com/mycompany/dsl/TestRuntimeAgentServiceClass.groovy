@@ -9,16 +9,13 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def isExecuteTestOnGetServiceMessages = false
     def isExecuteTestOnGetLocalMessages = false
     def isExecuteTestOnEndTask = false
-    def isExecuteTestOnEndImageTask = false
 
     def isExecuteA1_testOnGetServiceMessageFun = false
     def isExecuteA1_testOnGetLocalMessageFun = false
     def isExecuteA1_testOnEndTask = false
-    def isExecuteA1_testOnEndImageTaskFun = false
     def isExecuteA2_testOnGetServiceMessageFun = false
     def isExecuteA2_testOnGetLocalMessageFun = false
     def isExecuteA2_testOnEndTask = false
-    def isExecuteA2_testOnEndImageTaskFun = false
 
     /* Повторяет функцию loadExecuteRules - но тут сразу строку передаем а не файл*/
     void testLoadExecuteRules(rules) {
@@ -49,9 +46,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     void testOnEndTask() {
         isExecuteTestOnEndTask = true
     }
-    void testOnEndImageTask() {
-        isExecuteTestOnEndImageTask = true
-    }
 
     /**
      * Методы для тестирования работы двух агентов без интернета(инет - тестовые объекты)
@@ -66,9 +60,6 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def a1_testOnEndTask() {
         isExecuteA1_testOnEndTask = true
     }
-    def a1_testOnEndImageTaskFun() {
-        isExecuteA1_testOnEndImageTaskFun = true
-    }
 
     def a2_testOnGetServiceMessageFun() {
         isExecuteA2_testOnGetServiceMessageFun = true
@@ -78,8 +69,5 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     }
     def a2_testOnEndTask() {
         isExecuteA2_testOnEndTask = true
-    }
-    def a2_testOnEndImageTaskFun() {
-        isExecuteA2_testOnEndImageTaskFun = true
     }
 }

@@ -36,8 +36,6 @@ class RuntimeAgentService {
     def onGetLocalMessage = {}
     boolean on_end_task_provided = false
     def onEndTask = {}
-    boolean on_end_image_task_provided = false
-    def onEndImageTask = {}
     boolean init_provided = false
     def init = {}
     boolean agent_send_message_provided = false
@@ -66,7 +64,6 @@ class RuntimeAgentService {
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndTask = onEndTask
-        binding.onEndImageTask = onEndImageTask
 
         return binding
     }
@@ -87,12 +84,10 @@ class RuntimeAgentService {
             onGetServiceMessage = binding.onGetServiceMessage
             onGetLocalMessage = binding.onGetLocalMessage
             onEndTask = binding.onEndTask
-            onEndImageTask = binding.onEndImageTask
 
             on_get_service_message_provided = true
             on_get_local_message_provided = true
             on_end_task_provided = true
-            on_end_image_task_provided = true
             init_provided = true
         } else {
             throw new RuntimeException("Неправильная dsl")
@@ -102,8 +97,7 @@ class RuntimeAgentService {
     /* Проверка функций */
     boolean bindingFunctionCheck(Binding binding) {
         return binding.init != init && binding.onGetServiceMessage != onGetServiceMessage &&
-                binding.onEndImageTask != onEndImageTask && binding.onGetLocalMessage != onGetLocalMessage &&
-                binding.onEndTask != onEndTask
+                binding.onGetLocalMessage != onGetLocalMessage && binding.onEndTask != onEndTask
     }
 
     void applyInit() {
@@ -186,28 +180,11 @@ class RuntimeAgentService {
         }
     }
 
-    void applyOnEndImageTask(DslImage updateImage) {
-        if (on_end_image_task_provided) {
-            Binding binding = new Binding()
-
-            prepareTypes(binding)
-            prepareClosures(binding)
-
-            binding.updateImage = updateImage
-
-            GroovyShell shell = new GroovyShell(binding)
-            shell.evaluate("onEndImageTask.delegate = this;onEndImageTask.resolveStrategy = Closure.DELEGATE_FIRST;onEndImageTask(updateImage)")
-        } else {
-            throw new RuntimeException("Функция on_end_image_task не загружена")
-        }
-    }
-
     void prepareClosures(Binding binding) {
         binding.init = init
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndTask = onEndTask
-        binding.onEndImageTask = onEndImageTask
         binding.sendServiceMessage = { Map map ->
             /* required fields */
             SendServiceMessageParameters.values().each {

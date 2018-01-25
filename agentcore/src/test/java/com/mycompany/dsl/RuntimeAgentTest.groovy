@@ -106,11 +106,6 @@ class RuntimeAgentTest extends AbstractServiceTest {
         serverAgent_a2.onEndTask(DslObjects.getA2_testdslTaskData())
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndTask
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndTask
-
-        workerAgent_a1.onEndImageTask(OtherObjects.image())
-        serverAgent_a2.onEndImageTask(OtherObjects.image())
-        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndImageTaskFun
-        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndImageTaskFun
     }
 
     @Test

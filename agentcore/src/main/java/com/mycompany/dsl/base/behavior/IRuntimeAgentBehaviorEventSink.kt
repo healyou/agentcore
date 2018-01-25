@@ -62,14 +62,4 @@ interface IRuntimeAgentBehaviorEventSink {
      * Вызывается после вызова функции завершения задачи
      */
     fun afterOnEndTask(taskData: DslTaskData)
-
-    /**
-     * Вызывается перед началом события завершение работы с изображением
-     */
-    fun beforeOnEndImageTask(updateImage: DslImage)
-
-    /**
-     * Вызывается после события завершение работы с изображением
-     */
-    fun afterOnEndImageTask(updateImage: DslImage)
 }

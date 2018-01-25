@@ -24,7 +24,6 @@ class DslObjects {
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
-            onEndImageTask = { updateImage -> }
         """
 
     static def allBlocksDslWithTypeParameterInInitBlock(typeParameter) {
@@ -41,7 +40,6 @@ class DslObjects {
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
-            onEndImageTask = { updateImage -> }
         """
     }
 
@@ -58,7 +56,6 @@ class DslObjects {
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
-            onEndImageTask = { updateImage -> }
         """
     }
 
@@ -66,8 +63,7 @@ class DslObjects {
             "${randomInitBlock()}",
             "onGetServiceMessage = { message -> }",
             "onGetLocalMessage = { localMessage -> }",
-            "onEndTask = { taskData -> }",
-            "onEndImageTask = { updateImage -> }"
+            "onEndTask = { taskData -> }"
     ]
 
     static final def allBlocksDsl = createAllBlocksDsl()
@@ -91,7 +87,6 @@ class DslObjects {
             }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
-            onEndImageTask = {}
         """
     }
 
@@ -105,12 +100,10 @@ class DslObjects {
             }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
-            onEndImageTask = {}
         """
     }
 
-    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onEndTaskBlock,
-                                                   onEndImageBlock) {
+    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onEndTaskBlock) {
         """
             ${randomInitBlock()}
             onGetServiceMessage = {
@@ -134,13 +127,6 @@ class DslObjects {
                 """
                 }
             }
-            onEndImageTask = {
-                executeCondition ("BlockBody") {
-                    """ +
-                onEndImageBlock +
-                """
-                }
-            }
         """
     }
 
@@ -159,7 +145,6 @@ class DslObjects {
                 }
                 onGetLocalMessage = { localMessage -> }
                 onEndTask = { taskData -> }
-                onEndImageTask = {}
             """
     }
 
@@ -208,7 +193,6 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
-                        onEndImageTask = {}
                     """,
                         expectedExecute: true
                 ),
@@ -237,7 +221,6 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
-                        onEndImageTask = {}
                     """,
                         expectedExecute: false
                 ),
@@ -270,7 +253,6 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
-                        onEndImageTask = {}
                     """,
                         expectedExecute: false
                 ),
@@ -286,7 +268,6 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
-                        onEndImageTask = {}
                     """,
                         expectedExecute: true
                 ),
@@ -305,7 +286,6 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
-                        onEndImageTask = {}
                     """,
                         expectedExecute: true
                 )

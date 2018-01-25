@@ -157,16 +157,10 @@ class RuntimeAgentServiceTest extends Assert {
                             execute {
                                 testOnEndTask()
                             }
-                        """,
-                        """
-                            execute {
-                                testOnEndImageTask()
-                            }
                         """
                 )
         )
         runtimeAgentService.applyInit()
-        runtimeAgentService.applyOnEndImageTask(mock(DslImage.class))
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
         runtimeAgentService.applyOnEndTask(mock(DslTaskData.class))
         runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class))
@@ -174,7 +168,6 @@ class RuntimeAgentServiceTest extends Assert {
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
-        assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndTask as Boolean)
     }
 
@@ -339,7 +332,7 @@ class RuntimeAgentServiceTest extends Assert {
                                     true
                                 }
                                 execute {
-                                    testOnEndImageTask()
+                                    testOnEndTask()
                                 }
                             }
                         """
@@ -349,7 +342,7 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
 
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
-        assertTrue(runtimeAgentService.isExecuteTestOnEndImageTask as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnEndTask as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
     }
 

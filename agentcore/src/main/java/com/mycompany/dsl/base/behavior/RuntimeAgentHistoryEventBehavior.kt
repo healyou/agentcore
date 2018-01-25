@@ -68,16 +68,6 @@ open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAg
         onEvent("Конец dsl функции onEndTask")
     }
 
-    override fun beforeOnEndImageTask(updateImage: DslImage) {
-        super.beforeOnEndImageTask(updateImage)
-        onEvent("Начало dsl функции onEndImageTask")
-    }
-
-    override fun afterOnEndImageTask(updateImage: DslImage) {
-        super.afterOnEndImageTask(updateImage)
-        onEvent("Конец dsl функции onEndImageTask")
-    }
-
     open protected fun onEvent(message: String) {
         createSystemAgentHistory(message)
     }

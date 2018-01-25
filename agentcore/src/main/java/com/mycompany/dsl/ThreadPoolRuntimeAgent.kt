@@ -47,10 +47,4 @@ abstract class ThreadPoolRuntimeAgent : RuntimeAgent {
             super.onEndTask(taskData)
         }
     }
-
-    override fun onEndImageTask(updateImage: DslImage) {
-        executorService.execute {
-            super.onEndImageTask(updateImage)
-        }
-    }
 }

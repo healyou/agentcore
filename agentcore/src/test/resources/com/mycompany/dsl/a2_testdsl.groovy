@@ -43,14 +43,3 @@ onEndTask = { taskData ->
         }
     }
 }
-
-onEndImageTask = { updateImage ->
-    executeCondition ("Выполним функцию над изображением") {
-        condition {
-            updateImage != null
-        }
-        execute {
-            a2_testOnEndImageTaskFun()
-        }
-    }
-}

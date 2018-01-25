@@ -40,10 +40,4 @@ abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
 
     override fun afterOnEndTask(taskData: DslTaskData) {
     }
-
-    override fun beforeOnEndImageTask(updateImage: DslImage) {
-    }
-
-    override fun afterOnEndImageTask(updateImage: DslImage) {
-    }
 }

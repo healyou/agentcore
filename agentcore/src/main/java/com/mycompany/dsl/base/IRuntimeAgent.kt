@@ -19,6 +19,4 @@ interface IRuntimeAgent {
     fun onGetLocalMessage(localMessage: DslLocalMessage)
 
     fun onEndTask(taskData: DslTaskData)
-
-    fun onEndImageTask(updateImage: DslImage)
 }
