@@ -16,10 +16,9 @@ class InstantiationTracingBeanPostProcessor: BeanPostProcessor {
         lateinit var runtimeAgentLoader: Any
     }
 
-    // simply return the instantiated bean as-is
     @Throws(BeansException::class)
     override fun postProcessBeforeInitialization(bean: Any, beanName: String?): Any? {
-        return bean // we could potentially return any object reference here...
+        return bean
     }
 
     @Throws(BeansException::class)
@@ -28,7 +27,7 @@ class InstantiationTracingBeanPostProcessor: BeanPostProcessor {
         if (beanName == "runtimeAgentWorkControl") {
             runtimeAgentLoader = bean
         }
-        println("Bean '" + beanName + "' created : " + bean.toString())
+
         return bean
     }
 }

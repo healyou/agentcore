@@ -1,5 +1,6 @@
 package com.mycompany.dsl.base
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.mycompany.db.core.sc.ServiceMessageSC
 import com.mycompany.db.core.servicemessage.ServiceMessage
 import com.mycompany.db.core.servicemessage.ServiceMessageService
@@ -8,6 +9,8 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.objects.DslServiceMessage
+import com.mycompany.service.AbstractAgentService
+import com.mycompany.service.objects.Message
 import java.util.*
 import kotlin.concurrent.timer
 
@@ -66,9 +69,15 @@ abstract class ARuntimeAgent : IRuntimeAgent {
      * Получаем сообщение, которые легко испоьзовать в dsl
      */
     private fun configureDslServiceMessage(serviceMessage: ServiceMessage): DslServiceMessage {
+        val messageBody = parseServiceMessage(serviceMessage.messageBody).body
+
         return DslServiceMessage(
                 serviceMessage.getMessageSenderCode!!,
-                serviceMessage.messageBody
+                messageBody
         )
+    }
+
+    private fun parseServiceMessage(jsonObject: String): Message {
+        return AbstractAgentService.fromJson(jsonObject, object : TypeReference<Message>() {})
     }
 }

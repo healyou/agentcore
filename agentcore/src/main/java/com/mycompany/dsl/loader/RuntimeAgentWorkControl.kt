@@ -8,6 +8,7 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
+import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.exceptions.RuntimeAgentException
@@ -61,7 +62,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
      * Используется ThreadPoolRuntimeAgent - чтобы вызов onLoadImage лишь давал сигнал начала выполнения функции агентом
      * Поэтому в данном потоке время выполнения функции будет минимальным
      */
-    private val startedAgents = ConcurrentHashMap<Long, ThreadPoolRuntimeAgent>()
+    private val startedAgents = ConcurrentHashMap<Long, RuntimeAgent>()
 
     override fun start() {
         TODO("not implemented")
@@ -148,7 +149,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
      * Вызывается из библиотеки workLibrary
      */
     override fun onAgentEvent(agentId: Long, event: String) {
-        val operationAgent: ThreadPoolRuntimeAgent
+        val operationAgent: RuntimeAgent
         try {
             operationAgent  = startedAgents.getValue(agentId)
         } catch (ignored: Exception) {

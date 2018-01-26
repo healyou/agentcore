@@ -10,35 +10,41 @@ init = {
     name = "Тестовый агент 2"
     masId = "integration_test_agent_2_masId"
     defaultBodyType = JSON_MBT
+    localMessageTypes = ["local_event_a2"]
+    taskTypes = []
 }
 
-onGetMessage = { message ->
-    executeCondition ("Если пришло сообщение от первого серверного агента") {
+onGetServiceMessage = { serviceMessage ->
+    println("7) Получение сообщения от первого агента")
+    executeCondition ("Если пришло сообщение от 1 агента") {
         condition {
-            message.senderType == INTEGRATION_TEST_AGENT_TYPE_1_AT
+            serviceMessage.senderType == INTEGRATION_TEST_AGENT_TYPE_1_AT &&
+                    serviceMessage.messageBody == "a1_message_body"
         }
         execute {
-            println "3) Получение сообщения с сервиса от первого тестового агента вторым тестовым агентом. Работа над изображением"
-            testUpdateImageWithSleep image: null, sleep: 3000
-        }
-    }
-}
-
-onLoadImage = { image ->
-    executeCondition ("Обновим изображение") {
-        execute {
-            println "execute onLoadImage test_agent_type_2"
+            println("8) Вызов функции из библиотеки функций агента testLibOnGetServiceMessageA2")
+            testLibOnGetServiceMessageA2()
         }
     }
 }
 
-onEndImageTask = { updateImage ->
-    executeCondition ("Отправим сообщение первому тестовому агенту") {
+onGetLocalMessage = { localMessage ->
+    println("9) Получение локального сообщения")
+    executeCondition ("Локальное сообщение агента") {
+        condition {
+            localMessage.event == LOCAL_EVENT_A2_LMT
+        }
         execute {
-            println "4) Работы над изображением закончена. Отправка сообщения первому тестовому агенту вторым тестовым агентов"
-            sendMessage messageType: INTEGRATION_TEST_MESSAGE_TYPE_2_TEST_GOAL_1_MT,
-                    image: updateImage,
+            println("10) Отправка сообщения первому агенту")
+            sendServiceMessage messageType: INTEGRATION_TEST_MESSAGE_TYPE_2_TEST_GOAL_1_SMT,
+                    messageBody: "a2_message_body",
                     agentTypes: [INTEGRATION_TEST_AGENT_TYPE_1_AT]
         }
     }
+}
+
+onGetSystemEvent = { systemEvent ->
+}
+
+onEndTask = { taskData ->
 }

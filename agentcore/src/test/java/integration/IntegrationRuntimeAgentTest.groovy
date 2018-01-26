@@ -7,6 +7,9 @@ import com.mycompany.db.core.servicemessage.ServiceMessageService
 import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.RuntimeAgent
+import com.mycompany.dsl.base.SystemEvent
+import com.mycompany.dsl.loader.RuntimeAgentWorkControl
+import com.mycompany.dsl.objects.DslLocalMessage
 import objects.OtherObjects
 import objects.initdbobjects.UserObjects
 import org.junit.Before
@@ -52,6 +55,8 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
     @Autowired
     FileContentLocator fileContentLocator
     ServiceTask serviceTask
+    @Autowired
+    RuntimeAgentWorkControl runtimeAgentWorkControl
 
     RuntimeAgent testAgent1
     RuntimeAgent testAgent2
@@ -184,10 +189,15 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
      * 5) Получение сообщения с сервиса от второго тестового агента первым тестовым агентом. Конец работы
      */
     private void testScenario() {
-        testAgent1.onLoadImage(OtherObjects.image())
+        //runtimeAgentWorkControl.startedAgents.put(testAgent1.getSystemAgent().id, testAgent1)
+        //runtimeAgentWorkControl.startedAgents.put(testAgent2.getSystemAgent().id, testAgent2)
+        testAgent1.onGetSystemEvent(SystemEvent.AGENT_START)
+        // todo пока руками, но надо искать id агента
+        testAgent1.onGetLocalMessage(new DslLocalMessage("local_event_a1"))
         serviceTask.sendMessages()
         serviceTask.getMessages()
         testAgent2.searchMessages()
+        testAgent2.onGetLocalMessage(new DslLocalMessage("local_event_a2"))
         serviceTask.sendMessages()
         serviceTask.getMessages()
         testAgent1.searchMessages()
