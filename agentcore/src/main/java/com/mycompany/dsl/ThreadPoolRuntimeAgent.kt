@@ -1,10 +1,12 @@
 package com.mycompany.dsl
 
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslTaskData
+import com.mycompany.user.User
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -45,6 +47,12 @@ abstract class ThreadPoolRuntimeAgent : RuntimeAgent {
     override fun onEndTask(taskData: DslTaskData) {
         executorService.execute {
             super.onEndTask(taskData)
+        }
+    }
+
+    override fun onGetSystemEvent(systemEvent: SystemEvent) {
+        executorService.execute {
+            super.onGetSystemEvent(systemEvent)
         }
     }
 }

@@ -1,5 +1,7 @@
 package objects
 
+import com.mycompany.dsl.TestRuntimeAgentClass
+import com.mycompany.dsl.TestRuntimeAgentServiceClass
 import com.mycompany.dsl.objects.DslTaskData
 
 /**
@@ -24,6 +26,7 @@ class DslObjects {
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
+            onGetSystemEvent = { systemEvent -> }
         """
 
     static def allBlocksDslWithTypeParameterInInitBlock(typeParameter) {
@@ -40,6 +43,7 @@ class DslObjects {
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
+            onGetSystemEvent = { systemEvent -> }
         """
     }
 
@@ -56,6 +60,7 @@ class DslObjects {
             onGetServiceMessage = { serviceMessage -> }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
+            onGetSystemEvent = { systemEvent -> }
         """
     }
 
@@ -63,7 +68,8 @@ class DslObjects {
             "${randomInitBlock()}",
             "onGetServiceMessage = { message -> }",
             "onGetLocalMessage = { localMessage -> }",
-            "onEndTask = { taskData -> }"
+            "onEndTask = { taskData -> }",
+            "onGetSystemEvent = { systemEvent -> }"
     ]
 
     static final def allBlocksDsl = createAllBlocksDsl()
@@ -87,6 +93,7 @@ class DslObjects {
             }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
+            onGetSystemEvent = { systemEvent -> }
         """
     }
 
@@ -100,10 +107,25 @@ class DslObjects {
             }
             onGetLocalMessage = { localMessage -> }
             onEndTask = { taskData -> }
+            onGetSystemEvent = { systemEvent -> }
         """
     }
 
-    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onEndTaskBlock) {
+    static def createDslWithOnGetSystemEventBlock(executeConditionBlockBody) {
+        """
+            ${randomInitBlock()}
+            onGetServiceMessage = { serviceMessage ->}
+            onGetLocalMessage = { localMessage -> }
+            onEndTask = { taskData -> }
+            onGetSystemEvent = { systemEvent -> 
+                """ +
+                executeConditionBlockBody +
+                """
+            }
+        """
+    }
+
+    static def createDslWithExecuteConditionBlocks(onGetServiceMessageBlock, onGetLocalMessageBlock, onEndTaskBlock, onGetSystemEventBlock) {
         """
             ${randomInitBlock()}
             onGetServiceMessage = {
@@ -127,6 +149,13 @@ class DslObjects {
                 """
                 }
             }
+            onGetSystemEvent = { systemEvent -> 
+                executeCondition ("BlockBody") {
+                    """ +
+                onGetSystemEventBlock +
+                """
+                }
+            }
         """
     }
 
@@ -145,6 +174,7 @@ class DslObjects {
                 }
                 onGetLocalMessage = { localMessage -> }
                 onEndTask = { taskData -> }
+                onGetSystemEvent = { systemEvent -> }
             """
     }
 
@@ -159,6 +189,36 @@ class DslObjects {
                 taskTypes = ${TypesObjects.taskTypesAsStringArray()}
             }
         """
+    }
+
+    /**
+     * Класс для тестирования имён параметров
+     */
+    static def class TestDslParameterName {
+
+        TestRuntimeAgentServiceClass ras
+        def getTypeFunctionName
+        def typeArrayName
+        def getTypeClosure = { code ->
+            return ras."$getTypeFunctionName"(code)
+        }
+
+        TestDslParameterName(typeArrayName, getTypeFunctionName, ras) {
+            this.getTypeFunctionName = getTypeFunctionName
+            this.typeArrayName = typeArrayName
+            this.ras = ras
+        }
+    }
+    static TestDslParameterName[] testDslParameterNameArray(List<String> typeArrayNames, List<String> getTypeFunctionNames, TestRuntimeAgentServiceClass ras) {
+        if (typeArrayNames.size() != getTypeFunctionNames.size()) {
+            throw new RuntimeException("Размер параметров должен совпадать")
+        }
+
+        def ret = []
+        typeArrayNames.indexed().each { index, value ->
+            ret.add(new TestDslParameterName(value, getTypeFunctionNames[index], ras))
+        }
+        ret
     }
 
     /**
@@ -193,6 +253,7 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
+                        onGetSystemEvent = { systemEvent -> }
                     """,
                         expectedExecute: true
                 ),
@@ -221,6 +282,7 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
+                        onGetSystemEvent = { systemEvent -> }
                     """,
                         expectedExecute: false
                 ),
@@ -253,6 +315,7 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
+                        onGetSystemEvent = { systemEvent -> }
                     """,
                         expectedExecute: false
                 ),
@@ -268,6 +331,7 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
+                        onGetSystemEvent = { systemEvent -> }
                     """,
                         expectedExecute: true
                 ),
@@ -286,6 +350,7 @@ class DslObjects {
                         }
                         onGetLocalMessage = { localMessage -> }
                         onEndTask = { taskData -> }
+                        onGetSystemEvent = { systemEvent -> }
                     """,
                         expectedExecute: true
                 )

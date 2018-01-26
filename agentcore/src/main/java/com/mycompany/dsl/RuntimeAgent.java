@@ -10,6 +10,7 @@ import com.mycompany.db.core.systemagent.SystemAgent;
 import com.mycompany.db.core.systemagent.SystemAgentService;
 import com.mycompany.dsl.base.ARuntimeAgent;
 import com.mycompany.dsl.base.SendServiceMessageParameters;
+import com.mycompany.dsl.base.SystemEvent;
 import com.mycompany.dsl.base.behavior.ARuntimeAgentBehavior;
 import com.mycompany.dsl.exceptions.RuntimeAgentException;
 import com.mycompany.dsl.objects.DslImage;
@@ -77,12 +78,14 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     public void start() {
         super.start();
         behaviors.forEach(ARuntimeAgentBehavior::onStart);
+        onGetSystemEvent(SystemEvent.AGENT_START);
     }
 
     @Override
     public void stop() {
         super.stop();
         behaviors.forEach(ARuntimeAgentBehavior::onStop);
+        onGetSystemEvent(SystemEvent.AGENT_STOP);
     }
 
     @Override
@@ -124,6 +127,21 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             runtimeAgentService.applyOnEndTask(taskData);
             behaviors.forEach(it -> {
                 it.afterOnEndTask(taskData);
+            });
+        } catch (Exception e) {
+            System.out.println("Ошибка работы агента");
+        }
+    }
+
+    @Override
+    public void onGetSystemEvent(@NotNull SystemEvent systemEvent) {
+        try {
+            behaviors.forEach(it -> {
+                it.beforeOnGetSystemEvent(systemEvent);
+            });
+            runtimeAgentService.applyOnGetSystemEvent(systemEvent);
+            behaviors.forEach(it -> {
+                it.afterOnGetSystemEvent(systemEvent);
             });
         } catch (Exception e) {
             System.out.println("Ошибка работы агента");

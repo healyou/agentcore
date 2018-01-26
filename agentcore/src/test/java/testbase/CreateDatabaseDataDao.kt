@@ -30,9 +30,8 @@ class CreateDatabaseDataDao : AbstractDao() {
             }
             onGetServiceMessage = { _ ->}
             onGetLocalMessage = { _->}
-            onLoadImage = { _ ->}
             onEndTask = { _ ->}
-            onEndImageTask = { _ ->}
+            onGetSystemEvent = { _ ->}
         """.trimIndent().toByteArray()
         var testDslFileContentRef1: DslFileContentRef? = null
         val testDskFileContentRef2Data = """
@@ -41,9 +40,8 @@ class CreateDatabaseDataDao : AbstractDao() {
             }
             onGetServiceMessage = { _ ->}
             onGetLocalMessage = { _->}
-            onLoadImage = { _ ->}
             onEndTask = { _ ->}
-            onEndImageTask = { _ ->}
+            onGetSystemEvent = { _ ->}
         """.trimIndent().toByteArray()
         var testDslFileContentRef2: DslFileContentRef? = null
 

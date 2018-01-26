@@ -1,7 +1,7 @@
 package com.mycompany.dsl.base.behavior
 
 import com.mycompany.dsl.RuntimeAgent
-import com.mycompany.dsl.objects.DslImage
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslTaskData
@@ -62,4 +62,14 @@ interface IRuntimeAgentBehaviorEventSink {
      * Вызывается после вызова функции завершения задачи
      */
     fun afterOnEndTask(taskData: DslTaskData)
+
+    /**
+     * Вызывается до вызова функции системного события
+     */
+    fun beforeOnGetSystemEvent(systemEvent: SystemEvent)
+
+    /**
+     * Вызывается после вызова функции системного события
+     */
+    fun afterOnGetSystemEvent(systemEvent: SystemEvent)
 }

@@ -8,6 +8,6 @@ package com.mycompany.dsl.objects
 open class DslServiceMessage(
         /* Тип отправителя сообщения - AgentType.Code.code */
         val senderType: String,
-        /* Изображение */
-        val image: DslImage
+        /* Тело сообщения */
+        val messageBody: String
 )

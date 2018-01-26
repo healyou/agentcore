@@ -6,7 +6,6 @@ import com.mycompany.db.base.toSqlite
 import com.mycompany.db.core.sc.ServiceMessageSC
 import com.mycompany.db.core.servicemessage.ServiceMessage
 import com.mycompany.db.jdbc.servicemessage.ServiceMessageDao
-import com.mycompany.db.jdbc.systemagent.jdbc.SystemAgentEventHistoryRowMapper
 import org.springframework.stereotype.Component
 
 /**
@@ -18,7 +17,7 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
     override fun create(message: ServiceMessage) : Long {
         jdbcTemplate.update(
                 "insert into service_message (json_object, message_type_id, send_agent_type_codes, sender_code, message_type, message_body_type, system_agent_id) values (?, ?, ?, ?, ?, ?, ?)",
-                message.jsonObject,
+                message.messageBody,
                 message.serviceMessageType.id!!,
                 message.sendAgentTypeCodes?.toSqlite(),
                 message.getMessageSenderCode,
@@ -34,7 +33,7 @@ open class JdbcServiceMessageDao : AbstractDao(), ServiceMessageDao {
     override fun update(message: ServiceMessage) : Long {
         jdbcTemplate.update(
                 "update service_message set json_object = ?, message_type_id = ?, send_agent_type_codes = ?, sender_code = ?, message_type = ?, message_body_type = ?, system_agent_id = ? where id = ?",
-                message.jsonObject,
+                message.messageBody,
                 message.serviceMessageType.id!!,
                 message.sendAgentTypeCodes?.toSqlite(),
                 message.getMessageSenderCode,

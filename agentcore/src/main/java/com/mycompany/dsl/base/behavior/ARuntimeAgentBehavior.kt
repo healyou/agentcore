@@ -1,7 +1,7 @@
 package com.mycompany.dsl.base.behavior
 
 import com.mycompany.dsl.RuntimeAgent
-import com.mycompany.dsl.objects.DslImage
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslTaskData
@@ -39,5 +39,11 @@ abstract class ARuntimeAgentBehavior : IRuntimeAgentBehaviorEventSink {
     }
 
     override fun afterOnEndTask(taskData: DslTaskData) {
+    }
+
+    override fun beforeOnGetSystemEvent(systemEvent: SystemEvent) {
+    }
+
+    override fun afterOnGetSystemEvent(systemEvent: SystemEvent) {
     }
 }

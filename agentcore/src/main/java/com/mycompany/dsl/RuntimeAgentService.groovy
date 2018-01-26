@@ -1,7 +1,7 @@
 package com.mycompany.dsl
 
 import com.mycompany.agentworklibrary.AAgentWorkLibrary
-import com.mycompany.dsl.objects.DslImage
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.base.SendServiceMessageParameters
@@ -36,6 +36,8 @@ class RuntimeAgentService {
     def onGetLocalMessage = {}
     boolean on_end_task_provided = false
     def onEndTask = {}
+    boolean on_get_system_event_provided = false
+    def onGetSystemEvent = {}
     boolean init_provided = false
     def init = {}
     boolean agent_send_message_provided = false
@@ -64,6 +66,7 @@ class RuntimeAgentService {
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndTask = onEndTask
+        binding.onGetSystemEvent = onGetSystemEvent
 
         return binding
     }
@@ -84,10 +87,12 @@ class RuntimeAgentService {
             onGetServiceMessage = binding.onGetServiceMessage
             onGetLocalMessage = binding.onGetLocalMessage
             onEndTask = binding.onEndTask
+            onGetSystemEvent = binding.onGetSystemEvent
 
             on_get_service_message_provided = true
             on_get_local_message_provided = true
             on_end_task_provided = true
+            on_get_system_event_provided = true
             init_provided = true
         } else {
             throw new RuntimeException("Неправильная dsl")
@@ -97,7 +102,8 @@ class RuntimeAgentService {
     /* Проверка функций */
     boolean bindingFunctionCheck(Binding binding) {
         return binding.init != init && binding.onGetServiceMessage != onGetServiceMessage &&
-                binding.onGetLocalMessage != onGetLocalMessage && binding.onEndTask != onEndTask
+                binding.onGetLocalMessage != onGetLocalMessage && binding.onEndTask != onEndTask &&
+                binding.onGetSystemEvent != onGetSystemEvent
     }
 
     void applyInit() {
@@ -180,11 +186,28 @@ class RuntimeAgentService {
         }
     }
 
+    void applyOnGetSystemEvent(SystemEvent systemEvent) {
+        if (on_end_task_provided) {
+            Binding binding = new Binding()
+
+            prepareTypes(binding)
+            prepareClosures(binding)
+
+            binding.systemEvent = systemEvent
+
+            GroovyShell shell = new GroovyShell(binding)
+            shell.evaluate("onGetSystemEvent.delegate = this;onGetSystemEvent.resolveStrategy = Closure.DELEGATE_FIRST;onGetSystemEvent(systemEvent)")
+        } else {
+            throw new RuntimeException("Функция on_end_task не загружена")
+        }
+    }
+
     void prepareClosures(Binding binding) {
         binding.init = init
         binding.onGetServiceMessage = onGetServiceMessage
         binding.onGetLocalMessage = onGetLocalMessage
         binding.onEndTask = onEndTask
+        binding.onGetSystemEvent = onGetSystemEvent
         binding.sendServiceMessage = { Map map ->
             /* required fields */
             SendServiceMessageParameters.values().each {
@@ -299,6 +322,9 @@ class RuntimeAgentService {
         taskTypes.each {
             binding."${getTaskTypeVariableByCode(it)}" = it
         }
+        SystemEvent.values().each {
+            binding."${getSystemEventTypeVariableByCode(it.code)}" = it.code
+        }
     }
 
     /* Имена переменных словарей */
@@ -319,6 +345,9 @@ class RuntimeAgentService {
     }
     String getTaskTypeVariableByCode(String code) {
         "${code.toUpperCase()}_TT"
+    }
+    String getSystemEventTypeVariableByCode(String code) {
+        "${code.toUpperCase()}_SE"
     }
 
     /**

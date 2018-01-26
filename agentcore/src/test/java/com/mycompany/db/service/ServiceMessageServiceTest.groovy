@@ -34,7 +34,7 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
 
     /* Параметры создаваемого сообщения */
     private Long id = null
-    private def jsonObject = "{}"
+    private def messageBody = "{}"
     private ServiceMessageType serviceMessageType
     private def sendAgentTypeCodes = Arrays.asList(
             TypesObjects.testAgentType1().code,
@@ -52,7 +52,7 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         systemAgentId = createSystemAgent(true)
 
         def message = new ServiceMessage(
-                jsonObject,
+                messageBody,
                 serviceMessageType,
                 systemAgentId
         )
@@ -72,7 +72,7 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
 
         /* проверка всех значений создания сообщения */
         assertEquals(id, message.id)
-        assertEquals(jsonObject, message.jsonObject)
+        assertEquals(messageBody, message.messageBody)
         assertEquals(serviceMessageType.code, message.serviceMessageType.code)
         assertEquals(useDate, message.useDate)
         assertNotNull(message.createDate)
@@ -99,13 +99,13 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         def message = getMessage(id)
 
         /* Параметры обновления */
-        def newJsonObject = "{123}"
+        def newMessageBody = "{123}"
         def newServiceMessageType = messageTypeService.get(ServiceMessageType.Code.GET)
         def newSendAgentTypeCodes = Arrays.asList(TypesObjects.testAgentType1().code)
         def newSystemAgentId = createSystemAgent()
         def newMessageType = UUID.randomUUID().toString()
         def newMessageBodyType = UUID.randomUUID().toString()
-        message.jsonObject = newJsonObject
+        message.messageBody = newMessageBody
         message.serviceMessageType = newServiceMessageType
         message.sendAgentTypeCodes = newSendAgentTypeCodes
         message.systemAgentId = newSystemAgentId
@@ -117,7 +117,7 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
         def updateMessage = messageService.get(message.id)
 
         /* Проверка всех обновляемых значений */
-        assertEquals(newJsonObject, updateMessage.jsonObject)
+        assertEquals(newMessageBody, updateMessage.messageBody)
         assertEquals(newServiceMessageType.code, updateMessage.serviceMessageType.code)
         assertEquals(newSystemAgentId, updateMessage.systemAgentId)
         assertEquals(newMessageType, updateMessage.sendMessageType)

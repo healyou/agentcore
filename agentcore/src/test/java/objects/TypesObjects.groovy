@@ -1,5 +1,6 @@
 package objects
 
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.MessageBodyType
 import com.mycompany.service.objects.MessageGoalType
@@ -21,6 +22,8 @@ class TypesObjects {
     static def localMessageTypes() {
         ["testLocalMessageType1", "testLocalMessageType2", "testLocalMessageType3"]
     }
+
+    static def agentStartSystemEvent = SystemEvent.AGENT_START
 
     /**
      * @return Перевод массив String в строку формата ["1","2","3"]

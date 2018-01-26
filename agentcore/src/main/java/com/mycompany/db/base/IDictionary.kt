@@ -1,6 +1,5 @@
 package com.mycompany.db.base
 
-import com.mycompany.db.base.Codable
 import com.mycompany.service.objects.Entity
 
 /**

@@ -3,7 +3,7 @@ package com.mycompany.dsl.base.behavior
 import com.mycompany.db.core.systemagent.SystemAgentEventHistory
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.dsl.RuntimeAgent
-import com.mycompany.dsl.objects.DslImage
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslTaskData
@@ -60,12 +60,22 @@ open class RuntimeAgentHistoryEventBehavior(private val historyService: SystemAg
 
     override fun beforeOnEndTask(taskData: DslTaskData) {
         super.beforeOnEndTask(taskData)
-        onEvent("Конец dsl функции onEndTask")
+        onEvent("Начало dsl функции onEndTask")
     }
 
     override fun afterOnEndTask(taskData: DslTaskData) {
         super.afterOnEndTask(taskData)
         onEvent("Конец dsl функции onEndTask")
+    }
+
+    override fun beforeOnGetSystemEvent(systemEvent: SystemEvent) {
+        super.beforeOnGetSystemEvent(systemEvent)
+        onEvent("Начало dsl функции onGetSystemEvent")
+    }
+
+    override fun afterOnGetSystemEvent(systemEvent: SystemEvent) {
+        super.afterOnGetSystemEvent(systemEvent)
+        onEvent("Конец dsl функции onGetSystemEvent")
     }
 
     open protected fun onEvent(message: String) {

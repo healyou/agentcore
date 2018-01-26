@@ -6,6 +6,7 @@ import com.mycompany.db.core.file.FileContent
 import com.mycompany.db.core.file.FileContentLocator
 import com.mycompany.db.core.file.FileContentRef
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
+import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.service.objects.Agent
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.LoginData
@@ -35,6 +36,10 @@ class OtherObjects {
                 },
                 content.length
         )
+    }
+
+    static DslServiceMessage dslServiceMessage(senderCode) {
+        new DslServiceMessage(senderCode, StringObjects.randomString())
     }
 
     static DslImage image() {

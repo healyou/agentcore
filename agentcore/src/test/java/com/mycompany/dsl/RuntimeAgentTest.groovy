@@ -11,7 +11,6 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
-import com.mycompany.dsl.objects.DslImage
 import objects.DslObjects
 import objects.StringObjects
 import objects.TypesObjects
@@ -76,13 +75,14 @@ class RuntimeAgentTest extends AbstractServiceTest {
         def sc = new ServiceMessageSC()
         sc.systemAgentId = workerAgent_a1.systemAgent.id
         def prevSize = serviceMessageService.get(sc).size()
-        workerAgent_a1.onGetServiceMessage(new DslServiceMessage(TypesObjects.testAgentType2().code, OtherObjects.image()))
+        def senderCode = TypesObjects.testAgentType2().code
+        workerAgent_a1.onGetServiceMessage(OtherObjects.dslServiceMessage(senderCode))
         def updateSize = serviceMessageService.get(sc).size()
         assert prevSize != updateSize && prevSize + 1 == updateSize
 
         /* Тело сообщения должно быть равно типу агента(строка из a1_testdsl.groovy) */
         def saveMessage = serviceMessageService.getLastNumberItems(workerAgent_a1.systemAgent.id, 1)[0]
-        assertEquals(TypesObjects.testAgentType2().code, saveMessage.jsonObject)
+        assertEquals(senderCode, saveMessage.messageBody)
     }
 
     @Test
@@ -111,6 +111,11 @@ class RuntimeAgentTest extends AbstractServiceTest {
         serverAgent_a2.onEndTask(DslObjects.getA2_testdslTaskData())
         assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnEndTask
         assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnEndTask
+
+        workerAgent_a1.onGetSystemEvent(TypesObjects.agentStartSystemEvent)
+        serverAgent_a2.onGetSystemEvent(TypesObjects.agentStartSystemEvent)
+        assert workerAgent_a1.runtimeAgentService.isExecuteA1_testOnGetSystemEvent
+        assert serverAgent_a2.runtimeAgentService.isExecuteA2_testOnGetSystemEvent
     }
 
     @Test
@@ -141,7 +146,7 @@ class RuntimeAgentTest extends AbstractServiceTest {
 
         new DslServiceMessage(
                 message.getMessageSenderCode,
-                new DslImage("testImage", [1, 2, 3] as byte[])
+                StringObjects.randomString()
         )
     }
 

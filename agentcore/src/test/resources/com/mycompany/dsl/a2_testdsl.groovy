@@ -43,3 +43,14 @@ onEndTask = { taskData ->
         }
     }
 }
+
+onGetSystemEvent = { systemEvent ->
+    executeCondition ("Выполним функцию над изображением") {
+        condition {
+            systemEvent.code == AGENTSTART_SE || systemEvent.code == "agentStart"
+        }
+        execute {
+            a2_testOnGetSystemEvent()
+        }
+    }
+}

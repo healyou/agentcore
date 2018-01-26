@@ -1,6 +1,7 @@
 package com.mycompany.dsl
 
 import com.mycompany.dsl.base.SendServiceMessageParameters
+import com.mycompany.dsl.base.SystemEvent
 import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
@@ -85,11 +86,10 @@ class RuntimeAgentServiceTest extends Assert {
         def runtimeAgentService = new RuntimeAgentService()
 
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyInit() })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnLoadImage(mock(DslImage.class)) })
-        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndImageTask(mock(DslImage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnEndTask(mock(DslTaskData.class)) })
         assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class)) })
+        assertTrue(runExpectedFunctionError { runtimeAgentService.applyOnGetSystemEvent(SystemEvent.AGENT_START) })
     }
 
     /* Если в dsl не предоставлены все функции - выходит ошибка */
@@ -157,6 +157,11 @@ class RuntimeAgentServiceTest extends Assert {
                             execute {
                                 testOnEndTask()
                             }
+                        """,
+                        """
+                            execute {
+                                testOnGetSystemEvent()
+                            }
                         """
                 )
         )
@@ -164,11 +169,13 @@ class RuntimeAgentServiceTest extends Assert {
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
         runtimeAgentService.applyOnEndTask(mock(DslTaskData.class))
         runtimeAgentService.applyOnGetLocalMessage(mock(DslLocalMessage.class))
+        runtimeAgentService.applyOnGetSystemEvent(SystemEvent.AGENT_START)
 
         assertTrue(runtimeAgentService.isExecuteInit as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnGetLocalMessages as Boolean)
         assertTrue(runtimeAgentService.isExecuteTestOnEndTask as Boolean)
+        assertTrue(runtimeAgentService.isExecuteTestOnGetSystemEvent as Boolean)
     }
 
     @Test
@@ -377,47 +384,29 @@ class RuntimeAgentServiceTest extends Assert {
         }
 
         /* Выполняется функция в dsl, которая проверяет условие СОЗДАННЫЙ_ТИП == "значение типа" */
-        ras.agentTypes.each {
-            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getAgentTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetServiceMessageFun()"
-            ))
-            testClosure()
-        }
-        ras.messageBodyTypes.each {
-            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getMessageBodyTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetServiceMessageFun()"
-            ))
-            testClosure()
-        }
-        ras.messageGoalTypes.each {
-            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getMessageGoalTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetServiceMessageFun()"
-            ))
-            testClosure()
-        }
-        ras.serviceMessageTypes.each {
-            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getServiceMessageTypeVariableByCode(it.code)} == \"${it.code}\"",
-                    "testOnGetServiceMessageFun()"
-            ))
-            testClosure()
-        }
-        ras.localMessageTypes.each {
-            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getLocalMessageTypeVariableByCode(it)} == \"${it}\"",
-                    "testOnGetServiceMessageFun()"
-            ))
-            testClosure()
-        }
-        ras.taskTypes.each {
-            ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
-                    "${ras.getTaskTypeVariableByCode(it)} == \"${it}\"",
-                    "testOnGetServiceMessageFun()"
-            ))
-            testClosure()
+        DslObjects.testDslParameterNameArray(
+                ["agentTypes", "messageBodyTypes", "messageGoalTypes",
+                 "serviceMessageTypes", "localMessageTypes", "taskTypes"],
+                ["getAgentTypeVariableByCode", "getMessageBodyTypeVariableByCode", "getMessageGoalTypeVariableByCode",
+                 "getServiceMessageTypeVariableByCode", "getLocalMessageTypeVariableByCode", "getTaskTypeVariableByCode"],
+                ras
+        ).each { paramIt ->
+            ras."${paramIt.typeArrayName}".each {
+                if (paramIt.typeArrayName == "localMessageTypes" || paramIt.typeArrayName == "taskTypes") {
+                    // массивы строк
+                    ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                            "${paramIt.getTypeClosure(it)} == \"${it}\"",
+                            "testOnGetServiceMessageFun()"
+                    ))
+                } else {
+                    // массивы словарей
+                    ras.testLoadExecuteRules(DslObjects.executeConditionDsl(
+                            "${paramIt.getTypeClosure(it.code)} == \"${it.code}\"",
+                            "testOnGetServiceMessageFun()"
+                    ))
+                    testClosure()
+                }
+            }
         }
     }
 
@@ -440,6 +429,58 @@ class RuntimeAgentServiceTest extends Assert {
         ras.applyInit()
         assertEquals(ras.agentType, type)
     }
+
+    /**
+     * Тесты блока системных сообщений
+     */
+
+    @Test
+    void "Вызов всех системных событий в dsl проходит корректно"() {
+        SystemEvent.values().each {
+            def runtimeAgentService = new TestRuntimeAgentServiceClass()
+            runtimeAgentService.testLoadExecuteRules(
+                    DslObjects.createDslWithOnGetSystemEventBlock(
+                            """
+                            executeCondition ("blockname") {
+                                execute {
+                                    testOnGetSystemEvent()
+                                } 
+                            }       
+                        """
+                    )
+            )
+            runtimeAgentService.applyInit()
+            runtimeAgentService.applyOnGetSystemEvent(it)
+            assertTrue(runtimeAgentService.isExecuteTestOnGetSystemEvent)
+        }
+    }
+
+    @Test
+    void "Системные события доступны в dsl как константные переменные"() {
+        SystemEvent.values().each {
+            def runtimeAgentService = new TestRuntimeAgentServiceClass()
+            runtimeAgentService.testLoadExecuteRules(
+                    DslObjects.createDslWithOnGetSystemEventBlock(
+                            """
+                            executeCondition ("blockname") {
+                                condition {
+                                    systemEvent.code == "${it.code}" && systemEvent.code ==
+                                            ${runtimeAgentService.getSystemEventTypeVariableByCode(it.code)}
+                                }
+                                execute {
+                                    testOnGetSystemEvent()
+                                } 
+                            }       
+                        """
+                    )
+            )
+            runtimeAgentService.applyInit()
+            runtimeAgentService.applyOnGetSystemEvent(it)
+            assertTrue(runtimeAgentService.isExecuteTestOnGetSystemEvent)
+        }
+    }
+
+    // todo
 
     static TestRuntimeAgentServiceClass createTestRuntimeAgentServiceClass() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()

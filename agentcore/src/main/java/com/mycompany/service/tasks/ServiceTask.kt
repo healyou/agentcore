@@ -150,7 +150,7 @@ class ServiceTask @Autowired constructor(
                                 it.sendMessageType!!,
                                 getMessageRecipientsIds(it, systemAgent, sessionManager),
                                 it.sendMessageBodyType!!,
-                                it.jsonObject
+                                it.messageBody
                         )
                 )
                 localMessageService.use(it)
