@@ -2,6 +2,7 @@ package com.mycompany.dsl
 
 import com.mycompany.agentworklibrary.AAgentWorkLibrary
 import com.mycompany.dsl.base.SystemEvent
+import com.mycompany.dsl.objects.DslAgentData
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.base.SendServiceMessageParameters
@@ -30,6 +31,9 @@ class RuntimeAgentService {
     List<String> localMessageTypes = []
     List<String> taskTypes = []
 
+    /**
+     * Функции из dsl файла
+     */
     boolean on_get_service_message_provided = false
     def onGetServiceMessage = {}
     boolean on_get_local_message_provided = false
@@ -40,10 +44,16 @@ class RuntimeAgentService {
     def onGetSystemEvent = {}
     boolean init_provided = false
     def init = {}
+    /**
+     * Функции - вызываемые из класса RuntimeAgent
+     */
     boolean agent_send_message_provided = false
     def agentSendServiceMessage = {}
     boolean agent_on_end_task_provided = false
     def agentOnEndTask = {}
+    /* Функции, формирующая данные о текущем агента */
+    boolean configure_agent_data_provided = false
+    Closure<DslAgentData> configureAgentData = { return null }
 
     /**
      * Класс, который содержит функции для работы агента
@@ -81,6 +91,11 @@ class RuntimeAgentService {
         agentOnEndTask = c
     }
 
+    void setConfigureAgentDataClosure(Closure<DslAgentData> c) {
+        configure_agent_data_provided = true
+        configureAgentData = c
+    }
+
     void checkLoadRules(Binding binding) {
         if (bindingFunctionCheck(binding)) {
             init = binding.init
@@ -108,6 +123,11 @@ class RuntimeAgentService {
 
     void applyInit() {
         if (init_provided) {
+            // todo все ошибки dsl в отдельный класс
+            if (!checkInitOtherDslFunctions()) {
+                throw new RuntimeException("Не загружены дополнительные dsl функции")
+            }
+
             Binding binding = new Binding()
             prepareTypes(binding)
             prepareInitData(binding)
@@ -234,6 +254,7 @@ class RuntimeAgentService {
             closure.delegate = delegate
             binding.result = true
             binding.and = true
+            binding.agent = configureAgentData.call()
             closure()
         }
         binding.condition = { closure ->
@@ -369,6 +390,16 @@ class RuntimeAgentService {
         if (agentType == null || agentType.isEmpty() || agentName == null || agentName.isEmpty() ||
                 agentMasId == null || agentMasId.isEmpty() || defaultBodyType == null || defaultBodyType.isEmpty() ||
                 localMessageTypes == null || taskTypes == null) {
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Проверка на инициализацию дополнительных функций, используемых в dsl
+     */
+    private boolean checkInitOtherDslFunctions() {
+        if (agent_send_message_provided && agent_on_end_task_provided && configure_agent_data_provided) {
             return true
         }
         return false

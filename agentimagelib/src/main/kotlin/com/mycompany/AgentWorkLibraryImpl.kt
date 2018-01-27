@@ -11,15 +11,11 @@ class AgentWorkLibraryImpl {
         @JvmStatic
         fun testImageFun1(self: Any, value: Array<Any>) {
             println("testImageFun1")
-            onAgentEvent("testImageFun1")
-            val k = 1
         }
 
         @JvmStatic
         fun testImageFun2(self: Any, value: Array<Any>) {
             println("testImageFun2")
-            onAgentEvent("testImageFun2")
-            val k = 1
         }
 
         @JvmStatic
@@ -27,14 +23,8 @@ class AgentWorkLibraryImpl {
             println("testImageFun3")
         }
 
-        @JvmStatic
-        fun testUpdateImageWithSleep(imageData: ByteArray, sleep: Long = 5000): ByteArray {
-            Thread.sleep(sleep)
-            return imageData
-        }
-
-        private fun onAgentEvent(event: String) {
-            AAgentWorkLibrary.getAgentWorkControl().onAgentEvent(1, event)
+        private fun onAgentEvent(agentId: Long, event: String) {
+            AAgentWorkLibrary.getAgentWorkControl().onAgentEvent(agentId, event)
         }
 
         /**
@@ -42,7 +32,7 @@ class AgentWorkLibraryImpl {
          */
         @JvmStatic
         fun testLibOnAgentStartA1(self: Any, value: Array<Any>) {
-            onAgentEvent("local_event_a1")
+            onAgentEvent(getAgentId(value), "local_event_a1")
         }
 
         @JvmStatic
@@ -52,7 +42,15 @@ class AgentWorkLibraryImpl {
 
         @JvmStatic
         fun testLibOnGetServiceMessageA2(self: Any, value: Array<Any>) {
-            onAgentEvent("local_event_a2")
+            onAgentEvent(getAgentId(value), "local_event_a2")
+        }
+
+        private fun getAgentId(value: Array<Any>): Long {
+            if (value.size == 1 && value[0] is Long) {
+                return value[0] as Long
+            } else {
+                throw RuntimeException("Не передан идентификатор агента в функцию библиотеки")
+            }
         }
     }
 }

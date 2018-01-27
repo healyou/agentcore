@@ -20,6 +20,15 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     def isExecuteA2_testOnEndTask = false
     def isExecuteA2_testOnGetSystemEvent = false
 
+    /**
+     * @param isCreateOtherFunctions true - будут созданы пустые доп. фунции
+     */
+    TestRuntimeAgentServiceClass(isCreateEmptyOtherFunctions = false) {
+        if (isCreateEmptyOtherFunctions) {
+            configureEmptyOtherFunctions()
+        }
+    }
+
     /* Повторяет функцию loadExecuteRules - но тут сразу строку передаем а не файл*/
     void testLoadExecuteRules(rules) {
         Binding binding = createLoadBindings()
@@ -34,6 +43,15 @@ class TestRuntimeAgentServiceClass extends RuntimeAgentService {
     void applyInit() {
         super.applyInit()
         isExecuteInit = true
+    }
+
+    /**
+     * Заполняем агента пустыми дополнительными функциями(нужны для работы агента)
+     */
+    private void configureEmptyOtherFunctions() {
+        setAgentOnEndTaskClosure {}
+        setAgentSendMessageClosure {}
+        setConfigureAgentDataClosure { return null }
     }
 
     /**

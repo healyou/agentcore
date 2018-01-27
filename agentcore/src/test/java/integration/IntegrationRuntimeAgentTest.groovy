@@ -1,5 +1,6 @@
 package integration
 
+import com.mycompany.agentworklibrary.ILibraryAgentWorkControl
 import com.mycompany.db.base.Environment
 import com.mycompany.db.core.file.FileContentLocator
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
@@ -8,10 +9,12 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.base.SystemEvent
+import com.mycompany.dsl.loader.InstantiationTracingBeanPostProcessor
 import com.mycompany.dsl.loader.RuntimeAgentWorkControl
 import com.mycompany.dsl.objects.DslLocalMessage
 import objects.OtherObjects
 import objects.initdbobjects.UserObjects
+import org.jetbrains.annotations.NotNull
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -165,6 +168,19 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
                 messageService,
                 systemAgentService
         )
+        /**
+         * Для теста сами передадим локальные сообщения
+         */
+        InstantiationTracingBeanPostProcessor.runtimeAgentLoader = new ILibraryAgentWorkControl() {
+            @Override
+            void onAgentEvent(long agentId, @NotNull String event) {
+                if (agentId == testAgent1.systemAgent.id) {
+                    testAgent1.onGetLocalMessage(new DslLocalMessage(event))
+                } else if (agentId == testAgent2.systemAgent.id) {
+                    testAgent2.onGetLocalMessage(new DslLocalMessage(event))
+                }
+            }
+        }
     }
 
     @Test
@@ -182,22 +198,24 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
      * Тестовый сценарий взаимодействия двух агентов
      *
      * Порядок сообщений в консоли должен быть следующим:
-     * 1) Работа над загруженным изображением первым тестовым агентов
-     * 2) Работы над изображением закончена. Отправка сообщения второму тестовому агенту первым тестовым агентов
-     * 3) Получение сообщения с сервиса от первого тестового агента вторым тестовым агентом. Работа над изображением
-     * 4) Работы над изображением закончена. Отправка сообщения первому тестовому агенту вторым тестовым агентов
-     * 5) Получение сообщения с сервиса от второго тестового агента первым тестовым агентом. Конец работы
+     * 1) Начало работы агента
+     * 2) Вызов функции из библиотеки функций агента testLibOnAgentStartA1
+     * 3) Получение локального сообщения
+     * 4) Начало выполнения задачи - функция агента testLibOnStartTaskA1
+     * 5) Завершение задачи агента
+     * 6) Отправка сообщения второму агенту
+     * 7) Получение сообщения от первого агента
+     * 8) Вызов функции из библиотеки функций агента testLibOnGetServiceMessageA2
+     * 9) Получение локального сообщения
+     * 10) Отправка сообщения первому агенту
+     * 11) Получение сообщения от второго агента
+     * 12) Завершение теста
      */
     private void testScenario() {
-        //runtimeAgentWorkControl.startedAgents.put(testAgent1.getSystemAgent().id, testAgent1)
-        //runtimeAgentWorkControl.startedAgents.put(testAgent2.getSystemAgent().id, testAgent2)
         testAgent1.onGetSystemEvent(SystemEvent.AGENT_START)
-        // todo пока руками, но надо искать id агента
-        testAgent1.onGetLocalMessage(new DslLocalMessage("local_event_a1"))
         serviceTask.sendMessages()
         serviceTask.getMessages()
         testAgent2.searchMessages()
-        testAgent2.onGetLocalMessage(new DslLocalMessage("local_event_a2"))
         serviceTask.sendMessages()
         serviceTask.getMessages()
         testAgent1.searchMessages()

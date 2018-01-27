@@ -36,8 +36,8 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
          * Используется в библиоетеке функций агента
          */
         @JvmStatic
-        fun getInstance(): RuntimeAgentWorkControl {
-            return InstantiationTracingBeanPostProcessor.runtimeAgentLoader as RuntimeAgentWorkControl
+        fun getInstanceForAgentLibrary(): ILibraryAgentWorkControl {
+            return InstantiationTracingBeanPostProcessor.runtimeAgentLoader as ILibraryAgentWorkControl
         }
     }
 

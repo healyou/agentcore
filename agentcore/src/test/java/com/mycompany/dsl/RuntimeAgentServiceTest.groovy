@@ -113,7 +113,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "Блок init должен корректно инициализировать данные"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         def type = TypesObjects.testAgent1TypeCode()
         def name = StringObjects.randomString()
         def masId = StringObjects.randomString()
@@ -139,7 +139,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "Вызовы всех dsl функций проходят успешно"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
 
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithExecuteConditionBlocks(
@@ -180,7 +180,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "Можно вызвать функцию execute в executeCondition без condition блока"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageExecuteConditionBlock(
                         """
@@ -197,7 +197,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test(expected = MissingPropertyException)
     void "Нельзя вызвать функцию execute вне executeCondition блока"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
@@ -213,7 +213,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test(expected = MissingPropertyException)
     void "Нельзя вызвать startTask вне execute блока"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
@@ -229,7 +229,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "Вызов startTask в execute блоке"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
@@ -251,7 +251,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "После вызова startTask идёт вызов onEndTask"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         def taskType = DslObjects.taskType
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
@@ -281,7 +281,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "Вызов функции sendServiceMessage вызывает указанный метод sendMessage"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
@@ -306,7 +306,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test(expected = MissingMethodException)
     void "Нельзя вызвать функции библиотеки вне execute блока"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetServiceMessageBlock("testOnGetMessageFun()"))
         runtimeAgentService.applyInit()
         runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
@@ -314,7 +314,7 @@ class RuntimeAgentServiceTest extends Assert {
 
     @Test
     void "В одном блоке можно записать несколько executeCondition блоков"() {
-        def runtimeAgentService = new TestRuntimeAgentServiceClass()
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
         runtimeAgentService.testLoadExecuteRules(
                 DslObjects.createDslWithOnGetServiceMessageBlock(
                         """
@@ -413,7 +413,7 @@ class RuntimeAgentServiceTest extends Assert {
     @Test
     void "Тип агента можно задать как строкой, так и константным параметром"() {
         /* Константа */
-        def ras = new TestRuntimeAgentServiceClass()
+        def ras = new TestRuntimeAgentServiceClass(true)
         ras.agentTypes = TypesObjects.agentTypes
         def type = TypesObjects.testAgentType1()
         ras.testLoadExecuteRules(DslObjects.allBlocksDslWithTypeParameterInInitBlock(
@@ -423,7 +423,7 @@ class RuntimeAgentServiceTest extends Assert {
         assertEquals(ras.agentType, type.code)
 
         /* Строковый параметр */
-        ras = new TestRuntimeAgentServiceClass()
+        ras = new TestRuntimeAgentServiceClass(true)
         type = TypesObjects.testAgent1TypeCode()
         ras.testLoadExecuteRules(DslObjects.allBlocksDslWithTypeParameterInInitBlock("\"$type\""))
         ras.applyInit()
@@ -437,7 +437,7 @@ class RuntimeAgentServiceTest extends Assert {
     @Test
     void "Вызов всех системных событий в dsl проходит корректно"() {
         SystemEvent.values().each {
-            def runtimeAgentService = new TestRuntimeAgentServiceClass()
+            def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
             runtimeAgentService.testLoadExecuteRules(
                     DslObjects.createDslWithOnGetSystemEventBlock(
                             """
@@ -458,7 +458,7 @@ class RuntimeAgentServiceTest extends Assert {
     @Test
     void "Системные события доступны в dsl как константные переменные"() {
         SystemEvent.values().each {
-            def runtimeAgentService = new TestRuntimeAgentServiceClass()
+            def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
             runtimeAgentService.testLoadExecuteRules(
                     DslObjects.createDslWithOnGetSystemEventBlock(
                             """
@@ -480,7 +480,57 @@ class RuntimeAgentServiceTest extends Assert {
         }
     }
 
-    // todo
+    @Test(expected = RuntimeException.class)
+    void "Без инициализации доп. функций dsl агент не пройдёт инициализацию"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(false)
+        runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)
+        runtimeAgentService.applyInit()
+    }
+
+    @Test
+    void "При инициализации доп. функций dsl агент инициализируется"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
+        runtimeAgentService.testLoadExecuteRules(DslObjects.allBlocksDsl)
+        runtimeAgentService.applyInit()
+    }
+
+    @Test
+    void "Данные агента доступные в executeCondition блоке"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
+        def agentData = DslObjects.agentData
+        runtimeAgentService.setConfigureAgentDataClosure { return agentData }
+        runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetServiceMessageBlock(
+                """
+                    executeCondition ("blockname") {
+                        def agentId = agent.id
+                        condition {
+                            agentId == ${agentData.id}
+                        }
+                        execute {
+                            testOnGetServiceMessageFun()
+                        } 
+                    }   
+                """
+        ))
+        runtimeAgentService.applyInit()
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
+    }
+
+    @Test(expected = MissingPropertyException.class)
+    void "Данные агента не доступны вне executeCondition блока"() {
+        def runtimeAgentService = new TestRuntimeAgentServiceClass(true)
+        def agentData = DslObjects.agentData
+        runtimeAgentService.setConfigureAgentDataClosure { return agentData }
+        runtimeAgentService.testLoadExecuteRules(DslObjects.createDslWithOnGetServiceMessageBlock(
+                """
+                    def agentId = agent.id
+                """
+        ))
+        runtimeAgentService.applyInit()
+        runtimeAgentService.applyOnGetServiceMessage(mock(DslServiceMessage.class))
+        assertTrue(runtimeAgentService.isExecuteTestOnGetServiceMessages as Boolean)
+    }
 
     static TestRuntimeAgentServiceClass createTestRuntimeAgentServiceClass() {
         def runtimeAgentService = new TestRuntimeAgentServiceClass()

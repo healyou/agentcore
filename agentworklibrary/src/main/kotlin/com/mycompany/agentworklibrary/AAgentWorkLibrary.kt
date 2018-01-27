@@ -44,8 +44,8 @@ open class AAgentWorkLibrary {
         @Throws(ClassNotFoundException::class)
         fun getAgentWorkControl(): ILibraryAgentWorkControl {
             if (workControl == null) {
-                val getInstance = Class.forName(WORK_CONTROL_CLASS_NAME).getMethod("getInstance")
-                workControl = getInstance.invoke(null) as ILibraryAgentWorkControl
+                val getInstanceForAgentLibrary = Class.forName(WORK_CONTROL_CLASS_NAME).getMethod("getInstanceForAgentLibrary")
+                workControl = getInstanceForAgentLibrary.invoke(null) as ILibraryAgentWorkControl
                 return workControl as ILibraryAgentWorkControl
             }
             return workControl as ILibraryAgentWorkControl

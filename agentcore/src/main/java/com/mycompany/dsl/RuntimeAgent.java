@@ -13,18 +13,17 @@ import com.mycompany.dsl.base.SendServiceMessageParameters;
 import com.mycompany.dsl.base.SystemEvent;
 import com.mycompany.dsl.base.behavior.ARuntimeAgentBehavior;
 import com.mycompany.dsl.exceptions.RuntimeAgentException;
-import com.mycompany.dsl.objects.DslImage;
+import com.mycompany.dsl.objects.DslAgentData;
 import com.mycompany.dsl.objects.DslLocalMessage;
 import com.mycompany.dsl.objects.DslServiceMessage;
 import com.mycompany.dsl.objects.DslTaskData;
-import groovy.lang.Closure;
-import org.jetbrains.annotations.NotNull;
-import com.mycompany.service.AbstractAgentService;
 import com.mycompany.service.LoginService;
 import com.mycompany.service.ServerTypeService;
 import com.mycompany.service.SessionManager;
 import com.mycompany.service.objects.*;
 import com.mycompany.user.User;
+import groovy.lang.Closure;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -69,6 +68,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.setAgentOnEndTaskClosure(createOnEndClosure());
+        runtimeAgentService.setConfigureAgentDataClosure(createConfigureAgentDataClosure());
         runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
         runtimeAgentService.applyInit();
         systemAgent = configureAgentWithError(dslFileAttachment);
@@ -228,7 +228,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      */
     private Closure<Void> createSendMessageClosure() {
         return new Closure<Void>(null) {
-
             @Override
             public Void call(Object arguments) {
                 /* Проверки и дефолтные поля выставляются в dsl */
@@ -255,7 +254,6 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      */
     private Closure<Void> createOnEndClosure() {
         return new Closure<Void>(null) {
-
             @Override
             public Void call(Object arguments) {
                 if (!(arguments instanceof String)) return null;
@@ -265,6 +263,19 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
 
                 onEndTask(taskData);
                 return null;
+            }
+        };
+    }
+
+    /**
+     * Функция вызывается из groovy
+     * Выполняется при завершении работы агентом
+     */
+    private Closure<DslAgentData> createConfigureAgentDataClosure() {
+        return new Closure<DslAgentData>(null) {
+            @Override
+            public DslAgentData call() {
+                return new DslAgentData(systemAgent.getId());
             }
         };
     }
@@ -349,39 +360,5 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             //setTestData(runtimeAgentService); // тесты работают и без этой строчки
             throw new RuntimeException("Сервис с типами данных недоступен");
         }
-    }
-
-    /**
-     * Установка значений по умолчанию, чтобы не включать каждый раз сервис
-     */
-    private void setTestData(RuntimeAgentService runtimeAgentService) {
-        List<AgentType> agentTypeList = Arrays.asList(
-                new AgentType(1L, "manual_test_agent_1_masId", "Тестовый агент 1(Ручное тестировние)", false),
-                new AgentType(2L, "manual_test_agent_2_masId", "Тестовый агент 2(Ручное тестировние)", false)
-        );
-        List<MessageBodyType> messageBodyTypes = Collections.singletonList(
-                new MessageBodyType(1L, "json", "Тело сообщения формата Json", false)
-        );
-        List<MessageGoalType> messageGoalTypes = Collections.singletonList(
-                new MessageGoalType(1L, "manual_test_message_goal_type_1",
-                        "Тестовая цель общения 1(Ручное тестировние)", false)
-        );
-        List<MessageType> messageTypes = Arrays.asList(
-                new MessageType(1L, "manual_test_message_type_1_test_goal_2",
-                        "Тестовый тип сообщения 1 для тестовой цели 2(Ручное тестировние)", 1,
-                        messageGoalTypes.get(0), false),
-                new MessageType(2L, "manual_test_message_type_2_test_goal_2",
-                        "Тестовый тип сообщения 2 для тестовой цели 2(Ручное тестировние)", 2,
-                        messageGoalTypes.get(0), false),
-                new MessageType(3L, "solution_answer", "Ответ на запрос решения задачи", 3,
-                        messageGoalTypes.get(0), false),
-                new MessageType(4L, "task_solution_answer", "Ответ на задачу", 4,
-                        messageGoalTypes.get(0), false)
-        );
-
-        runtimeAgentService.setAgentTypes(agentTypeList);
-        runtimeAgentService.setMessageBodyTypes(messageBodyTypes);
-        runtimeAgentService.setMessageGoalTypes(messageGoalTypes);
-        runtimeAgentService.setServiceMessageTypes(messageTypes);
     }
 }

@@ -1,7 +1,7 @@
 package objects
 
-import com.mycompany.dsl.TestRuntimeAgentClass
 import com.mycompany.dsl.TestRuntimeAgentServiceClass
+import com.mycompany.dsl.objects.DslAgentData
 import com.mycompany.dsl.objects.DslTaskData
 
 /**
@@ -20,6 +20,7 @@ class DslObjects {
     static final def a2_testdslTaskData = new DslTaskData(a2_testdslTaskType)
 
     static final def taskType = StringObjects.randomString()
+    static final def agentData = new DslAgentData(1L)
 
     static final def notInitBlockDsl =
         """
