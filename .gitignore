@@ -6,3 +6,5 @@
 
 **/inputdb.s3db
 **/localdb.s3db
+**/localdb.s3db-shm
+**/localdb.s3db-wal
