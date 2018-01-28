@@ -69,7 +69,10 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
     }
 
     override fun stop() {
-        TODO("not implemented")
+        startedAgents.values.forEach {
+            stop(it.getSystemAgent())
+        }
+        shutdownExecutors()
     }
 
     /**
@@ -78,6 +81,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
      */
     @Throws(RuntimeAgentException::class)
     override fun start(agent: SystemAgent) {
+        createExecutors()
         synchronized(this) {
             if (agent.isNew) {
                 throw RuntimeAgentException("Агент ещё не создан")
@@ -107,8 +111,6 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
             startedAgents.put(agentId, runtimeAgent)
         }
     }
-
-    // TODO - у агента нельзя одновременно вызывать start - stop - onLoadImage -> надо это всё как-то синхронизировать
 
     @Throws(RuntimeAgentException::class)
     override fun stop(agent: SystemAgent) {
@@ -159,6 +161,20 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
         /* операции над агентами не могут быть выполнены одновременно n потоками */
         synchronized(operationAgent) {
             operationAgent.onGetLocalMessage(DslLocalMessage(event))
+        }
+    }
+
+    private fun createExecutors() {
+        val executor = ThreadPoolRuntimeAgent.executorService
+        if (executor.isShutdown) {
+            ThreadPoolRuntimeAgent.executorService = ThreadPoolRuntimeAgent.createExecutors()
+        }
+    }
+
+    private fun shutdownExecutors() {
+        val executor = ThreadPoolRuntimeAgent.executorService
+        if (!executor.isShutdown) {
+            val runnables = executor.shutdownNow()
         }
     }
 }

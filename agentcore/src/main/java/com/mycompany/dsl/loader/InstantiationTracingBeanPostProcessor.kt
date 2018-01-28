@@ -27,6 +27,9 @@ class InstantiationTracingBeanPostProcessor: BeanPostProcessor {
         if (beanName == "runtimeAgentWorkControl") {
             runtimeAgentLoader = bean
         }
+        if (beanName == "jdbcTemplate") {
+            println("jdbcTemplate create bean!!!")
+        }
 
         return bean
     }

@@ -1,9 +1,12 @@
 package gui
 
 import com.mycompany.db.base.Environment
+import com.mycompany.db.core.file.ByteArrayFileContent
+import com.mycompany.db.core.file.FileContent
 import com.mycompany.db.core.file.FileContentLocator
+import com.mycompany.db.core.file.FileContentRef
+import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.sc.ServiceMessageSC
-import com.mycompany.db.core.sc.SystemAgentSC
 import com.mycompany.db.core.servicemessage.ServiceMessage
 import com.mycompany.db.core.servicemessage.ServiceMessageService
 import com.mycompany.db.core.servicemessage.ServiceMessageType
@@ -14,8 +17,10 @@ import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.base.behavior.RuntimeAgentUpdateUiEventHistoryBehavior
-import com.mycompany.dsl.loader.RuntimeAgentLoader
-import com.mycompany.dsl.objects.DslImage
+import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
+import com.mycompany.service.LoginService
+import com.mycompany.service.ServerTypeService
+import com.mycompany.user.User
 import gui.table.AgentComboBoxRenderer
 import gui.table.CustomTableBuilder
 import gui.table.columns.DateTimeTableColumn
@@ -26,17 +31,12 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
-import javafx.stage.FileChooser
 import javafx.stage.Window
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import com.mycompany.service.LoginService
-import com.mycompany.service.ServerTypeService
-import com.mycompany.user.User
-import java.io.ByteArrayOutputStream
 import java.io.File
-import javax.imageio.ImageIO
+import java.nio.file.Files
 
 
 /**
@@ -46,15 +46,23 @@ import javax.imageio.ImageIO
 class AgentGuiController {
 
     companion object {
-        val IMAGE_REGEX = "^(.*jpg$)|(.*jpeg$)|(.*png$)$"
+        private val IMAGE_REGEX = "^(.*jpg$)|(.*jpeg$)|(.*png$)$"
         /**
          * Количество записей истории поведения агента выбираемых из бд
          */
-        val HISTORY_RECORDS_SIZE = 15
+        private val HISTORY_RECORDS_SIZE = 15
         /**
          * Количество загружаемых агентов
          */
-        val AGENT_RECORDS_SIZE = 10
+        private val AGENT_RECORDS_SIZE = 10
+        /**
+         * Путь до папки с конфигурациями агентов
+         */
+        private val AGENT_DSL_PATH = "data/dsl/"
+        /**
+         * Грузим только groovy файлы
+         */
+        private val GROOVY_FILE_REGEX = "^.*.groovy$"
     }
 
     @Autowired
@@ -75,8 +83,10 @@ class AgentGuiController {
     private lateinit var fileContentLocator: FileContentLocator
     @Autowired
     private lateinit var javaFxSession: AuthenticatedJavaFxSession
+    @Autowired
+    private lateinit var agentLoader: IRuntimeAgentWorkControl
 
-    private val agentLoader = RuntimeAgentLoader()
+    //private val agentLoader = RuntimeAgentLoader()
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
     private val agentsData = FXCollections.observableArrayList<SystemAgent>()
 
@@ -87,14 +97,11 @@ class AgentGuiController {
     @FXML
     lateinit var loadAgentsButton: Button
     @FXML
-    lateinit var loadImageButton: Button
-    @FXML
     lateinit var eventHistoryUpdateButton: Button
     @FXML
     lateinit var eventHistoryTextArea: TextArea
 
     fun initialize() {
-        configureLoadImageButton()
         configureLoadAgentsButton()
         configureEventHistoryUpdateButton()
         configureMessageTable()
@@ -105,34 +112,6 @@ class AgentGuiController {
         eventHistoryUpdateButton.setOnAction {
             updateEventHistoryText()
         }
-    }
-
-    private fun configureLoadImageButton() {
-        loadImageButton.setOnAction { event ->
-            val extFilter = FileChooser.ExtensionFilter("Image file(*.jpg, *.jpeg, *.png)", "*.jpg", "*.jpeg", "*.png")
-            val fileChooser = FileChooser()
-            fileChooser.title = "Загрузка изображения"
-            fileChooser.initialDirectory = File(System.getProperty("user.home"));
-            fileChooser.extensionFilters.add(extFilter)
-
-            val imageFile: File? = fileChooser.showOpenDialog(getWindow(event))
-            if (imageFile != null && IMAGE_REGEX.toRegex().matches(imageFile.name)) {
-                val dslImage = configureDslImage(imageFile)
-                val selectedAgent = getSelectedAgent()
-                // загружать изображения уже ненадо
-                //agentLoader.onLoadImage(selectedAgent!!, dslImage)
-            }
-        }
-    }
-
-    private fun configureDslImage(imageFile: File): DslImage {
-        val bufferedImage = ImageIO.read(imageFile)
-        val baos = ByteArrayOutputStream()
-        ImageIO.write(bufferedImage, "jpg", baos)
-        return DslImage(
-                imageFile.name,
-                baos.toByteArray()
-        )
     }
 
     private fun getSelectedAgent(): SystemAgent? {
@@ -147,7 +126,17 @@ class AgentGuiController {
 
     private fun loadAgents() {
         agentLoader.stop()
-        agentLoader.load { dslFile ->
+        getUserAgents().forEach {
+            agentLoader.start(it)
+        }
+        updateUiData()
+    }
+
+    /**
+     * @return агенты текущего пользователя
+     */
+    private fun getUserAgents(): List<SystemAgent> {
+        return loadAgents { dslFile ->
             val runtimeAgent = object : ThreadPoolRuntimeAgent(dslFile) {
 
                 override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
@@ -169,10 +158,42 @@ class AgentGuiController {
                     }
                 }
             }))
-            return@load runtimeAgent
+            return@loadAgents runtimeAgent
+        }.map {
+            it.getSystemAgent()
+        }.toList()
+    }
+
+    private fun loadAgents(createAgent: (dslFile: DslFileAttachment) -> ThreadPoolRuntimeAgent): List<ThreadPoolRuntimeAgent> {
+        val agents = arrayListOf<ThreadPoolRuntimeAgent>()
+        File(AGENT_DSL_PATH).walk().forEach {
+            if (GROOVY_FILE_REGEX.toRegex().matches(it.name)) {
+                // todo - пока грузим файл лишь одного агента
+                if (it.name.contains("manual_test_agent_1.groovy")) {
+                    agents.add(createAgent(createDslFile(it.path, it.name)))
+                }
+            }
         }
-        agentLoader.start()
-        updateUiData()
+        return agents
+    }
+
+    private fun createDslFile(path: String, filename: String): DslFileAttachment {
+        val file = File(path)
+        val content = Files.readAllBytes(file.toPath())
+        return DslFileAttachment(
+                filename,
+                object : FileContentRef {
+                    @Override
+                    override fun getContent(visitor: FileContentLocator): FileContent {
+                        return ByteArrayFileContent(content)
+                    }
+                    @Override
+                    override fun getName(): String {
+                        return filename
+                    }
+                },
+                content.size.toLong()
+        )
     }
 
     private fun configureMessageTable() {
@@ -199,7 +220,6 @@ class AgentGuiController {
             if (newValue.toInt() >= 0) {
                 val systemAgent = agentComboBox.items[newValue.toInt()]
                 eventHistoryTextArea.text = getHistoryAsTextAreaString(systemAgent, HISTORY_RECORDS_SIZE)
-                loadImageButton.isDisable = false
                 messagesData.setAll(loadServiceMessages(systemAgent))
             }
         }
@@ -228,7 +248,6 @@ class AgentGuiController {
      */
     private fun updateUiData() {
         agentComboBox.selectionModel.clearSelection()
-        loadImageButton.isDisable = true
         messagesData.clear()
         agentsData.setAll(getSystemAgents())
     }

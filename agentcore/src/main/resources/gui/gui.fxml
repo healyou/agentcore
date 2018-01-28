@@ -36,7 +36,6 @@
             <Insets left="10.0" />
          </GridPane.margin>
       </Label>
-      <Button fx:id="loadImageButton" disable="true" mnemonicParsing="false" text="Загрузить изображение" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Button fx:id="loadAgentsButton" mnemonicParsing="false" text="Загрузить конфигурации агентов" GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <TabPane prefHeight="152.0" prefWidth="253.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnSpan="3" GridPane.rowIndex="2" GridPane.rowSpan="2">
         <tabs>

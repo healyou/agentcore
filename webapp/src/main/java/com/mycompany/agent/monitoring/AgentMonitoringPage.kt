@@ -148,12 +148,6 @@ class AgentMonitoringPage : AuthBasePage() {
             }
         }
         buttons.add(agentWorkButtons)
-        agentWorkButtons.add(object : AjaxLambdaLink<Any>("loadImage", this::loadImageClick) {
-            override fun onConfigure() {
-                super.onConfigure()
-                isVisible = isCheckOneStartedAgent()
-            }
-        })
         agentWorkButtons.add(object : AjaxLambdaLink<Any>("start", this::startButtonClick) {
             override fun onConfigure() {
                 super.onConfigure()
@@ -236,21 +230,6 @@ class AgentMonitoringPage : AuthBasePage() {
                         .asReversed()
             }
         }
-    }
-
-    /**
-     * Загрузка изображения агента
-     */
-    private fun loadImageClick(target: AjaxRequestTarget) {
-        modal.setContent(object : ModalUploadImagePanel(modal.contentId, modal) {
-            override fun save(target: AjaxRequestTarget, image: DslImage) {
-                agentWorkControl.onLoadImage(getAgent(checkedAgentsIds.elementAt(0)), image)
-                modal.close(target)
-            }
-        })
-        modal.setTitle(getString("loadImageModalName"))
-        modal.cookieName = MODAL_COOKIE_NAME
-        modal.show(target)
     }
 
     /**
