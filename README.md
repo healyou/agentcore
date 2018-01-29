@@ -10,3 +10,6 @@
 * logback.xml (agentcore module)
 * context.properties (agentcore module)
 * testJdbc.properties (agentcore module)
+
+После install agentcore необходимо также выполнить следующее(пока непонтно почему):
+* clean compile assembly:single (обновит jar в локальном репозитории maven-а)

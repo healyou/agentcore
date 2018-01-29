@@ -164,6 +164,10 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
         }
     }
 
+    override fun getStartedAgents(): List<SystemAgent> {
+        return startedAgents.values.map { it.getSystemAgent() }
+    }
+
     private fun createExecutors() {
         val executor = ThreadPoolRuntimeAgent.executorService
         if (executor.isShutdown) {

@@ -6,6 +6,7 @@ import com.mycompany.db.core.sc.ServiceMessageSC
 import com.mycompany.db.core.servicemessage.*
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
+import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -25,7 +26,8 @@ class ServiceTask @Autowired constructor(
         private val serverMessageService: ServerMessageService,
         private val messageTypeService: ServiceMessageTypeService,
         private val localMessageService: ServiceMessageService,
-        private val systemAgentService: SystemAgentService
+        private val systemAgentService: SystemAgentService,
+        private val workControl: IRuntimeAgentWorkControl
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -38,7 +40,7 @@ class ServiceTask @Autowired constructor(
         System.out.println("Процесс получения сообщений")
         logger.debug("Старт - Процесс получения сообщений")
 
-        /* Список всех локальных агентов */
+        /* Список локальных агентов, для которых надо считать сообщения */
         getSystemAgents().forEach { it ->
             val sessionManager = SessionManager()
 
@@ -63,7 +65,7 @@ class ServiceTask @Autowired constructor(
         System.out.println("Процесс отправки сообщений")
         logger.debug("Старт - Процесс отправки сообщений")
 
-        /* Список всех локальных агентов */
+        /* Список локальных агентов, от которых надо отправить сообщения */
         getSystemAgents().forEach { it ->
             val sessionManager = SessionManager()
 
@@ -99,8 +101,11 @@ class ServiceTask @Autowired constructor(
 
     /**
      * Список локальный агентов
+     * @return список агентов, запущенных в текущем приложении
      */
-    private fun getSystemAgents(): List<SystemAgent> = systemAgentService.get(false, true)
+    private fun getSystemAgents(): List<SystemAgent> {
+        return workControl.getStartedAgents()
+    }
 
     /**
      * Чтение сообщений(нужно перед этим залогиниться)

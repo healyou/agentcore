@@ -2,7 +2,6 @@ package com.mycompany.dsl.loader
 
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.dsl.exceptions.RuntimeAgentException
-import com.mycompany.dsl.objects.DslImage
 
 /**
  * Контроль за работой агентов в системе
@@ -42,4 +41,9 @@ interface IRuntimeAgentWorkControl {
      * @return true - указанный агент может начать работу, false - агенту не хватает данных для начала работы
      */
     fun isStart(agent: SystemAgent): Boolean
+
+    /**
+     * @return список зпущенных агентов
+     */
+    fun getStartedAgents(): List<SystemAgent>
 }
