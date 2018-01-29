@@ -1,20 +1,15 @@
 package integration
 
 import com.mycompany.db.base.Environment
-import objects.OtherObjects
+import com.mycompany.service.*
+import com.mycompany.service.objects.*
 import integration.objects.RestServiceObjects
+import objects.OtherObjects
 import objects.StringObjects
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import com.mycompany.service.*
-import com.mycompany.service.objects.Agent
-import com.mycompany.service.objects.GetAgentsData
-import com.mycompany.service.objects.Message
-import com.mycompany.service.objects.MessageBodyType
-import com.mycompany.service.objects.MessageType
-import com.mycompany.service.objects.RegistrationData
 import testbase.AbstractServiceTest
 
 import java.util.stream.Collectors
