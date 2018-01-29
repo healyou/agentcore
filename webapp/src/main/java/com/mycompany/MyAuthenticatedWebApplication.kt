@@ -15,7 +15,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector
 /**
  * @author Nikita Gorodilov
  */
-class MyAuthenticatedWebApplication : AuthenticatedWebApplication() {
+open class MyAuthenticatedWebApplication : AuthenticatedWebApplication() {
 
     override fun init() {
         super.init()
