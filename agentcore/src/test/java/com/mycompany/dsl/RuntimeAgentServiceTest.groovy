@@ -1,8 +1,7 @@
 package com.mycompany.dsl
 
-import com.mycompany.dsl.base.SendServiceMessageParameters
+import com.mycompany.dsl.base.parameters.SendServiceMessageParameters
 import com.mycompany.dsl.base.SystemEvent
-import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
 import com.mycompany.dsl.objects.DslTaskData

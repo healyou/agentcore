@@ -31,6 +31,7 @@ import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Node
 import javafx.scene.control.*
+import javafx.stage.FileChooser
 import javafx.stage.Window
 import javafx.util.Callback
 import org.springframework.beans.factory.annotation.Autowired
@@ -86,7 +87,6 @@ class AgentGuiController {
     @Autowired
     private lateinit var agentLoader: IRuntimeAgentWorkControl
 
-    //private val agentLoader = RuntimeAgentLoader()
     private val messagesData = FXCollections.observableArrayList<ServiceMessage>()
     private val agentsData = FXCollections.observableArrayList<SystemAgent>()
 
@@ -97,11 +97,14 @@ class AgentGuiController {
     @FXML
     lateinit var loadAgentsButton: Button
     @FXML
+    lateinit var loadAgentButton: Button
+    @FXML
     lateinit var eventHistoryUpdateButton: Button
     @FXML
     lateinit var eventHistoryTextArea: TextArea
 
     fun initialize() {
+        configureLoadAgentButton()
         configureLoadAgentsButton()
         configureEventHistoryUpdateButton()
         configureMessageTable()
@@ -116,6 +119,27 @@ class AgentGuiController {
 
     private fun getSelectedAgent(): SystemAgent? {
         return agentComboBox.selectionModel.selectedItem
+    }
+
+    private fun configureLoadAgentButton() {
+        loadAgentButton.setOnAction { event ->
+            val extFilter = FileChooser.ExtensionFilter("Конфигурационный файл агента (*.groovy)", "*.groovy")
+            val fileChooser = FileChooser()
+            fileChooser.title = "Загрузка конфигурации агента"
+            fileChooser.initialDirectory = File(System.getProperty("user.home"));
+            fileChooser.extensionFilters.add(extFilter)
+
+            val loadFile: File? = fileChooser.showOpenDialog(getWindow(event))
+            if (loadFile != null && GROOVY_FILE_REGEX.toRegex().matches(loadFile.name)) {
+                try {
+                    val agent = createAgent(createDslFile(loadFile.path, loadFile.name)).getSystemAgent()
+                    agentsData.add(agent)
+                    agentLoader.start(agent)
+                } catch (e: Exception) {
+                    throw RuntimeException("Невозможно создать агента по конфигурационному файлу - ${loadFile.path}")
+                }
+            }
+        }
     }
 
     private fun configureLoadAgentsButton() {
@@ -136,42 +160,39 @@ class AgentGuiController {
      * @return агенты текущего пользователя
      */
     private fun getUserAgents(): List<SystemAgent> {
-        return loadAgents { dslFile ->
-            val runtimeAgent = object : ThreadPoolRuntimeAgent(dslFile) {
-
-                override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
-                override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
-                override fun getServerTypeService(): ServerTypeService = this@AgentGuiController.serverTypeService
-                override fun getLoginService(): LoginService = this@AgentGuiController.loginService
-                override fun getEnvironment(): Environment = this@AgentGuiController.environment
-                override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
-                override fun getFileContentLocator(): FileContentLocator = this@AgentGuiController.fileContentLocator
-                override fun getOwner(): User = this@AgentGuiController.javaFxSession.principal.user
-                override fun getCreateUser(): User = this@AgentGuiController.javaFxSession.principal.user
-            }
-            runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
-            runtimeAgent.add(RuntimeAgentUpdateUiEventHistoryBehavior(historyService, { systemAgent, message ->
-                val selectedAgent = getSelectedAgent()
-                if (selectedAgent != null) {
-                    if (selectedAgent.id == systemAgent.id) {
-                        eventHistoryTextArea.text += message
-                    }
-                }
-            }))
-            return@loadAgents runtimeAgent
-        }.map {
-            it.getSystemAgent()
-        }.toList()
+        return configureAgents().map { it.getSystemAgent() }.toList()
     }
 
-    private fun loadAgents(createAgent: (dslFile: DslFileAttachment) -> ThreadPoolRuntimeAgent): List<ThreadPoolRuntimeAgent> {
+    private fun createAgent(dslFile: DslFileAttachment): ThreadPoolRuntimeAgent {
+        val runtimeAgent = object : ThreadPoolRuntimeAgent(dslFile) {
+
+            override fun getSystemAgentService(): SystemAgentService = this@AgentGuiController.systemAgentService
+            override fun getServiceMessageService(): ServiceMessageService = this@AgentGuiController.serviceMessageService
+            override fun getServerTypeService(): ServerTypeService = this@AgentGuiController.serverTypeService
+            override fun getLoginService(): LoginService = this@AgentGuiController.loginService
+            override fun getEnvironment(): Environment = this@AgentGuiController.environment
+            override fun getMessageTypeService(): ServiceMessageTypeService = this@AgentGuiController.messageTypeService
+            override fun getFileContentLocator(): FileContentLocator = this@AgentGuiController.fileContentLocator
+            override fun getOwner(): User = this@AgentGuiController.javaFxSession.principal.user
+            override fun getCreateUser(): User = this@AgentGuiController.javaFxSession.principal.user
+        }
+        runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
+        runtimeAgent.add(RuntimeAgentUpdateUiEventHistoryBehavior(historyService, { systemAgent, message ->
+            val selectedAgent = getSelectedAgent()
+            if (selectedAgent != null) {
+                if (selectedAgent.id == systemAgent.id) {
+                    eventHistoryTextArea.text += message
+                }
+            }
+        }))
+        return runtimeAgent
+    }
+
+    private fun configureAgents(): List<ThreadPoolRuntimeAgent> {
         val agents = arrayListOf<ThreadPoolRuntimeAgent>()
         File(AGENT_DSL_PATH).walk().forEach {
             if (GROOVY_FILE_REGEX.toRegex().matches(it.name)) {
-                // todo - пока грузим файл лишь одного агента
-                if (it.name.contains("manual_test_agent_1.groovy")) {
-                    agents.add(createAgent(createDslFile(it.path, it.name)))
-                }
+                agents.add(createAgent(createDslFile(it.path, it.name)))
             }
         }
         return agents

@@ -1,5 +1,6 @@
 package com.mycompany.dsl.loader
 
+import com.mycompany.agentworklibrary.ILibraryAgentWorkControl
 import org.springframework.beans.BeansException
 import org.springframework.beans.factory.config.BeanPostProcessor
 import org.springframework.stereotype.Component
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Component
 /**
  * @author Nikita Gorodilov
  */
-// todo в другой пакет
 @Component
 class InstantiationTracingBeanPostProcessor: BeanPostProcessor {
 
@@ -23,12 +23,8 @@ class InstantiationTracingBeanPostProcessor: BeanPostProcessor {
 
     @Throws(BeansException::class)
     override fun postProcessAfterInitialization(bean: Any, beanName: String?): Any? {
-        // todo класс
-        if (beanName == "runtimeAgentWorkControl") {
+        if (bean is ILibraryAgentWorkControl && beanName == "runtimeAgentWorkControl") {
             runtimeAgentLoader = bean
-        }
-        if (beanName == "jdbcTemplate") {
-            println("jdbcTemplate create bean!!!")
         }
 
         return bean

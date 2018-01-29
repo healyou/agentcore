@@ -6,9 +6,12 @@ import com.mycompany.db.core.file.FileContentLocator
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.servicemessage.ServiceMessageService
 import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
+import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.base.SystemEvent
+import com.mycompany.dsl.exceptions.RuntimeAgentException
+import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
 import com.mycompany.dsl.loader.InstantiationTracingBeanPostProcessor
 import com.mycompany.dsl.loader.RuntimeAgentWorkControl
 import com.mycompany.dsl.objects.DslLocalMessage
@@ -57,9 +60,10 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
     ServerMessageService serverMessageService
     @Autowired
     FileContentLocator fileContentLocator
-    ServiceTask serviceTask
     @Autowired
     RuntimeAgentWorkControl runtimeAgentWorkControl
+    ServiceTask serviceTask
+    def workControl = new TestRuntimeAgentWorkControl()
 
     RuntimeAgent testAgent1
     RuntimeAgent testAgent2
@@ -160,27 +164,19 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
                 return UserObjects.testActiveUser()
             }
         }
+        /**
+         * Для теста сами передадим локальные сообщения
+         */
+        InstantiationTracingBeanPostProcessor.runtimeAgentLoader = workControl
         serviceTask = new ServiceTask(
                 loginService,
                 serverAgentService,
                 serverMessageService,
                 messageTypeService,
                 messageService,
-                systemAgentService
+                systemAgentService,
+                workControl
         )
-        /**
-         * Для теста сами передадим локальные сообщения
-         */
-        InstantiationTracingBeanPostProcessor.runtimeAgentLoader = new ILibraryAgentWorkControl() {
-            @Override
-            void onAgentEvent(long agentId, @NotNull String event) {
-                if (agentId == testAgent1.systemAgent.id) {
-                    testAgent1.onGetLocalMessage(new DslLocalMessage(event))
-                } else if (agentId == testAgent2.systemAgent.id) {
-                    testAgent2.onGetLocalMessage(new DslLocalMessage(event))
-                }
-            }
-        }
     }
 
     @Test
@@ -226,5 +222,45 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
         def file = new File(String.valueOf(path))
 
         OtherObjects.dslFileAttachment(resourceFileName, Files.readAllBytes(file.toPath()))
+    }
+
+    /**
+     * Текущие запущенные тестовые агенты
+     */
+    private class TestRuntimeAgentWorkControl implements IRuntimeAgentWorkControl, ILibraryAgentWorkControl {
+        @Override
+        void onAgentEvent(long agentId, @NotNull String event) {
+            if (agentId == testAgent1.systemAgent.id) {
+                testAgent1.onGetLocalMessage(new DslLocalMessage(event))
+            } else if (agentId == testAgent2.systemAgent.id) {
+                testAgent2.onGetLocalMessage(new DslLocalMessage(event))
+            }
+        }
+        @Override
+        List<SystemAgent> getStartedAgents() {
+            Arrays.asList(testAgent1.getSystemAgent(), testAgent2.getSystemAgent())
+        }
+        @Override
+        void start() {
+        }
+        @Override
+        void stop() {
+        }
+        @Override
+        void start(@NotNull SystemAgent agent) throws RuntimeAgentException {
+        }
+
+        @Override
+        void stop(@NotNull SystemAgent agent) throws RuntimeAgentException {
+        }
+        @Override
+        boolean isStarted(@NotNull SystemAgent agent) {
+            return false
+        }
+
+        @Override
+        boolean isStart(@NotNull SystemAgent agent) {
+            return false
+        }
     }
 }

@@ -2,10 +2,11 @@ package com.mycompany.dsl
 
 import com.mycompany.agentworklibrary.AAgentWorkLibrary
 import com.mycompany.dsl.base.SystemEvent
+import com.mycompany.dsl.exceptions.DslException
 import com.mycompany.dsl.objects.DslAgentData
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.dsl.objects.DslServiceMessage
-import com.mycompany.dsl.base.SendServiceMessageParameters
+import com.mycompany.dsl.base.parameters.SendServiceMessageParameters
 import com.mycompany.dsl.objects.DslTaskData
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.MessageBodyType
@@ -110,7 +111,7 @@ class RuntimeAgentService {
             on_get_system_event_provided = true
             init_provided = true
         } else {
-            throw new RuntimeException("Неправильная dsl")
+            throw new DslException("Неправильная dsl")
         }
     }
 
@@ -123,9 +124,8 @@ class RuntimeAgentService {
 
     void applyInit() {
         if (init_provided) {
-            // todo все ошибки dsl в отдельный класс
             if (!checkInitOtherDslFunctions()) {
-                throw new RuntimeException("Не загружены дополнительные dsl функции")
+                throw new DslException("Не загружены дополнительные dsl функции")
             }
 
             Binding binding = new Binding()
@@ -148,13 +148,13 @@ class RuntimeAgentService {
                 localMessageTypes = binding.localMessageTypes
                 taskTypes = binding.taskTypes
             } catch (ignored) {
-                throw new RuntimeException("Нет данных для инициализации агента")
+                throw new DslException("Нет данных для инициализации агента")
             }
             if (initDataIsNullOrEmpty()) {
-                throw new RuntimeException("Нет данных для инициализации агента")
+                throw new DslException("Нет данных для инициализации агента")
             }
         } else {
-            throw new RuntimeException("Функция init не загружена")
+            throw new DslException("Функция init не загружена")
         }
     }
 
@@ -170,7 +170,7 @@ class RuntimeAgentService {
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onGetServiceMessage.delegate = this;onGetServiceMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetServiceMessage(serviceMessage)")
         } else {
-            throw new RuntimeException("Функция on_get_service_message не загружена")
+            throw new DslException("Функция on_get_service_message не загружена")
         }
     }
 
@@ -186,7 +186,7 @@ class RuntimeAgentService {
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onGetLocalMessage.delegate = this;onGetLocalMessage.resolveStrategy = Closure.DELEGATE_FIRST;onGetLocalMessage(localMessage)")
         } else {
-            throw new RuntimeException("Функция on_get_local_message не загружена")
+            throw new DslException("Функция on_get_local_message не загружена")
         }
     }
 
@@ -202,7 +202,7 @@ class RuntimeAgentService {
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onEndTask.delegate = this;onEndTask.resolveStrategy = Closure.DELEGATE_FIRST;onEndTask(taskData)")
         } else {
-            throw new RuntimeException("Функция on_end_task не загружена")
+            throw new DslException("Функция on_end_task не загружена")
         }
     }
 
@@ -218,7 +218,7 @@ class RuntimeAgentService {
             GroovyShell shell = new GroovyShell(binding)
             shell.evaluate("onGetSystemEvent.delegate = this;onGetSystemEvent.resolveStrategy = Closure.DELEGATE_FIRST;onGetSystemEvent(systemEvent)")
         } else {
-            throw new RuntimeException("Функция on_end_task не загружена")
+            throw new DslException("Функция on_end_task не загружена")
         }
     }
 
@@ -232,7 +232,7 @@ class RuntimeAgentService {
             /* required fields */
             SendServiceMessageParameters.values().each {
                 if (it.required && map[it.paramName] == null) {
-                    throw new RuntimeException("Обязательный параметр '" + it.paramName + "' не найден")
+                    throw new DslException("Обязательный параметр '" + it.paramName + "' не найден")
                 }
             }
 
@@ -247,7 +247,7 @@ class RuntimeAgentService {
                 agentSendServiceMessage.call(map)
 
             } else {
-                throw new RuntimeException("Функция sendServiceMessage не загружена")
+                throw new DslException("Функция sendServiceMessage не загружена")
             }
         }
         binding.executeCondition = { spec, closure ->
@@ -314,7 +314,7 @@ class RuntimeAgentService {
                 if (agent_on_end_task_provided) {
                     agentOnEndTask.call(taskType)
                 } else {
-                    throw new RuntimeException("Функция agentOnEndTask не загружена")
+                    throw new DslException("Функция agentOnEndTask не загружена")
                 }
             }
         }

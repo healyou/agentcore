@@ -12,7 +12,6 @@ import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.exceptions.RuntimeAgentException
-import com.mycompany.dsl.objects.DslImage
 import com.mycompany.dsl.objects.DslLocalMessage
 import com.mycompany.service.LoginService
 import com.mycompany.service.ServerTypeService
@@ -25,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap
  * @author Nikita Gorodilov
  */
 // TODO тесты работы данного класса
-// TODO пк класс и web класс для работы агентов одинаковы
 @Component
 class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkControl {
 
@@ -65,7 +63,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
     private val startedAgents = ConcurrentHashMap<Long, RuntimeAgent>()
 
     override fun start() {
-        TODO("not implemented")
+        // todo - пока и ненадо
     }
 
     override fun stop() {

@@ -9,7 +9,7 @@ import com.mycompany.db.core.servicemessage.ServiceMessageType;
 import com.mycompany.db.core.systemagent.SystemAgent;
 import com.mycompany.db.core.systemagent.SystemAgentService;
 import com.mycompany.dsl.base.ARuntimeAgent;
-import com.mycompany.dsl.base.SendServiceMessageParameters;
+import com.mycompany.dsl.base.parameters.SendServiceMessageParameters;
 import com.mycompany.dsl.base.SystemEvent;
 import com.mycompany.dsl.base.behavior.ARuntimeAgentBehavior;
 import com.mycompany.dsl.exceptions.RuntimeAgentException;
@@ -67,7 +67,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     private void init(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
-        runtimeAgentService.setAgentOnEndTaskClosure(createOnEndClosure());
+        runtimeAgentService.setAgentOnEndTaskClosure(createOnEndTaskClosure());
         runtimeAgentService.setConfigureAgentDataClosure(createConfigureAgentDataClosure());
         runtimeAgentService.loadExecuteRules(getRules(dslFileAttachment));
         runtimeAgentService.applyInit();
@@ -99,6 +99,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 it.afterOnGetServiceMessage(serviceMessage);
             });
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Ошибка работы агента");
         }
     }
@@ -114,6 +115,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 it.afterOnGetLocalMessage(localMessage);
             });
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Ошибка работы агента");
         }
     }
@@ -129,6 +131,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 it.afterOnEndTask(taskData);
             });
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Ошибка работы агента");
         }
     }
@@ -144,6 +147,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                 it.afterOnGetSystemEvent(systemEvent);
             });
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Ошибка работы агента");
         }
     }
@@ -188,7 +192,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
                                       List<String> agentTypeCodes,
                                       String messageBodyTypeCode) {
         if (systemAgent.getId() == null) {
-            throw new RuntimeException("Агент не инициализирован");
+            throw new RuntimeAgentException("Агент не инициализирован");
         }
 
         ServiceMessageService messageService = getServiceMessageService();
@@ -252,14 +256,13 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      * Функция вызывается из groovy
      * Выполняется при завершении работы агентом
      */
-    private Closure<Void> createOnEndClosure() {
+    private Closure<Void> createOnEndTaskClosure() {
         return new Closure<Void>(null) {
             @Override
-            public Void call(Object arguments) {
-                if (!(arguments instanceof String)) return null;
+            public Void call(Object argument) {
+                if (!(argument instanceof String)) return null;
 
-                // todo выенсти в какую нибудь константу имя параметра
-                DslTaskData taskData = new DslTaskData((String) arguments);
+                DslTaskData taskData = new DslTaskData((String) argument);
 
                 onEndTask(taskData);
                 return null;
@@ -358,7 +361,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
             // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
             System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
             //setTestData(runtimeAgentService); // тесты работают и без этой строчки
-            throw new RuntimeException("Сервис с типами данных недоступен");
+            throw new RuntimeAgentException("Сервис с типами данных недоступен");
         }
     }
 }
