@@ -2,9 +2,9 @@ package com.mycompany.agent.validator
 
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
+import org.apache.wicket.injection.Injector
 import org.apache.wicket.model.IModel
 import org.apache.wicket.spring.injection.annot.SpringBean
-import org.apache.wicket.spring.injection.annot.SpringComponentInjector
 import org.apache.wicket.validation.IValidatable
 import org.apache.wicket.validation.IValidator
 import org.apache.wicket.validation.ValidationError
@@ -21,7 +21,7 @@ class ServiceLoginValidator(private val model: IModel<SystemAgent>): IValidator<
     private lateinit var agentService: SystemAgentService
 
     init {
-        SpringComponentInjector.get().inject(this)
+        Injector.get().inject(this)
     }
 
     override fun validate(validatable: IValidatable<String>) {

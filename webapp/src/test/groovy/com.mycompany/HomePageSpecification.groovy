@@ -18,4 +18,13 @@ class HomePageSpecification extends WebPageSpecification {
         then:
         tester.assertRenderedPage(HomePage.class);
     }
+
+    def "Без авторизации будем перенаправлена на страницу логина"() {
+        when:
+        signOut()
+        tester.startPage(HomePage.class);
+
+        then:
+        tester.assertRenderedPage(LoginPage.class);
+    }
 }

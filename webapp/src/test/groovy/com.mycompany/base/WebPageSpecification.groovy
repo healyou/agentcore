@@ -1,13 +1,11 @@
 package com.mycompany.base
 
-import com.mycompany.TestBean
 import com.mycompany.db.base.Environment
 import com.mycompany.db.core.user.AuthenticationService
 import com.mycompany.objects.StringObjects
 import com.mycompany.objects.UserObjects
 import com.mycompany.user.Authority
 import com.mycompany.user.Principal
-import com.mycompany.user.User
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession
 import org.apache.wicket.spring.test.ApplicationContextMock
 import org.apache.wicket.util.tester.WicketTester
@@ -30,7 +28,6 @@ class WebPageSpecification extends Specification {
     def setup() {
         authorities = EnumSet.allOf(Authority.class)
         applicationContextMock = new ApplicationContextMock()
-        applicationContextMock.putBean(createTestBean())
         applicationContextMock.putBean(createEnvironmentBean())
         applicationContextMock.putBean(createAuthenticationServiceMock())
         tester = new WicketTester(new TestApplication(applicationContextMock))
@@ -46,6 +43,10 @@ class WebPageSpecification extends Specification {
      */
     protected def signIn() {
         signIn(StringObjects.randomString, StringObjects.randomString)
+    }
+
+    protected def signOut() {
+        AuthenticatedWebSession.get().signOut()
     }
 
     protected def signIn(def login, def password) {
@@ -103,21 +104,5 @@ class WebPageSpecification extends Specification {
 
         environment
         */
-    }
-
-    private static TestBean createTestBean() {
-        def testBean = mock(TestBean.class)
-
-        expect(testBean.getString())
-                .andStubAnswer(new IAnswer<String>() {
-            @Override
-            String answer() throws Throwable {
-                "123"
-            }
-        })
-        expect(testBean.getString2()).andStubReturn("123")
-        replay(testBean)
-
-        testBean
     }
 }
