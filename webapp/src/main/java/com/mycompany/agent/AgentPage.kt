@@ -36,6 +36,7 @@ import java.util.*
 class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     companion object {
+        @JvmStatic
         val AGENT_ID_PARAMETER_NAME = "id"
     }
 
@@ -107,14 +108,12 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
                 isEnabled = isEditMode() || isCreateMode()
             }
         }.add(ServiceLoginValidator(agentModel)).setRequired(true))
-        val servicePasswordBlock = object : WebMarkupContainer("servicePasswordBlock") {
+        form.add(object : TextField<String>("servicePassword") {
             override fun onConfigure() {
                 super.onConfigure()
                 isVisible = isCreateMode()
             }
-        }
-        servicePasswordBlock.add(TextField<String>("servicePassword").setRequired(true))
-        form.add(servicePasswordBlock)
+        }.setRequired(true))
         form.add(object : DslFileUploadPanel("dslFile") {
             override fun onConfigure() {
                 super.onConfigure()
@@ -123,20 +122,20 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
         }.setRequired(true))
         form.add(TextField<Long>("ownerId").setRequired(true).setEnabled(false))
         form.add(TextField<Long>("createUserId").setRequired(true).setEnabled(false))
-        form.add(TextField<Date>("createDate").setEnabled(false))
+        form.add(TextField<Date>("createDate").setRequired(true).setEnabled(false))
         form.add(TextField<Date>("updateDate").setEnabled(false))
         form.add(object : CheckBox("isDeleted") {
             override fun onConfigure() {
                 super.onConfigure()
                 isEnabled = isEditMode() || isCreateMode()
             }
-        })
+        }.setRequired(true))
         form.add(object : CheckBox("isSendAndGetMessages") {
             override fun onConfigure() {
                 super.onConfigure()
                 isEnabled = isEditMode() || isCreateMode()
             }
-        })
+        }.setRequired(true))
         form.add(Label("isDeletedLabel", Model.of(getString("isDeleted"))))
         form.add(Label("isSendAngGetMessagesLabel", Model.of(getString("isSendAndGetMessages"))))
 

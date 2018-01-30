@@ -41,6 +41,9 @@ class WebPageSpecification extends Specification {
         applicationContextMock.putBean(bean)
     }
 
+    /**
+     * Авторизация - по дефолту доступны все привелегии
+     */
     protected def signIn() {
         signIn(StringObjects.randomString, StringObjects.randomString)
     }

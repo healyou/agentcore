@@ -12,7 +12,7 @@ import org.apache.wicket.validation.ValidationError
 /**
  * Валидация логина агента(должен быть уникален при создании(todo серверная проверка))
  * Поиск текста ошибки - ServiceLoginValidator + .key
- *
+ * todo - test
  * @author Nikita Gorodilov
  */
 class ServiceLoginValidator(private val model: IModel<SystemAgent>): IValidator<String> {
