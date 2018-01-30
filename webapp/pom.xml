@@ -40,6 +40,7 @@
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
         <easymock.version>3.4</easymock.version>
+        <surefire.version>2.19.1</surefire.version>
     </properties>
     <dependencies>
         <dependency>
@@ -236,6 +237,20 @@
             </testResource>
         </testResources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/Test*.java</include>
+                        <include>**/*Test.java</include>
+                        <include>**/*TestCase.java</include>
+                        <include>**/*Spec.java</include>
+                        <include>**/*Specification.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>

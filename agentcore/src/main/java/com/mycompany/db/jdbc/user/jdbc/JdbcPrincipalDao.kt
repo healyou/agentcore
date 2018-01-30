@@ -31,7 +31,7 @@ class JdbcPrincipalDao: AbstractDao(), PrincipalDao {
                         user.endDate = getNullDate(rs, "end_date")
                         return Principal(user, readAuthorities(userId))
                     }
-                }, login)
+                }, login)!!
     }
 
     private fun readAuthorities(userId: Long): Set<Authority> {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component
 @Component
 open class Environment : AbstractDao() {
 
-    fun getProperty(key: String): String {
+    open fun getProperty(key: String): String {
         return jdbcTemplate.queryForObject("select value from parameter where key = ?", String::class.java, key)
     }
 

@@ -14,7 +14,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean
 /**
  * @author Nikita Gorodilov
  */
-class SpringAuthenticatedWebSession(request: Request) : AuthenticatedWebSession(request) {
+open class SpringAuthenticatedWebSession(request: Request) : AuthenticatedWebSession(request) {
 
     /**
      * авторизация
