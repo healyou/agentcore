@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="ServiceLoginValidator.incorrectServiceLogin.local">Агент с заданным логином уже создан</entry>
+    <entry key="ServiceLoginValidator.incorrectServiceLogin.service">Агент с заданным логином уже зарегистрирован в многоагентной системе</entry>
+    <entry key="ServiceLoginValidator.serviceNotFound">Сервис агентов недоступен</entry>
+</properties>
