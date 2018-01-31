@@ -1,4 +1,4 @@
-package gui.table
+package com.mycompany.desktopapp.table
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList

@@ -1,4 +1,4 @@
-package gui
+package com.mycompany.desktopapp.page
 
 import com.mycompany.db.base.Environment
 import com.mycompany.db.core.file.ByteArrayFileContent
@@ -14,6 +14,7 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
+import com.mycompany.desktopapp.AuthenticatedJavaFxSession
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.base.behavior.RuntimeAgentUpdateUiEventHistoryBehavior
@@ -21,11 +22,11 @@ import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
 import com.mycompany.service.LoginService
 import com.mycompany.service.ServerTypeService
 import com.mycompany.user.User
-import gui.table.AgentComboBoxRenderer
-import gui.table.CustomTableBuilder
-import gui.table.columns.DateTimeTableColumn
-import gui.table.columns.DictionaryTableColumn
-import gui.table.columns.PropertyTableColumn
+import com.mycompany.desktopapp.table.AgentComboBoxRenderer
+import com.mycompany.desktopapp.table.CustomTableBuilder
+import com.mycompany.desktopapp.table.columns.DateTimeTableColumn
+import com.mycompany.desktopapp.table.columns.DictionaryTableColumn
+import com.mycompany.desktopapp.table.columns.PropertyTableColumn
 import javafx.collections.FXCollections
 import javafx.event.ActionEvent
 import javafx.fxml.FXML

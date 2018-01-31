@@ -1,4 +1,4 @@
-package gui
+package com.mycompany.desktopapp
 
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent

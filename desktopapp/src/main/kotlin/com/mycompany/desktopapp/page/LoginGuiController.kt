@@ -1,5 +1,8 @@
-package gui
+package com.mycompany.desktopapp.page
 
+import com.mycompany.desktopapp.AgentGui
+import com.mycompany.desktopapp.AgentSpringFxmlLoader
+import com.mycompany.desktopapp.AuthenticatedJavaFxSession
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Node
@@ -83,7 +86,7 @@ class LoginGuiController {
     }
 
     private fun showAgentScene(event: ActionEvent) {
-        val loader = AgentGui.Companion.applicationContext.getBean(AgentSpringFxmlLoader::class.java)
+        val loader = AgentGui.applicationContext.getBean(AgentSpringFxmlLoader::class.java)
         val parent = loader.load(javaClass.getResourceAsStream("gui.fxml"))
         val appWindow = (event.source as Node).scene.window as Stage
         appWindow.title = "Сообщения агента"

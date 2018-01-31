@@ -1,4 +1,4 @@
-package gui
+package com.mycompany.desktopapp
 
 import com.mycompany.db.core.user.AuthenticationService
 import com.mycompany.dsl.exceptions.AuthenticationException

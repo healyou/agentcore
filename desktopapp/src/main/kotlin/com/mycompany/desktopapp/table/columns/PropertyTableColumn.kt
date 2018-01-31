@@ -1,4 +1,4 @@
-package gui.table.columns
+package com.mycompany.desktopapp.table.columns
 
 import javafx.scene.control.TableColumn
 import javafx.scene.control.cell.PropertyValueFactory

@@ -3,6 +3,7 @@ package com.mycompany.agent
 import com.mycompany.base.WebPageSpecification
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.objects.SystemAgentObjects
+import com.mycompany.service.ServerAgentService
 import org.apache.wicket.request.mapper.parameter.PageParameters
 
 /**
@@ -16,6 +17,7 @@ class AgentPageSpecification extends WebPageSpecification {
     def setup() {
         signIn()
         putBean(agentService)
+        putBean(Mock(ServerAgentService))
     }
 
     def "Страница для создания агента открывается успешно"() {

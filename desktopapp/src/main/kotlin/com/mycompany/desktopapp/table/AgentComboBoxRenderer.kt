@@ -1,4 +1,4 @@
-package gui.table
+package com.mycompany.desktopapp.table
 
 import com.mycompany.db.core.systemagent.SystemAgent
 import javafx.scene.control.ListCell

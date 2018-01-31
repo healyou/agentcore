@@ -1,23 +1,25 @@
-package gui.table.columns
+package com.mycompany.desktopapp.table.columns
 
-import com.mycompany.db.base.Codable
 import com.sun.javafx.property.PropertyReference
-import com.mycompany.db.base.IDictionary
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.value.ObservableValue
 import javafx.scene.control.TableColumn
 import javafx.scene.control.cell.PropertyValueFactory
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * @author Nikita Gorodilov
  */
-class DictionaryTableColumn<S : Any, out T: IDictionary<Codable<out Any>>>(text: String, property: String): TableColumn<S, String>(text) {
+class DateTimeTableColumn<S : Any>(text: String, property: String): TableColumn<S, String>(text) {
+
+    private val dateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
 
     init {
         cellValueFactory = object : PropertyValueFactory<S, String>(property) {
 
             private var columnClass: Class<*>? = null
-            private var propertyRef: PropertyReference<T>? = null
+            private var propertyRef: PropertyReference<Date>? = null
 
             override fun call(param: CellDataFeatures<S, String>): ObservableValue<String> {
                 return getCellDataReflectively(param.value)
@@ -31,7 +33,7 @@ class DictionaryTableColumn<S : Any, out T: IDictionary<Codable<out Any>>>(text:
                 try {
                     if (columnClass == null || columnClass != rowData::class.java) {
                         this.columnClass = rowData.javaClass
-                        this.propertyRef = PropertyReference<T>(rowData.javaClass, getProperty())
+                        this.propertyRef = PropertyReference<Date>(rowData.javaClass, getProperty())
                     }
 
                     if (propertyRef == null) {
@@ -39,10 +41,10 @@ class DictionaryTableColumn<S : Any, out T: IDictionary<Codable<out Any>>>(text:
                     }
 
                     return if (propertyRef!!.hasProperty()) {
-                        SimpleStringProperty(propertyRef!!.getProperty(rowData).value.name)
+                        SimpleStringProperty(dateFormat.format(propertyRef!!.getProperty(rowData)))
                     } else {
                         val value = propertyRef!!.get(rowData)
-                        SimpleStringProperty(value.name)
+                        SimpleStringProperty(if (value != null) dateFormat.format(value) else "")
                     }
 
                 } catch (e: IllegalStateException) {

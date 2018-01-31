@@ -1,5 +1,6 @@
-package gui
+package com.mycompany.desktopapp
 
+import com.mycompany.desktopapp.page.LoginGuiController
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
@@ -25,7 +26,7 @@ class AgentGui : Application() {
 
     override fun start(primaryStage: Stage?) {
         val loader = applicationContext.getBean(AgentSpringFxmlLoader::class.java)
-        val root = loader.load(javaClass.getResourceAsStream("login.fxml"))
+        val root = loader.load(LoginGuiController::class.java.getResourceAsStream("login.fxml"))
         primaryStage?.title = "Авторизация"
         primaryStage?.scene = Scene(root, 800.0, 600.0)
         primaryStage?.show()

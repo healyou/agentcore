@@ -78,5 +78,6 @@
         <module>agentimagelib</module>
         <module>webapp</module>
         <module>agentworklibrary</module>
+        <module>desktopapp</module>
     </modules>
 </project>
