@@ -13,9 +13,6 @@ import com.mycompany.user.Authority
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.ajax.markup.html.AjaxLink
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink
-import org.apache.wicket.markup.head.CssHeaderItem
-import org.apache.wicket.markup.head.IHeaderResponse
-import org.apache.wicket.markup.head.JavaScriptHeaderItem
 import org.apache.wicket.markup.html.WebMarkupContainer
 import org.apache.wicket.markup.html.basic.Label
 import org.apache.wicket.markup.html.form.Form
@@ -26,8 +23,6 @@ import org.apache.wicket.model.AbstractReadOnlyModel
 import org.apache.wicket.model.IModel
 import org.apache.wicket.model.PropertyModel
 import org.apache.wicket.request.mapper.parameter.PageParameters
-import org.apache.wicket.request.resource.CssResourceReference
-import org.apache.wicket.request.resource.JavaScriptResourceReference
 import org.apache.wicket.spring.injection.annot.SpringBean
 import org.apache.wicket.util.convert.IConverter
 import org.apache.wicket.validation.validator.RangeValidator
@@ -175,7 +170,7 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
 
     private fun agentClick(agent: SystemAgent) {
         val parameters = PageParameters()
-        parameters.set(AgentPage.AGENT_ID_PARAMETER_NAME, agent.id!!)
+        parameters.set(AgentPage.AGENT_PAGE_AGENT_ID_PARAMETER_NAME, agent.id!!)
         setResponsePage(AgentPage::class.java, parameters)
     }
 }

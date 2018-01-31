@@ -25,9 +25,9 @@ class MonitoringPageSpecification extends WebPageSpecification {
 
     def "Страница успешно открывается"() {
         when:
-        tester.startPage(new AgentMonitoringPage())
+        tester.startPage(new AgentsMonitoringPage())
 
         then:
-        tester.assertRenderedPage(AgentMonitoringPage.class)
+        tester.assertRenderedPage(AgentsMonitoringPage.class)
     }
 }

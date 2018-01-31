@@ -7,7 +7,6 @@ import com.mycompany.agent.validator.ServiceLoginValidator
 import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
-import com.mycompany.security.acceptor.AlwaysAcceptedPrincipalAcceptor
 import com.mycompany.security.acceptor.HasAnyAuthorityPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
 import com.mycompany.user.Authority
@@ -37,7 +36,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     companion object {
         @JvmStatic
-        val AGENT_ID_PARAMETER_NAME = "id"
+        val AGENT_PAGE_AGENT_ID_PARAMETER_NAME = "id"
     }
 
     private enum class PageMode {
@@ -56,7 +55,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     private var mode: PageMode
 
     init {
-        val idParameter = parameters.get(AGENT_ID_PARAMETER_NAME)
+        val idParameter = parameters.get(AGENT_PAGE_AGENT_ID_PARAMETER_NAME)
 
         if (!idParameter.isEmpty) {
             // EDIT

@@ -67,7 +67,7 @@ class AgentPageSpecification extends WebPageSpecification {
 
     private static AgentPage startEditAgentPage(Long agentId) {
         def parameters = new PageParameters()
-        parameters.add(AgentPage.AGENT_ID_PARAMETER_NAME, agentId)
+        parameters.add(AgentPage.AGENT_PAGE_AGENT_ID_PARAMETER_NAME, agentId)
         new AgentPage(parameters)
     }
 }

@@ -1,7 +1,7 @@
 package com.mycompany
 
 import com.mycompany.agent.AgentsPage
-import com.mycompany.agent.monitoring.AgentMonitoringPage
+import com.mycompany.agent.monitoring.AgentsMonitoringPage
 import com.mycompany.base.AjaxLambdaLink
 import com.mycompany.security.PrincipalSupport
 import com.mycompany.user.Authority
@@ -95,6 +95,6 @@ abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters
     }
 
     private fun monitoringPageClick(target: AjaxRequestTarget) {
-        setResponsePage(AgentMonitoringPage::class.java)
+        setResponsePage(AgentsMonitoringPage::class.java)
     }
 }
