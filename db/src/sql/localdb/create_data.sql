@@ -5,6 +5,7 @@ INSERT INTO parameter (key, value) VALUES
   ('agent.service.login.registration.url', '/login/registration'),
   ('agent.service.login.logout.url', '/login/logout'),
   ('agent.service.password', 'psw'),
+  ('agent.service.agent.is.exists.agent.url', '/agent/isExistsAgent'),
   ('agent.service.agent.get.current.agent.url', '/agent/getCurrentAgent'),
   ('agent.service.agent.get.agents.url', '/agent/getAgents'),
   ('agent.service.agent.get.agent.url', '/agent/getAgent'),

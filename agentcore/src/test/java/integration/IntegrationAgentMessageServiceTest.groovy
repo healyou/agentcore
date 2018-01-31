@@ -181,6 +181,21 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
      */
 
     @Test
+    void "Если агент c masId не создан, то isExistsAgent вернёт false"() {
+        def uniqueMasId = StringObjects.randomString()
+        def isExistsAgent = serverAgentService.isExistsAgent(new SessionManager(), uniqueMasId)
+        assertFalse(isExistsAgent)
+    }
+
+    @Test
+    void "Если агент c masId создан, то isExistsAgent вернёт true"() {
+        def sessionManager = new SessionManager()
+        def createdAgentMasId = registration(sessionManager).masId
+        def isExistsAgent = serverAgentService.isExistsAgent(new SessionManager(), createdAgentMasId)
+        assertTrue(isExistsAgent)
+    }
+
+    @Test
     void "Получение текущего агента"() {
         def agent = registration(session)
         login(agent, session)

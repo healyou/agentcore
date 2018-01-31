@@ -21,13 +21,30 @@ open class ServerAgentServiceImpl(@Autowired final override val environment: Env
     private val GET_CURRENT_AGENT_URL = environment.getProperty("agent.service.agent.get.current.agent.url")
     private val GET_AGENTS_URL = environment.getProperty("agent.service.agent.get.agents.url")
     private val GET_AGENT_URL = environment.getProperty("agent.service.agent.get.agent.url")
+    private val IS_EXISTS_AGENT_URL = environment.getProperty("agent.service.agent.is.exists.agent.url")
+
+    override fun isExistsAgent(sessionManager: SessionManager, masId: String): Boolean? {
+        return try {
+            val map = LinkedMultiValueMap<String, String>()
+            map.add("masId", masId)
+
+            val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
+
+            val outData = restTemplate.exchange(BASE_URL + IS_EXISTS_AGENT_URL, HttpMethod.POST, request, String::class.java)
+            val jsonObject = outData.body ?: throw Exception("Нет данных в ответе от сервера")
+
+            fromJson(jsonObject, object : TypeReference<Boolean>(){})
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun getCurrentAgent(sessionManager: SessionManager): Agent? {
         return try {
             val entity = HttpEntity<Any>(createHttpHeaders(sessionManager))
 
             val outData = restTemplate.exchange(BASE_URL + GET_CURRENT_AGENT_URL, HttpMethod.POST, entity, String::class.java)
-            val jsonObject = outData.body
+            val jsonObject = outData.body ?: throw Exception("Нет данных в ответе от сервера")
 
             /* грузим куки, если они есть */
             fromJson(jsonObject, Agent::class.java)
@@ -52,7 +69,7 @@ open class ServerAgentServiceImpl(@Autowired final override val environment: Env
             val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
 
             val outLoginData = restTemplate.exchange(BASE_URL + GET_AGENTS_URL, HttpMethod.POST, request, String::class.java)
-            val jsonObject = outLoginData.body
+            val jsonObject = outLoginData.body ?: throw Exception("Нет данных в ответе от сервера")
 
             /* грузим куки, если они есть */
             fromJson(jsonObject, object : TypeReference<List<Agent>>(){})
@@ -69,7 +86,7 @@ open class ServerAgentServiceImpl(@Autowired final override val environment: Env
             val request = HttpEntity<MultiValueMap<String, String>>(map, createHttpHeaders(sessionManager))
 
             val outData = restTemplate.exchange(BASE_URL + GET_AGENT_URL, HttpMethod.POST, request, String::class.java)
-            val jsonObject = outData.body
+            val jsonObject = outData.body ?: throw Exception("Нет данных в ответе от сервера")
 
             fromJson(jsonObject, object : TypeReference<Agent>(){})
         } catch (e: Exception) {

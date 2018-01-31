@@ -8,6 +8,8 @@ import com.mycompany.service.objects.GetAgentsData
  */
 interface ServerAgentService {
 
+    fun isExistsAgent(sessionManager: SessionManager, masId: String): Boolean?
+
     fun getCurrentAgent(sessionManager: SessionManager): Agent?
 
     fun getAgents(sessionManager: SessionManager, data: GetAgentsData): List<Agent>?
