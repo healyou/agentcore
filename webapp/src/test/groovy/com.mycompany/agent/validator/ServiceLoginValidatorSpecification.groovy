@@ -7,6 +7,7 @@ import com.mycompany.objects.SystemAgentObjects
 import com.mycompany.service.ServerAgentService
 import org.apache.wicket.model.Model
 import org.apache.wicket.validation.Validatable
+import spock.lang.Unroll
 
 /**
  * @author Nikita Gorodilov
@@ -21,19 +22,20 @@ class ServiceLoginValidatorSpecification extends WebPageSpecification {
         putBean(serviceAgentService)
     }
 
-    def "Валидация логина"() {
+    @Unroll
+    def "Валидация логина при сущ.лок.агента=#isExistsAgentLocal,агента в сервисе=#isExistsAgentService,ошибок-#errorCount" () {
         setup:
         def agent = SystemAgentObjects.systemAgent()
         agent.id = null
         def validator = new ServiceLoginValidator(Model.of(agent))
         def validatable = new Validatable(StringObjects.randomString)
-        systemAgentService.isExistsAgent(_) >> isExistsAgentLocal
-        serviceAgentService.isExistsAgent(_,_) >> isExistsAgentService
 
         when:
         validator.validate(validatable)
 
         then:
+        1 * systemAgentService.isExistsAgent(_) >> isExistsAgentLocal
+        1 * serviceAgentService.isExistsAgent(_,_) >> isExistsAgentService
         validatable.errors.size() == errorCount
 
         where:
@@ -43,6 +45,4 @@ class ServiceLoginValidatorSpecification extends WebPageSpecification {
         false              | true                 | 1
         true               | true                 | 2
     }
-
-    //def "Если "
 }

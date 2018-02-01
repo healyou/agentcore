@@ -9,11 +9,7 @@ import com.mycompany.user.Principal
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession
 import org.apache.wicket.spring.test.ApplicationContextMock
 import org.apache.wicket.util.tester.WicketTester
-import org.easymock.Capture
-import org.easymock.IAnswer
 import spock.lang.Specification
-
-import static org.easymock.EasyMock.*
 
 /**
  * @author Nikita Gorodilov
@@ -31,7 +27,6 @@ class WebPageSpecification extends Specification {
         applicationContextMock.putBean(createEnvironmentBean())
         applicationContextMock.putBean(createAuthenticationServiceMock())
         tester = new WicketTester(new TestApplication(applicationContextMock))
-        // todo - easymock interactions
     }
 
     def putBean(Object bean) {
@@ -60,49 +55,20 @@ class WebPageSpecification extends Specification {
     }
 
     private AuthenticationService createAuthenticationServiceMock() {
-        def authenticationService = mock(AuthenticationService.class)
-
-        Capture<String> usernameCapture = newCapture()
-        Capture<String> passwordCapture = newCapture()
-
-        expect(authenticationService.authenticate(capture(usernameCapture), capture(passwordCapture)))
-                .andStubAnswer(new IAnswer<Principal>() {
-            @Override
-            Principal answer() throws Throwable {
-                WebPageSpecification.this.currentUser = new Principal(
-                        UserObjects.loginUser(usernameCapture.value, passwordCapture.value),
-                        WebPageSpecification.this.authorities
+        Mock(AuthenticationService.class) {
+            authenticate(_,_) >> {
+                currentUser = new Principal(
+                        UserObjects.loginUser(StringObjects.randomString, StringObjects.randomString),
+                        authorities
                 )
-                return WebPageSpecification.this.currentUser
-            }
-        })
-        replay(authenticationService)
-
-        authenticationService
-    }
-
-    private static Environment createEnvironmentBean() {
-        return new Environment() {
-            @Override
-            String getProperty(String key) {
-                return key
+                return currentUser
             }
         }
+    }
 
-        /* todo снизу идут ошибка - Parameter specified as non-null is null - kotlin null-safety
-        def environment = mock(Environment.class)
-
-        Capture<String> propertyCapture = newCapture()
-        expect(environment.getProperty(capture(propertyCapture)))
-                .andStubAnswer(new IAnswer<String>() {
-            @Override
-            String answer() throws Throwable {
-                return propertyCapture.value
-            }
-        })
-        replay(environment)
-
-        environment
-        */
+    private Environment createEnvironmentBean() {
+        Mock(Environment.class) {
+            getProperty(_) >> StringObjects.randomString
+        }
     }
 }

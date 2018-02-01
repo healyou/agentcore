@@ -8,7 +8,7 @@ import com.mycompany.base.WebPageSpecification
 class HomePageSpecification extends WebPageSpecification {
 
     def setup() {
-        signIn("testUserName", "testPassword")
+        signIn()
     }
 
     def "Страница открывается успешно"() {

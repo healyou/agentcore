@@ -7,9 +7,6 @@ import com.mycompany.base.WebPageSpecification
  */
 class LoginPageSpecification extends WebPageSpecification {
 
-    def setup() {
-    }
-
     def "Страница открывается успешно"() {
         when:
         tester.startPage(LoginPage.class);

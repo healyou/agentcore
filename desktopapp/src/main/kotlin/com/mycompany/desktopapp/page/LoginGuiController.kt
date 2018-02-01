@@ -47,15 +47,19 @@ class LoginGuiController {
     private fun configureLoginButton() {
         loginButton.setOnAction { event ->
             if (isSuccessLogin()) {
-                if (isHasAgentSceneAuthority()) {
-                    clearErrorMessage()
-                    showAgentScene(event)
-                } else {
-                    showErrorMessage(NO_AUTHORITY_ERROR_MESSAGE)
-                }
+                showAgentSceneIfHasAuthorityOrShowErrorMessage(event)
             } else {
                 showErrorMessage(LOGIN_ERROR_MESSAGE)
             }
+        }
+    }
+
+    private fun showAgentSceneIfHasAuthorityOrShowErrorMessage(event: ActionEvent) {
+        if (isHasAgentSceneAuthority()) {
+            clearErrorMessage()
+            showAgentScene(event)
+        } else {
+            showErrorMessage(NO_AUTHORITY_ERROR_MESSAGE)
         }
     }
 

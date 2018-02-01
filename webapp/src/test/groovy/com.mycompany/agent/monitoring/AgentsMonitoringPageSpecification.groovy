@@ -9,7 +9,7 @@ import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
 /**
  * @author Nikita Gorodilov
  */
-class MonitoringPageSpecification extends WebPageSpecification {
+class AgentsMonitoringPageSpecification extends WebPageSpecification {
 
     private agentService = Mock(SystemAgentService.class) {
         get(_,_) >> []

@@ -2,6 +2,7 @@ package com.mycompany
 
 import com.mycompany.agent.AgentPage
 import com.mycompany.agent.AgentsPage
+import com.mycompany.agent.monitoring.AgentMonitoringPage
 import com.mycompany.agent.monitoring.AgentsMonitoringPage
 import org.apache.wicket.Page
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession
@@ -23,7 +24,8 @@ open class MyAuthenticatedWebApplication : AuthenticatedWebApplication() {
         mountPage("/logout", LogoutPage::class.java)
         mountPage("/agents", AgentsPage::class.java)
         mountPage("/agent", AgentPage::class.java)
-        mountPage("/monitoring", AgentsMonitoringPage::class.java)
+        mountPage("/monitoring/agents", AgentsMonitoringPage::class.java)
+        mountPage("/monitoring/agent", AgentMonitoringPage::class.java)
     }
 
     override fun getWebSessionClass(): Class<out AbstractAuthenticatedWebSession> {

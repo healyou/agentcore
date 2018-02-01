@@ -36,8 +36,6 @@ class DslFileUploadPanelSpecification extends WebPageSpecification {
 
         then:
         !formTester.getForm().hasError()
-
-        and:
         dao.dslFile == dslFile
     }
 

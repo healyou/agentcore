@@ -1,6 +1,7 @@
 package com.mycompany.agent
 
 import com.mycompany.base.WebPageSpecification
+import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.objects.SystemAgentObjects
 import com.mycompany.service.ServerAgentService
@@ -12,19 +13,22 @@ import org.apache.wicket.request.mapper.parameter.PageParameters
 class AgentPageSpecification extends WebPageSpecification {
 
     private agentId = 1L
-    private agentService = Mock(SystemAgentService.class)
+    private systemAgentService = Mock(SystemAgentService.class) {
+        isExistsAgent(_) >> false
+    }
+    private serviceAgentService = Mock(ServerAgentService) {
+        isExistsAgent(_,_) >> false
+    }
 
     def setup() {
         signIn()
-        putBean(agentService)
-        putBean(Mock(ServerAgentService))
+        putBean(systemAgentService)
+        putBean(serviceAgentService)
     }
 
     def "Страница для создания агента открывается успешно"() {
         when:
-        agentService.getById(agentId) >>
-                SystemAgentObjects.systemAgent(agentId, currentUser.user.id, currentUser.user.id)
-        tester.startPage(new AgentPage(new PageParameters()))
+        startAgentPageWithCreateMode()
 
         then:
         tester.assertRenderedPage(AgentPage.class)
@@ -33,8 +37,7 @@ class AgentPageSpecification extends WebPageSpecification {
     def "Страница отображается в соответсвии с моделью"() {
         when:
         def agent = SystemAgentObjects.systemAgent(agentId, currentUser.user.id, currentUser.user.id)
-        agentService.getById(agentId) >> agent
-        tester.startPage(startEditAgentPage(agentId))
+        startAgentPageWithViewMode(agent)
 
         then:
         tester.assertModelValue("form:serviceLogin", agent.serviceLogin)
@@ -63,6 +66,44 @@ class AgentPageSpecification extends WebPageSpecification {
 
         tester.assertModelValue("form:isSendAndGetMessages", agent.isSendAndGetMessages)
         tester.assertRequired("form:isSendAndGetMessages")
+    }
+
+    def "Сохранение данных формы проходит успешно"() {
+        setup:
+        startAgentPageWithViewMode()
+
+        when:
+        agentPageEditButtonClick()
+        agentPageSaveButtonClick()
+
+        then:
+        saveHasNoError()
+    }
+
+    private def startAgentPageWithCreateMode() {
+        tester.startPage(new AgentPage(new PageParameters()))
+    }
+
+    private def startAgentPageWithViewMode() {
+        startAgentPageWithViewMode(SystemAgentObjects.systemAgent(agentId, currentUser.user.id, currentUser.user.id))
+    }
+
+    private def startAgentPageWithViewMode(SystemAgent agent) {
+        systemAgentService.getById(_) >> agent
+        tester.startPage(startEditAgentPage(agent.id))
+    }
+
+    private def saveHasNoError() {
+        !tester.getComponentFromLastRenderedPage("form").hasError()
+    }
+
+    private def agentPageSaveButtonClick() {
+        def formTester = tester.newFormTester("form")
+        formTester.submit("buttons:save")
+    }
+
+    private def agentPageEditButtonClick() {
+        tester.executeAjaxEvent("form:buttons:edit", "click");
     }
 
     private static AgentPage startEditAgentPage(Long agentId) {
