@@ -21,7 +21,7 @@ import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import com.mycompany.service.LoginService
 import com.mycompany.service.ServerTypeService
-import testbase.AbstractServiceTest
+import com.mycompany.AbstractServiceTest
 import objects.MockObjects
 import objects.OtherObjects
 import com.mycompany.user.User

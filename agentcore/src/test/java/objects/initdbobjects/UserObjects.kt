@@ -1,6 +1,6 @@
 package objects.initdbobjects
 
-import testbase.CreateDatabaseDataDao
+import com.mycompany.CreateDatabaseDataDao
 import com.mycompany.user.User
 
 /**

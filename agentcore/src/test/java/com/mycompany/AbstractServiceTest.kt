@@ -1,4 +1,4 @@
-package testbase
+package com.mycompany
 
 import org.junit.After
 import org.junit.Before

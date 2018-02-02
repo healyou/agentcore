@@ -1,7 +1,7 @@
 package objects.initdbobjects
 
 import com.mycompany.db.core.file.dslfile.DslFileContentRef
-import testbase.CreateDatabaseDataDao
+import com.mycompany.CreateDatabaseDataDao
 
 /**
  * @author Nikita Gorodilov

@@ -2,7 +2,7 @@ package com.mycompany.desktopapp.page
 
 import com.mycompany.desktopapp.AgentGui
 import com.mycompany.desktopapp.AgentSpringFxmlLoader
-import com.mycompany.desktopapp.AuthenticatedJavaFxSession
+import com.mycompany.desktopapp.security.AuthenticatedJavaFxSession
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Node

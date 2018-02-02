@@ -5,7 +5,7 @@ import com.mycompany.db.core.file.FileContentLocator
 import objects.initdbobjects.FileObjects
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import testbase.AbstractServiceTest
+import com.mycompany.AbstractServiceTest
 
 import static org.junit.Assert.assertEquals
 

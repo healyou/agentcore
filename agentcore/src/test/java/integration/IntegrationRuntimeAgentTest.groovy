@@ -27,7 +27,7 @@ import com.mycompany.service.ServerAgentService
 import com.mycompany.service.ServerMessageService
 import com.mycompany.service.ServerTypeService
 import com.mycompany.service.tasks.ServiceTask
-import testbase.AbstractServiceTest
+import com.mycompany.AbstractServiceTest
 import com.mycompany.user.User
 
 import java.nio.file.Files

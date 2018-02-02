@@ -8,7 +8,7 @@ import objects.StringObjects
 import objects.initdbobjects.UserObjects
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import testbase.AbstractServiceTest
+import com.mycompany.AbstractServiceTest
 
 import static junit.framework.Assert.assertTrue
 

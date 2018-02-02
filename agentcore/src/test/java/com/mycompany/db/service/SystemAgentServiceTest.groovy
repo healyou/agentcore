@@ -1,5 +1,6 @@
 package com.mycompany.db.service
 
+import com.mycompany.AbstractJdbcSpecification
 import com.mycompany.db.core.file.FileContentLocator
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.sc.SystemAgentSC
@@ -8,45 +9,36 @@ import com.mycompany.db.core.systemagent.SystemAgentService
 import objects.OtherObjects
 import objects.StringObjects
 import objects.initdbobjects.UserObjects
-import org.junit.Before
-import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.jdbc.UncategorizedSQLException
-import testbase.AbstractServiceTest
 
 import static junit.framework.Assert.assertEquals
-import static junit.framework.Assert.assertTrue
-import static junit.framework.Assert.assertTrue
-import static junit.framework.TestCase.assertNotNull
 import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 
 /**
  * @author Nikita Gorodilov
  */
-class SystemAgentServiceTest extends AbstractServiceTest {
+class SystemAgentServiceTest extends AbstractJdbcSpecification {
 
     @Autowired
-    private SystemAgentService systemAgentService
+    SystemAgentService systemAgentService
     @Autowired
-    private FileContentLocator fileContentLocator
+    FileContentLocator fileContentLocator
 
     /* Параметры создаваемого системного агента */
-    private Long id = null
-    private def serviceLogin = "login"
-    private def servicePassword = "password"
-    private Date updateDate = null
-    private def isDeleted = false
-    private def isSendAndGetMessages = false
-    private def dslFileContent = [0, 1, 2] as byte[]
-    private def dslFilename = StringObjects.randomString()
-    private def dslFile = OtherObjects.dslFileAttachment(dslFilename, dslFileContent)
-    private def owner
-    private def createUser
+    Long id = null
+    def serviceLogin = "login"
+    def servicePassword = "password"
+    Date updateDate = null
+    def isDeleted = false
+    def isSendAndGetMessages = false
+    def dslFileContent = [0, 1, 2] as byte[]
+    def dslFilename = StringObjects.randomString()
+    def dslFile = OtherObjects.dslFileAttachment(dslFilename, dslFileContent)
+    def owner
+    def createUser
 
-    @Before
-    void setup() {
+    def setup() {
         /* Пользователи создаются в @Before родителя */
         owner = UserObjects.testActiveUser()
         createUser = UserObjects.testActiveUser()
@@ -64,31 +56,31 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         id = systemAgentService.save(systemAgent)
     }
 
-    @Test
-    void "Проверка создания dsl"() {
+    def "Проверка создания dsl"() {
+        setup:
         def saveAgent = systemAgentService.getById(id)
         def actualDsl = saveAgent.dslFile
-        assertDslFiles(dslFile, actualDsl)
+        assertDslFiles(dslFile, actualDsl) // todo assert in then block
     }
 
-    @Test
-    void "При сохранении объекта без изменений, данные не теряются"() {
+    def "При сохранении объекта без изменений, данные не теряются"() {
+        when:
         def systemAgent = systemAgentService.getById(id)
-
         systemAgentService.save(systemAgent)
         def updateAgent = systemAgentService.getById(id)
-        assertEquals(systemAgent.serviceLogin, updateAgent.serviceLogin)
-        assertEquals(systemAgent.servicePassword, updateAgent.servicePassword)
         assertDslFiles(systemAgent.dslFile, updateAgent.dslFile)
-        assertEquals(systemAgent.isDeleted, updateAgent.isDeleted)
-        assertEquals(systemAgent.isSendAndGetMessages, updateAgent.isSendAndGetMessages)
-        assertEquals(systemAgent.ownerId, updateAgent.ownerId)
+
+        then:
+        systemAgent.serviceLogin == updateAgent.serviceLogin
+        systemAgent.servicePassword == updateAgent.servicePassword
+        systemAgent.isDeleted == updateAgent.isDeleted
+        systemAgent.isSendAndGetMessages == updateAgent.isSendAndGetMessages
+        systemAgent.ownerId == updateAgent.ownerId
     }
 
-    @Test
-    void "Обновление данных агента"() {
+    def "Обновление данных агента"() {
+        setup:
         def systemAgent = systemAgentService.getById(id)
-
         def newLogin = StringObjects.randomString()
         def newPassword = StringObjects.randomString()
         def newDslFile = OtherObjects.dslFileAttachment(StringObjects.randomString(), [0, 1, 2, 3, 4] as byte[])
@@ -96,6 +88,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         def newIsSendAndGetMessages = !isSendAndGetMessages
         def newOwnerId = UserObjects.testDeletedUser().id
 
+        and:
         systemAgent.serviceLogin = newLogin
         systemAgent.servicePassword = newPassword
         systemAgent.dslFile = newDslFile
@@ -103,111 +96,139 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         systemAgent.isSendAndGetMessages = newIsSendAndGetMessages
         systemAgent.ownerId = newOwnerId
 
+        when:
         systemAgentService.save(systemAgent)
         def updateAgent = systemAgentService.getById(id)
-        assertEquals(newLogin, updateAgent.serviceLogin)
-        assertEquals(newPassword, updateAgent.servicePassword)
         assertDslFiles(newDslFile, systemAgent.dslFile)
-        assertEquals(newIsDeleted, updateAgent.isDeleted)
-        assertEquals(newIsSendAndGetMessages, updateAgent.isSendAndGetMessages)
-        assertEquals(newOwnerId, systemAgent.ownerId)
+
+        then:
+        systemAgent.serviceLogin == updateAgent.serviceLogin
+        systemAgent.servicePassword == updateAgent.servicePassword
+        systemAgent.isDeleted == updateAgent.isDeleted
+        systemAgent.isSendAndGetMessages == updateAgent.isSendAndGetMessages
+        systemAgent.ownerId == updateAgent.ownerId
     }
 
-    @Test
-    void "Запись нового dsl файла агента"() {
+    def "Запись нового dsl файла агента"() {
+        setup:
         def newFileContent = [0, 1, 2, 3, 4] as byte[]
         def newFilename = StringObjects.randomString()
         def newDslFile = OtherObjects.dslFileAttachment(newFilename, newFileContent)
 
+        and:
         def systemAgent = systemAgentService.getById(id)
         systemAgent.dslFile = newDslFile
         systemAgentService.save(systemAgent)
 
+        and:
         def actualDslFile = systemAgentService.getById(id).dslFile
         assertDslFiles(newDslFile, actualDslFile)
     }
 
-    @Test
-    void "Удаление рабочего dsl файла агента"() {
+    def "Удаление рабочего dsl файла агента"() {
+        setup:
         def systemAgent = systemAgentService.getById(id)
+
+        when:
         systemAgent.dslFile = null
         systemAgentService.save(systemAgent)
 
-        assertNull(systemAgentService.getById(id).dslFile)
+        then:
+        systemAgentService.getById(id).dslFile == null
     }
 
-    @Test
-    void "В бд сохраняются актуальные данные агента"() {
+    def "В бд сохраняются актуальные данные агента"() {
+        when:
         def systemAgent = systemAgentService.getById(id)
 
+        then:
         /* проверка всех значений создания агента */
-        assertEquals(id, systemAgent.id)
-        assertEquals(serviceLogin, systemAgent.serviceLogin)
-        assertEquals(servicePassword, systemAgent.servicePassword)
-        assertNotNull(systemAgent.createDate)
-        assertNotNull(systemAgent.dslFile)
-        assertEquals(owner.id, systemAgent.ownerId)
-        assertEquals(createUser.id, systemAgent.createUserId)
-        assertEquals(updateDate, systemAgent.updateDate)
-        assertEquals(isDeleted, systemAgent.isDeleted)
-        assertEquals(isSendAndGetMessages, systemAgent.isSendAndGetMessages)
+        id == systemAgent.id
+        serviceLogin == systemAgent.serviceLogin
+        servicePassword == systemAgent.servicePassword
+        systemAgent.createDate != null
+        systemAgent.dslFile != null
+        owner.id == systemAgent.ownerId
+        createUser.id == systemAgent.createUserId
+        updateDate == systemAgent.updateDate
+        isDeleted == systemAgent.isDeleted
+        isSendAndGetMessages == systemAgent.isSendAndGetMessages
     }
 
-    @Test
-    void "Получение удалённых агентов"() {
+    def "Получение удалённых агентов"() {
+        setup:
         createAgentByIdDeletedArgs(true, false)
         def sc = new SystemAgentSC()
-        sc.isDeleted = false
 
-        systemAgentService.get(sc).forEach {
-            assertTrue(it.isDeleted == sc.isDeleted)
+        when:
+        sc.isDeleted = false
+        def agents = systemAgentService.get(sc)
+
+        then:
+        agents.stream().allMatch {
+            it.isDeleted == sc.isDeleted
         }
 
+        when:
         sc.isDeleted = true
-        systemAgentService.get(sc).forEach {
-            assertTrue(it.isDeleted == sc.isDeleted)
+        agents = systemAgentService.get(sc)
+
+        then:
+        agents.stream().allMatch {
+            it.isDeleted == sc.isDeleted
         }
     }
 
-    @Test
-    void "Получение агентов для отправки сообщений"() {
+    def "Получение агентов для отправки сообщений"() {
+        setup:
         createAgentBySendAndGetMessagesArgs(true, false)
         def sc = new SystemAgentSC()
-        sc.isSendAndGetMessages = false
 
-        systemAgentService.get(sc).forEach {
-            assertTrue(it.isSendAndGetMessages == sc.isSendAndGetMessages)
+        when:
+        sc.isSendAndGetMessages = false
+        def agents = systemAgentService.get(sc)
+
+        then:
+        agents.stream().allMatch {
+            it.isSendAndGetMessages == sc.isSendAndGetMessages
         }
 
+        when:
         sc.isSendAndGetMessages = true
-        systemAgentService.get(sc).forEach {
-            assertTrue(it.isSendAndGetMessages == sc.isSendAndGetMessages)
+        agents = systemAgentService.get(sc)
+
+        then:
+        agents.stream().allMatch {
+            it.isSendAndGetMessages == sc.isSendAndGetMessages
         }
     }
 
-    @Test
-    void "Получение агентов по владельцу"() {
+    def "Получение агентов по владельцу"() {
+        setup:
         def ownerId = UserObjects.testActiveUser().id
         createAgentByOwnerId(ownerId)
         createAgentByOwnerId(UserObjects.testActiveUser().id)
         def sc = new SystemAgentSC()
-        sc.ownerId = ownerId
 
-        systemAgentService.get(sc).forEach {
-            assertTrue(it.ownerId == sc.ownerId)
+        when:
+        sc.ownerId = ownerId
+        def agents = systemAgentService.get(sc)
+
+        then:
+        agents.stream().allMatch {
+            it.ownerId == sc.ownerId
         }
     }
 
     /* Получение агента по логину в сервисе */
-    @Test
-    void testGetSystemAgentByServiceName() {
+    def testGetSystemAgentByServiceName() {
         def agent = systemAgentService.getByServiceLogin(serviceLogin)
 
         assertTrue(agent.serviceLogin == serviceLogin)
     }
 
-    @Test(expected = UncategorizedSQLException.class)
-    void "Нельзя создать двух агентов с одинаковый service_login"() {
+    //@Test(expected = UncategorizedSQLException.class)
+    def "Нельзя создать двух агентов с одинаковый service_login"() {
         def systemAgent = new SystemAgent(
                 serviceLogin,
                 servicePassword,
@@ -219,27 +240,23 @@ class SystemAgentServiceTest extends AbstractServiceTest {
     }
 
     /* Проверка существования агента */
-    @Test()
-    void testIsExistsAgent() {
+    def testIsExistsAgent() {
         assertTrue(systemAgentService.isExistsAgent(serviceLogin))
         assertFalse(systemAgentService.isExistsAgent(UUID.randomUUID().toString()))
     }
 
-    @Test
-    void "Функция size возвращает количество записей без ошибок"() {
+    def "Функция size возвращает количество записей без ошибок"() {
         def createAgentSize = createAgents(3)
         assertTrue(systemAgentService.size() >= createAgentSize)
     }
 
-    @Test
-    void "Функция get(size) возвращает size записей"() {
+    def "Функция get(size) возвращает size записей"() {
         def createAgentSize = createAgents(3)
         assertEquals(createAgentSize, systemAgentService.get(createAgentSize).size())
         assertEquals(1, systemAgentService.get(1).size())
     }
 
-    @Test
-    void "Функция isOwnAgent корректно определяет является ли user владельцем агента"() {
+    def "Функция isOwnAgent корректно определяет является ли user владельцем агента"() {
         def owner = UserObjects.testActiveUser()
         def notOwner = UserObjects.testDeletedUser()
         def agent = createAgentByOwnerId(owner.id)
@@ -248,8 +265,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         assertFalse(systemAgentService.isOwnAgent(agent, notOwner))
     }
 
-    @Test
-    void "Функция get(size, ownerId) корректно возвращает результат"() {
+    def "Функция get(size, ownerId) корректно возвращает результат"() {
         def findSize = 5
         def ownerId = UserObjects.testActiveUser().id
         def agentIds = createAgents(findSize, ownerId)
@@ -261,8 +277,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         }
     }
 
-    @Test
-    void "Функция size(ownerId) корректно возвращает результат"() {
+    def "Функция size(ownerId) корректно возвращает результат"() {
         def ownerId = UserObjects.testActiveUser().id
         def prevCreateAgentSize = systemAgentService.size(ownerId)
         def createAgentSize = 3
@@ -277,7 +292,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
      * @param size количество создаваемых агентов
      * @return количество созданных агентов
      */
-    private List<Long> createAgents(Long size, Long ownerId) {
+    List<Long> createAgents(Long size, Long ownerId) {
         List<Long> agentIds = new ArrayList<>()
         for (i in 0..size - 1) {
             agentIds.add(createAgentByOwnerId(ownerId).id)
@@ -291,7 +306,7 @@ class SystemAgentServiceTest extends AbstractServiceTest {
      * @param size количество создаваемых агентов
      * @return количество созданных агентов
      */
-    private Long createAgents(Long size) {
+    Long createAgents(Long size) {
         for (i in 0..size - 1) {
             createAgent(true, true)
         }
@@ -301,24 +316,22 @@ class SystemAgentServiceTest extends AbstractServiceTest {
     /**
      * Сравнение двух dsl файлов на равенство
      */
-    private def assertDslFiles(DslFileAttachment expected, DslFileAttachment actual) {
-        assertNotNull(actual)
-        assertEquals(expected.filename, actual.filename)
-        assertEquals(expected.fileSize, actual.fileSize)
-        assertEquals(expected.fileSize, actual.fileSize)
+    def assertDslFiles(DslFileAttachment expected, DslFileAttachment actual) {
+        assert actual != null
+        assert expected.filename == actual.filename
+        assert expected.fileSize == actual.fileSize
+        assert expected.fileSize == actual.fileSize
 
         def expectedData = expected.contentAsByteArray(fileContentLocator)
         def actualData = actual.contentAsByteArray(fileContentLocator)
-        for (i in 0..expectedData.length - 1) {
-            assertEquals(expectedData[i], actualData[i])
-        }
+        assert Arrays.equals(expectedData, actualData)
     }
 
-    private SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages) {
+    SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages) {
         return createAgent(isDeleted, isSendAndGetMessages, UserObjects.testActiveUser().id)
     }
 
-    private SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages, Long ownerId) {
+    SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages, Long ownerId) {
         def systemAgent = new SystemAgent(
                 StringObjects.randomString(),
                 StringObjects.randomString(),
@@ -331,17 +344,17 @@ class SystemAgentServiceTest extends AbstractServiceTest {
         return systemAgentService.getById(systemAgentService.save(systemAgent))
     }
 
-    private SystemAgent createAgentByOwnerId(Long ownerId) {
+    SystemAgent createAgentByOwnerId(Long ownerId) {
         return createAgent(false, true, ownerId)
     }
 
-    private def createAgentByIdDeletedArgs(Boolean... isDeletedArgs) {
+    def createAgentByIdDeletedArgs(Boolean... isDeletedArgs) {
         isDeletedArgs.each {
             createAgent(it, true)
         }
     }
 
-    private def createAgentBySendAndGetMessagesArgs(Boolean... isSendAngGetMessagesArgs) {
+    def createAgentBySendAndGetMessagesArgs(Boolean... isSendAngGetMessagesArgs) {
         isSendAngGetMessagesArgs.each {
             createAgent(false, it)
         }

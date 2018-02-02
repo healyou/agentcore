@@ -4,9 +4,8 @@ import com.mycompany.desktopapp.page.LoginGuiController
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
-import org.springframework.context.support.ClassPathXmlApplicationContext
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import java.util.concurrent.ScheduledExecutorService
 
 /**
  * Отображения списка сообщений для выбраноого агента
@@ -16,7 +15,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 class AgentGui : Application() {
 
     companion object {
-        val applicationContext = ClassPathXmlApplicationContext("context.xml")
+        val applicationContext = AnnotationConfigApplicationContext(
+                ApplicationConfig::class.java, JdbcConfig::class.java)
 
         @JvmStatic
         fun main(args: Array<String>) {
@@ -34,9 +34,11 @@ class AgentGui : Application() {
 
     override fun stop() {
         super.stop()
-        val executor = applicationContext.getBean(ThreadPoolTaskExecutor::class.java)
-        val scheduler = applicationContext.getBean(ThreadPoolTaskScheduler::class.java)
-        scheduler.shutdown()
+        stopExecutorService()
+    }
+
+    private fun stopExecutorService() {
+        val executor = applicationContext.getBean(ScheduledExecutorService::class.java)
         executor.shutdown()
     }
 }

@@ -10,7 +10,7 @@ import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import testbase.AbstractServiceTest
+import com.mycompany.AbstractServiceTest
 
 import java.util.stream.Collectors
 

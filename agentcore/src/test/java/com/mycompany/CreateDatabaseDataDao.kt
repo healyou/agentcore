@@ -1,4 +1,4 @@
-package testbase
+package com.mycompany
 
 import com.mycompany.db.base.AbstractDao
 import com.mycompany.db.core.file.dslfile.DslFileContentRef

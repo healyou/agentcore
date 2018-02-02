@@ -10,7 +10,7 @@ import objects.initdbobjects.AgentObjects
 import org.jetbrains.annotations.NotNull
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
-import testbase.AbstractServiceTest
+import com.mycompany.AbstractServiceTest
 
 import static junit.framework.Assert.assertNotNull
 import static org.junit.Assert.assertEquals

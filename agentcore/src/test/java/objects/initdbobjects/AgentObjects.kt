@@ -1,7 +1,7 @@
 package objects.initdbobjects
 
 import com.mycompany.db.core.systemagent.SystemAgent
-import testbase.CreateDatabaseDataDao
+import com.mycompany.CreateDatabaseDataDao
 
 /**
  * @author Nikita Gorodilov

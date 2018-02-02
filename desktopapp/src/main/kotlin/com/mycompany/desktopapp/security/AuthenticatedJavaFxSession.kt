@@ -1,4 +1,4 @@
-package com.mycompany.desktopapp
+package com.mycompany.desktopapp.security
 
 import com.mycompany.db.core.user.AuthenticationService
 import com.mycompany.dsl.exceptions.AuthenticationException

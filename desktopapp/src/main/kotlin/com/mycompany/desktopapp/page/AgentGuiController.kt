@@ -14,7 +14,7 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
-import com.mycompany.desktopapp.AuthenticatedJavaFxSession
+import com.mycompany.desktopapp.security.AuthenticatedJavaFxSession
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.base.behavior.RuntimeAgentUpdateUiEventHistoryBehavior
