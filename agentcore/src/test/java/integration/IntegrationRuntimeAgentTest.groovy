@@ -207,6 +207,7 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
      * 11) Получение сообщения от второго агента
      * 12) Завершение теста
      */
+    // todo переделать на подсчёт вызова функций или-что-то другое
     private void testScenario() {
         testAgent1.onGetSystemEvent(SystemEvent.AGENT_START)
         serviceTask.sendMessages()

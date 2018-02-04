@@ -9,10 +9,10 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>destopapp</artifactId>
+    <artifactId>desktopapp</artifactId>
     <packaging>jar</packaging>
 
-    <name>destopapp</name>
+    <name>desktopapp</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
