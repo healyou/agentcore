@@ -1,4 +1,4 @@
-package integration.objects
+package com.mycompany.integration.objects
 
 import com.mycompany.service.objects.AgentType
 import com.mycompany.service.objects.MessageBodyType

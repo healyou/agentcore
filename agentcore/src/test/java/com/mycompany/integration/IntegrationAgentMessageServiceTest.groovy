@@ -1,9 +1,9 @@
-package integration
+package com.mycompany.integration
 
 import com.mycompany.db.base.Environment
 import com.mycompany.service.*
 import com.mycompany.service.objects.*
-import integration.objects.RestServiceObjects
+import com.mycompany.integration.objects.RestServiceObjects
 import objects.OtherObjects
 import objects.StringObjects
 import org.junit.Before

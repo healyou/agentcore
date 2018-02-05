@@ -1,5 +1,6 @@
-package integration
+package com.mycompany.integration
 
+import com.mycompany.AbstractJdbcSpecification
 import com.mycompany.agentworklibrary.ILibraryAgentWorkControl
 import com.mycompany.db.base.Environment
 import com.mycompany.db.core.file.FileContentLocator
@@ -15,32 +16,25 @@ import com.mycompany.dsl.loader.IRuntimeAgentWorkControl
 import com.mycompany.dsl.loader.InstantiationTracingBeanPostProcessor
 import com.mycompany.dsl.loader.RuntimeAgentWorkControl
 import com.mycompany.dsl.objects.DslLocalMessage
-import objects.OtherObjects
-import objects.initdbobjects.UserObjects
-import org.jetbrains.annotations.NotNull
-import org.junit.Before
-import org.junit.Ignore
-import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired
 import com.mycompany.service.LoginService
 import com.mycompany.service.ServerAgentService
 import com.mycompany.service.ServerMessageService
 import com.mycompany.service.ServerTypeService
 import com.mycompany.service.tasks.ServiceTask
-import com.mycompany.AbstractServiceTest
 import com.mycompany.user.User
+import objects.OtherObjects
+import objects.initdbobjects.UserObjects
+import org.jetbrains.annotations.NotNull
+import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Ignore
 
 import java.nio.file.Files
 
 /**
- * Тестирование взаимодействие двух агентов с сервисом
- * - сервис должен быть включен
- * - не используются тестовые классы, только то, что будет использовано при работе прилоежния
- *
  * @author Nikita Gorodilov
  */
 @Ignore
-class IntegrationRuntimeAgentTest extends AbstractServiceTest {
+class IntegrationRuntimeAgentSpecification extends AbstractJdbcSpecification {
 
     @Autowired
     ServiceMessageService messageService
@@ -67,44 +61,56 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
 
     RuntimeAgent testAgent1
     RuntimeAgent testAgent2
+    AgentExecuteSequence testAgentExecuteSequence
+    def expectedAgentsExecuteSequence = new AgentExecuteSequence(
+            /*1 агент*/
+            AgentExecuteSequence.AgentExecuteFunction.ON_GET_SYSTEM_EVENT,
+            AgentExecuteSequence.AgentExecuteFunction.ON_GET_LOCAL_MESSAGE,
+            AgentExecuteSequence.AgentExecuteFunction.ON_END_TASK,
+            /*2 агент*/
+            AgentExecuteSequence.AgentExecuteFunction.ON_GET_SERVICE_MESSAGE,
+            AgentExecuteSequence.AgentExecuteFunction.ON_GET_LOCAL_MESSAGE,
+            /*1 агент*/
+            AgentExecuteSequence.AgentExecuteFunction.ON_GET_SERVICE_MESSAGE,
+    )
 
-    @Before
-    void setup() {
-        testAgent1 = new RuntimeAgent(createDslAttachment("integration_test_agent_1_dsl.groovy")) {
+    def setup() {
+        testAgentExecuteSequence = new AgentExecuteSequence()
+        testAgent1 = new TestExecuteSequenceRuntimeAgent(createDslAttachment("integration_test_agent_1_dsl.groovy")) {
 
             @Override
             protected ServerTypeService getServerTypeService() {
-                return IntegrationRuntimeAgentTest.this.serverTypeService
+                return IntegrationRuntimeAgentSpecification.this.serverTypeService
             }
 
             @Override
             protected LoginService getLoginService() {
-                return IntegrationRuntimeAgentTest.this.loginService
+                return IntegrationRuntimeAgentSpecification.this.loginService
             }
 
             @Override
             protected Environment getEnvironment() {
-                return IntegrationRuntimeAgentTest.this.environment
+                return IntegrationRuntimeAgentSpecification.this.environment
             }
 
             @Override
             protected SystemAgentService getSystemAgentService() {
-                return IntegrationRuntimeAgentTest.this.systemAgentService
+                return IntegrationRuntimeAgentSpecification.this.systemAgentService
             }
 
             @Override
             protected ServiceMessageService getServiceMessageService() {
-                return IntegrationRuntimeAgentTest.this.messageService
+                return IntegrationRuntimeAgentSpecification.this.messageService
             }
 
             @Override
             protected ServiceMessageTypeService getMessageTypeService() {
-                return IntegrationRuntimeAgentTest.this.messageTypeService
+                return IntegrationRuntimeAgentSpecification.this.messageTypeService
             }
 
             @Override
             protected FileContentLocator getFileContentLocator() {
-                return IntegrationRuntimeAgentTest.this.fileContentLocator
+                return IntegrationRuntimeAgentSpecification.this.fileContentLocator
             }
 
             @Override
@@ -117,41 +123,42 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
                 return UserObjects.testActiveUser()
             }
         }
-        testAgent2 = new RuntimeAgent(createDslAttachment("integration_test_agent_2_dsl.groovy")) {
+        testAgent1.withAgentExecuteSequence(testAgentExecuteSequence)
+        testAgent2 = new TestExecuteSequenceRuntimeAgent(createDslAttachment("integration_test_agent_2_dsl.groovy")) {
 
             @Override
             protected ServerTypeService getServerTypeService() {
-                return IntegrationRuntimeAgentTest.this.serverTypeService
+                return IntegrationRuntimeAgentSpecification.this.serverTypeService
             }
 
             @Override
             protected LoginService getLoginService() {
-                return IntegrationRuntimeAgentTest.this.loginService
+                return IntegrationRuntimeAgentSpecification.this.loginService
             }
 
             @Override
             protected Environment getEnvironment() {
-                return IntegrationRuntimeAgentTest.this.environment
+                return IntegrationRuntimeAgentSpecification.this.environment
             }
 
             @Override
             protected SystemAgentService getSystemAgentService() {
-                return IntegrationRuntimeAgentTest.this.systemAgentService
+                return IntegrationRuntimeAgentSpecification.this.systemAgentService
             }
 
             @Override
             protected ServiceMessageService getServiceMessageService() {
-                return IntegrationRuntimeAgentTest.this.messageService
+                return IntegrationRuntimeAgentSpecification.this.messageService
             }
 
             @Override
             protected ServiceMessageTypeService getMessageTypeService() {
-                return IntegrationRuntimeAgentTest.this.messageTypeService
+                return IntegrationRuntimeAgentSpecification.this.messageTypeService
             }
 
             @Override
             protected FileContentLocator getFileContentLocator() {
-                return IntegrationRuntimeAgentTest.this.fileContentLocator
+                return IntegrationRuntimeAgentSpecification.this.fileContentLocator
             }
 
             @Override
@@ -164,6 +171,7 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
                 return UserObjects.testActiveUser()
             }
         }
+        testAgent2.withAgentExecuteSequence(testAgentExecuteSequence)
         /**
          * Для теста сами передадим локальные сообщения
          */
@@ -179,15 +187,29 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
         )
     }
 
-    @Test
-    void "Сценарий взаимодействия двух агентов с сервисом"() {
-        testScenario()
+    def "Агенты успешно выполняют тестовый сценарий"() {
+        when:
+        executeTestScenario()
+
+        then:
+        testAgentExecuteSequence == expectedAgentsExecuteSequence
     }
 
-    @Test
-    void "Повторение сценария взаимодействия двух агентов с сервисом 2 раза подряд"() {
-        testScenario()
-        testScenario()
+    def "Агенты успешно выполняют тестовый сценарий 2 раза подряд"() {
+        when:
+        executeTestScenario()
+
+        then:
+        testAgentExecuteSequence == expectedAgentsExecuteSequence
+
+        and: "Выполняем сценарий второй раз"
+
+        when:
+        testAgentExecuteSequence.clear()
+        executeTestScenario()
+
+        then:
+        testAgentExecuteSequence == expectedAgentsExecuteSequence
     }
 
     /**
@@ -208,7 +230,7 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
      * 12) Завершение теста
      */
     // todo переделать на подсчёт вызова функций или-что-то другое
-    private void testScenario() {
+    private void executeTestScenario() {
         testAgent1.onGetSystemEvent(SystemEvent.AGENT_START)
         serviceTask.sendMessages()
         serviceTask.getMessages()
@@ -228,7 +250,7 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
     /**
      * Текущие запущенные тестовые агенты
      */
-    private class TestRuntimeAgentWorkControl implements IRuntimeAgentWorkControl, ILibraryAgentWorkControl {
+    public class TestRuntimeAgentWorkControl implements IRuntimeAgentWorkControl, ILibraryAgentWorkControl {
         @Override
         void onAgentEvent(long agentId, @NotNull String event) {
             if (agentId == testAgent1.systemAgent.id) {
@@ -239,7 +261,10 @@ class IntegrationRuntimeAgentTest extends AbstractServiceTest {
         }
         @Override
         List<SystemAgent> getStartedAgents() {
-            Arrays.asList(testAgent1.getSystemAgent(), testAgent2.getSystemAgent())
+            Arrays.asList(
+                    testAgent1.getSystemAgent(),
+                    testAgent2.getSystemAgent()
+            )
         }
         @Override
         void start() {

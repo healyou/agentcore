@@ -1,4 +1,4 @@
-package integration.objects
+package com.mycompany.integration.objects
 
 import objects.StringObjects
 import com.mycompany.service.objects.*
