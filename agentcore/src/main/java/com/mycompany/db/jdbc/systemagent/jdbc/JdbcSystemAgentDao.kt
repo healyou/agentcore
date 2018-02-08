@@ -26,8 +26,8 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 "insert into system_agent (service_login, service_password, owner_id, create_user_id, is_sendandget_messages, is_deleted) VALUES (?, ?, ?, ?, ?, ?)",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
-                systemAgent.ownerId,
-                systemAgent.createUserId,
+                systemAgent.owner.id,
+                systemAgent.createUser.id,
                 systemAgent.isSendAndGetMessages.toSqlite(),
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING
         )
@@ -45,7 +45,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
                 "update system_agent set service_login=?,service_password=?,owner_id=?,update_date=strftime('%Y-%m-%d %H:%M:%f'),is_deleted=?,is_sendandget_messages=? where id = ?",
                 systemAgent.serviceLogin,
                 systemAgent.servicePassword,
-                systemAgent.ownerId,
+                systemAgent.owner.id,
                 systemAgent.isDeleted?.toSqlite() ?: SQLITE_NO_STRING,
                 systemAgent.isSendAndGetMessages.toSqlite(),
                 systemAgent.id!!
@@ -57,7 +57,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun get(isDeleted: Boolean, isSendAndGetMessages: Boolean): List<SystemAgent> {
         return jdbcTemplate.query(
-                "SELECT * FROM system_agent WHERE is_deleted = ? AND is_sendandget_messages = ?",
+                "SELECT * FROM system_agent_v WHERE is_deleted = ? AND is_sendandget_messages = ?",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 isDeleted.toSqlite(),
                 isSendAndGetMessages.toSqlite()
@@ -65,7 +65,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
     }
 
     override fun get(sc: SystemAgentSC): List<SystemAgent> {
-        val sql = StringBuilder("select * from system_agent ")
+        val sql = StringBuilder("select * from system_agent_v ")
 
         /* Конфигурация поискового запроса */
         applyCondition(sql, sc)
@@ -75,7 +75,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun get(size: Long, ownerId: Long): List<SystemAgent> {
         return jdbcTemplate.query(
-                "SELECT * FROM system_agent where owner_id = ? ORDER BY create_date ASC LIMIT 0,? ",
+                "SELECT * FROM system_agent_v where owner_id = ? ORDER BY create_date ASC LIMIT 0,? ",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 ownerId,
                 size
@@ -84,7 +84,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun getById(id: Long): SystemAgent {
         return jdbcTemplate.queryForObject(
-                "SELECT * FROM system_agent WHERE id = ?",
+                "SELECT * FROM system_agent_v WHERE id = ?",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 id
         )!!
@@ -92,7 +92,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun getByServiceLogin(serviceLogin: String): SystemAgent {
         return jdbcTemplate.queryForObject(
-                "SELECT * FROM system_agent WHERE service_login = ?",
+                "SELECT * FROM system_agent_v WHERE service_login = ?",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 serviceLogin
         )!!
@@ -135,7 +135,7 @@ open class JdbcSystemAgentDao : AbstractDao(), SystemAgentDao {
 
     override fun get(size: Long): List<SystemAgent> {
         return jdbcTemplate.query(
-                "SELECT * FROM system_agent ORDER BY create_date ASC LIMIT 0,? ",
+                "SELECT * FROM system_agent_v ORDER BY create_date ASC LIMIT 0,? ",
                 SystemAgentRowMapper(dslFileAttachmentDao),
                 size
         )

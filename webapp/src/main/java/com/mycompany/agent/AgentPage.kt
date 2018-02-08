@@ -71,8 +71,8 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
             if (!isPrincipalHasAnyAuthority(Authority.CREATE_OWN_AGENT)) {
                 throw RestartResponseAtInterceptPageException(application.homePage)
             }
-            val currentUserId = getPrincipal().user.id!!
-            agent = SystemAgent("", "", true, currentUserId, currentUserId)
+            val currentUser = getPrincipal().user
+            agent = SystemAgent("", "", true, currentUser, currentUser)
             mode = PageMode.CREATE
         }
     }
@@ -119,8 +119,8 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
                 isEnabled = isEditMode() || isCreateMode()
             }
         }.setRequired(true))
-        form.add(TextField<Long>("ownerId").setRequired(true).setEnabled(false))
-        form.add(TextField<Long>("createUserId").setRequired(true).setEnabled(false))
+        form.add(TextField<Long>("owner.id").setRequired(true).setEnabled(false))
+        form.add(TextField<Long>("createUser.id").setRequired(true).setEnabled(false))
         form.add(TextField<Date>("createDate").setRequired(true).setEnabled(false))
         form.add(TextField<Date>("updateDate").setEnabled(false))
         form.add(object : CheckBox("isDeleted") {

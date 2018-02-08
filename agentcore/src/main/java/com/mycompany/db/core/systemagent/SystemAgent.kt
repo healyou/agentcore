@@ -2,6 +2,7 @@ package com.mycompany.db.core.systemagent
 
 import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.service.objects.Entity
+import com.mycompany.user.User
 import java.util.*
 
 /**
@@ -17,9 +18,9 @@ class SystemAgent(
         /* Нужно ли получать сообщения от сервиса агентов */
         var isSendAndGetMessages: Boolean,
         /* Владелец агента */
-        var ownerId: Long,
+        var owner: User,
         /* Создатель агента */
-        var createUserId: Long
+        var createUser: User
 ) : Entity {
 
     /* Идентификатор */

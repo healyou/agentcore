@@ -13,4 +13,11 @@ class UserObjects {
         user.createDate = new Date()
         user
     }
+
+    static final user() {
+        User user = new User(StringObjects.randomString, StringObjects.randomString)
+        user.id = 2L
+        user.createDate = new Date()
+        user
+    }
 }

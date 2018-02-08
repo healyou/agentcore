@@ -74,8 +74,8 @@ class SystemAgentHistoryServiceTest extends AbstractServiceTest {
                 StringObjects.randomString(),
                 StringObjects.randomString(),
                 true,
-                UserObjects.testActiveUser().id,
-                UserObjects.testActiveUser().id
+                UserObjects.testActiveUser(),
+                UserObjects.testActiveUser()
         )
         systemAgent.isDeleted = false
 

@@ -35,7 +35,6 @@
             <groupId>com.company</groupId>
             <artifactId>agentcore</artifactId>
             <version>${project.version}</version>
-            <!-- todo с этой штукой из лок репозитория грузится старая версия jar без команды -> clean compile assembly:single в лок репозитории ничего не обновится -->
             <classifier>jar-with-dependencies</classifier>
         </dependency>
 

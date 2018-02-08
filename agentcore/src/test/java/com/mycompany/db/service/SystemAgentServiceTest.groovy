@@ -6,6 +6,7 @@ import com.mycompany.db.core.file.dslfile.DslFileAttachment
 import com.mycompany.db.core.sc.SystemAgentSC
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
+import com.mycompany.user.User
 import objects.OtherObjects
 import objects.StringObjects
 import objects.initdbobjects.UserObjects
@@ -47,8 +48,8 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
                 serviceLogin,
                 servicePassword,
                 isSendAndGetMessages,
-                owner.id,
-                createUser.id
+                owner,
+                createUser
         )
         systemAgent.dslFile = dslFile
         systemAgent.isDeleted = isDeleted
@@ -75,7 +76,7 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
         systemAgent.servicePassword == updateAgent.servicePassword
         systemAgent.isDeleted == updateAgent.isDeleted
         systemAgent.isSendAndGetMessages == updateAgent.isSendAndGetMessages
-        systemAgent.ownerId == updateAgent.ownerId
+        systemAgent.owner.id == updateAgent.owner.id
     }
 
     def "Обновление данных агента"() {
@@ -94,7 +95,7 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
         systemAgent.dslFile = newDslFile
         systemAgent.isDeleted = newIsDeleted
         systemAgent.isSendAndGetMessages = newIsSendAndGetMessages
-        systemAgent.ownerId = newOwnerId
+        systemAgent.owner.id = newOwnerId
 
         when:
         systemAgentService.save(systemAgent)
@@ -106,7 +107,7 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
         systemAgent.servicePassword == updateAgent.servicePassword
         systemAgent.isDeleted == updateAgent.isDeleted
         systemAgent.isSendAndGetMessages == updateAgent.isSendAndGetMessages
-        systemAgent.ownerId == updateAgent.ownerId
+        systemAgent.owner.id == updateAgent.owner.id
     }
 
     def "Запись нового dsl файла агента"() {
@@ -148,8 +149,8 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
         servicePassword == systemAgent.servicePassword
         systemAgent.createDate != null
         systemAgent.dslFile != null
-        owner.id == systemAgent.ownerId
-        createUser.id == systemAgent.createUserId
+        owner.id == systemAgent.owner.id
+        createUser.id == systemAgent.createUser.id
         updateDate == systemAgent.updateDate
         isDeleted == systemAgent.isDeleted
         isSendAndGetMessages == systemAgent.isSendAndGetMessages
@@ -205,18 +206,18 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
 
     def "Получение агентов по владельцу"() {
         setup:
-        def ownerId = UserObjects.testActiveUser().id
-        createAgentByOwnerId(ownerId)
-        createAgentByOwnerId(UserObjects.testActiveUser().id)
+        def owner = UserObjects.testActiveUser()
+        createAgentByOwner(owner)
+        createAgentByOwner(UserObjects.testActiveUser())
         def sc = new SystemAgentSC()
 
         when:
-        sc.ownerId = ownerId
+        sc.ownerId = owner.id
         def agents = systemAgentService.get(sc)
 
         then:
         agents.stream().allMatch {
-            it.ownerId == sc.ownerId
+            it.owner.id == sc.ownerId
         }
     }
 
@@ -233,8 +234,8 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
                 serviceLogin,
                 servicePassword,
                 isSendAndGetMessages,
-                UserObjects.testActiveUser().id,
-                UserObjects.testActiveUser().id
+                UserObjects.testActiveUser(),
+                UserObjects.testActiveUser()
         )
         systemAgentService.save(systemAgent)
     }
@@ -259,7 +260,7 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
     def "Функция isOwnAgent корректно определяет является ли user владельцем агента"() {
         def owner = UserObjects.testActiveUser()
         def notOwner = UserObjects.testDeletedUser()
-        def agent = createAgentByOwnerId(owner.id)
+        def agent = createAgentByOwner(owner)
 
         assertTrue(systemAgentService.isOwnAgent(agent, owner))
         assertFalse(systemAgentService.isOwnAgent(agent, notOwner))
@@ -267,9 +268,9 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
 
     def "Функция get(size, ownerId) корректно возвращает результат"() {
         def findSize = 5
-        def ownerId = UserObjects.testActiveUser().id
-        def agentIds = createAgents(findSize, ownerId)
-        def findAgents = systemAgentService.get(findSize, ownerId)
+        def owner = UserObjects.testActiveUser()
+        def agentIds = createAgents(findSize, owner)
+        def findAgents = systemAgentService.get(findSize, owner.id)
 
         assertTrue(agentIds.size() == findAgents.size())
         findAgents.forEach {
@@ -278,12 +279,12 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
     }
 
     def "Функция size(ownerId) корректно возвращает результат"() {
-        def ownerId = UserObjects.testActiveUser().id
-        def prevCreateAgentSize = systemAgentService.size(ownerId)
+        def owner = UserObjects.testActiveUser()
+        def prevCreateAgentSize = systemAgentService.size(owner.id)
         def createAgentSize = 3
-        createAgents(createAgentSize, ownerId)
+        createAgents(createAgentSize, owner)
 
-        assertEquals(prevCreateAgentSize + createAgentSize, systemAgentService.size(ownerId))
+        assertEquals(prevCreateAgentSize + createAgentSize, systemAgentService.size(owner.id))
     }
 
     /**
@@ -292,10 +293,10 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
      * @param size количество создаваемых агентов
      * @return количество созданных агентов
      */
-    List<Long> createAgents(Long size, Long ownerId) {
+    List<Long> createAgents(Long size, User owner) {
         List<Long> agentIds = new ArrayList<>()
         for (i in 0..size - 1) {
-            agentIds.add(createAgentByOwnerId(ownerId).id)
+            agentIds.add(createAgentByOwner(owner).id)
         }
         agentIds
     }
@@ -328,24 +329,24 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
     }
 
     SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages) {
-        return createAgent(isDeleted, isSendAndGetMessages, UserObjects.testActiveUser().id)
+        return createAgent(isDeleted, isSendAndGetMessages, UserObjects.testActiveUser())
     }
 
-    SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages, Long ownerId) {
+    SystemAgent createAgent(Boolean isDeleted, Boolean isSendAndGetMessages, User owner) {
         def systemAgent = new SystemAgent(
                 StringObjects.randomString(),
                 StringObjects.randomString(),
                 isSendAndGetMessages,
-                ownerId,
-                UserObjects.testActiveUser().id
+                owner,
+                UserObjects.testActiveUser()
         )
         systemAgent.isDeleted = isDeleted
 
         return systemAgentService.getById(systemAgentService.save(systemAgent))
     }
 
-    SystemAgent createAgentByOwnerId(Long ownerId) {
-        return createAgent(false, true, ownerId)
+    SystemAgent createAgentByOwner(User owner) {
+        return createAgent(false, true, owner)
     }
 
     def createAgentByIdDeletedArgs(Boolean... isDeletedArgs) {

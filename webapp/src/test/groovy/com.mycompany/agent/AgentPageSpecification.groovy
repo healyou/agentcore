@@ -36,7 +36,7 @@ class AgentPageSpecification extends WebPageSpecification {
 
     def "Страница отображается в соответсвии с моделью"() {
         when:
-        def agent = SystemAgentObjects.systemAgent(agentId, currentUser.user.id, currentUser.user.id)
+        def agent = SystemAgentObjects.systemAgent(agentId, currentUser.user, currentUser.user)
         startAgentPageWithViewMode(agent)
 
         then:
@@ -49,11 +49,11 @@ class AgentPageSpecification extends WebPageSpecification {
         tester.assertModelValue("form:dslFile", agent.dslFile)
         tester.assertRequired("form:dslFile")
 
-        tester.assertModelValue("form:ownerId", agent.ownerId)
-        tester.assertRequired("form:ownerId")
+        tester.assertModelValue("form:owner.id", agent.owner.id)
+        tester.assertRequired("form:owner.id")
 
-        tester.assertModelValue("form:createUserId", agent.createUserId)
-        tester.assertRequired("form:createUserId")
+        tester.assertModelValue("form:createUser.id", agent.createUser.id)
+        tester.assertRequired("form:createUser.id")
 
         tester.assertModelValue("form:createDate", agent.createDate)
         tester.assertRequired("form:createDate")
@@ -85,7 +85,7 @@ class AgentPageSpecification extends WebPageSpecification {
     }
 
     private def startAgentPageWithViewMode() {
-        startAgentPageWithViewMode(SystemAgentObjects.systemAgent(agentId, currentUser.user.id, currentUser.user.id))
+        startAgentPageWithViewMode(SystemAgentObjects.systemAgent(agentId, currentUser.user, currentUser.user))
     }
 
     private def startAgentPageWithViewMode(SystemAgent agent) {

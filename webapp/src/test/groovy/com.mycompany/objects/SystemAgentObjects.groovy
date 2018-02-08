@@ -1,6 +1,7 @@
 package com.mycompany.objects
 
 import com.mycompany.db.core.systemagent.SystemAgent
+import com.mycompany.user.User
 
 /**
  * @author Nikita Gorodilov
@@ -8,11 +9,12 @@ import com.mycompany.db.core.systemagent.SystemAgent
 class SystemAgentObjects {
 
     static final def systemAgent() {
-        systemAgent(1L, 1L, 1L)
+        def user = UserObjects.user()
+        systemAgent(1L, user, user)
     }
 
-    static final systemAgent(Long id, Long ownerId, Long createUserId) {
-        def systemAgent = new SystemAgent(StringObjects.randomString, StringObjects.randomString, true, ownerId, createUserId)
+    static final systemAgent(Long id, User owner, User createUser) {
+        def systemAgent = new SystemAgent(StringObjects.randomString, StringObjects.randomString, true, owner, createUser)
         systemAgent.id = id
         systemAgent.createDate = new Date()
         systemAgent.dslFile = DslFileAttachmentObjects.dslFileAttachment()

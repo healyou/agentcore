@@ -89,11 +89,6 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
                 throw RuntimeAgentException("Агент уже работает")
             }
 
-            val agentId = agent.id!!
-            val owner = User("", "")
-            val createUser = User("", "")
-            owner.id = agent.ownerId
-            createUser.id = agent.createUserId
             val runtimeAgent = object : ThreadPoolRuntimeAgent(agent.serviceLogin) {
 
                 override fun getSystemAgentService(): SystemAgentService = this@RuntimeAgentWorkControl.systemAgentService
@@ -103,12 +98,12 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
                 override fun getEnvironment(): Environment = this@RuntimeAgentWorkControl.environment
                 override fun getMessageTypeService(): ServiceMessageTypeService = this@RuntimeAgentWorkControl.messageTypeService
                 override fun getFileContentLocator(): FileContentLocator = this@RuntimeAgentWorkControl.fileContentLocator
-                override fun getOwner(): User = owner
-                override fun getCreateUser(): User = createUser
+                override fun getOwner(): User = agent.owner
+                override fun getCreateUser(): User = agent.createUser
             }
             runtimeAgent.add(RuntimeAgentHistoryEventBehavior(historyService))
             runtimeAgent.start()
-            startedAgents.put(agentId, runtimeAgent)
+            startedAgents.put(agent.id!!, runtimeAgent)
         }
     }
 

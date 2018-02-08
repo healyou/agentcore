@@ -72,19 +72,19 @@ class CreateDatabaseDataDao : AbstractDao() {
         /* Пользователи */
         testActiveUser = createNotDeletedUser()
         testDeletedUser = createDeletedUser()
-        val notDeletedUserId = testActiveUser!!.id!!
+        val notDeletedUser = testActiveUser!!
 
         /* Агенты */
         /* Агент с 1 прикреплением */
-        val agentId = createAgent(notDeletedUserId, notDeletedUserId)
+        val agentId = createAgent(notDeletedUser, notDeletedUser)
         testDslFileContentRef1 = createDslFileContentRef(agentId, testDskFileContentRef1Data)
         /* Агент с 2 и более прикреплениями */
-        val attachmentsAgentId = createAgent(notDeletedUserId, notDeletedUserId)
+        val attachmentsAgentId = createAgent(notDeletedUser, notDeletedUser)
         testDslFileContentRef2 = createDslFileContentRefWithEndDate(attachmentsAgentId, testDskFileContentRef1Data)
         testDslFileContentRef2 = createDslFileContentRef(attachmentsAgentId, testDskFileContentRef2Data)
         testAgentWithOneDslAttachment = agentService.getById(agentId)
         testAgentWithManyDslAttachment = agentService.getById(attachmentsAgentId)
-        testAgentWithoutDslAttachment = agentService.getById(createAgent(notDeletedUserId, notDeletedUserId))
+        testAgentWithoutDslAttachment = agentService.getById(createAgent(notDeletedUser, notDeletedUser))
     }
 
     private fun createDeletedUser(): User {
@@ -137,8 +137,8 @@ class CreateDatabaseDataDao : AbstractDao() {
         return DslFileContentRef(getSequence("dsl_file"), filename)
     }
 
-    private fun createAgent(ownerId: Long, createUserId: Long): Long {
-        return agentService.save(SystemAgent(randomString(), randomString(), true, ownerId, createUserId))
+    private fun createAgent(owner: User, createUser: User): Long {
+        return agentService.save(SystemAgent(randomString(), randomString(), true, owner, createUser))
     }
 
     private fun randomString(): String {

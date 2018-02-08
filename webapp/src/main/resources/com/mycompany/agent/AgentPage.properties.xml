@@ -5,8 +5,8 @@
     <entry key="dslFile">Dsl файл</entry>
     <entry key="serviceLogin">Логин</entry>
     <entry key="servicePassword">Пароль</entry>
-    <entry key="ownerId">Владелец</entry>
-    <entry key="createUserId">Создатель</entry>
+    <entry key="owner.id">Владелец</entry>
+    <entry key="createUser.id">Создатель</entry>
     <entry key="createDate">Дата создания</entry>
     <entry key="updateDate">Дата обновления</entry>
     <entry key="isDeleted">Удалён</entry>

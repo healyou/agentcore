@@ -368,8 +368,8 @@ public abstract class RuntimeAgent implements IRuntimeAgent {
                     agentMasId,
                     getEnvironment().getProperty("agent.service.password"),
                     true,
-                    getOwner().getId(),
-                    getCreateUser().getId()
+                    getOwner(),
+                    getCreateUser()
             );
             systemAgent.setDslFile(dslFileAttachment);
             agentService.save(systemAgent);

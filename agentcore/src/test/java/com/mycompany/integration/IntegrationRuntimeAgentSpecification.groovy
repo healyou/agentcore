@@ -26,13 +26,14 @@ import objects.OtherObjects
 import objects.initdbobjects.UserObjects
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
+import spock.lang.Ignore
 
 import java.nio.file.Files
 
 /**
  * @author Nikita Gorodilov
  */
-//@Ignore
+@Ignore
 class IntegrationRuntimeAgentSpecification extends AbstractJdbcSpecification {
 
     @Autowired

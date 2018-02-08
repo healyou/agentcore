@@ -1,4 +1,3 @@
------------ service message view -----------
 CREATE VIEW IF NOT EXISTS service_message_v
   -- Сообщения в системе
   AS
@@ -20,7 +19,7 @@ CREATE VIEW IF NOT EXISTS service_message_v
       service_message
       INNER JOIN service_message_type as smt ON service_message.message_type_id = smt.id;
 
------------ user privileges view -----------
+
 CREATE VIEW IF NOT EXISTS user_privileges_v
   -- Текущие привилегии пользователя
   AS
@@ -39,3 +38,29 @@ CREATE VIEW IF NOT EXISTS user_privileges_v
             WHERE ((strftime('%Y-%m-%d %H:%M:%f') >= ur.start_date) AND (strftime('%Y-%m-%d %H:%M:%f') <= ur.end_date OR ur.end_date IS NULL))) priv
       JOIN users u ON ((u.id = priv.user_id)))
       JOIN privilege p ON ((p.id = priv.privilege_id)));
+
+
+CREATE VIEW IF NOT EXISTS system_agent_v
+  -- Данные об агенте
+  AS
+    SELECT
+      sa.id,
+      sa.service_login,
+      sa.service_password,
+      sa.owner_id,
+      ou.login as owner_login,
+      ou.password as owner_password,
+      ou.create_date as owner_create_date,
+      ou.end_date as owner_end_date,
+      sa.create_user_id,
+      cu.login as create_user_login,
+      cu.password as create_user_password,
+      cu.create_date as create_user_create_date,
+      cu.end_date as create_user_end_date,
+      sa.create_date,
+      sa.update_date,
+      sa.is_deleted,
+      sa.is_sendandget_messages
+    FROM system_agent sa
+      LEFT JOIN users ou ON sa.owner_id = ou.id
+      LEFT JOIN users cu ON sa.create_user_id = cu.id;

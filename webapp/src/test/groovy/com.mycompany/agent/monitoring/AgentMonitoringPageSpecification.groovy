@@ -46,7 +46,7 @@ class AgentMonitoringPageSpecification extends WebPageSpecification {
     }
 
     private SystemAgent createTestAgent() {
-        SystemAgentObjects.systemAgent(1L, currentUser.user.id, currentUser.user.id)
+        SystemAgentObjects.systemAgent(1L, currentUser.user, currentUser.user)
     }
 
     private def setupBeans() {

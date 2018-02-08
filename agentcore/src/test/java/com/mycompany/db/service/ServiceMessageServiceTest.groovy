@@ -198,8 +198,8 @@ class ServiceMessageServiceTest extends AbstractServiceTest {
                 UUID.randomUUID().toString(),
                 UUID.randomUUID().toString(),
                 isSendAndGetMessages,
-                UserObjects.testActiveUser().id,
-                UserObjects.testActiveUser().id
+                UserObjects.testActiveUser(),
+                UserObjects.testActiveUser()
         ))
     }
 
