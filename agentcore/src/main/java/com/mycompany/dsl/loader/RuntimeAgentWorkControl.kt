@@ -8,8 +8,8 @@ import com.mycompany.db.core.servicemessage.ServiceMessageTypeService
 import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentEventHistoryService
 import com.mycompany.db.core.systemagent.SystemAgentService
-import com.mycompany.dsl.RuntimeAgent
 import com.mycompany.dsl.ThreadPoolRuntimeAgent
+import com.mycompany.dsl.base.IRuntimeAgent
 import com.mycompany.dsl.base.behavior.RuntimeAgentHistoryEventBehavior
 import com.mycompany.dsl.exceptions.RuntimeAgentException
 import com.mycompany.dsl.objects.DslLocalMessage
@@ -60,7 +60,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
      * Используется ThreadPoolRuntimeAgent - чтобы вызов onLoadImage лишь давал сигнал начала выполнения функции агентом
      * Поэтому в данном потоке время выполнения функции будет минимальным
      */
-    private val startedAgents = ConcurrentHashMap<Long, RuntimeAgent>()
+    private val startedAgents = ConcurrentHashMap<Long, IRuntimeAgent>()
 
     override fun start() {
         // todo - пока и ненадо
@@ -68,7 +68,9 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
 
     override fun stop() {
         startedAgents.values.forEach {
-            stop(it.getSystemAgent())
+            if (it.isStarted()) {
+                it.stop()
+            }
         }
         shutdownExecutors()
     }
@@ -122,7 +124,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
         val stoppedAgent = startedAgents.getValue(agentId)
         /* операции над агентами не могут быть выполнены одновременно n потоками */
         synchronized(stoppedAgent) {
-            if (stoppedAgent.isStarted) {
+            if (stoppedAgent.isStarted()) {
                 stoppedAgent.stop()
             }
         }
@@ -149,7 +151,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
      * Вызывается из библиотеки workLibrary
      */
     override fun onAgentEvent(agentId: Long, event: String) {
-        val operationAgent: RuntimeAgent
+        val operationAgent: IRuntimeAgent
         try {
             operationAgent  = startedAgents.getValue(agentId)
         } catch (ignored: Exception) {
@@ -166,6 +168,7 @@ class RuntimeAgentWorkControl: IRuntimeAgentWorkControl, ILibraryAgentWorkContro
         return startedAgents.values.map { it.getSystemAgent() }
     }
 
+    // todo executor сюда вынести наверное
     private fun createExecutors() {
         val executor = ThreadPoolRuntimeAgent.executorService
         if (executor.isShutdown) {

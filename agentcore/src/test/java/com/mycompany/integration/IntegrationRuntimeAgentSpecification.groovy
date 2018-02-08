@@ -26,14 +26,13 @@ import objects.OtherObjects
 import objects.initdbobjects.UserObjects
 import org.jetbrains.annotations.NotNull
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Ignore
 
 import java.nio.file.Files
 
 /**
  * @author Nikita Gorodilov
  */
-@Ignore
+//@Ignore
 class IntegrationRuntimeAgentSpecification extends AbstractJdbcSpecification {
 
     @Autowired
@@ -234,10 +233,10 @@ class IntegrationRuntimeAgentSpecification extends AbstractJdbcSpecification {
         testAgent1.onGetSystemEvent(SystemEvent.AGENT_START)
         serviceTask.sendMessages()
         serviceTask.getMessages()
-        testAgent2.searchMessages()
+        testAgent2.searchMessageTimer.searchMessages()
         serviceTask.sendMessages()
         serviceTask.getMessages()
-        testAgent1.searchMessages()
+        testAgent1.searchMessageTimer.searchMessages()
     }
 
     private static DslFileAttachment createDslAttachment(String resourceFileName) {

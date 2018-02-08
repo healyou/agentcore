@@ -55,6 +55,7 @@ abstract class AbstractAgentService {
         }
 
         @Throws(IOException::class)
+        @JvmStatic
         fun <T> fromJson(json: String, tReference: TypeReference<T>): T {
             val mapper = ObjectMapper()
             return mapper.readValue(json, tReference)

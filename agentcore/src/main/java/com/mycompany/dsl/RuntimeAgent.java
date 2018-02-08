@@ -6,12 +6,14 @@ import com.mycompany.db.core.file.dslfile.DslFileAttachment;
 import com.mycompany.db.core.servicemessage.ServiceMessage;
 import com.mycompany.db.core.servicemessage.ServiceMessageService;
 import com.mycompany.db.core.servicemessage.ServiceMessageType;
+import com.mycompany.db.core.servicemessage.ServiceMessageTypeService;
 import com.mycompany.db.core.systemagent.SystemAgent;
 import com.mycompany.db.core.systemagent.SystemAgentService;
-import com.mycompany.dsl.base.ARuntimeAgent;
-import com.mycompany.dsl.base.parameters.SendServiceMessageParameters;
+import com.mycompany.dsl.base.IRuntimeAgent;
 import com.mycompany.dsl.base.SystemEvent;
 import com.mycompany.dsl.base.behavior.ARuntimeAgentBehavior;
+import com.mycompany.dsl.base.behavior.IRuntimeAgentBehaviorEventSink;
+import com.mycompany.dsl.base.parameters.SendServiceMessageParameters;
 import com.mycompany.dsl.exceptions.RuntimeAgentException;
 import com.mycompany.dsl.objects.DslAgentData;
 import com.mycompany.dsl.objects.DslLocalMessage;
@@ -25,19 +27,29 @@ import com.mycompany.user.User;
 import groovy.lang.Closure;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
+ * Класс агента, выполняющего работу над изображением
+ * Конфигурируется с помощью dsl на groovy
+ *
  * Класс java, тк использующий его kotlin класс ничего не должен знать про groovy
  * а здесь используется RuntimeAgentService.groovy
  *
  * @author Nikita Gorodilov
  */
-public abstract class RuntimeAgent extends ARuntimeAgent {
+public abstract class RuntimeAgent implements IRuntimeAgent {
 
     private RuntimeAgentService runtimeAgentService = createRuntimeAgentService();
     private SystemAgent systemAgent = null;
-    private List<ARuntimeAgentBehavior> behaviors = new ArrayList<>();
+    private List<IRuntimeAgentBehaviorEventSink> behaviors = new ArrayList<>();
+
+    /* Видимость оставлена для тестирования */
+    protected AgentSearchMessageTimer searchMessageTimer;
+    private boolean isStart = false;
 
     /**
      * Конструктор без создания dsl файла агента
@@ -49,7 +61,8 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
     public RuntimeAgent(String serviceLogin) throws RuntimeAgentException {
         super();
         DslFileAttachment dslFileAttachment = loadDslFileAttachment(serviceLogin);
-        init(dslFileAttachment);
+        initAgentServiceWithSystemAgent(dslFileAttachment);
+        initSearchMessageTimer();
     }
 
     /**
@@ -61,10 +74,11 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
      */
     public RuntimeAgent(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         super();
-        init(dslFileAttachment);
+        initAgentServiceWithSystemAgent(dslFileAttachment);
+        initSearchMessageTimer();
     }
 
-    private void init(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
+    private void initAgentServiceWithSystemAgent(DslFileAttachment dslFileAttachment) throws RuntimeAgentException {
         loadServiceTypes(runtimeAgentService);
         runtimeAgentService.setAgentSendMessageClosure(createSendMessageClosure());
         runtimeAgentService.setAgentOnEndTaskClosure(createOnEndTaskClosure());
@@ -74,18 +88,34 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         systemAgent = configureAgentWithError(dslFileAttachment);
     }
 
-    @Override
-    public void start() {
-        super.start();
-        behaviors.forEach(ARuntimeAgentBehavior::onStart);
-        onGetSystemEvent(SystemEvent.AGENT_START);
+    private void initSearchMessageTimer() {
+        searchMessageTimer = new AgentSearchMessageTimer(
+                getServiceMessageService(), getMessageTypeService(), getSystemAgentId(), this::onGetServiceMessage);
     }
 
     @Override
+    public void start() {
+        searchMessageTimer.start();
+        behaviors.forEach(IRuntimeAgentBehaviorEventSink::onStart);
+        onGetSystemEvent(SystemEvent.AGENT_START);
+        isStart = true;
+    }
+
+    protected abstract SystemAgentService getSystemAgentService();
+    protected abstract ServiceMessageService getServiceMessageService();
+    protected abstract ServiceMessageTypeService getMessageTypeService();
+
+    @Override
     public void stop() {
-        super.stop();
-        behaviors.forEach(ARuntimeAgentBehavior::onStop);
+        searchMessageTimer.stop();
+        behaviors.forEach(IRuntimeAgentBehaviorEventSink::onStop);
         onGetSystemEvent(SystemEvent.AGENT_STOP);
+        isStart = false;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return isStart;
     }
 
     @Override
@@ -152,23 +182,31 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         }
     }
 
-    public RuntimeAgent add(ARuntimeAgentBehavior behavior) {
+    @Override
+    public void add(@NotNull IRuntimeAgentBehaviorEventSink behavior) {
         behaviors.add(behavior);
         behavior.bind(this);
-        return this;
     }
 
-    public RuntimeAgent remove(ARuntimeAgentBehavior behavior)  {
+    @Override
+    public void delete(@NotNull IRuntimeAgentBehaviorEventSink behavior) {
         if (behaviors.remove(behavior)) {
             behavior.unbind();
         }
-        return this;
     }
 
     @NotNull
     @Override
     public SystemAgent getSystemAgent() {
         return systemAgent;
+    }
+
+    private Long getSystemAgentId() {
+        Long id = systemAgent.getId();
+        if (id == null) {
+            throw new RuntimeAgentException("id Системного агента не может быть null");
+        }
+        return id;
     }
 
     public RuntimeAgentService getRuntimeAgentService() {
@@ -278,7 +316,7 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         return new Closure<DslAgentData>(null) {
             @Override
             public DslAgentData call() {
-                return new DslAgentData(systemAgent.getId());
+                return new DslAgentData(getSystemAgentId());
             }
         };
     }
@@ -358,10 +396,12 @@ public abstract class RuntimeAgent extends ARuntimeAgent {
         runtimeAgentService.setServiceMessageTypes(messageTypes);
 
         if (agentTypeList == null || messageBodyTypes == null || messageGoalTypes == null || messageTypes == null) {
-            // Тут дефолтные настройки, чтобы каждый раз не врубать сервис
-            System.out.println("Загрузка дефолтных параметров агента(сервис недоступен типов данных там нет)");
-            //setTestData(runtimeAgentService); // тесты работают и без этой строчки
             throw new RuntimeAgentException("Сервис с типами данных недоступен");
         }
+    }
+
+    @FunctionalInterface
+    public interface OnGetServiceMessageFunction {
+        void onGetServiceMessage(@NotNull DslServiceMessage serviceMessage);
     }
 }
