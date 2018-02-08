@@ -6,7 +6,6 @@ import com.mycompany.service.objects.GetAgentsData
 /**
  * @author Nikita Gorodilov
  */
-// todo - serviceAgentService - переименовать
 interface ServerAgentService {
 
     fun isExistsAgent(sessionManager: SessionManager, masId: String): Boolean?

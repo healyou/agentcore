@@ -1,5 +1,6 @@
 package com.mycompany
 
+import com.mycompany.reference.*
 import org.apache.wicket.RestartResponseAtInterceptPageException
 import org.apache.wicket.ajax.AjaxRequestTarget
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession
@@ -57,18 +58,13 @@ class LoginPage : WebPage() {
 
     override fun renderHead(response: IHeaderResponse) {
         super.renderHead(response)
-        // <!-- Bootstrap core CSS-->
-        response.render(CssHeaderItem.forReference(CssResourceReference(HomePage::class.java, "resource/vendor/bootstrap/css/bootstrap.min.css")))
-        // <!-- Custom fonts for this template -->
-        response.render(CssHeaderItem.forReference(CssResourceReference(HomePage::class.java, "resource/vendor/font-awesome/css/font-awesome.min.css")))
-        // <!-- Custom styles for this template-->
-        response.render(CssHeaderItem.forReference(CssResourceReference(HomePage::class.java, "resource/css/sb-admin.css")))
 
-        // <!-- Bootstrap core JavaScript-->
-        response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/vendor/jquery/jquery.min.js")))
-        response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/vendor/bootstrap/js/bootstrap.bundle.min.js")))
-        // <!-- Core plugin JavaScript-->
-        response.render(JavaScriptHeaderItem.forReference(JavaScriptResourceReference(HomePage::class.java, "resource/vendor/jquery-easing/jquery.easing.min.js")))
+        response.render(BootstrapCssReference.headerItem())
+        response.render(FontCssReference.headerItem())
+        response.render(SbAdminCssReference.headerItem())
+
+        response.render(JQueryJsReference.headerItem())
+        response.render(BootstrapJsReference.headerItem())
     }
 
     private fun signedIn(session: AuthenticatedWebSession): Boolean {

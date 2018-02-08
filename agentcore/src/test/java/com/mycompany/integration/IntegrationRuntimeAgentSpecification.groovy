@@ -229,7 +229,6 @@ class IntegrationRuntimeAgentSpecification extends AbstractJdbcSpecification {
      * 11) Получение сообщения от второго агента
      * 12) Завершение теста
      */
-    // todo переделать на подсчёт вызова функций или-что-то другое
     private void executeTestScenario() {
         testAgent1.onGetSystemEvent(SystemEvent.AGENT_START)
         serviceTask.sendMessages()

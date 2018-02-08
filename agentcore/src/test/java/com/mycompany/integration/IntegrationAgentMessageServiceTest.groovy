@@ -109,10 +109,6 @@ class IntegrationAgentMessageServiceTest extends AbstractServiceTest {
     }
 
     /**
-     * TODO Тестирование какой-то логики работы сервиса
-     */
-
-    /**
      * Тестирование логики работы сервиса
      */
 

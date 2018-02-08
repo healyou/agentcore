@@ -61,7 +61,9 @@ class SystemAgentServiceTest extends AbstractJdbcSpecification {
         setup:
         def saveAgent = systemAgentService.getById(id)
         def actualDsl = saveAgent.dslFile
-        assertDslFiles(dslFile, actualDsl) // todo assert in then block
+
+        and:
+        assertDslFiles(dslFile, actualDsl)
     }
 
     def "При сохранении объекта без изменений, данные не теряются"() {
