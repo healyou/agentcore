@@ -113,7 +113,7 @@ CREATE TABLE if not exists user_role
   start_date     TEXT                              NOT NULL DEFAULT (strftime('%Y-%m-%d %H:%M:%f')), -- Дата начала действия роли
   end_date       TEXT                              , -- Окончание действия роли
   FOREIGN KEY(user_id) REFERENCES users(id),
-  FOREIGN KEY(role_id) REFERENCES user_role(id)
+  FOREIGN KEY(role_id) REFERENCES role(id)
 );
 
 ----------------------- privilege -----------------------
