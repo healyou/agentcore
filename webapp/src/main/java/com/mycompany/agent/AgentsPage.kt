@@ -108,7 +108,7 @@ class AgentsPage(parameters: PageParameters? = null) : AuthBasePage(parameters) 
                     }
                 })
                 item.add(Label("login", PropertyModel.of<String>(agent, "serviceLogin")))
-                item.add(Label("createBy", PropertyModel.of<Long>(agent, "createUserId")))
+                item.add(Label("createBy", PropertyModel.of<Long>(agent, "createUser.id")))
                 item.add(object : Label("createDate", PropertyModel.of<Date>(agent, "createDate")) {
                     override fun <C : Any> getConverter(type: Class<C>): IConverter<C> {
                         return SqliteDateConverter() as IConverter<C>

@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService
  */
 class AgentGui : Application() {
 
+    // todo закрытие на крестик на закрывает приложение -  шедулер работает
     companion object {
         val applicationContext = AnnotationConfigApplicationContext(
                 ApplicationConfig::class.java, JdbcConfig::class.java)

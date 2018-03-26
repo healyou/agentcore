@@ -20,6 +20,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters
  */
 abstract class BasePage(parameters: PageParameters? = null) : WebPage(parameters), PrincipalSupport {
 
+    // todo sheduler веб приложения не закрывается после exit
     override fun onInitialize() {
         super.onInitialize()
         add(LogoutLink("logout"))
