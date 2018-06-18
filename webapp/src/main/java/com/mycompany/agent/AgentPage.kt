@@ -9,6 +9,7 @@ import com.mycompany.db.core.systemagent.SystemAgent
 import com.mycompany.db.core.systemagent.SystemAgentService
 import com.mycompany.security.acceptor.HasAnyAuthorityPrincipalAcceptor
 import com.mycompany.security.acceptor.PrincipalAcceptor
+import com.mycompany.service.LoginService
 import com.mycompany.user.Authority
 import org.apache.wicket.RestartResponseAtInterceptPageException
 import org.apache.wicket.ajax.AjaxRequestTarget
@@ -45,6 +46,8 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     @SpringBean
     private lateinit var agentService: SystemAgentService
+    @SpringBean
+    private lateinit var loginService: LoginService
 
     private lateinit var feedback: BootstrapFeedbackPanel
     private lateinit var buttons: WebMarkupContainer
@@ -172,6 +175,7 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
     }
 
     private fun saveButtonClick(target: AjaxRequestTarget) {
+        // todo - добавить здесь регистрацию агента, т.к. после создания агента в интерфейсе в сервисе его ещё нет
         agent.id = agentService.save(agent)
         agent = agentService.getById(agent.id!!)
         form.model = CompoundPropertyModel<SystemAgent>(agent)
