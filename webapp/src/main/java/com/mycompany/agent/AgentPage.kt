@@ -46,8 +46,6 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     @SpringBean
     private lateinit var agentService: SystemAgentService
-    @SpringBean
-    private lateinit var loginService: LoginService
 
     private lateinit var feedback: BootstrapFeedbackPanel
     private lateinit var buttons: WebMarkupContainer
