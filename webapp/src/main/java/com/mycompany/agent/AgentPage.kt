@@ -174,6 +174,9 @@ class AgentPage(parameters: PageParameters) : AuthBasePage(parameters) {
 
     private fun saveButtonClick(target: AjaxRequestTarget) {
         // todo - добавить здесь регистрацию агента, т.к. после создания агента в интерфейсе в сервисе его ещё нет
+        // надо создать экземпляр класс RuntimeAgent - если ошибки не будет, то агент успешно зарегистрирован в сервисе
+        // но так скажем это очень странное решение - регистрировать агента через создание экземпляра класса
+        // но как иначе получить информацию о типе данных, которая скрыта в dsl файле также непонятно
         agent.id = agentService.save(agent)
         agent = agentService.getById(agent.id!!)
         form.model = CompoundPropertyModel<SystemAgent>(agent)
