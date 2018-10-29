@@ -35,7 +35,7 @@ class ServiceTask @Autowired constructor(
     /**
      * Получение сообщений с сервиса агентов
      */
-    @Scheduled(fixedDelay=10000)
+    @Scheduled(fixedDelay=20000)
     fun getMessages() {
         System.out.println("Процесс получения сообщений")
         logger.debug("Старт - Процесс получения сообщений")
@@ -60,7 +60,7 @@ class ServiceTask @Autowired constructor(
     /**
      * Отправка сообщений на сервис агентов
      */
-    @Scheduled(fixedDelay=10000)
+    @Scheduled(fixedDelay=20000)
     fun sendMessages() {
         System.out.println("Процесс отправки сообщений")
         logger.debug("Старт - Процесс отправки сообщений")

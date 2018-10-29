@@ -8,7 +8,7 @@
                     <SystemProperty name="db.driverClassName" default="org.sqlite.JDBC"/>
                 </Set>
                 <Set name="url">
-                    <SystemProperty name="db.url" default="jdbc:sqlite:C:/Users/lappi/Intellij IDEA/Projects/agentproject/data/localdb/localdb.s3db"/>
+                    <SystemProperty name="db.url" default="jdbc:sqlite:../data/localdb/localdb.s3db"/>
                 </Set>
             </New>
         </Arg>
